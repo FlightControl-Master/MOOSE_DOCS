@@ -22,7 +22,7 @@ init:
         https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
         Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
         throw "There are newer queued builds for this pull request, failing early." }
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
   - ps: . choco install 7zip.commandline
@@ -32,10 +32,7 @@ install:
   - cmd: PATH = %PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\bin
   - cmd: set LUA_PATH = %LUA_PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\share\lua\5.1\?\init.lua
   - cmd: set LUA_CPATH = %LUA_CPATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\lib\lua\5.1\?.dll 
-  - ps: . luarocks install luasrcdiet
-  - ps: . luarocks install checks
-  - ps: . luarocks install luadocumentor
-  - ps: . luarocks install luacheck
+  - call luarocks install luadocumentor
 
 
 cache:
