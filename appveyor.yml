@@ -1,0 +1,65 @@
+version: 3.9.1.{build}
+shallow_clone: true
+skip_branch_with_pr: false
+skip_commits:
+  message: /!nobuild/
+skip_tags: false
+
+environment:
+  access_token_documentation:
+    secure: JVBVVL8uJUcLXN+48eRdELEeCGOGCCaMzCqutsUqNuaZ/KblG5ZTt7+LV4UKv/0f
+  LUAROCKS_VER: 2.4.1
+  LUA_VER: 5.1.5
+  LUA: lua5.3
+  matrix:
+  - LUA_VER: 5.1.5
+
+platform:
+  - x64
+
+init:
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
+        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
+        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
+        throw "There are newer queued builds for this pull request, failing early." }
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+install:
+  - ps: . choco install 7zip.commandline
+  - ps: . choco install lua51
+  - ps: . choco install luarocks
+  - ps: . refreshenv
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
+  - cmd: PATH = %PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\bin
+  - cmd: set LUA_PATH = %LUA_PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\share\lua\5.1\?\init.lua
+  - cmd: set LUA_CPATH = %LUA_CPATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree\lib\lua\5.1\?.dll 
+  - ps: . luarocks install luadocumentor
+
+
+cache:
+  - C:\ProgramData\chocolatey\lib
+  - C:\ProgramData\chocolatey\bin
+  - C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.3-win32\systree
+  
+
+
+build_script:
+  - ps: >- 
+       git clone -q https://github.com/FlightControl-Master/MOOSE.git c:\Projects
+       dir 
+       luadocumentor -f doc -d ./Documentation -s Documentation/Stylesheet/stylesheet.css "c:/Projects/Moose/Moose Development/Moose"
+       git config --global credential.helper store 
+       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token_documentation):x-oauth-basic@github.com`n" 
+       git config --global user.email "sven.van.de.velde@telenet.be" 
+       git config --global user.name "FlightControl-User" 
+       git add . 
+       git commit -m "Documentation Generation for MOOSE GITHUB Commit Hash ID $env:APPVEYOR_REPO_COMMIT [skip ci]" 
+       git push origin master
+
+
+artifacts:
+  - path: Documentation
+    name: Documentation
+
+on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
