@@ -49,13 +49,18 @@ build_script:
       git clone -q --depth=1 https://github.com/FlightControl-Master/MOOSE.git c:\Projects\Moose 
       dir c:\Projects
       dir
+      echo "Removing old Documentation"
       del ./Documentation/*.html
+      echo "Documenting"
       luadocumentor -f doc -d ./Documentation -s ./Stylesheet/stylesheet.css "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
-      foreach( $file in Get-ChildItem ./Documentation -Filter *.html ) 
+      cd ./Documentation
+      foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>', '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-97385487-1%22%3E</script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
       } 
+      cd ..
+      echo "Commit to GITHUB"
       git config --global credential.helper store  
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token_documentation):x-oauth-basic@github.com`n" 
       git config --global user.email "sven.van.de.velde@telenet.be" 
