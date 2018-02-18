@@ -2,19 +2,24 @@
 
 MOOSE is a **M**ission **O**bject **O**riented **S**cripting **E**nvironment, and is meant for mission designers and mission hosters.
 It allows to quickly setup complex missions using pre-scripted scenarios using the available classes within the MOOSE Framework.
-MOOSE works with DCS world 1.5. and 2.0.
+MOOSE works with DCS world 2.5 and earlier versions.
 
 ![MOOSE Banner](Presentations\MOOSE\Dia1.JPG)
 
 ## MOOSE framework goal
 
-The goal of MOOSE is to allow mission designers to enhance their scripting with mission orchestration objects, which can be instantiated from defined classes within the framework. This will allow to write mission scripts with minimal code embedded. Of course, the richness of the framework will determine the richness of the misson scenarios. 
-The MOOSE is a service that is produced while being consumed ... , it will evolve further as more classes are developed for the framework, and as more users are using it.  
+The goal of MOOSE is to allow mission designers to **enhance the mission designs** by using **mission orchestration objects**, 
+which can be _instantiated_ from defined classes within the framework. 
+This will allow to write exciting missions and multi player cooperative operation scenarios. 
+
+Of course, the richness of the framework will determine the richness of the misson scenarios. 
+The MOOSE is a service that is produced while being consumed ... , 
+it will evolve further as more classes are developed for the framework, and as more users are using it.  
 
 MOOSE is NOT meant to be a one-man show, it is meant to evolve within a growing community around the framework.  
 
-Within the community, key users will start supporting, documenting, explaining and even creating new classes for the framework.
-It is the ambition to grow this framework as a de-facto standard for mission designers to use.
+Within the community, key users will support, document, explain and even create new classes for the framework.
+It is the ambition to grow this framework as a de-facto standard for mission designers to use within the DCS World community.
 
 ## Please Donate ...
 
@@ -32,7 +37,7 @@ FC
 
 # 2. MOOSE Framework
 
-The following classes are currently embedded within MOOSE framework and can be included within your mission scripts:
+You need to write lua code (scripts) to apply the MOOSE framework. But it is not really that hard, if you understand a couple of principles.
 
 MOOSE is an Object Oriented framework and defines **Classes**, which are components that combine **Methods** and **Variables**/**Properties** as one encapsulated structure (table).
 Mission Designers can what we call **Instantiate Objects** from these MOOSE classes.
@@ -47,7 +52,7 @@ local SpawnObject = SPAWN:New( "GroupName" ) -- This creates a new SpawnObject f
 local SpawnGroup = SpawnObject:Spawn() -- Here we use the :Spawn() method of the SPAWN class. This method creates a new group from the GroupName template as defined within the Mission Editor.
 ```
 
-MOOSE Classes derive or inherit from each other, that means, within MOOSE there is an **Inheritance** structure where **inherited MOOSE Classes** are re-using properties and methods from the **Parent MOOSE Class**.
+MOOSE Classes **derive or inherit** from each other, that means, within MOOSE there is an **Inheritance** structure where **inherited MOOSE Classes** are re-using properties and methods from the **Parent MOOSE Class**.
 This powerful concept is used everywhere within the MOOSE framework. The main (Parent) Class in the MOOSE framework is the BASE class. Every MOOSE Class is derived from this top BASE Class.
 So is also the SPAWN class derived from the BASE class. The BASE class provides powerful methods for debugging, event handling and implements the class handling logic.
 As a normal MOOSE user, you won't implement any code using inheritance but just know that the inheritance structure is omni present in the intellisense and documentation.
