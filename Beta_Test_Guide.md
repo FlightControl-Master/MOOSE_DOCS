@@ -1,10 +1,13 @@
-*** UNDER CONSTRUCTION ***
 
-You are interrested in **testing the bleeding edge functionnalities** and features added by contributors every day, and you are **not afraid of bugs** that will inevitably crop up from time to time ? Then this page is for you ! You are going to learn :
 
-1. How to set up your development environment
-2. How is the Moose repository organized
-3. How Moose is loaded in the missions and how this can make your workflow more efficient
+You are interrested in **testing the bleeding edge functionalities** and features added by contributors every day, 
+and you are **not afraid of bugs** that will inevitably crop up from time to time ? Then this page is for you !  
+  
+You are going to learn :
+
+1. **Installation:** How to set up your development environment
+2. **Repository:** How is the Moose repository organized
+3. **Loading:** How Moose is loaded in the missions and how this can make your workflow more efficient
 4. How to use tools to process your .miz files efficiently
 5. How Moose's release cycle work
 6. How the Issue Tracker is managed
@@ -35,53 +38,47 @@ You now have a copy of the code on computer, which you can update at any time by
 ### 1.2) Install 7-Zip
 
 Install [7-Zip](http://www.7-zip.org/) if you don't already have it. It is a free and open source file archiver program. Since DCS' .miz files are simply renamed .zip files, 7-Zip is very usefull to manimulate them. We are providing the MOOSE testers and contributors with tools to batch process their .miz files, and they rely on 7-Zip. Keep the path to your 7-Zip installation handy, it will be use in the next step !
+  
+  
+  
+  
+# 2) Repository
 
-### 1.3) Run the Install script
+The MOOSE repository has a couple of folders, but the most important one is the **Moose Development** folder.  
+This directory contains an other folder called **Moose**. This is the most important folder, as this contains all the MOOSE source code!
 
-Because DCS is going to load Moose dynamically (more on that later), we need to do some (slightly) advanced stuff to finish the setup of your own development enviroment. Thankfully we wrote a program to do it automatically for you !
-![](Installation/MDES_Splash_Screen.JPG)
-
-Browse to your local MOOSE repository and run `Moose Development Environment Setup\MooseDevelopmentEnvironmentSetup.exe` **as an administrator** (Select the file > Right Click > Run as administrator). 
-
-* The splash screen opens, click ok
-* Enter (or browse for) the 3 paths asked and click ok. Don't worry about trailing backslashs.
-* Let the program do its magic ! 
-* When the program finishes, it will inform you that you need to restart your computer to use the .miz files management tools.
-
-If you encounter a problem during this installation, please contact the [community](Communities), with the mdes.log file which was generated next to the executable file. We'll try our best to help you!
-
-_Wait, I'm not running a program randomly found on the internet like that. I don't even know what it does, and why does it have to be run as an administartor anyway?!_
-And you shouldn't. Here is the explanation of what this tool does (but the explanation is a bit technical, your are warned!):
-
-* Create a hard link between your local repository and `DCSWorld/Scripts/`
-* Add 7-Zip to your PATH environment variable (this explains the restart requirement)
-* Copy a precompiled version of Lua 5.1 to your `Program Files` (this explains the administrator priviledge requirement)
-
-The executable is made with AutoIt, its script is available near the executable. Open it as a text file if you want to know what it does. If you are still reluctant to do this, the whole process can be done manually by experienced users, get in touch with the [community](Communities)!
-
-# 2) MOOSE Directory Structure
-
-***TDOD : Update this section because of the repo changes***
-
-The MOOSE framework is devided into a couple of directories:
-
-* Moose Development: Contains the collection of lua files that define the MOOSE classes. You can use this directory to build the dynamic luadoc documentation intellisense in your eclipse development environment.
-* Moose Mission Setup: Contains the Moose.lua file to be included in your scripts when using MOOSE classes (see below the point Mission Design with Moose).
-* Moose Test Missions: Contains a directory structure with Moose Test Missions and examples. In each directory, you will find a miz file and a lua file containing the main mission script.
-* Moose Training: Contains the documentation of Moose generated with luadoc from the Moose source code. The presentations used during the videos in my [youtube channel](https://www.youtube.com/channel/UCjrA9j5LQoWsG4SpS8i79Qg), are also to be found here.
-
-# 3) Static Loading vs Dynamic Loading
+The other directories contained within the repository are for administration and automation of the deployment process.
+  
+  
+   
+# 3) Loading the repository within your missions.
 
 ## 3.1) Static Loading
 
-**Moose static loading** is what the "normal" mission designer uses. Simply put, there **is a tool which concatenates every .lua file** which constitutes Moose **into just one: Moose.lua**. This is the file which is loaded in Mission Editorr by the mission designer.
-This process is very useful **when you are using a stable Release** of Moose which don't change often, because it is really easy to set up for the mission designer. It also allows him to **release missions** which are contained in their entirety in the .miz file.
-But in a context in wich Moose changes often, static loading would require the generation of a new Moose.lua for every change and the replacement the old Moose.lua in the .miz file you are using to test the changes. Add to this cumbersome process the fact that the Mission Editor doesn't like changes to the .miz file while it is open, which means you would need to close and reopen the Mission Editor for every change, and this process becomes unworkable for both the tester and the contributor.
+**Moose Static Loading** is what the "normal" mission designer uses.  
+Simply put, you would include all the code of MOOSE by including **just one Moose.lua file**.  
+So by executing a DO SCRIPT FILE within your mission, you would load the complete MOOSE code within your mission.
+This process is very useful **when you are using a stable Release** of Moose which don't change often, 
+because it is really easy to set up for the mission designer.  
+It also allows him to **release missions** which are contained in their entirety in the .miz file.  
+But in a context in wich Moose changes often, static loading would require the generation of a new Moose.lua 
+**for every change within the MOOSE framework** and you would need to replace the old Moose.lua in the .miz file you are using to test the changes. 
+Add to this cumbersome process the fact that the Mission Editor doesn't like changes to the .miz file while it is open, 
+which means you would need to close and reopen the Mission Editor for every change, 
+and this process becomes unworkable for both the tester and the contributor.
 
 ## 3.2) Dynamic Loading
 
-Enter **Moose Dynamic loading**. In this process, the **Moose.lua** you insert in your .miz file **looks for every .lua** which constitute Moose in `DCSWorld\Scripts`, **and asks DCS to load them** during the mission startup. This way, the latest changes to Moose's .lua files in `DCSWorld\Scripts` are automatically taken into account when you restart the mission, no need to fiddle around with the .miz file or to close the mission editor!
-Now, there is still a problem left : you wouldn't want to have to copy the Moose's .lua files from your local repository to `DCSWorld\Scripts` everytime you retrieve a new version of Moose. The solution to this problem is a dynamic link! It is created by the Install Scipt (see above), and, simply put, makes sure that the folder `DCSWorld\Scripts\Moose` is always in sync with your local repository. That way, **everytime you want to update to the next Moose, you simply sync your local repository** with the remote with GitHub, **and restart your mission** !
+So, beyond the Static Loading, there is the Dynamic Loading, which allows a much more smooth proces while testing your missions.
+
+Enter **Moose Dynamic loading**. In this process, the **Moose.lua** you insert in your .miz file **looks for every .lua** 
+which constitute Moose in `DCSWorld\Scripts`, **and asks DCS to load them** during the mission startup.  
+This way, the latest changes to the MOOSE .lua files in `DCSWorld\Scripts` are automatically taken into account when you restart the mission, 
+no need to fiddle around with the .miz file or to close the mission editor!
+Now, there is still a problem left : you wouldn't want to have to copy the MOOSE .lua files from your local repository to `DCSWorld\Scripts`, 
+everytime you retrieve a new version of Moose. The solution to this problem is a dynamic link!  
+Simply put, it makes sure that the folder `DCSWorld\Scripts\Moose` is always in sync with your local MOOSE repository on your disk.  
+That way, **everytime you want to update to the next Moose, you simply sync your local repository** with the remote with GitHub, **and restart your mission** !
 Note that if you want to **release your missions to end users**, you will need to make it **use the static loading process**. There is a tool to automate this task, read below.
 
 # 4) Tools to help you manage your .miz files
