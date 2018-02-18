@@ -16,6 +16,18 @@ MOOSE is NOT meant to be a one-man show, it is meant to evolve within a growing 
 Within the community, key users will start supporting, documenting, explaining and even creating new classes for the framework.
 It is the ambition to grow this framework as a de-facto standard for mission designers to use.
 
+## Please Donate ...
+
+If you appreciate this development, please support to extend the framework. The development of this framework takes a lot of time.
+A small gift would help me to buy a new small laptop that I can use to extend this framework while commuting to and from work ...
+Also, your donations will be saved and spent wisely to the advantage of the community!
+If everyone helps with a small amount, it would be really great!
+
+<a href="https://donorbox.org/fund-github-subscriptionfor-moose" target="_blank">Donate ...</a>
+
+kind regards,
+FC
+
 
 # 2. MOOSE Framework
 
