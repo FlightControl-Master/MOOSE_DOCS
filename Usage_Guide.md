@@ -4,24 +4,27 @@ Using the MOOSE framework is very easy, and this document provides you with a de
 and use MOOSE within your missions.
 
 
-## 1.1) MOOSE framework at GitHub
+## 1.1) MOOSE framework on GITHUB
 
-You can find the source of [MOOSE framework on GITHUB](https://github.com/FlightControl-Master/MOOSE/). 
-It is free for download and usage, since it is released under the GNU 3.0 open source license policy.
-Although the MOOSE contributors and tester are using the GitHub service to enforces a structured approval process, release and change management, and a communicative distribution and deployment, you, as a mission designer, don't need to mess with it. Still, if you are interrested intesting the latest features of MOOSE of in adding your own, you can read the [relevant](http://flightcontrol-master.github.io/MOOSE/Beta_Test_Guide.html) [guides](http://flightcontrol-master.github.io/MOOSE/Contribution_Guide.html) and/or contact FlightControl 
-The MOOSE framework development is an open source project, and as such, contributors are welcome and encouraged to contribute on the development.Some key users have already started with this process.
+yFor reference, You can find the source code of [MOOSE framework on GITHUB](https://www.github.com/FlightControl-Master/MOOSE/). 
+It is free for download and usage, since it is released under the GNU 3.0 open source license policy. 
+You don't need to use the source code as an end-user, but it may help to sneak into the code and understand how certain things are working :-)
 
-## 1.2) MOOSE using a normal editor
+## 1.2) Write your scripts using MOOSE in a normal text editor
 
-You can use the MOOSE framework with a normal editor. This is perfectly okay.
-But you won't have IntelliSense enabled, which allows you to quickly search for the correct methods per class.
+You can use the MOOSE framework with a normal text editor. This is perfectly okay.
+But you won't have IntelliSense enabled, which is an interactive documentation system that helps you to code correctly! 
+Therefore, it is highly recommended you use the Eclipse LDT editor, which is explained below.
 
 ## 1.2) Eclipse LDT
 
 The LDT environment or "Eclipse Lua Development Tools" is a fully integrated development environment for LUA developers. 
-It is recommended to use the LDT as your mission design editor using MOOSE. The MOOSE framework is documented using the luadocumentor standard.
-Every class, method and variable is documented within the source, and mission designers can write mission script lua code that is **intellisense**(-ed) ...
-What that means is that while you are coding your mission, your object and variables (derived from MOOSE classes) will list the methods and properties of that class interactively while coding ...
+It is recommended to use the LDT as your mission design editor using MOOSE.  
+The MOOSE framework is documented using the lua documentation standard within the MOOSE code. 
+As a result, every class, method and variable is documented within the source, 
+and mission designers can write mission script lua code that is **intellisense**(-ed) ...
+What that means is that while you are coding your mission, your object and variables (derived from MOOSE classes) 
+will list interactively the methods and properties of that class interactively while coding ...
 
 ![Intellisense](Usage/Intellisense.JPG)
 
@@ -29,27 +32,34 @@ This highly increases the quality and the speed of your scripting.
 
 ## 1.3) LUA training
 
-In order to efficiently use the MOOSE framework, it is highly recommended that you learn a couple of basic principles of lua.
-I recommend you learn the basic lua principles following this [lua tutorial](https://www.tutorialspoint.com/lua).
+In order to efficiently use the MOOSE framework, it is highly recommended that you learn a couple of basic principles of lua.  
+I recommend you learn the basic lua principles following this [lua tutorial](https://www.tutorialspoint.com/lua).  
 We're not asking you to become an expert in lua, leave that to the experts, but, you'll need to have some basic lua coding 
 knowledge to "understand" the code, and also, to understand the syntax.  
 
 **Therefore, I suggest you walk through this [lua quick guide](https://www.tutorialspoint.com/lua/lua_quick_guide.htm)**.  
-Ignore the lua environment setup. DCS comes with a pre-defined lua environment.
-
-
-
+Ignore the lua environment setup. DCS comes with a pre-defined lua environment.  
+  
+  
+  
 # 2) Download the latest release of MOOSE
 
 The delivery of MOOSE follows a structured release process. Over time, new features are added that can be used in your mission.
 
 
-## The latest release of MOOSE can be downloaded **[here](https://github.com/FlightControl-Master/MOOSE/releases)**.  
+## MOOSE can be downloaded on the main Release Page on GITHUB **[here](https://github.com/FlightControl-Master/MOOSE/releases)**.  
 
 **Unzip the files into a directory of your choice, but keep the folder structure intact**.  
+Also, you'll notice that there are two files included:
 
-
-
+  - Moose.lua
+  - Moose_.lua
+  
+These are include files that you need to include within your mission. These files contain ALL the MOOSE code in one file.
+See a more detailed explanation below.
+  
+  
+  
 # 3) Download the software
 
 
@@ -58,11 +68,11 @@ The delivery of MOOSE follows a structured release process. Over time, new featu
 1. If you don't have JAVA yet, you may have to install [java](https://www.java.com/en/download) first. 
 2. Download and Install [Eclipse LDT](https://eclipse.org/ldt) on your Windows 64 bit system.
 
-TNow you should have a working LDT on your system.
-Don't skip this step, LDT is a game-changer. Don't believe us ? Well we challenge you to test and tell us what you think ! Once you tried coding with intellisense, you won't go back !
-
-
-
+Now you should have a working LDT on your system. 
+Don't skip this step, LDT is a game-changer.  
+  
+  
+  
 # 4) Setup the **Moose_Framework project** in LDT.
 
 You need to configure your Eclipse LDT environment and link it with the Moose code.
@@ -125,31 +135,23 @@ As a result, when you browse to the Script Explorer, you'll see the following:
 ![LDT_Script_Explorer](Installation/LDT_Script_Explorer.JPG)
 
 ### 4.2.8) **Congratulations! You have now setup your Moose_Framework project LDT environment!**
-
-
-
+  
+  
+  
 # 5) Setup a new project **Moose_Missions** in LDT, containing the the Moose demonstration missions.
 
 The framework comes with demonstration missions which can be downloaded [here](https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases), that you can try out and helps you to code.   
 These missions provide examples of defined use cases how the MOOSE framework can be utilized. Each test mission is located in a separate directory, which contains at least one .lua file and .miz file. The .lua file contains the mission script file that shows how the use case was implemented. You can copy/paste code the code snippets from this .lua file into your missions, as it will accellerate your mission developments. You will learn, see, and understand how the different MOOSE classes need to be applied, and how you can create more complex mission scenarios by combining these MOOSE classes into a complex but powerful mission engine.
 Some of these exact test missions are also demonstrated in a video format on the [YouTube channel](https://www.youtube.com/channel/UCjrA9j5LQoWsG4SpS8i79Qg).
 
-## 5.1) Download the [Moose demonstration missions](https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases) latest release package.
-
-
-## 5.2) Unzip the package into a local folder on your PC.
-
-
-## 5.3) Setup a **new project** in LDT and name it **Moose_Missions**.
-
-### 5.3.1) In LDT, select from the menu **New lua project**, and name it Moose_Missions.
-
-### 5.3.2) Select the local folder on your PC, where you saved the demonstration missions contents.
-
-### 5.3.3) Press Finish
-
-
-
+  - Download the [Moose demonstration missions](https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases) latest release package.
+  - Unzip the package into a local folder on your PC.
+  - In LDT, select from the menu **New lua project**, and name it Moose_Missions.
+  - Select the local folder on your PC, where you saved the demonstration missions contents.
+  - Press Finish
+  
+  
+  
 # 6) Setup Your first mission
 
 ## 6.1) Setup a new project in LDT and name it **My_Missions**
@@ -158,18 +160,18 @@ In order to design your own missions, it is recommended you create a separate di
 which contains your mission files. Your mission will be designed consisting possibly 
 out of a couple of components, which are:
 
-  * (Mandatory) An include of the Moose.lua file (see 2.3.2).
+  * (Mandatory) An include of the **Moose.lua** file (see chapter 2 above).
   * (Mandatory) An include of your lua mission script file(s) (also with a .lua extension).
   * (Optionally) Sound files (.ogg) and pictures (.jpg) which are added into your mission.
 
-Using the menu system of the DCS World Mission Editor, you need to include files in your mission (.miz) file.
+Using the menu system of the DCS World Mission Editor, you need to include files in your mission (.miz) file.  
 However, once included, maintaining these files is a tedious task, 
 having to replace each time manually these files when they change 
 (due to a new release or a change in your mission script).
 
-Therefore, **the recommendation is that your create for each mission a separate folder**.
-The MOOSE test mission folder structure is a good example how this could be organized.
-The LDT has been customized and provides a tool to **automatically** maintain your existing .miz files.
+Therefore, **the recommendation is that your create for each mission a separate folder**.  
+The MOOSE test mission folder structure is a good example how this could be organized.  
+The LDT has been customized and provides a tool to **automatically** maintain your existing .miz files.  
 
 ### 6.1.1. Select from the Menu: **File** -> **New** -> **Lua Project**.
 
