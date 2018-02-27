@@ -203,6 +203,8 @@ These classes define the base building blocks of the MOOSE framework. These clas
 * [SET\_AIRBASE](Documentation/Set.html#SET_AIRBASE): Create a SET of AIRBASE objects.  
 * [SET\_CARGO](Documentation/Set.html#SET_CARGO): Create a SET of CARGO objects.  
 
+* [SETTINGS](Documentation/Settings.html): The management of Default system settings or specific Player settings that configure the behaviour of MOOSE classes. 
+
 * [MESSAGE](Documentation/Message.html): A message publishing system, displaying messages to Clients, Coalitions or All players. 
 
 * [COORDINATE](Documentation/Point.html#COORDINATE): Manage 2D and 3D points in the simulation space, and use its methods for various actions on the coordinate.  
