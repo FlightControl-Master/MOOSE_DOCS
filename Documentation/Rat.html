@@ -75,7 +75,7 @@
 					<li><a href="Process_Pickup.html">Process_Pickup</a></li>
 					<li><a href="Protect.html">Protect</a></li>
 					<li><a href="Radio.html">Radio</a></li>
-					<li>Ratmanager</li>
+					<li>Rat</li>
 					<li><a href="Route.html">Route</a></li>
 					<li><a href="Scenery.html">Scenery</a></li>
 					<li><a href="ScheduleDispatcher.html">ScheduleDispatcher</a></li>
@@ -115,10 +115,10 @@
 		</ul>
 	</div>
 	<div id="content">
-   <h1>Module <code>Ratmanager</code></h1>
+   <h1>Module <code>Rat</code></h1>
    
 <ul>
-    <li><strong>Functional</strong> - Manage multiple RAT objects.</li>
+    <li><strong>Functional</strong> - Create random airtraffic in your missions.</li>
 </ul>
 
    
@@ -133,6 +133,56 @@
 
 <p>Even the mission designer will not know where aircraft will be spawned and which route they follow.</p>
 
+<h2>Features</h2>
+
+<ul>
+    <li>Very simple interface. Just one unit and two lines of Lua code needed to fill your map.</li>
+    <li>High degree of randomization. Aircraft will spawn at random airports, have random routes and random destinations.</li>
+    <li>Specific departure and/or destination airports can be chosen.</li>
+    <li>Departure and destination airports can be restricted by coalition.</li>
+    <li>Planes and helicopters supported. Helicopters can also be send to FARPs and ships.</li>
+    <li>Units can also be spawned in air within pre-defined zones of the map.</li>
+    <li>Aircraft will be removed when they arrive at their destination (or get stuck on the ground).</li>
+    <li>When a unit is removed a new unit with a different flight plan is respawned.</li>
+    <li>Aircraft can report their status during the route.</li>
+    <li>All of the above can be customized by the user if necessary.</li>
+    <li>All current (Caucasus, Nevada, Normandy) and future maps are supported.</li>
+</ul>
+
+<p> The RAT class creates an entry in the F10 menu which allows to</p>
+
+<ul>
+    <li>Create new groups on-the-fly, i.e. at run time within the mission,</li>
+    <li>Destroy specific groups (e.g. if they get stuck or damaged and block a runway),</li>
+    <li>Request the status of all RAT aircraft or individual groups,</li>
+    <li>Place markers at waypoints on the F10 map for each group.</li>
+</ul>
+
+<p>Note that by its very nature, this class is suited best for civil or transport aircraft. However, it also works perfectly fine for military aircraft of any kind.</p>
+
+<p>More of the documentation include some simple examples can be found further down this page.</p>
+
+<hr/>
+
+<h1>Demo Missions</h1>
+
+<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/Release/RAT%20-%20Random%20Air%20Traffic">RAT Demo Missions</a></h3>
+<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases">ALL Demo Missions pack of the last release</a></h3>
+
+<hr/>
+
+<h1>YouTube Channel</h1>
+
+<h3>RAT videos are work in progress.</h3>
+<h3><a href="https://www.youtube.com/playlist?list=PL7ZUrU4zZUl1jirWIo4t4YxqN-HxjqRkL">MOOSE YouTube Channel</a></h3>
+
+<hr/>
+
+<h3>Author: <strong><a href="https://forums.eagle.ru/member.php?u=115026">funkyfranky</a></strong></h3>
+
+<h3>Contributions: <strong>Sven van de Velde (<a href="https://forums.eagle.ru/member.php?u=89536">FlightControl</a>)</strong></h3>
+
+<hr/>
 
 	<h2>Global(s)</h2>
 	<table class="function_list">
@@ -147,8 +197,7 @@
 		<td class="name" nowrap="nowrap"><a href="#RATMANAGER">RATMANAGER</a></td>
 		<td class="summary">
 <h1>RATMANAGER class, extends <a href="Base.html##(BASE)">Base#BASE</a></h1>
-<p>The RATMANAGER class manages spawning of multiple RAT objects.</p>
-
+<p>The RATMANAGER class manages spawning of multiple RAT objects in a very simple way.</p>
 </td>
 		</tr>
 	</table>
@@ -1421,6 +1470,12 @@
 </td>
 		</tr>
 		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RAT).type">RAT.type</a></td>
+		<td class="summary">
+
+</td>
+		</tr>
+		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RAT).uncontrolled">RAT.uncontrolled</a></td>
 		<td class="summary">
 <p>If true aircraft are spawned in uncontrolled state and will only sit on their parking spots. They can later be activated.</p>
@@ -1590,16 +1645,6 @@
 		<td class="name" nowrap="nowrap"><a href="##(RATMANAGER).rat">RATMANAGER.rat</a></td>
 		<td class="summary">
 <p>Array holding RAT objects etc.</p>
-</td>
-		</tr>
-	</table>
-
-			<h2><a id="#(list)">Type <code>list</code></a></h2>
-				<table class="function_list">
-		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(list).print">list.print</a></td>
-		<td class="summary">
-
 </td>
 		</tr>
 	</table>
@@ -1793,7 +1838,43 @@ It is possible to restrict the minimum cruise altitude by <a href="##(RAT).SetFL
 <dd>
 	
 <h1>RATMANAGER class, extends <a href="Base.html##(BASE)">Base#BASE</a></h1>
-<p>The RATMANAGER class manages spawning of multiple RAT objects.</p>
+<p>The RATMANAGER class manages spawning of multiple RAT objects in a very simple way.</p>
+
+	
+<p>It is created by the  <a href="##(RATMANAGER).New">RATMANAGER.New</a>() contructor. 
+RAT objects with different "tasks" can be defined as usual. However, they <strong>must not</strong> be spawned via the <a href="##(RAT).Spawn">RAT.Spawn</a>() function.</p>
+
+<p>Instead, these objects can be added to the manager via the <a href="##(RATMANAGER).Add">RATMANAGER.Add</a>(ratobject, min) function, where the first parameter "ratobject" is the <a href="##(RAT)">#RAT</a> object, while the second parameter "min" defines the
+minimum number of RAT aircraft of that object, which are alive at all time.</p>
+
+<p>The <a href="##(RATMANAGER)">#RATMANAGER</a> must be started by the <a href="##(RATMANAGER).Start">RATMANAGER.Start</a>(startime) function, where the optional argument "startime" specifies the delay time in seconds after which the manager is started and the spawning beginns.
+If desired, the <a href="##(RATMANAGER)">#RATMANAGER</a> can be stopped by the <a href="##(RATMANAGER).Stop">RATMANAGER.Stop</a>(stoptime) function. The parameter "stoptime" specifies the time delay in seconds after which the manager stops.
+When this happens, no new aircraft will be spawned and the population will eventually decrease to zero.</p>
+
+<h2>Example</h2>
+<p>In this example, three different <a href="##(RAT)">#RAT</a> objects are created (but not spawned manually). The <a href="##(RATMANAGER)">#RATMANAGER</a> takes care that at least five aircraft of each type are alive and that the total number of aircraft
+spawned is 25. The <a href="##(RATMANAGER)">#RATMANAGER</a> is started after 30 seconds and stopped after two hours.</p>
+
+<p>  local a10c=RAT:New("RAT_A10C", "A-10C managed")
+  a10c:SetDeparture({"Batumi"})</p>
+
+<p>  local f15c=RAT:New("RAT_F15C", "F15C managed")
+  f15c:SetDeparture({"Sochi-Adler"})
+  f15c:DestinationZone()
+  f15c:SetDestination({"Zone C"})</p>
+
+<p>  local av8b=RAT:New("RAT_AV8B", "AV8B managed")
+  av8b:SetDeparture({"Zone C"})
+  av8b:SetTakeoff("air")
+  av8b:DestinationZone()
+  av8b:SetDestination({"Zone A"})</p>
+
+<p>  local manager=RATMANAGER:New(25)
+  manager:Add(a10c, 5)
+  manager:Add(f15c, 5)
+  manager:Add(av8b, 5)
+  manager:Start(30)
+  manager:Stop(7200)</p>
 
 
 </dd>
@@ -6284,6 +6365,20 @@ True if zone exsits, false otherwise. </p>
 		<dl class="function">
 <dt>
 
+		<em></em>
+<a id="#(RAT).type" >
+<strong>RAT.type</strong>
+</a>
+</dt>
+<dd>
+	
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
 		<em>#boolean</em>
 <a id="#(RAT).uncontrolled" >
 <strong>RAT.uncontrolled</strong>
@@ -6312,7 +6407,7 @@ True if zone exsits, false otherwise. </p>
 		<dl class="function">
 <dt>
 
-		<em><a href="##(list)">#list</a></em>
+		<em></em>
 <a id="#(RAT).version" >
 <strong>RAT.version</strong>
 </a>
@@ -6765,22 +6860,7 @@ Number of alive groups of each RAT object.</p>
 </dl>
 
 			<h2><a id="#(list)" >Type <code>list</code></a></h2>
-				<h3>Field(s)</h3>
-		<dl class="function">
-<dt>
-
-		<em>#boolean</em>
-<a id="#(list).print" >
-<strong>list.print</strong>
-</a>
-</dt>
-<dd>
-	
-
-
-</dd>
-</dl>
-
+			
 </div>
 
 </div>
