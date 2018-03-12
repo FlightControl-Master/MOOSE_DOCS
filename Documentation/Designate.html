@@ -122,7 +122,7 @@
    
 <p>Lase, smoke and illuminate targets.</p>
 
-<p>--<img src="..\Presentations\DESIGNATE\Dia1.JPG" alt="Banner Image"/></p>
+<p><img src="..\Presentations\DESIGNATE\Dia1.JPG" alt="Banner Image"/></p>
 
 <hr/>
 
@@ -166,10 +166,7 @@ each detected set of potential targets can be lased or smoked...</p>
 		<td class="summary">
 <h1>DESIGNATE class, extends <a href="Fsm.html##(FSM)">Fsm#FSM</a></h1>
 
-<p>DESIGNATE is orchestrating the designation of potential targets executed by a Recce group, 
-and communicates these to a dedicated attacking group of players, 
-so that following a dynamically generated menu system, 
-each detected set of potential targets can be lased or smoked...</p>
+<p>DESIGNATE is managing the designation of detected targets.</p>
 </td>
 		</tr>
 	</table>
@@ -688,14 +685,11 @@ each detected set of potential targets can be lased or smoked...</p>
 	
 <h1>DESIGNATE class, extends <a href="Fsm.html##(FSM)">Fsm#FSM</a></h1>
 
-<p>DESIGNATE is orchestrating the designation of potential targets executed by a Recce group, 
-and communicates these to a dedicated attacking group of players, 
-so that following a dynamically generated menu system, 
-each detected set of potential targets can be lased or smoked...</p>
+<p>DESIGNATE is managing the designation of detected targets.</p>
 
 	
-
-<p>Targets can be:</p>
+<p>Targets detected by recce will be communicated to a group of attacking players. <br/>
+A menu system is made available that allows to: </p>
 
 <ul>
     <li><strong>Lased</strong> for a period of time.</li>
@@ -708,8 +702,8 @@ each detected set of potential targets can be lased or smoked...</p>
 <ul>
     <li>The <strong>DesignateObject</strong> is the object of the DESIGNATE class, which is this class explained in the document.</li>
     <li>The <strong>DetectionObject</strong> is the object of a DETECTION_ class (DETECTION<em>TYPES, DETECTION</em>AREAS, DETECTION_UNITS), which is executing the detection and grouping of Targets into <em>DetectionItems</em>.</li>
-    <li><strong>DetectionItems</strong> is the list of detected target groupings by the <em>DetectionObject</em>. Each <em>DetectionItem</em> contains a <em>TargetSet</em>.</li>
-    <li><strong>DetectionItem</strong> is one element of the <em>DetectionItems</em> list, and contains a <em>TargetSet</em>.</li>
+    <li><strong>TargetGroups</strong> is the list of detected target groupings by the <em>DetectionObject</em>. Each <em>TargetGroup</em> contains a <em>TargetSet</em>.</li>
+    <li><strong>TargetGroup</strong> is one element of the <strong>TargetGroups</strong> list, and contains a <em>TargetSet</em>.</li>
     <li>The <strong>TargetSet</strong> is a SET_UNITS collection of <em>Targets</em>, that have been detected by the <em>DetectionObject</em>.</li>
     <li>A <strong>Target</strong> is a detected UNIT object by the <em>DetectionObject</em>.</li>
     <li>A <strong>Threat Level</strong> is a number from 0 to 10 that is calculated based on the threat of the Target in an Air to Ground battle scenario.</li>
@@ -721,37 +715,103 @@ each detected set of potential targets can be lased or smoked...</p>
     <li>A <strong>Designate Menu</strong> is the menu that is dynamically created during the designation process for each <em>AttackGroup</em>.</li>
 </ul>
 
-<p>The RecceSet is continuously detecting for potential Targets, executing its task as part of the DetectionObject.
+<h2>0. Player Manual</h2>
+
+<p><img src="..\Presentations\DESIGNATE\Dia3.JPG" alt="Banner Image"/></p>
+
+<p>A typical mission setup would require Recce (a <a href="Set.html">Set</a> of Recce) to be detecting potential targets.
+The DetectionObject will group the detected targets based on the detection method being used.
+Possible detection methods could be by Area, by Type or by Unit.
+Each grouping will result in a <strong>TargetGroup</strong>, for terminology and clarity we will use this term throughout the document.</p>
+
+<p><strong>Recce</strong> require to have Line of Sight (LOS) towards the targets.
+The <strong>Recce</strong> will report any detected targets to the Players (on the picture Observers).
+When targets are detected, a menu will be made available that allows those <strong>TargetGroups</strong> to be designated.
+Designation can be done by Lasing, Smoking and Illumination.
+Smoking is useful during the day, while illumination is recommended to be used during the night.
+Smoking can designate specific targets, but not very precise, while lasing is very accurate and allows to
+players to attack the targets using laser guided bombs or rockets.
+Illumination will lighten up the Target Area.</p>
+
+<p><strong>Recce</strong> can be ground based or airborne. Airborne <strong>Recce</strong> (AFAC) can be really useful to designate a large amount of targets
+in a wide open area, as airborne <strong>Recce</strong> has a large LOS.
+However, ground based <strong>Recce</strong> are very useful to smoke or illuminate targets, as they can be much closer
+to the Target Area.</p>
+
+<p>It is recommended to make the <strong>Recce</strong> invisible and immortal using the Mission Editor in DCS World.
+This will ensure that the detection process won't be interrupted and that targets can be designated.
+However, you don't have to, so to simulate a more real-word situation or simulation, <strong>Recce can also be destroyed</strong>!</p>
+
+<h3>0.1. Player View (Observer)</h3>
+
+<p><img src="..\Presentations\DESIGNATE\Dia4.JPG" alt="Banner Image"/></p>
+
+<p>The RecceSet is continuously detecting for potential Targets, 
+executing its task as part of the DetectionObject.
 Once Targets have been detected, the DesignateObject will trigger the <strong>Detect Event</strong>.</p>
 
-<p>In order to prevent an overflow in the DesignateObject of detected targets, there is a maximum
-amount of DetectionItems that can be put in <strong>scope</strong> of the DesignateObject.
+<p>In order to prevent an overflow in the DesignateObject of detected targets, 
+there is a maximum amount of TargetGroups 
+that can be put in <strong>scope</strong> of the DesignateObject.
 We call this the <strong>MaximumDesignations</strong> term.</p>
 
-<p>As part of the Detect Event, the DetectionItems list is used by the DesignateObject to provide the Players with:</p>
+<h3>0.2. Designate Menu</h3>
+
+<p><img src="..\Presentations\DESIGNATE\Dia5.JPG" alt="Banner Image"/></p>
+
+<p>For each detected TargetGroup, there is:</p>
 
 <ul>
+    <li>A <strong>Designate Menu</strong> are created and continuously refreshed, containing the <strong>DesignationID</strong> and the <strong>Designation Status</strong>.</li>
     <li>The RecceGroups are reporting to each AttackGroup, sending <strong>Messages</strong> containing the Threat Level and the TargetSet composition.</li>
-    <li><strong>Menu options</strong> are created and updated for each AttackGroup, containing the Detection ID and the Coordinates.</li>
 </ul>
 
-<p>A Player can then select an action from the Designate Menu. </p>
+<p>A Player can then select an action from the <strong>Designate Menu</strong>. 
+The Designation Status is shown between the (   ).</p>
 
-<p><strong>Note that each selected action will be executed for a TargetSet, thus the Target grouping done by the DetectionObject.</strong></p>
-
-<p>Each <strong>Menu Option</strong> in the Designate Menu has two modes: </p>
-
-<ol>
-    <li>If the TargetSet <strong>is not being designated</strong>, then the <strong>Designate Menu</strong> option for the target Set will provide options to <strong>Lase</strong> or <strong>Smoke</strong> the targets.</li>
-    <li>If the Target Set <strong>is being designated</strong>, then the <strong>Designate Menu</strong> option will provide an option to stop or cancel the designation.</li>
-</ol>
-
-<p>While designating, the RecceGroups will report any change in TargetSet composition or Target presence.</p>
-
-<p>The following logic is executed when a TargetSet is selected to be <em>lased</em> from the Designation Menu:</p>
+<p>It indicates for each TargetGroup the current active designation action applied:</p>
 
 <ul>
-    <li>The RecceSet is searched for any Recce that is within <em>designation distance</em> from a Target in the TargetSet that is currently not being designated.</li>
+    <li>An "I" for Illumnation designation.</li>
+    <li>An "S" for Smoking designation.</li>
+    <li>An "L" for Lasing designation.</li>
+</ul>
+
+<p>Note that multiple designation methods can be active at the same time!
+Note the <strong>Auto Lase</strong> option. When switched on, the available <strong>Recce</strong> will lase 
+Targets when detected.</p>
+
+<p>Targets are designated per <strong>Threat Level</strong>. 
+The most threatening targets from an Air to Ground perspective, are designated first!
+This is for all designation methods.</p>
+
+<p><img src="..\Presentations\DESIGNATE\Dia6.JPG" alt="Banner Image"/></p>
+
+<p>Each Designate Menu has a sub menu structure, which allows specific actions to be triggered:</p>
+
+<ul>
+    <li>Lase Targets using a specific laser code.</li>
+    <li>Smoke Targets using a specific smoke color.</li>
+    <li>Illuminate areas.</li>
+</ul>
+
+<h3>0.3. Lasing Targets</h3>
+
+<p><img src="..\Presentations\DESIGNATE\Dia7.JPG" alt="Banner Image"/></p>
+
+<p>Lasing targets is done as expected. Each available Recce can lase only ONE target through!</p>
+
+<p><img src="..\Presentations\DESIGNATE\Dia8.JPG" alt="Banner Image"/></p>
+
+<p>Lasing can be done for specific laser codes. The Su-25T requires laser code 1113, while the A-10A requires laser code 1680.
+For those, specific menu options can be made available for players to lase with these codes.
+Auto Lase (as explained above), will ensure continuous lasing of available targets.
+The status report shows which targets are being designated.</p>
+
+<p>The following logic is executed when a TargetGroup is selected to be <em>lased</em> from the Designation Menu:</p>
+
+<ul>
+    <li>The RecceSet is searched for any Recce that is within <em>designation distance</em> from a Target in the TargetGroup that is currently not being designated.</li>
     <li>If there is a Recce found that is currently no designating a target, and is within designation distance from the Target, then that Target will be designated.</li>
     <li>During designation, any Recce that does not have Line of Sight (LOS) and is not within disignation distance from the Target, will stop designating the Target, and a report is given.</li>
     <li>When a Recce is designating a Target, and that Target is destroyed, then the Recce will stop designating the Target, and will report the event.</li>
@@ -759,7 +819,26 @@ We call this the <strong>MaximumDesignations</strong> term.</p>
     <li>When all RecceGroups are destroyed from the RecceSet, then the DesignationObject will stop functioning, and nothing will be reported.</li>
 </ul>
 
-<p>In this way, the DesignationObject assists players to designate ground targets for a coordinated attack!</p>
+<p>In this way, DESIGNATE assists players to designate ground targets for a coordinated attack!</p>
+
+<h3>0.4. Illuminating Targets</h3>
+
+<p><img src="..\Presentations\DESIGNATE\Dia8.JPG" alt="Banner Image"/></p>
+
+<p>Illumination bombs are fired between 500 and 700 meters altitude and will burn about 2 minutes, while slowly decending.
+Each available recce within range will fire an illumination bomb.
+Illumination bombs can be fired in while lasing targets.
+When illumination bombs are fired, it will take about 2 minutes until a sequent bomb run can be requested using the menus.</p>
+
+<h3>0.5. Smoking Targets</h3>
+
+<p><img src="..\Presentations\DESIGNATE\Dia9.JPG" alt="Banner Image"/></p>
+
+<p>Smoke will fire for 5 minutes.
+Each available recce within range will smoke a target.
+Smoking can be requested while lasing targets.
+Smoke will appear “around” the targets, because of accuracy limitations.</p>
+
 
 <p>Have FUN!</p>
 
@@ -771,7 +850,7 @@ We call this the <strong>MaximumDesignations</strong> term.</p>
 
 <h2>2. DESIGNATE is a FSM</h2>
 
-<p><img src="..\Presentations\DESIGNATE\Dia2.JPG" alt="Process"/></p>
+<p>Designate is a finite state machine, which allows for controlled transitions of states.</p>
 
 <h3>2.1 DESIGNATE States</h3>
 
@@ -1114,7 +1193,7 @@ function below will use the range 1-7 just in case</p>
 		<dl class="function">
 <dt>
 
-		<em></em>
+		<em>#number</em>
 <a id="#(DESIGNATE).LaseDuration" >
 <strong>DESIGNATE.LaseDuration</strong>
 </a>
