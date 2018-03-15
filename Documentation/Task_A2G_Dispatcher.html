@@ -117,11 +117,9 @@
 	<div id="content">
    <h1>Module <code>Task_A2G_Dispatcher</code></h1>
    
-<p><strong>Tasking</strong> - The TASK<em>A2G</em>DISPATCHER creates and manages player TASK_A2G tasks based on detected targets.</p>
+<p><strong>Tasking</strong> - The TASK_A2G_DISPATCHER dispatches A2G Tasks to Players based on enemy location detection.</p>
 
    
-
-
 
 <hr/>
 
@@ -237,8 +235,8 @@
 It provides a truly dynamic battle environment for pilots and ground commanders to engage upon,
 in a true co-operation environment wherein <strong>Multiple Teams</strong> will collaborate in Missions to <strong>achieve a common Mission Goal</strong>.</p>
 
-<p>The A2G dispatcher will dispatch the A2G Tasks to a defined  <a href="Set.html">Set</a> of <a href="Group.html">Group</a>s that will be manned by <strong>Players</strong>. 
-We call this the <strong>AttackSet</strong> of the A2G dispatcher. So, Players are seated in <a href="Unit.html">Unit</a>s of <a href="Group.html">Group</a>s that contain <a href="Client.html">Client</a>s.</p>
+<p>The A2G dispatcher will dispatch the A2G Tasks to a defined  <a href="Set.html">Set</a> of <a href="Group.html">Group</a>s that will be manned by <strong>Players</strong>. <br/>
+We call this the <strong>AttackSet</strong> of the A2G dispatcher. So, the Players are seated in the <a href="Client.html">Client</a>s of the <a href="Group.html">Group</a> <a href="Set.html">Set</a>.</p>
 
 <p>Depending on the actions of the enemy, preventive tasks are dispatched to the players to orchestrate the engagement in a true co-operation.
 The detection object will group the detected targets by its grouping method, and integrates a <a href="Set.html">Set</a> of <a href="Group.html">Group</a>s that are Recce vehicles or air units.
@@ -248,9 +246,9 @@ We call this the <strong>RecceSet</strong> of the A2G dispatcher.</p>
 There are currently 3 <strong>Task Types</strong> implemented in the TASK_A2G_DISPATCHER:</p>
 
 <ul>
-    <li><strong>SEAD Task</strong>: Is dispatched when there are enemy ground units wihtin range of the FAC, which have <strong>air 2 air search radars</strong>.</li>
-    <li><strong>CAS Task</strong>: Is dispatched when there are friendly ground units within range of the enemy targets.</li>
-    <li><strong>BAI Task</strong>: Is dispatched when there are no friendly ground units within range of the enemy targets.</li>
+    <li><strong>SEAD Task</strong>: Dispatched when there are ground based Radar Emitters detected within an area.</li>
+    <li><strong>CAS Task</strong>: Dispatched when there are no ground based Radar Emitters within the area, but there are friendly ground Units within 6 km from the enemy.</li>
+    <li><strong>BAI Task</strong>: Dispatched when there are no ground based Radar Emitters within the area, and there aren't friendly ground Units within 6 km from the enemy.</li>
 </ul>
 
 <h1>0. Tactical Situations</h1>
@@ -260,7 +258,7 @@ The Task Types are depending on the enemy positions that were detected, and the 
 
 <h1>0.1. SEAD Task</h1>
 
-<p>A SEAD Task is created when there are Ground based Radar Emitters detected within an area.</p>
+<p>A SEAD Task is dispatched when there are ground based Radar Emitters detected within an area.</p>
 
 <p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia11.JPG" alt=""/></p>
 
@@ -271,7 +269,7 @@ The Task Types are depending on the enemy positions that were detected, and the 
 
 <h1>0.2. CAS Task</h1>
 
-<p>A CAS Task is created when there are no Radar Emitters within the area, but there are friendly ground Units within 6 km of the area.</p>
+<p>A CAS Task is dispatched when there are no ground based Radar Emitters within the area, but there are friendly ground Units within 6 km from the enemy.</p>
 
 <p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia12.JPG" alt=""/></p>
 
@@ -282,7 +280,7 @@ The Task Types are depending on the enemy positions that were detected, and the 
 
 <h1>0.3. BAI Task</h1>
 
-<p>A BAI Task is created when there are no Radar Emitters within the area, and there aren't any friendly ground Units within 6 km of the area.</p>
+<p>A BAI Task is dispatched when there are no ground based Radar Emitters within the area, and there aren't friendly ground Units within 6 km from the enemy.</p>
 
 <p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia13.JPG" alt=""/></p>
 
@@ -600,45 +598,39 @@ However, this will depend on the setup of each Mission. </p>
 
 <p>Below an example mission declaration that is defines a Task A2G Dispatcher object.   </p>
 
-<p>   -- Declare the Command Center 
-   local HQ = GROUP</p>
-<pre><code> :FindByName( "HQ", "Bravo HQ" )
-</code></pre>
+<pre><code>-- Declare the Command Center 
+local HQ = GROUP
+  :FindByName( "HQ", "Bravo HQ" )
 
-<p>   local CommandCenter = COMMANDCENTER</p>
-<pre><code> :New( HQ, "Lima" )
-</code></pre>
+local CommandCenter = COMMANDCENTER
+  :New( HQ, "Lima" )
 
-<p>   -- Declare the Mission for the Command Center.
-   local Mission = MISSION</p>
-<pre><code> :New( CommandCenter, "Overlord", "High", "Attack Detect Mission Briefing", coalition.side.RED )
-</code></pre>
+-- Declare the Mission for the Command Center.
+local Mission = MISSION
+  :New( CommandCenter, "Overlord", "High", "Attack Detect Mission Briefing", coalition.side.RED )
 
-<p>   -- Define the RecceSet that will detect the enemy.
-   local RecceSet = SET_GROUP</p>
-<pre><code> :New()
- :FilterPrefixes( "FAC" )
- :FilterCoalitions("red")
- :FilterStart()
-</code></pre>
+-- Define the RecceSet that will detect the enemy.
+local RecceSet = SET_GROUP
+  :New()
+  :FilterPrefixes( "FAC" )
+  :FilterCoalitions("red")
+  :FilterStart()
 
-<p>   -- Setup the detection. We use DETECTION<em>AREAS to detect and group the enemies within areas of 3 km radius.
-   local DetectionAreas = DETECTION</em>AREAS</p>
-<pre><code> :New( RecceSet, 3000 )  -- The RecceSet will detect the enemies.
-</code></pre>
+-- Setup the detection. We use DETECTION_AREAS to detect and group the enemies within areas of 3 km radius.
+local DetectionAreas = DETECTION_AREAS
+  :New( RecceSet, 3000 )  -- The RecceSet will detect the enemies.
 
-<p>   -- Setup the AttackSet, which is a SET<em>GROUP.
-   -- The SET</em>GROUP is a dynamic collection of GROUP objects. <br/>
-   local AttackSet = SET_GROUP</p>
-<pre><code> :New()  -- Create the SET_GROUP object.
- :FilterCoalitions( "red" ) -- Only incorporate the RED coalitions.
- :FilterPrefixes( "Attack" ) -- Only incorporate groups that start with the name Attack.
- :FilterStart() -- Enable the dynamic filtering. From this moment the AttackSet will contain all groups that are red and start with the name Attack.
-</code></pre>
+-- Setup the AttackSet, which is a SET_GROUP.
+-- The SET_GROUP is a dynamic collection of GROUP objects.  
+local AttackSet = SET_GROUP
+  :New()  -- Create the SET_GROUP object.
+  :FilterCoalitions( "red" ) -- Only incorporate the RED coalitions.
+  :FilterPrefixes( "Attack" ) -- Only incorporate groups that start with the name Attack.
+  :FilterStart() -- Enable the dynamic filtering. From this moment the AttackSet will contain all groups that are red and start with the name Attack.
 
-<p>   -- Now we have everything to setup the main A2G TaskDispatcher.
-   TaskDispatcher = TASK<em>A2G</em>DISPATCHER</p>
-<pre><code> :New( Mission, AttackSet, DetectionAreas ) -- We assign the TaskDispatcher under Mission. The AttackSet will engage the enemy and will recieve the dispatched Tasks. The DetectionAreas will report any detected enemies to the TaskDispatcher.
+-- Now we have everything to setup the main A2G TaskDispatcher.
+TaskDispatcher = TASK_A2G_DISPATCHER
+  :New( Mission, AttackSet, DetectionAreas ) -- We assign the TaskDispatcher under Mission. The AttackSet will engage the enemy and will recieve the dispatched Tasks. The DetectionAreas will report any detected enemies to the TaskDispatcher.
 </code></pre>
 
 
