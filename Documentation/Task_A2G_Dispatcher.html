@@ -121,6 +121,8 @@
 
    
 
+
+
 <hr/>
 
 <h3>Author: <strong>Sven Van de Velde (FlightControl)</strong></h3>
@@ -135,9 +137,11 @@
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="#TASK_A2G_DISPATCHER">TASK_A2G_DISPATCHER</a></td>
 		<td class="summary">
-<h1>TASK<em>A2G</em>DISPATCHE} class, extends <a href="##(DETECTION_MANAGER)">#DETECTION_MANAGER</a></h1>
+<h1>TASK_A2G_DISPATCHER class, extends <a href="DetectionManager.html##(DETECTION_MANAGER)">DetectionManager#DETECTION_MANAGER</a></h1>
 
-<p>The TASK<em>A2G</em>DISPATCHER class implements the dynamic dispatching of tasks upon groups of detected units determined a <a href="Set.html">Set</a> of FAC (groups).</p>
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia1.JPG" alt=""/></p>
+
+<p>The TASK_A2G_DISPATCHER class orchestrates dynamic <strong>A2G Task Dispatching</strong> based on the detection results of a linked <a href="Detection.html">Detection</a> object.</p>
 </td>
 		</tr>
 	</table>
@@ -222,25 +226,385 @@
 </dt>
 <dd>
 	
-<h1>TASK<em>A2G</em>DISPATCHE} class, extends <a href="##(DETECTION_MANAGER)">#DETECTION_MANAGER</a></h1>
+<h1>TASK_A2G_DISPATCHER class, extends <a href="DetectionManager.html##(DETECTION_MANAGER)">DetectionManager#DETECTION_MANAGER</a></h1>
 
-<p>The TASK<em>A2G</em>DISPATCHER class implements the dynamic dispatching of tasks upon groups of detected units determined a <a href="Set.html">Set</a> of FAC (groups).</p>
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia1.JPG" alt=""/></p>
+
+<p>The TASK_A2G_DISPATCHER class orchestrates dynamic <strong>A2G Task Dispatching</strong> based on the detection results of a linked <a href="Detection.html">Detection</a> object.</p>
 
 	
-<p>The FAC will detect units, will group them, and will dispatch <a href="Task.html">Task</a>s to groups. Depending on the type of target detected, different tasks will be dispatched.
-Find a summary below describing for which situation a task type is created:</p>
+<p>It uses the Tasking System within the MOOSE framework, which is a multi-player Tasking Orchestration system.
+It provides a truly dynamic battle environment for pilots and ground commanders to engage upon,
+in a true co-operation environment wherein <strong>Multiple Teams</strong> will collaborate in Missions to <strong>achieve a common Mission Goal</strong>.</p>
+
+<p>The A2G dispatcher will dispatch the A2G Tasks to a defined  <a href="Set.html">Set</a> of <a href="Group.html">Group</a>s that will be manned by <strong>Players</strong>. 
+We call this the <strong>AttackSet</strong> of the A2G dispatcher. So, Players are seated in <a href="Unit.html">Unit</a>s of <a href="Group.html">Group</a>s that contain <a href="Client.html">Client</a>s.</p>
+
+<p>Depending on the actions of the enemy, preventive tasks are dispatched to the players to orchestrate the engagement in a true co-operation.
+The detection object will group the detected targets by its grouping method, and integrates a <a href="Set.html">Set</a> of <a href="Group.html">Group</a>s that are Recce vehicles or air units.
+We call this the <strong>RecceSet</strong> of the A2G dispatcher.</p>
+
+<p>Depending on the current detected tactical situation, different task types will be dispatched to the Players seated in the AttackSet..
+There are currently 3 <strong>Task Types</strong> implemented in the TASK_A2G_DISPATCHER:</p>
 
 <ul>
-    <li><strong>CAS Task</strong>: Is created when there are enemy ground units within range of the FAC, while there are friendly units in the FAC perimeter.</li>
-    <li><strong>BAI Task</strong>: Is created when there are enemy ground units within range of the FAC, while there are NO other friendly units within the FAC perimeter.</li>
-    <li><strong>SEAD Task</strong>: Is created when there are enemy ground units wihtin range of the FAC, with air search radars.</li>
+    <li><strong>SEAD Task</strong>: Is dispatched when there are enemy ground units wihtin range of the FAC, which have <strong>air 2 air search radars</strong>.</li>
+    <li><strong>CAS Task</strong>: Is dispatched when there are friendly ground units within range of the enemy targets.</li>
+    <li><strong>BAI Task</strong>: Is dispatched when there are no friendly ground units within range of the enemy targets.</li>
 </ul>
 
-<p>Other task types will follow...</p>
+<h1>0. Player Experience</h1>
 
-<h2>TASK<em>A2G</em>DISPATCHER constructor</h2>
+<p>The A2G dispatcher is residing under a <a href="CommandCenter.html">CommandCenter</a>, which is orchestrating a <a href="Mission.html">Mission</a>.
+As a result, you'll find for DCS World missions that implement the A2G dispatcher a <strong>Command Center Menu</strong> and under this one or more <strong>Mission Menus</strong>.</p>
+
+<p>For example, if there are 2 Command Centers (CC).
+Each CC is controlling a couple of Missions, the Radio Menu Structure could look like this:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+   F2. Mission "Beta"
+   F3. Mission "Gamma"
+ F1. Command Center |Gudauta|
+   F1. Mission "Overlord"
+   F2. Mission "Desert Storm"
+</code></pre>
+
+<p>CC |Gori| is controlling Mission "Alpha", "Beta", "Gamma". <br/>
+CC |Gudauta| is controlling Missions "Overlord" and "Desert Storm".</p>
+
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia1.JPG" alt=""/></p>
+
+<h2>0.1. Mission Menu (Under the Command Center Menu)</h2>
+
+<p>The Mission Menu controls the information of the mission, including the:</p>
+
+<ul>
+    <li><strong>Mission Briefing</strong>: A briefing of the Mission in text, which will be shown as a message.</li>
+    <li><strong>Mark Task Locations</strong>: A summary of each Task will be shown on the map as a marker.</li>
+    <li><strong>Create Task Reports</strong>: A menu to create various reports of the current tasks dispatched by the A2G dispatcher.</li>
+    <li><strong>Create Mission Reports</strong>: A menu to create various reports on the current mission.</li>
+</ul>
+
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia6.JPG" alt=""/></p>
+
+<p>For CC |Gori|, Mission "Alpha", the menu structure could look like this:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+</code></pre>
+
+
+<h3>0.1.1. Mission Briefing Menu</h3>
+
+<p>The Mission Briefing Menu will show in text a summary description of the overall mission objectives and expectations.
+Note that the Mission Briefing is not the briefing of a specific task, but rather provides an overall strategy and tactical situation, 
+and explains the mission goals. </p>
+
+
+<h3>0.1.2. Mark Task Locations Menu</h3>
+
+<p>The Mark Task Locations Menu will mark the location indications of the Tasks on the map, if this intelligence is known by the Command Center.
+For A2G tasks this information will always be know, but it can be that for other tasks a location intelligence will be less relevant.
+Note that each Planned task and each Engaged task will be marked. Completed, Failed and Cancelled tasks are not marked.
+Depending on the task type, a summary information is shown to bring to the player the relevant information for situational awareness.</p>
+
+<h3>0.1.3. Task Reports Menu</h3>
+
+<p>The Task Reports Menu is a sub menu, that allows to create various reports:</p>
+
+<ul>
+    <li><strong>Tasks Summary</strong>: This report will list all the Tasks that are or were active within the mission, indicating its status.</li>
+    <li><strong>Planned Tasks</strong>: This report will list all the Tasks that are in status Planned, which are Tasks not assigned to any player, and are ready to be executed.</li>
+    <li><strong>Assigned Tasks</strong>: This report will list all the Tasks that are in status Assigned, which are Tasks assigned to (a) player(s) and are currently executed.</li>
+    <li><strong>Successful Tasks</strong>: This report will list all the Tasks that are in status Success, which are Tasks executed by (a) player(s) and are completed successfully.</li>
+    <li><strong>Failed Tasks</strong>: This report will list all the Tasks that are in status Success, which are Tasks executed by (a) player(s) and that have failed.</li>
+</ul>
+
+<p>The information shown of the tasks will vary according the underlying task type, but are self explanatory.</p>
+
+<p>For CC |Gori|, Mission "Alpha", the Task Reports menu structure could look like this:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+       F1. Tasks Summary
+       F2. Planned Tasks
+       F3. Assigned Tasks
+       F4. Successful Tasks
+       F5. Failed Tasks
+     F4. Mission Reports
+</code></pre>
+
+<p>Note that these reports provide an "overview" of the tasks. Detailed information of the task can be retrieved using the Detailed Report on the Task Menu.
+(See later).</p>
+
+<h3>0.1.4. Mission Reports Menu</h3>
+
+<p>The Mission Reports Menu is a sub menu, that provides options to retrieve further information on the current Mission:</p>
+
+<ul>
+    <li><strong>Report Mission Progress</strong>: Shows the progress of the current Mission. Each Task has a %-tage of completion.</li>
+    <li><strong>Report Players per Task</strong>: Show which players are engaged on which Task within the Mission.</li>
+</ul>
+
+<p>For CC |Gori|, Mission "Alpha", the Mission Reports menu structure could look like this:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+       F1. Report Mission Progress
+       F2. Report Players per Task
+</code></pre>
+
+
+<h2>0.2. Task Management Menus</h2>
+
+<p>Very important to remember is: <strong>Multiple Players can be assigned to the same Task, but from the player perspective, the Player can only be assigned to one Task per Mission at the same time!</strong>
+Consider this like the two major modes in which a player can be in. He can be free of tasks or he can be assigned to a Task.
+Depending on whether a Task has been Planned or Assigned to a Player (Group), 
+<strong>the Mission Menu will contain extra Menus to control specific Tasks.</strong></p>
+
+<h4>0.2.1. Join a Planned Task</h4>
+
+<p>If the Player has not yet been assigned to a Task within the Mission, the Mission Menu will contain additionally a:</p>
+
+<ul>
+    <li>Join Planned Task Menu: This menu structure allows the player to join a planned task (a Task with status Planned).</li>
+</ul>
+
+<p>For CC |Gori|, Mission "Alpha", the menu structure could look like this:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+     F5. Join Planned Task
+</code></pre>
+
+<p><strong>The F5. Join Planned Task allows the player to join a Planned Task and take an engagement in the running Mission.</strong></p>
+
+<h4>0.2.2. Manage an Assigned Task</h4>
+
+<p>If the Player has been assigned to one Task within the Mission, the Mission Menu will contain an extra:</p>
+
+<ul>
+    <li>Assigned Task <strong>TaskName</strong> Menu: This menu structure allows the player to take actions on the currently engaged task.</li>
+</ul>
+
+<p>In this example, the Group currently seated by the player is not assigned yet to a Task.
+The Player has the option to assign itself to a Planned Task using menu option F5 under the Mission Menu "Alpha".</p>
+
+<p>This would be an example menu structure, 
+for CC |Gori|, Mission "Alpha", when a player would have joined Task CAS.001:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+     F5. Assigned Task CAS.001
+</code></pre>
+
+<p><strong>The F5. Assigned Task <strong>TaskName</strong> allows the player to control the current Assigned Task and take further actions.</strong></p>
+
+
+<h2>0.3. Join Planned Task Menu</h2>
+
+<p>The Join Planned Task Menu contains the different Planned A2G Tasks <strong>in a structured Menu Hierarchy</strong>.
+The Menu Hierarchy is structuring the Tasks per <strong>Task Type</strong>, and then by <strong>Task Name (ID)</strong>.  </p>
+
+<p>For example, for CC |Gori|, Mission "Alpha", 
+if a Mission "ALpha" contains 5 Planned Tasks, which would be:</p>
+
+<ul>
+    <li>2 CAS Tasks </li>
+    <li>1 BAI Task</li>
+    <li>2 SEAD Tasks</li>
+</ul>
+
+<p>the Join Planned Task Menu Hierarchy could look like this:</p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+     F5. Join Planned Task
+       F1. CAS
+         F1. CAS.001
+         F2. CAS.002
+       F2. BAI
+         F1. BAI.001
+       F3. SEAD
+         F1. SEAD.001
+         F2. SEAD.002
+</code></pre>
+
+<p>An example from within a running simulation:</p>
+
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia7.JPG" alt=""/></p>
+
+<p>Each Task Type Menu would have a list of the Task Menus underneath. 
+Each Task Menu (eg. <code>CAS.001</code>) has a <strong>detailed Task Menu structure to control the specific task</strong>!</p>
+
+<p>An example from within a running simulation:</p>
+
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia8.JPG" alt=""/></p>
+
+
+<h3>0.3.1. Planned Task Menu</h3>
+
+<p>Each Planned Task Menu will allow for the following actions:</p>
+
+<ul>
+    <li>Report Task Details: Provides a detailed report on the Planned Task.</li>
+    <li>Mark Task Location on Map: Mark the approximate location of the Task on the Map, if relevant.</li>
+    <li>Join Task: Join the Task. This is THE menu option to let a Player join the Task, and to engage within the Mission.</li>
+</ul>
+
+<p>The Join Planned Task Menu could look like this for for CC |Gori|, Mission "Alpha": </p>
+
+<pre><code> Radio MENU Structure (F10. Other)
+
+ F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+     F5. Join Planned Task
+       F1. CAS
+         F1. CAS.001
+           F1. Report Task Details
+           F2. Mark Task Location on Map
+           F3. Join Task
+</code></pre>
+
+<p><strong>The Join Task is THE menu option to let a Player join the Task, and to engage within the Mission.</strong></p>
+
+<p>An example from within a running simulation:</p>
+
+<p><img src="..\Presentations\TASK_A2G_DISPATCHER\Dia9.JPG" alt=""/></p>
+
+
+<h2>0.4. Assigned Task Menu</h2>
+
+<p>The Assigned Task Menu allows to control the <strong>current assigned task</strong> within the Mission.</p>
+
+<p>Depending on the Type of Task, the following menu options will be available:</p>
+
+<ul>
+    <li><strong>Report Task Details</strong>: Provides a detailed report on the Planned Task.</li>
+    <li><strong>Mark Task Location on Map</strong>: Mark the approximate location of the Task on the Map, if relevant.</li>
+    <li><strong>Abort Task: Abort the current assigned Task:</strong> This menu option lets the player abort the Task.</li>
+</ul>
+
+<p>For example, for CC |Gori|, Mission "Alpha", the Assigned Menu could be:</p>
+
+<pre><code> F1. Command Center |Gori|
+   F1. Mission "Alpha"
+     F1. Mission Briefing
+     F2. Mark Task Locations on Map
+     F3. Task Reports
+     F4. Mission Reports
+     F5. Assigned Task
+       F1. Report Task Details
+       F2. Mark Task Location on Map
+       F3. Abort Task
+</code></pre>
+
+<p>Task abortion will result in the Task to be Cancelled, and the Task <strong>may</strong> be <strong>Replanned</strong>.
+However, this will depend on the setup of each Mission. </p>
+
+<h1>1. TASK<em>A2G</em>DISPATCHER constructor</h1>
 
 <p>The <a href="##(TASK_A2G_DISPATCHER).New">TASK<em>A2G</em>DISPATCHER.New</a>() method creates a new TASK<em>A2G</em>DISPATCHER instance.</p>
+
+<h1>2. Usage</h1>
+
+<p>To use the TASK_A2G_DISPATCHER class, you need:</p>
+
+<ul>
+    <li>A <a href="CommandCenter.html">CommandCenter</a> object.</li>
+    <li>A <a href="Mission.html">Mission</a> object.</li>
+    <li>A <a href="Detection.html">Detection</a> object.</li>
+    <li>A <a href="Task_A2G_Dispatcher.html">Task<em>A2G</em>Dispatcher</a> object.</li>
+    <li>A <a href="Set.html">Set</a> of <a href="Group.html">Group</a> objects that will detect the emeny.</li>
+    <li>A <a href="Set.html">Set</a> ob <a href="Group.html">Group</a> objects that will attack the enemy.</li>
+</ul>
+
+<p>Below an example mission declaration that is defines a Task A2G Dispatcher object.   </p>
+
+<p>   -- Declare the Command Center 
+   local HQ = GROUP</p>
+<pre><code> :FindByName( "HQ", "Bravo HQ" )
+</code></pre>
+
+<p>   local CommandCenter = COMMANDCENTER</p>
+<pre><code> :New( HQ, "Lima" )
+</code></pre>
+
+<p>   -- Declare the Mission for the Command Center.
+   local Mission = MISSION</p>
+<pre><code> :New( CommandCenter, "Overlord", "High", "Attack Detect Mission Briefing", coalition.side.RED )
+</code></pre>
+
+<p>   -- Define the RecceSet that will detect the enemy.
+   local RecceSet = SET_GROUP</p>
+<pre><code> :New()
+ :FilterPrefixes( "FAC" )
+ :FilterCoalitions("red")
+ :FilterStart()
+</code></pre>
+
+<p>   -- Setup the detection. We use DETECTION<em>AREAS to detect and group the enemies within areas of 3 km radius.
+   local DetectionAreas = DETECTION</em>AREAS</p>
+<pre><code> :New( RecceSet, 3000 )  -- The RecceSet will detect the enemies.
+</code></pre>
+
+<p>   -- Setup the AttackSet, which is a SET<em>GROUP.
+   -- The SET</em>GROUP is a dynamic collection of GROUP objects. <br/>
+   local AttackSet = SET_GROUP</p>
+<pre><code> :New()  -- Create the SET_GROUP object.
+ :FilterCoalitions( "red" ) -- Only incorporate the RED coalitions.
+ :FilterPrefixes( "Attack" ) -- Only incorporate groups that start with the name Attack.
+ :FilterStart() -- Enable the dynamic filtering. From this moment the AttackSet will contain all groups that are red and start with the name Attack.
+</code></pre>
+
+<p>   -- Now we have everything to setup the main A2G TaskDispatcher.
+   TaskDispatcher = TASK<em>A2G</em>DISPATCHER</p>
+<pre><code> :New( Mission, AttackSet, DetectionAreas ) -- We assign the TaskDispatcher under Mission. The AttackSet will engage the enemy and will recieve the dispatched Tasks. The DetectionAreas will report any detected enemies to the TaskDispatcher.
+</code></pre>
+
+
 
 
 </dd>
