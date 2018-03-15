@@ -105,7 +105,7 @@ These AI Controlling Classes are based on FSM (Finite State Machine) Classes, an
 
 * [AI\_BALANCER](Documentation/AI_Balancer.html): Compensate in a multi player mission the abscence of players with dynamically spawned AI air units. When players join CLIENTS, the AI will either be destroyed, or will fly back to the home or nearest friendly airbase.
 
-* [AI\_PATROL\_ZONE](Documentation/AI_Patrol_Zone.html): Make an alive AI Group patrol a zone derived from the ZONE_BASE class. Manage out-of-fuel events and set altitude and speed ranges for the patrol.
+* [AI\_PATROL](Documentation/AI_Patrol.html): Make an alive AI Group perform an Air Patrol as a dynamic process.
 
 * [AI\_CAP](Documentation/AI_Cap.html): Make an alive AI Group perform Combat Air Patrol as a dynamic process.
 
