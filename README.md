@@ -214,9 +214,9 @@ These classes define the base building blocks of the MOOSE framework. These clas
 
 * [**SETTINGS**](Documentation/Settings.html): The management of Default system settings or specific Player settings that configure the behaviour of MOOSE classes. 
 
-* [**SPAWN](Documentation/Spawn.html#SPAWN): Spawn new groups (and units) during mission execution.
+* [**SPAWN**](Documentation/Spawn.html#SPAWN): Spawn new groups (and units) during mission execution.
 
-* [**SPAWNSTATIC](Documentation/SpawnStatic.html#SPAWNSTATIC): Spawn Static objects using a predefined "template".  
+* [**SPAWNSTATIC**](Documentation/SpawnStatic.html#SPAWNSTATIC): Spawn Static objects using a predefined "template".  
 
 * [**ZONES**](Documentation/Zone.html#ZONE): Create a zone object from a trigger zone as defined in the Mission Editor.  
 * [**ZONE\_GROUP**](Documentation/Zone.html#ZONE_GROUP): Create a zone object around a group on the battlefield, with a defined radius. The first object in the group has the zone, and is thus a moving zone!  
