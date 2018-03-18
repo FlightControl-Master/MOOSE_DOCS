@@ -81,17 +81,17 @@ Through COMMANDCENTERs, multiple logical MISSIONs can be orchestrated for coalit
 Within each MISSION, various TASKs can be defined.
 Each TASK has a TASK ACTION flow, which is the flow that a player (hosted by a UNIT) within the simulator needs to follow and accomplish.
 
-* [COMMANDCENTER](Documentation/CommandCenter.html): Orchestrates various logical MISSIONs for a coalition.
+* [**COMMANDCENTER**](Documentation/CommandCenter.html): Orchestrates various logical MISSIONs for a coalition.
 
-* [MISSION](Documentation/Mission.html): Each MISSION has various TASKs to be executed and accomplished by players.
+* [**MISSION**](Documentation/Mission.html): Each MISSION has various TASKs to be executed and accomplished by players.
 
-* [TASK_A2A_DISPATCHER](Documentation/Task_A2A_Dispatcher.html): Automatically and dynamically dispatch A2A tasks to be executed by human players, as a result of the detection of airborne targets within a Mission scope.
+* [**TASK_A2A_DISPATCHER**](Documentation/Task_A2A_Dispatcher.html): Automatically and dynamically dispatch A2A tasks to be executed by human players, as a result of the detection of airborne targets within a Mission scope.
 
-* [TASK_A2G_DISPATCHER](Documentation/Task_A2G_Dispatcher.html): Automatically and dynamically dispatch A2G tasks to be executed by human players, as a result of the detection of ground targets within a Mission scope.
+* [**TASK_A2G_DISPATCHER**](Documentation/Task_A2G_Dispatcher.html): Automatically and dynamically dispatch A2G tasks to be executed by human players, as a result of the detection of ground targets within a Mission scope.
 
-* [TASK_A2A](Documentation/Task_A2A.html): Models a A2A CAP, INTERCEPT and SWEEP tasks where a Player is routed towards an attack zone without enemies nearby, and various ground targets need to be eliminated.
+* [**TASK_A2A**](Documentation/Task_A2A.html): Models a A2A CAP, INTERCEPT and SWEEP tasks where a Player is routed towards an attack zone without enemies nearby, and various ground targets need to be eliminated.
 
-* [TASK_A2G](Documentation/Task_A2G.html): Models a A2G SEAD, CAS and BAI tasks where a Player is routed towards an attack zone with enemies nearby, and various ground targets need to be eliminated.
+* [**TASK_A2G**](Documentation/Task_A2G.html): Models a A2G SEAD, CAS and BAI tasks where a Player is routed towards an attack zone with enemies nearby, and various ground targets need to be eliminated.
 
 
 ## 2.2. MOOSE AI Controlling Classes
@@ -105,13 +105,13 @@ These AI Controlling Classes are based on FSM (Finite State Machine) Classes, an
 
 * [**AI\_BALANCER**](Documentation/AI_Balancer.html): Compensate in a multi player mission the abscence of players with dynamically spawned AI air units. When players join CLIENTS, the AI will either be destroyed, or will fly back to the home or nearest friendly airbase.
 
-* [**AI\_PATROL**](Documentation/AI_Patrol.html): Make an alive AI Group perform an Air Patrol as a dynamic process.
+* [**AI\_BAI**](Documentation/AI_Bai.html): Make an alive AI Group perform Battlefield Air Interdiction as a dynamic process.
 
 * [**AI\_CAP**](Documentation/AI_Cap.html): Make an alive AI Group perform Combat Air Patrol as a dynamic process.
 
 * [**AI\_CAS**](Documentation/AI_Cas.html): Make an alive AI Group perform Close Air Support as a dynamic process.
 
-* [**AI\_BAI**](Documentation/AI_Bai.html): Make an alive AI Group perform Battlefield Air Interdiction as a dynamic process.
+* [**AI\_PATROL**](Documentation/AI_Patrol.html): Make an alive AI Group perform an Air Patrol as a dynamic process.
 
 
 ## 2.3. MOOSE Functional Classes
@@ -149,23 +149,23 @@ MOOSE Functional Classes provide various functions that are useful in mission de
 MOOSE Wrapper Classes provide an object oriented hierarchical mechanism to manage the DCS objects within the simulator.
 Wrapper classes provide another easier mechanism to control Groups, Units, Statics, Airbases and other objects.
 
-* [**OBJECT**](Documentation/Object.html): This class provides the base for MOOSE objects.
+* [**AIRBASE**](Documentation/Airbase.html): This class wraps a DCS Airbase object within the simulator.
+
+* [**CLIENT**](Documentation/Client.html): This class wraps a DCS Unit object within the simulator, which has a skill Client or Player.  
+
+* [**CONTROLLABLE**](Documentation/Controllable.html): This class provides the base for MOOSE controllable objects. These are GROUPs, UNITs, CLIENTs.
+
+* [**GROUP**](Documentation/Group.html): This class wraps a DCS Group objects within the simulator.  
 
 * [**IDENTIFIABLE**](Documentation/Identifiable.html): This class provides the base for MOOSE identifiable objects, which is every object within the simulator :-).
 
 * [**POSITIONABLE**](Documentation/Positionable.html): This class provides the base for MOOSE positionable objects. These are AIRBASEs, STATICs, GROUPs, UNITs ...
 
-* [**CONTROLLABLE**](Documentation/Controllable.html): This class provides the base for MOOSE controllable objects. These are GROUPs, UNITs, CLIENTs.
-
-* [**AIRBASE**](Documentation/Airbase.html): This class wraps a DCS Airbase object within the simulator.
-
-* [**GROUP**](Documentation/Group.html): This class wraps a DCS Group objects within the simulator.  
-
-* [**UNIT**](Documentation/Unit.html): This class wraps a DCS Unit object within the simulator.
-
-* [**CLIENT**](Documentation/Client.html): This class wraps a DCS Unit object within the simulator, which has a skill Client or Player.  
+* [**OBJECT**](Documentation/Object.html): This class provides the base for MOOSE objects.
 
 * [**STATIC**](Documentation/Static.html): This class wraps a DCS StaticObject object within the simulator. 
+
+* [**UNIT**](Documentation/Unit.html): This class wraps a DCS Unit object within the simulator.
 
 
 ## 2.5. MOOSE Core Classes
@@ -174,18 +174,18 @@ These classes define the base building blocks of the MOOSE framework. These clas
 
 * [**BASE**](Documentation/Base.html): The main class from which all MOOSE classes are derived from. The BASE class contains essential functions to support inheritance and MOOSE object execution tracing (logging within the DCS.log file in the saved games folder of the user).
 
+* [**BEACON**](Documentation/Radio.html): Create beacons.  
+
+* [**CARGO**](Documentation/Cargo.html): Manage Cargo in the simulation.  
+* [**CARGO\_GROUP**](Documentation/Cargo.html#CARGO_GROUP): Manage Cargo that is defined as a GROUP object within the simulation.  
+
+* [**COORDINATE**](Documentation/Point.html#COORDINATE): Manage 2D and 3D points in the simulation space, and use its methods for various actions on the coordinate.  
+
 * [**DATABASE**](Documentation/Database.html): Creates a collection of GROUPS[], UNITS[], CLIENTS[] and managed these sets automatically. Provides an API set to retrieve a GROUP, UNIT or CLIENT instance from the _DATABASE object using defined APIs. The collections are maintained dynamically during the execution of the mission, so when players join, leave, when units are created or destroyed, the collections are dynamically updated.
 
 * [**EVENT**](Documentation/Event.html): Provides the Event Dispatcher base class to handle DCS Events, being fired upon registered events within the DCS simulator. Note that EVENT is used by BASE, exposing OnEvent() methods to catch these DCS events.
 
-* [**SCHEDULER**](Documentation/Scheduler.html): This class implements a timer scheduler that will call at optional specified intervals repeatedly or just one time a scheduled function.
-
-* [**SPAWN](Documentation/Spawn.html#SPAWN): Spawn new groups (and units) during mission execution.
-
-* [**SPAWNSTATIC](Documentation/SpawnStatic.html#SPAWNSTATIC): Spawn Static objects using a predefined "template".  
-
-* [**Finite State Machines**](Documentation/Fsm.html):  Finite State Machine provides a process management or state machine capability for various scenarios.  
-* [**FSM**](Documentation/Fsm.html#FSM):  The main FSM class can be used to build a generic Finite State Machine.  
+* [**FSM**](Documentation/Fsm.html#FSM):  The main FSM class can be used to build a generic Finite State Machine. Finite State Machine provides a process management or state machine capability for various scenarios.    
 * [**FSM\_CONTROLLABLE**](Documentation/Fsm.html#FSM_CONTROLLABLE):  An FSM class to control a Controllable. A controllable is a group or unit that can be controlled.  
 
 * [**MENU**](Documentation/Menu.html): Set Menu options under the radio menu (F10). MENU classes also manage the recursive removal of menus, and the intelligent refresh of menu options (only the changes are applied).  
@@ -194,34 +194,35 @@ These classes define the base building blocks of the MOOSE framework. These clas
 * [**MENU\_COALITION**](Documentation/Menu.html#MENU_COALITION): Set a menu structure for a coalition, for all players of that coalition.  
 * [**MENU\_COALITION\_COMMAND**](Documentation/Menu.html#MENU_COALITION_COMMAND): Set a menu command for a coalition, for all players of that coalition.  
 * [**MENU\_GROUP**](Documentation/Menu.html#MENU_GROUP): Set a menu structure for a group, for all players of that group.  
-* [MENU\_GROUP\_COMMAND](Documentation/Menu.html#MENU_GROUP_COMMAND): Set a menu command for a group, for all players of that group.  
-
-* [**SET**](Documentation/Set.html): Create SETs of MOOSE objects. The SET can be filtered with defined filter criteria. Iterators are available that iterate through the SET, calling a function for each object within the SET. 
-* [**SET\_GROUP**](Documentation/Set.html#SET_GROUP): Create a SET of GROUP objects.  
-* [**SET\_UNIT**](Documentation/Set.html#SET_UNIT): Create a SET of UNIT objects.  
-* [**SET\_CLIENT**](Documentation/Set.html#SET_CLIENT): Create a SET of CLIENT objects.  
-* [**SET\_AIRBASE**](Documentation/Set.html#SET_AIRBASE): Create a SET of AIRBASE objects.  
-* [**SET\_CARGO**](Documentation/Set.html#SET_CARGO): Create a SET of CARGO objects.  
-
-* [**SETTINGS**](Documentation/Settings.html): The management of Default system settings or specific Player settings that configure the behaviour of MOOSE classes. 
+* [**MENU\_GROUP\_COMMAND**](Documentation/Menu.html#MENU_GROUP_COMMAND): Set a menu command for a group, for all players of that group.  
 
 * [**MESSAGE**](Documentation/Message.html): A message publishing system, displaying messages to Clients, Coalitions or All players. 
 
-* [**COORDINATE**](Documentation/Point.html#COORDINATE): Manage 2D and 3D points in the simulation space, and use its methods for various actions on the coordinate.  
+* [**SET**](Documentation/Set.html): Create SETs of MOOSE objects. The SET can be filtered with defined filter criteria. Iterators are available that iterate through the SET, calling a function for each object within the SET. 
+* [**SET\_AIRBASE**](Documentation/Set.html#SET_AIRBASE): Create a SET of AIRBASE objects.  
+* [**SET\_CARGO**](Documentation/Set.html#SET_CARGO): Create a SET of CARGO objects.  
+* [**SET\_CLIENT**](Documentation/Set.html#SET_CLIENT): Create a SET of CLIENT objects.  
+* [**SET\_GROUP**](Documentation/Set.html#SET_GROUP): Create a SET of GROUP objects.  
+* [**SET\_UNIT**](Documentation/Set.html#SET_UNIT): Create a SET of UNIT objects.  
+
 * [**POINT\_VEC2**](Documentation/Point.html#POINT_VEC2): Manage 2D points in the simulation space.  
 * [**POINT\_VEC3**](Documentation/Point.html#POINT_VEC3): Manage 3D points in the simulation space.  
 
+* [**RADIO**](Documentation/Radio.html): Create radio communication.  
+
+* [**SCHEDULER**](Documentation/Scheduler.html): This class implements a timer scheduler that will call at optional specified intervals repeatedly or just one time a scheduled function.
+
+* [**SETTINGS**](Documentation/Settings.html): The management of Default system settings or specific Player settings that configure the behaviour of MOOSE classes. 
+
+* [**SPAWN](Documentation/Spawn.html#SPAWN): Spawn new groups (and units) during mission execution.
+
+* [**SPAWNSTATIC](Documentation/SpawnStatic.html#SPAWNSTATIC): Spawn Static objects using a predefined "template".  
+
 * [**ZONES**](Documentation/Zone.html#ZONE): Create a zone object from a trigger zone as defined in the Mission Editor.  
+* [**ZONE\_GROUP**](Documentation/Zone.html#ZONE_GROUP): Create a zone object around a group on the battlefield, with a defined radius. The first object in the group has the zone, and is thus a moving zone!  
 * [**ZONE\_POLYGON**](Documentation/Zone.html#ZONE_POLYGON): Create a zone object from a group object, which is late activated, and its route points define the zone.  
 * [**ZONE\_RADIUS**](Documentation/Zone.html#ZONE_RADIUS): Create a zone object from a 2D vector on the battlefield, with a defined radius.  
 * [**ZONE\_UNIT**](Documentation/Zone.html#ZONE_UNIT): Create a zone object around a unit on the battlefield, with a defined radius. This, this zone is a moving zone!  
-* [**ZONE\_GROUP**](Documentation/Zone.html#ZONE_GROUP): Create a zone object around a group on the battlefield, with a defined radius. The first object in the group has the zone, and is thus a moving zone!  
-
-* [**CARGO**](Documentation/Cargo.html): Manage Cargo in the simulation.  
-* [**CARGO\_GROUP**](Documentation/Cargo.html#CARGO_GROUP): Manage Cargo that is defined as a GROUP object within the simulation.  
-
-* [**BEACON**](Documentation/Radio.html): Create beacons.  
-* [**RADIO**](Documentation/Radio.html): Create radio communication.  
 
 
 
