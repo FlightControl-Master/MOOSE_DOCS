@@ -363,6 +363,7 @@
 <p>Models the process to capture a Zone for a Coalition, which is guarded by another Coalition.</p>
 
 	
+<p>This is a powerful concept that allows to create very dynamic missions based on the different state transitions of various zones.</p>
 
 <hr/>
 
@@ -370,12 +371,16 @@
 
 <hr/>
 
+<h1>0. Player Experience</h1>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia3.JPG" alt="States"/></p>
+
 <p>The Zone is initially <strong>Guarded</strong> by the <strong>owning coalition</strong>, which is the coalition that initially occupies the zone with units of its coalition.
 Once units of an other coalition are entering the Zone, the state will change to <strong>Attacked</strong>. As long as these units remain in the zone, the state keeps set to Attacked.
 When all units are destroyed in the Zone, the state will change to <strong>Empty</strong>, which expresses that the Zone is empty, and can be captured.
 When units of the other coalition are in the Zone, and no other units of the owning coalition is in the Zone, the Zone is captured, and its state will change to <strong>Captured</strong>.</p>
 
-<p>Event handlers can be defined by the mission designer to action on the state transitions.</p>
+<p>The above models the possible state transitions between the Guarded, Attacked, Empty and Captured states.</p>
 
 <h2>1. ZONE_CAPTURE_COALITION constructor</h2>
 
@@ -383,7 +388,20 @@ When units of the other coalition are in the Zone, and no other units of the own
     <li><a href="##(ZONE_CAPTURE_COALITION).New">ZONE<em>CAPTURE</em>COALITION.New</a>(): Creates a new ZONE_CAPTURE_COALITION object.</li>
 </ul>
 
+<p>In order to use ZONE_CAPTURE_COALITION, you need to:</p>
+
+<ul>
+    <li>Create a <a href="Zone.html">Zone</a> object from one of the ZONE_ classes. Note that ZONE_POLYGON_ classes are not yet functional. The only functional ZONE_ classses are those derived from a ZONE_RADIUS.</li>
+</ul>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia5.JPG" alt="New"/></p>
+
+<p>Ensure that during the life cycle of the ZONE_CAPTURE_COALITION object, the object keeps alive.
+It is best to declare the object globally within your script.</p>
+
 <h2>2. ZONE_CAPTURE_COALITION is a finite state machine (FSM).</h2>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia4.JPG" alt="States"/></p>
 
 <h3>2.1 ZONE_CAPTURE_COALITION States</h3>
 
@@ -400,9 +418,230 @@ When units of the other coalition are in the Zone, and no other units of the own
     <li><strong>Capture</strong>: The Zone has been captured by an other coalition.</li>
     <li><strong>Attack</strong>: The Zone is currently intruded by an other coalition. There are units of the owning coalition and an other coalition in the Zone.</li>
     <li><strong>Guard</strong>: The Zone is guarded by the owning coalition. There is no other unit of an other coalition in the Zone.</li>
-    <li><strong>Empty</strong>: The Zone is empty. There is not valid unit in the Zone.
-    </li>
+    <li><strong>Empty</strong>: The Zone is empty. There is not valid unit in the Zone.</li>
 </ul>
+
+<h2>3. "Script It"</h2>
+
+<p>ZONE_CAPTURE_COALITION allows to take action on the various state transitions and add your custom code and logic.</p>
+
+<h3>3.1. Take action using state- and event handlers.</h3>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia6.JPG" alt="States"/></p>
+
+<p>The most important to understand is how states and events can be tailored.
+Carefully study the diagram and the explanations.</p>
+
+<p><strong>State Handlers</strong> capture the moment:</p>
+
+<ul>
+    <li>On Leave from the old state. Return false to cancel the transition.</li>
+    <li>On Enter to the new state.</li>
+</ul>
+
+<p><strong>Event Handlers</strong> capture the moment:</p>
+
+<ul>
+    <li>On Before the event is triggered. Return false to cancel the transition.</li>
+    <li>On After the event is triggered.</li>
+</ul>
+
+
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia7.JPG" alt="States"/></p>
+
+<p>Each handler can receive optionally 3 parameters:</p>
+
+<ul>
+    <li><strong>From</strong>: A string containing the From State.</li>
+    <li><strong>Event</strong>: A string containing the Event.</li>
+    <li><strong>To</strong>: A string containing the To State.</li>
+</ul>
+
+<p>The mission designer can use these values to alter the logic.
+For example:</p>
+
+<pre><code>--- @param Functional.ZoneCaptureCoalition#ZONE_CAPTURE_COALITION self
+function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
+  if From ~= "Empty" then
+    -- Display a message
+  end
+end
+</code></pre>
+
+<p>This code checks that when the <strong>Guarded</strong> state has been reached, that if the <strong>From</strong> state was <strong>Empty</strong>, then display a message.</p>
+
+<h3>3.2. Example Event Handler.</h3>
+
+<pre><code>--- @param Functional.ZoneCaptureCoalition#ZONE_CAPTURE_COALITION self
+function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
+  if From ~= To then
+    local Coalition = self:GetCoalition()
+    self:E( { Coalition = Coalition } )
+    if Coalition == coalition.side.BLUE then
+      ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
+      US_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+      RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+    else
+      ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
+      RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+      US_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+    end
+  end
+end
+</code></pre>
+
+<h2>4. Full Example</h2>
+
+<p>The following annotated code shows a real example of how ZONE_CAPTURE_COALITION can be applied.</p>
+
+<p>The concept is simple.</p>
+
+<p>The USA (US), blue coalition, needs to capture the Russian (RU), red coalition, zone, which is near groom lake.</p>
+
+<p>A capture zone has been setup that guards the presence of the troops.
+Troops are guarded by red forces. Blue is required to destroy the red forces and capture the zones.</p>
+
+<p>At first, we setup the Command Centers</p>
+
+<pre><code> do
+
+   RU_CC = COMMANDCENTER:New( GROUP:FindByName( "REDHQ" ), "Russia HQ" )
+   US_CC = COMMANDCENTER:New( GROUP:FindByName( "BLUEHQ" ), "USA HQ" )
+
+ end
+</code></pre>
+
+<p>Next, we define the mission, and add some scoring to it.</p>
+
+<pre><code> do -- Missions
+
+   US_Mission_EchoBay = MISSION:New( US_CC, "Echo Bay", "Primary",
+     "Welcome trainee. The airport Groom Lake in Echo Bay needs to be captured.\n" ..
+     "There are five random capture zones located at the airbase.\n" ..
+     "Move to one of the capture zones, destroy the fuel tanks in the capture zone, " ..
+     "and occupy each capture zone with a platoon.\n " .. 
+     "Your orders are to hold position until all capture zones are taken.\n" ..
+     "Use the map (F10) for a clear indication of the location of each capture zone.\n" ..
+     "Note that heavy resistance can be expected at the airbase!\n" ..
+     "Mission 'Echo Bay' is complete when all five capture zones are taken, and held for at least 5 minutes!"
+     , coalition.side.RED)
+
+   US_Score = SCORING:New( "CAZ-001 - Capture Zone" )
+
+   US_Mission_EchoBay:AddScoring( US_Score )
+
+   US_Mission_EchoBay:Start()
+
+ end
+</code></pre>
+
+
+<p>Now the real work starts.
+We define a <strong>CaptureZone</strong> object, which is a ZONE object.
+Within the mission, a trigger zone is created with the name <strong>CaptureZone</strong>, with the defined radius within the mission editor.</p>
+
+<pre><code> CaptureZone = ZONE:New( "CaptureZone" )
+</code></pre>
+
+<p>Next, we define the <strong>ZoneCaptureCoalition</strong> object, as explained above.</p>
+
+<pre><code> ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
+</code></pre>
+
+<p>Of course, we want to let the <strong>ZoneCaptureCoalition</strong> object do something when the state transitions.
+Do accomodate this, it is very simple, as explained above.
+We use <strong>Event Handlers</strong> to tailor the logic.</p>
+
+<p>Here we place an Event Handler at the Guarded event. So when the <strong>Guarded</strong> event is triggered, then this method is called!
+With the variables <strong>From</strong>, <strong>Event</strong>, <strong>To</strong>. Each of these variables containing a string.</p>
+
+<p>We check if the previous state wasn't Guarded also.
+If not, we retrieve the owning Coalition of the <strong>ZoneCaptureCoalition</strong>, using <code>self:GetCoalition()</code>.
+So <strong>Coalition</strong> will contain the current owning coalition of the zone.</p>
+
+<p>Depending on the zone ownership, different messages are sent.
+Note the methods <code>ZoneCaptureCoalition:GetZoneName()</code>.</p>
+
+<pre><code> --- @param Functional.ZoneCaptureCoalition#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
+   if From ~= To then
+     local Coalition = self:GetCoalition()
+     self:E( { Coalition = Coalition } )
+     if Coalition == coalition.side.BLUE then
+       ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
+       US_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+       RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     else
+       ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
+       RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+       US_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     end
+   end
+ end
+</code></pre>
+
+<p>As you can see, not a rocket science.
+Next is the Event Handler when the <strong>Empty</strong> state transition is triggered.
+Now we smoke the ZoneCaptureCoalition with a green color, using <code>self:Smoke( SMOKECOLOR.Green )</code>.</p>
+
+<pre><code> --- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterEmpty()
+   self:Smoke( SMOKECOLOR.Green )
+   US_CC:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   RU_CC:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+ end
+</code></pre>
+
+<p>The next Event Handlers speak for itself.
+When the zone is Attacked, we smoke the zone white and send some messages to each coalition.     </p>
+
+<pre><code> --- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterAttacked()
+   ZoneCaptureCoalition:Smoke( SMOKECOLOR.White )
+   local Coalition = self:GetCoalition()
+   self:E({Coalition = Coalition})
+   if Coalition == coalition.side.BLUE then
+     US_CC:MessageTypeToCoalition( string.format( "%s is under attack by Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     RU_CC:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   else
+     RU_CC:MessageTypeToCoalition( string.format( "%s is under attack by the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     US_CC:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   end
+ end
+</code></pre>
+
+<p>When the zone is Captured, we send some victory or loss messages to the correct coalition.
+And we add some score.</p>
+
+<pre><code> --- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterCaptured()
+   local Coalition = self:GetCoalition()
+   self:E({Coalition = Coalition})
+   if Coalition == coalition.side.BLUE then
+     RU_CC:MessageTypeToCoalition( string.format( "%s is captured by the USA, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     US_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   else
+     US_CC:MessageTypeToCoalition( string.format( "%s is captured by Russia, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     RU_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   end
+
+   self:AddScore( "Captured", "Zone captured: Extra points granted.", 200 )    
+
+   self:__Guard( 30 )
+ end
+</code></pre>
+
+<p>And this call is the most important of all!
+Here we ensure that we <strong>Guard</strong> the <strong>ZoneCaptureCoalition</strong>!!</p>
+
+<p>If we don't call this method, the whole guarding process won't be started!!!</p>
+
+<pre><code> ZoneCaptureCoalition:__Guard( 1 )
+</code></pre>
+
+
+
 
 </dd>
 </dl>
