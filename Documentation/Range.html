@@ -139,12 +139,12 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 <h2>Features</h2>
 
 <ul>
-    <li>Bomb and rocket impact point from closest range target is measured and distance reported to the player.</li>
-    <li>Number of hits on strafing passes are counted.</li>
+    <li>Impact points of bombs, rockets and missils are recorded and distance to closest range target is measured and reported to the player.</li>
+    <li>Number of hits on strafing passes are counted and reported. Also the percentage of hits w.r.t fired shots is evaluated. </li>
     <li>Results of all bombing and strafing runs are stored and top 10 results can be displayed. </li>
     <li>Range targets can be marked by smoke.</li>
     <li>Range can be illuminated by illumination bombs for night practices.</li>
-    <li>Rocket or bomb impact points can be marked by smoke.</li>
+    <li>Bomb, rocket and missile impact points can be marked by smoke.</li>
     <li>Direct hits on targets can trigger flares.</li>
     <li>Smoke and flare colors can be adjusted for each player via radio menu.</li>
     <li>Range information and weather report at the range can be reported via radio menu.</li>
@@ -185,21 +185,33 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 			<h2><a id="#(RANGE)">Type <code>RANGE</code></a></h2>
 				<table class="function_list">
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddBombingTargetUnit">RANGE:AddBombingTargetUnit(unit, goodhitrange)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddBombingTargetGroup">RANGE:AddBombingTargetGroup(group, goodhitrange, randommove)</a></td>
 		<td class="summary">
-<p>Add a unit as bombing target.</p>
+<p>Add all units of a group as bombing targets.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddBombingTargets">RANGE:AddBombingTargets(unitnames, goodhitrange, static)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddBombingTargetUnit">RANGE:AddBombingTargetUnit(unit, goodhitrange, randommove)</a></td>
+		<td class="summary">
+<p>Add a unit or static object as bombing target.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddBombingTargets">RANGE:AddBombingTargets(targetnames, goodhitrange, randommove)</a></td>
 		<td class="summary">
 <p>Add bombing target(s) to range.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddStrafePit">RANGE:AddStrafePit(unitnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddStrafePit">RANGE:AddStrafePit(targetnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline)</a></td>
 		<td class="summary">
 <p>Add new strafe pit.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).AddStrafePitGroup">RANGE:AddStrafePitGroup(group, boxlength, boxwidth, heading, inverseheading, goodpass, foulline)</a></td>
+		<td class="summary">
+<p>Add all units of a group as one new strafe target pit.</p>
 </td>
 		</tr>
 		<tr>
@@ -233,6 +245,18 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 </td>
 		</tr>
 		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).Defaults">RANGE.Defaults</a></td>
+		<td class="summary">
+<p>Default range parameters.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).GetFoullineDistance">RANGE:GetFoullineDistance(namepit, namefoulline)</a></td>
+		<td class="summary">
+<p>Measures the foule line distance between two unit or static objects.</p>
+</td>
+		</tr>
+		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE).MenuAddedTo">RANGE.MenuAddedTo</a></td>
 		<td class="summary">
 <p>Table for monitoring which players already got an F10 menu.</p>
@@ -242,6 +266,12 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 		<td class="name" nowrap="nowrap"><a href="##(RANGE).MenuF10">RANGE.MenuF10</a></td>
 		<td class="summary">
 <p>Main radio menu.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).Names">RANGE.Names</a></td>
+		<td class="summary">
+<p>Global list of all defined range names.</p>
 </td>
 		</tr>
 		<tr>
@@ -305,6 +335,12 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 </td>
 		</tr>
 		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).SetRangeLocation">RANGE:SetRangeLocation(coordinate)</a></td>
+		<td class="summary">
+<p>Set range location.</p>
+</td>
+		</tr>
+		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE).SetRangeRadius">RANGE:SetRangeRadius(radius)</a></td>
 		<td class="summary">
 <p>Set range radius.</p>
@@ -359,6 +395,42 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 </td>
 		</tr>
 		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).TrackBombsOFF">RANGE:TrackBombsOFF()</a></td>
+		<td class="summary">
+<p>Disables tracking of all bomb types.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).TrackBombsON">RANGE:TrackBombsON()</a></td>
+		<td class="summary">
+<p>Enables tracking of all bomb types.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).TrackMissilesOFF">RANGE:TrackMissilesOFF()</a></td>
+		<td class="summary">
+<p>Disables tracking of all missile types.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).TrackMissilesON">RANGE:TrackMissilesON()</a></td>
+		<td class="summary">
+<p>Enables tracking of all missile types.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).TrackRocketsOFF">RANGE:TrackRocketsOFF()</a></td>
+		<td class="summary">
+<p>Disables tracking of all rocket types.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).TrackRocketsON">RANGE:TrackRocketsON()</a></td>
+		<td class="summary">
+<p>Enables tracking of all rocket types.</p>
+</td>
+		</tr>
+		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE)._AddF10Commands">RANGE:_AddF10Commands(_unitName)</a></td>
 		<td class="summary">
 <p>Add menu commands for player.</p>
@@ -368,6 +440,12 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 		<td class="name" nowrap="nowrap"><a href="##(RANGE)._CheckInZone">RANGE:_CheckInZone(_unitName)</a></td>
 		<td class="summary">
 <p>Check if player is inside a strafing zone.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE)._CheckStatic">RANGE:_CheckStatic(name)</a></td>
+		<td class="summary">
+<p>Checks if a static object with a certain name exists.</p>
 </td>
 		</tr>
 		<tr>
@@ -434,6 +512,12 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 		<td class="name" nowrap="nowrap"><a href="##(RANGE)._GetPlayerUnitAndName">RANGE:_GetPlayerUnitAndName(_unitName)</a></td>
 		<td class="summary">
 <p>Returns the unit of a player and the player name.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE)._GetSpeed">RANGE:_GetSpeed(controllable)</a></td>
+		<td class="summary">
+<p>Get max speed of controllable.</p>
 </td>
 		</tr>
 		<tr>
@@ -517,7 +601,7 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE)._split">RANGE:_split(str, sep)</a></td>
 		<td class="summary">
-<p>http://stackoverflow.com/questions/1426954/split-string-in-lua</p>
+<p>Split string.</p>
 </td>
 		</tr>
 		<tr>
@@ -565,7 +649,7 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE).location">RANGE.location</a></td>
 		<td class="summary">
-<p>Coordinate of the range.</p>
+<p>Coordinate of the range location.</p>
 </td>
 		</tr>
 		<tr>
@@ -607,7 +691,13 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE).rangeradius">RANGE.rangeradius</a></td>
 		<td class="summary">
-<p>Radius of range defining its total size for e.g. smoking bomb impact points and sending radio messages. Default 10 km.</p>
+<p>Radius of range defining its total size for e.g. smoking bomb impact points and sending radio messages. Default 5 km.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).rangezone">RANGE.rangezone</a></td>
+		<td class="summary">
+<p>MOOSE zone object of the range. For example, no bomb impacts are smoked if bombs fall outside of the range zone. </p>
 </td>
 		</tr>
 		<tr>
@@ -641,6 +731,24 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 </td>
 		</tr>
 		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).trackbombs">RANGE.trackbombs</a></td>
+		<td class="summary">
+<p>If true (default), all bomb types are tracked and impact point to closest bombing target is evaluated.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).trackmissiles">RANGE.trackmissiles</a></td>
+		<td class="summary">
+<p>If true (default), all missile types are tracked and impact point to closest bombing target is evaluated.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(RANGE).trackrockets">RANGE.trackrockets</a></td>
+		<td class="summary">
+<p>If true (default), all rocket types are tracked and impact point to closest bombing target is evaluated.</p>
+</td>
+		</tr>
+		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(RANGE).version">RANGE.version</a></td>
 		<td class="summary">
 <p>Range script version.</p>
@@ -666,8 +774,8 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 <p>A new RANGE object can be created with the <a href="##(RANGE).New">RANGE.New</a>(rangename) contructor.
 The parameter "rangename" defindes the name of the range. It has to be unique since this is also the name displayed in the radio menu.</p>
 
-<p>Generally, a range consits of strafe pits and bombing targets. For strafe pits the number of hits for each pass is counted and tabulated.
-For bombing targets, the distance from the impact point of the bomb or rocket to the closest range target is measured and tabulated.
+<p>Generally, a range consists of strafe pits and bombing targets. For strafe pits the number of hits for each pass is counted and tabulated.
+For bombing targets, the distance from the impact point of the bomb, rocket or missile to the closest range target is measured and tabulated.
 Each player can display his best results via a function in the radio menu or see the best best results from all players.</p>
 
 <p>When all targets have been defined in the script, the range is started by the <a href="##(RANGE).Start">RANGE.Start</a>() command.</p>
@@ -682,31 +790,38 @@ there should be an "On the Range" menu items in the "F10. Other..." menu. </p>
 <h2>Strafe Pits</h2>
 <p>Each strafe pit can consist of multiple targets. Often one findes two or three strafe targets next to each other.</p>
 
-<p>A strafe pit can be added to the range by the <a href="##(RANGE).AddStrafepit">RANGE.AddStrafepit</a>(unitnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline) function.</p>
+<p>A strafe pit can be added to the range by the <a href="##(RANGE).AddStrafepit">RANGE.AddStrafepit</a>(<em>targetnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline</em>) function.</p>
 
-<p>The first parameter defines the target. This has to be given as a lua table which contains the unit names of the targets as defined in the mission editor.</p>
+<ul>
+    <li>The first parameter <em>targetnames</em> defines the target or targets. This has to be given as a lua table which contains the names of <a href="Unit.html">Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor. </li>
+    <li>In order to perform a valid pass on the strafe pit, the pilot has to begin his run from the correct direction. Therefore, an "approach box" is defined in front
+    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box while the parameter <em>heading</em> defines its direction.
+    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading of the first target unit as defined in the ME.
+    The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is sometimes useful, since the default heading of strafe target units point in the
+    wrong/opposite direction.</li>
+    <li>The parameter <em>goodpass</em> defines the number of hits a pilot has to achive during a run to be judged as a "good" pass.</li>
+    <li>The last parameter <em>foulline</em> sets the distance from the pit targets to the foul line. Hit from closer than this line are not counted!</li>
+</ul>
 
-<p>In order to perform a valid pass on the strafe pit, the pilot has to begin his run from the correct direction. Therefore, an "approach box" is defined in front
-of the strafe targets. The parameters "boxlength" and "boxwidth" define the size of the box while the parameter "heading" defines its direction.
-If the parameter heading is passed as <strong>nil</strong>, the heading is automatically taken from the heading of the first target unit as defined in the ME.
-The parameter "inverseheading" turns the heading around by 180 degrees. This is sometimes useful, since the default heading of strafe target units point in the
-wrong/opposite direction.</p>
-
-<p>The parameter "goodpass" defines the number of hits a pilot has to achive during a run to be judges as a good pass.</p>
-
-<p>The last parameter "foulline" sets the distance from the pit targets to the foul line. Hit from closer than this line are not counted.</p>
+<p>Another function to add a strafe pit is <a href="##(RANGE).AddStrafePitGroup">RANGE.AddStrafePitGroup</a>(<em>group, boxlength, boxwidth, heading, inverseheading, goodpass, foulline</em>). Here,
+the first parameter <em>group</em> is a MOOSE <a href="Group.html">Group</a> object and <strong>all</strong> units in this group define <strong>one</strong> strafe pit.</p>
 
 <p>Finally, a valid approach has to be performed below a certain maximum altitude. The default is 914 meters (3000 ft) AGL. This is a parameter valid for all
 strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxStrafeAlt">RANGE.SetMaxStrafeAlt</a>(maxalt) function.</p>
 
 <h2>Bombing targets</h2>
-<p>One ore multiple bombing targets can be added to the range by the <a href="##(RANGE).AddBombingTargets">RANGE.AddBombingTargets</a>(unitnames goodhitrange,static) function.</p>
+<p>One ore multiple bombing targets can be added to the range by the <a href="##(RANGE).AddBombingTargets">RANGE.AddBombingTargets</a>(targetnames, goodhitrange, randommove) function.</p>
 
-<p>The first parameter "unitnames" has to be a lua table, which contains the names of the units as defined in the mission editor.</p>
+<ul>
+    <li>The first parameter <em>targetnames</em> has to be a lua table, which contains the names of <a href="Unit.html">Unit</a> and/or <a href="Static.html">Static</a> objects defined in the mission editor.
+    Note that the <a href="Range.html">Range</a> logic <strong>automatically</strong> determines, if a name belongs to a <a href="Unit.html">Unit</a> or <a href="Static.html">Static</a> object now.</li>
+    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius around the target. If a bomb or rocket falls at a distance smaller than this number, the hit is considered to be "good".</li>
+    <li>If final (optional) parameter "<em>randommove</em>" can be enabled to create moving targets. If this parameter is set to true, the units of this bombing target will randomly move within the range zone.
+    Note that there might be quirks since DCS units can get stuck in buildings etc. So it might be safer to manually define a route for the units in the mission editor if moving targets are desired. </li>
+</ul>
 
-<p>The parameter "goodhitrange" specifies the radius around the target. If a bomb or rocket falls at a distance smaller than this number, the hit is considered to be "good".</p>
-
-<p>The final (optional) parameter "static" can be enabled (set to true) if static bomb targets are used rather than alive units.</p>
+<p>Another possibility to add bombing targets is the <a href="##(RANGE).AddBombingTargetGroup">RANGE.AddBombingTargetGroup</a>(<em>group, goodhitrange, randommove</em>) function. Here the parameter <em>group</em> is a MOOSE <a href="Group.html">Group</a> object
+and <strong>all</strong> units in this group are defined as bombing targets.</p>
 
 <h2>Fine Tuning</h2>
 <p>Many range parameters have good default values. However, the mission designer can change these settings easily with the supplied user functions:</p>
@@ -720,6 +835,9 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
     <li><a href="##(RANGE).SetStrafeTargetSmokeColor">RANGE.SetStrafeTargetSmokeColor</a>() sets the color used to smoke strafe targets.</li>
     <li><a href="##(RANGE).SetStrafePitSmokeColor">RANGE.SetStrafePitSmokeColor</a>() sets the color used to smoke strafe pit approach boxes.</li>
     <li><a href="##(RANGE).SetSmokeTimeDelay">RANGE.SetSmokeTimeDelay</a>() sets the time delay between smoking bomb/rocket impact points after impact.</li>
+    <li><a href="##(RANGE).TrackBombsON">RANGE.TrackBombsON</a>() or <a href="##(RANGE).TrackBombsOFF">RANGE.TrackBombsOFF</a>() can be used to enable/disable tracking and evaluating of all bomb types a player fires.</li>
+    <li><a href="##(RANGE).TrackRocketsON">RANGE.TrackRocketsON</a>() or <a href="##(RANGE).TrackRocketsOFF">RANGE.TrackRocketsOFF</a>() can be used to enable/disable tracking and evaluating of all rocket types a player fires.</li>
+    <li><a href="##(RANGE).TrackMissilesON">RANGE.TrackMissilesON</a>() or <a href="##(RANGE).TrackMissilesOFF">RANGE.TrackMissilesOFF</a>() can be used to enable/disable tracking and evaluating of all missile types a player fires.</li>
 </ul>
 
 <h2>Radio Menu</h2>
@@ -740,11 +858,11 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
 <h2>Examples</h2>
 
 <h3>Goldwater Range</h3>
-<p>This example shows hot to set up the Barry M. Goldwater range. It consists of two strafe pits each has two targets plus three bombing targets.</p>
+<p>This example shows hot to set up the <a href="https://en.wikipedia.org/wiki/Barry_M._Goldwater_Air_Force_Range">Barry M. Goldwater range</a>.
+It consists of two strafe pits each has two targets plus three bombing targets.</p>
 
-<p>The <a href="http://www.476vfightergroup.com/downloads.php?do=file&amp;id=287">476th - Air Weapons Range Objects mod</a> is used in this example.</p>
-
-<pre><code> -- Strafe pits. Each pit can consist of multiple targets. Here we have two pits and each of the pits has two targets. These are names of the corresponding units defined in the ME.
+<pre><code> -- Strafe pits. Each pit can consist of multiple targets. Here we have two pits and each of the pits has two targets.
+ -- These are names of the corresponding units defined in the ME.
  local strafepit_left={"GWR Strafe Pit Left 1", "GWR Strafe Pit Left 2"}
  local strafepit_right={"GWR Strafe Pit Right 1", "GWR Strafe Pit Right 2"}
 
@@ -752,16 +870,15 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
  local bombtargets={"GWR Bomb Target Circle Left", "GWR Bomb Target Circle Right", "GWR Bomb Target Hard"}
 
  -- Create a range object.
- local GoldwaterRange=RANGE:New("Goldwater Range")
+ GoldwaterRange=RANGE:New("Goldwater Range")
 
- -- Distance between foul line and strafe target. Note that this could also be done manually by simply measuring the distance between the target and the foul line in the ME.
- local strafe=UNIT:FindByName("GWR Strafe Pit Left 1")
- local foul=UNIT:FindByName("GWR Foul Line Left")
- local fouldist=strafe:GetCoordinate():Get2DDistance(foul:GetCoordinate())
+ -- Distance between strafe target and foul line. You have to specify the names of the unit or static objects.
+ -- Note that this could also be done manually by simply measuring the distance between the target and the foul line in the ME.
+ GoldwaterRange:GetFoullineDistance("GWR Strafe Pit Left 1", "GWR Foul Line Left")
 
  -- Add strafe pits. Each pit (left and right) consists of two targets.
  GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 20, fouldist)
- GoldwaterRange:AddStrafePit(strafepit_right, 3000, 300, nil, true, 20, fouldist)
+ GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, fouldist)
 
  -- Add bombing targets. A good hit is if the bomb falls less then 50 m from the target.
  GoldwaterRange:AddBombingTargets(bombtargets, 50)
@@ -769,6 +886,26 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
  -- Start range.
  GoldwaterRange:Start()
 </code></pre>
+
+<p>The <a href="http://www.476vfightergroup.com/downloads.php?do=file&amp;id=287">476th - Air Weapons Range Objects mod</a> is (implicitly) used in this example. </p>
+
+<h2>Debugging</h2>
+
+<p>In case you have problems, it is always a good idea to have a look at your DCS log file. You find it in your "Saved Games" folder, so for example in</p>
+<pre><code> C:\Users\&lt;yourname&gt;\Saved Games\DCS\Logs\dcs.log
+</code></pre>
+<p>All output concerning the RANGE class should have the string "RANGE" in the corresponding line.</p>
+
+<p>The verbosity of the output can be increased by adding the following lines to your script:</p>
+
+<pre><code> BASE:TraceOnOff(true)
+ BASE:TraceLevel(1)
+ BASE:TraceClass("RANGE")
+</code></pre>
+
+<p>To get even more output you can increase the trace level to 2 or even 3, c.f. <a href="BASE.html">BASE</a> for more details.</p>
+
+<p>The function <a href="##(RANGE).DebugON">RANGE.DebugON</a>() can be used to send messages on screen. It also smokes all defined strafe and bombing targets, the strafe pit approach boxes and the range zone.</p>
 
 
 
@@ -787,26 +924,66 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
 		<dl class="function">
 <dt>
 
-<a id="#(RANGE).AddBombingTargetUnit" >
-<strong>RANGE:AddBombingTargetUnit(unit, goodhitrange)</strong>
+<a id="#(RANGE).AddBombingTargetGroup" >
+<strong>RANGE:AddBombingTargetGroup(group, goodhitrange, randommove)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Add a unit as bombing target.</p>
+<p>Add all units of a group as bombing targets.</p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a> unit </em></code>: 
-Unit of the strafe target.</p>
+<p><code><em><a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a> group </em></code>: 
+Group of bombing targets.</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number goodhitrange </em></code>: 
 Max distance from unit which is considered as a good hit.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#boolean randommove </em></code>: 
+If true, unit will move randomly within the range. Default is false.</p>
+
+				</li>
+		</ul>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).AddBombingTargetUnit" >
+<strong>RANGE:AddBombingTargetUnit(unit, goodhitrange, randommove)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Add a unit or static object as bombing target.</p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em><a href="Wrapper.Positionable.html##(POSITIONABLE)">Wrapper.Positionable#POSITIONABLE</a> unit </em></code>: 
+Positionable (unit or static) of the strafe target.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number goodhitrange </em></code>: 
+Max distance from unit which is considered as a good hit.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#boolean randommove </em></code>: 
+If true, unit will move randomly within the range. Default is false.</p>
 
 				</li>
 		</ul>
@@ -816,7 +993,7 @@ Max distance from unit which is considered as a good hit.</p>
 <dt>
 
 <a id="#(RANGE).AddBombingTargets" >
-<strong>RANGE:AddBombingTargets(unitnames, goodhitrange, static)</strong>
+<strong>RANGE:AddBombingTargets(targetnames, goodhitrange, randommove)</strong>
 </a>
 </dt>
 <dd>
@@ -827,8 +1004,8 @@ Max distance from unit which is considered as a good hit.</p>
 		<ul>
 				<li>
 				
-<p><code><em>#table unitnames </em></code>: 
-Table containing the unit names acting as bomb targets.</p>
+<p><code><em>#table targetnames </em></code>: 
+Table containing names of unit or static objects serving as bomb targets.</p>
 
 				</li>
 				<li>
@@ -839,8 +1016,8 @@ Table containing the unit names acting as bomb targets.</p>
 				</li>
 				<li>
 				
-<p><code><em>#boolean static </em></code>: 
-(Optional) Target is static. Default false.</p>
+<p><code><em>#boolean randommove </em></code>: 
+If true, unit will move randomly within the range. Default is false.</p>
 
 				</li>
 		</ul>
@@ -850,7 +1027,7 @@ Table containing the unit names acting as bomb targets.</p>
 <dt>
 
 <a id="#(RANGE).AddStrafePit" >
-<strong>RANGE:AddStrafePit(unitnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline)</strong>
+<strong>RANGE:AddStrafePit(targetnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline)</strong>
 </a>
 </dt>
 <dd>
@@ -866,8 +1043,71 @@ Furthermore, the player must not be too high and fly in the direction of the pit
 		<ul>
 				<li>
 				
-<p><code><em>#table unitnames </em></code>: 
-Table of unit names defining the strafe targets. The first target in the list determines the approach zone (heading and box).</p>
+<p><code><em>#table targetnames </em></code>: 
+Table of unit or static names defining the strafe targets. The first target in the list determines the approach zone (heading and box).</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number boxlength </em></code>: 
+(Optional) Length of the approach box in meters. Default is 3000 m.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number boxwidth </em></code>: 
+(Optional) Width of the approach box in meters. Default is 300 m.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number heading </em></code>: 
+(Optional) Approach heading in Degrees. Default is heading of the unit as defined in the mission editor.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#boolean inverseheading </em></code>: 
+(Optional) Take inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number goodpass </em></code>: 
+(Optional) Number of hits for a "good" strafing pass. Default is 20.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number foulline </em></code>: 
+(Optional) Foul line distance. Hits from closer than this distance are not counted. Default 610 m = 2000 ft. Set to 0 for no foul line.</p>
+
+				</li>
+		</ul>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).AddStrafePitGroup" >
+<strong>RANGE:AddStrafePitGroup(group, boxlength, boxwidth, heading, inverseheading, goodpass, foulline)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Add all units of a group as one new strafe target pit.</p>
+
+	
+<p>For a strafe pit, hits from guns are counted. One pit can consist of several units.
+Note, an approach is only valid, if the player enters via a zone in front of the pit, which defined by boxlength and boxheading.
+Furthermore, the player must not be too high and fly in the direction of the pit to make a valid target apporoach.</p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em><a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a> group </em></code>: 
+MOOSE group of unit names defining the strafe target pit. The first unit in the group determines the approach zone (heading and box).</p>
 
 				</li>
 				<li>
@@ -980,6 +1220,53 @@ Table of unit names defining the strafe targets. The first target in the list de
 		<dl class="function">
 <dt>
 
+		<em></em>
+<a id="#(RANGE).Defaults" >
+<strong>RANGE.Defaults</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Default range parameters.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).GetFoullineDistance" >
+<strong>RANGE:GetFoullineDistance(namepit, namefoulline)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Measures the foule line distance between two unit or static objects.</p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#string namepit </em></code>: 
+Name of the strafe pit target object.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#string namefoulline </em></code>: 
+Name of the fould line distance marker object.</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+Foul line distance in meters.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
 		<em>#table</em>
 <a id="#(RANGE).MenuAddedTo" >
 <strong>RANGE.MenuAddedTo</strong>
@@ -1002,6 +1289,20 @@ Table of unit names defining the strafe targets. The first target in the list de
 <dd>
 	
 <p>Main radio menu.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+		<em>#table</em>
+<a id="#(RANGE).Names" >
+<strong>RANGE.Names</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Global list of all defined range names.</p>
 
 </dd>
 </dl>
@@ -1234,6 +1535,31 @@ Time in seconds. Default is 30 s.</p>
 		<dl class="function">
 <dt>
 
+<a id="#(RANGE).SetRangeLocation" >
+<strong>RANGE:SetRangeLocation(coordinate)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Set range location.</p>
+
+	
+<p>If this is not done, one (random) unit position of the range is used to determine the center of the range.  </p>
+
+		<h3>Parameter</h3>
+		<ul>
+				<li>
+				
+<p><code><em><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a> coordinate </em></code>: 
+Coordinate of the center of the range.</p>
+
+				</li>
+		</ul>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
 <a id="#(RANGE).SetRangeRadius" >
 <strong>RANGE:SetRangeRadius(radius)</strong>
 </a>
@@ -1250,7 +1576,7 @@ Time in seconds. Default is 30 s.</p>
 				<li>
 				
 <p><code><em>#number radius </em></code>: 
-Radius in km. Default 10 km.</p>
+Radius in km. Default 5 km.</p>
 
 				</li>
 		</ul>
@@ -1403,6 +1729,93 @@ Color id. Default SMOKECOLOR.Green.</p>
 		<dl class="function">
 <dt>
 
+<a id="#(RANGE).TrackBombsOFF" >
+<strong>RANGE:TrackBombsOFF()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Disables tracking of all bomb types.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).TrackBombsON" >
+<strong>RANGE:TrackBombsON()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Enables tracking of all bomb types.</p>
+
+	
+<p>Note that this is the default setting.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).TrackMissilesOFF" >
+<strong>RANGE:TrackMissilesOFF()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Disables tracking of all missile types.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).TrackMissilesON" >
+<strong>RANGE:TrackMissilesON()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Enables tracking of all missile types.</p>
+
+	
+<p>Note that this is the default setting.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).TrackRocketsOFF" >
+<strong>RANGE:TrackRocketsOFF()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Disables tracking of all rocket types.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE).TrackRocketsON" >
+<strong>RANGE:TrackRocketsON()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Enables tracking of all rocket types.</p>
+
+	
+<p>Note that this is the default setting.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
 <a id="#(RANGE)._AddF10Commands" >
 <strong>RANGE:_AddF10Commands(_unitName)</strong>
 </a>
@@ -1445,6 +1858,36 @@ Name of player unit.</p>
 
 				</li>
 		</ul>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE)._CheckStatic" >
+<strong>RANGE:_CheckStatic(name)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Checks if a static object with a certain name exists.</p>
+
+	
+<p>It also added it to the MOOSE data base, if it is not already in there.</p>
+
+		<h3>Parameter</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#string name </em></code>: 
+Name of the potential static object.</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#boolean:</em>
+Returns true if a static with this name exists. Retruns false if a unit with this name exists. Returns nil if neither unit or static exist.</p>
+
 </dd>
 </dl>
 		<dl class="function">
@@ -1737,6 +2180,32 @@ Name of the player.</p>
 
 				</li>
 			</ol>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+<a id="#(RANGE)._GetSpeed" >
+<strong>RANGE:_GetSpeed(controllable)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Get max speed of controllable.</p>
+
+		<h3>Parameter</h3>
+		<ul>
+				<li>
+				
+<p><code><em><a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a> controllable </em></code>: </p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+
+<p>Maximum speed in km/h.</p>
+
 </dd>
 </dl>
 		<dl class="function">
@@ -2065,7 +2534,10 @@ Color text.</p>
 </dt>
 <dd>
 	
-<p>http://stackoverflow.com/questions/1426954/split-string-in-lua</p>
+<p>Split string.</p>
+
+	
+<p>Cf http://stackoverflow.com/questions/1426954/split-string-in-lua</p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -2197,7 +2669,7 @@ Split text.</p>
 </dt>
 <dd>
 	
-<p>Coordinate of the range.</p>
+<p>Coordinate of the range location.</p>
 
 </dd>
 </dl>
@@ -2303,7 +2775,21 @@ DCS event table.</p>
 </dt>
 <dd>
 	
-<p>Radius of range defining its total size for e.g. smoking bomb impact points and sending radio messages. Default 10 km.</p>
+<p>Radius of range defining its total size for e.g. smoking bomb impact points and sending radio messages. Default 5 km.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+		<em><a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a></em>
+<a id="#(RANGE).rangezone" >
+<strong>RANGE.rangezone</strong>
+</a>
+</dt>
+<dd>
+	
+<p>MOOSE zone object of the range. For example, no bomb impacts are smoked if bombs fall outside of the range zone. </p>
 
 </dd>
 </dl>
@@ -2374,6 +2860,48 @@ DCS event table.</p>
 <dd>
 	
 <p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft. </p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+		<em>#boolean</em>
+<a id="#(RANGE).trackbombs" >
+<strong>RANGE.trackbombs</strong>
+</a>
+</dt>
+<dd>
+	
+<p>If true (default), all bomb types are tracked and impact point to closest bombing target is evaluated.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+		<em>#boolean</em>
+<a id="#(RANGE).trackmissiles" >
+<strong>RANGE.trackmissiles</strong>
+</a>
+</dt>
+<dd>
+	
+<p>If true (default), all missile types are tracked and impact point to closest bombing target is evaluated.</p>
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+
+		<em>#boolean</em>
+<a id="#(RANGE).trackrockets" >
+<strong>RANGE.trackrockets</strong>
+</a>
+</dt>
+<dd>
+	
+<p>If true (default), all rocket types are tracked and impact point to closest bombing target is evaluated.</p>
 
 </dd>
 </dl>
