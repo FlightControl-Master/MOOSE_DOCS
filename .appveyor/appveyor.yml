@@ -69,19 +69,19 @@ build_script:
       git commit -m "MOOSE generated documentation [skip ci]" 2>&1 
       git push origin "$env:appveyor_repo_branch" 2>&1
       dir
-   - ps: | 
-       if( $env:appveyor_repo_branch -eq 'develop' )     
-       {
-         $apiUrl = 'https://ci.appveyor.com/api'
-         $token = 'qts80b5kpq0ooj4x6vvw'
-         $headers = @{
-           "Authorization" = "Bearer $token"
-           "Content-type" = "application/json"
-           }
-         $RequestBody = @{ accountName = 'FlightControl-Master'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
-         # get project with last build details
-         $project = Invoke-RestMethod -method Post -Uri "$apiUrl/builds" -Headers $headers -Body $RequestBody
-       }
+  - ps: | 
+      if( $env:appveyor_repo_branch -eq 'develop' )     
+      {
+        $apiUrl = 'https://ci.appveyor.com/api'
+        $token = 'qts80b5kpq0ooj4x6vvw'
+        $headers = @{
+          "Authorization" = "Bearer $token"
+          "Content-type" = "application/json"
+          }
+        $RequestBody = @{ accountName = 'FlightControl-Master'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
+        # get project with last build details
+        $project = Invoke-RestMethod -method Post -Uri "$apiUrl/builds" -Headers $headers -Body $RequestBody
+      }
 
 
 
