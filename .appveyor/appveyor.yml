@@ -34,7 +34,7 @@ install:
   - cmd: set LUA_PATH = %LUA_PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?\init.lua
   - cmd: set LUA_CPATH = %LUA_CPATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\lib\lua\5.1\?.dll 
 #  - call luarocks install checks
-#  - call luarocks install luadocumentor
+  - call git clone https://github.com/LuaDevelopmentTools/luadocumentor.git
 
 
 cache:
@@ -52,9 +52,10 @@ build_script:
       echo "Removing old Documentation"
       del ./Documentation/*
       echo "Documenting"
-      luadocumentor "c:/Projects/Moose/Moose Development/Moose"
+      cd c:\Projects\luadocumentor
+      lua5.1 luadocumentor.lua -d c:/Projects/moose-docs/Documentation -s c:/Projects/moose-docs/Stylesheet/stylesheet.css "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
-      cd ./docs
+      cd c:\Projects\moose-docs\Documentation
       foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>',  '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97385487-1"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
@@ -65,7 +66,7 @@ build_script:
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token_documentation):x-oauth-basic@github.com`n" 
       git config --global user.email "sven.van.de.velde@telenet.be" 
       git config --global user.name "FlightControl-User" 
-      git add ./docs 2>&1
+      git add ./Documentation 2>&1
       git commit -m "MOOSE generated documentation [skip ci]" 2>&1 
       git push origin "$env:appveyor_repo_branch" 2>&1
       dir
