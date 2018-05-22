@@ -54,7 +54,7 @@ build_script:
       echo "Documenting"
       luadocumentor "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
-      cd ./Documentation
+      cd ./docs
       foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>',  '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97385487-1"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
@@ -65,7 +65,7 @@ build_script:
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token_documentation):x-oauth-basic@github.com`n" 
       git config --global user.email "sven.van.de.velde@telenet.be" 
       git config --global user.name "FlightControl-User" 
-      git add ./Documentation 2>&1
+      git add ./docs 2>&1
       git commit -m "MOOSE generated documentation [skip ci]" 2>&1 
       git push origin "$env:appveyor_repo_branch" 2>&1
       dir
