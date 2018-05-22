@@ -34,7 +34,6 @@ install:
   - cmd: set LUA_PATH = %LUA_PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?\init.lua
   - cmd: set LUA_CPATH = %LUA_CPATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\lib\lua\5.1\?.dll 
 #  - call luarocks install checks
-  - call git clone https://github.com/LuaDevelopmentTools/luadocumentor.git
 
 
 cache:
@@ -47,10 +46,11 @@ build_script:
   - ps: | 
       git checkout "$env:appveyor_repo_branch" 2>&1
       git clone -q --depth=1 -b "$env:appveyor_repo_branch" https://github.com/FlightControl-Master/MOOSE.git c:\Projects\Moose 
+      git clone -q --depth=1 https://github.com/LuaDevelopmentTools/luadocumentor.git c:\Projects\luadocumentor
       dir c:\Projects
       dir
       echo "Removing old Documentation"
-      del ./Documentation/*
+      del c:\Projects\moose-docs\Documentation\*
       echo "Documenting"
       cd c:\Projects\luadocumentor
       lua5.1 luadocumentor.lua -d c:/Projects/moose-docs/Documentation -s c:/Projects/moose-docs/Stylesheet/stylesheet.css "c:/Projects/Moose/Moose Development/Moose"
