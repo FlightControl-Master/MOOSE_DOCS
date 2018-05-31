@@ -1181,56 +1181,101 @@ which are excellent tools to be reused in an OO environment!.</p>
    </div>
   </nav>
   
-<img src="..\Images\Core_Scheduler.JPG" alt="Banner Image"/>   
+<img src="..\Images\MOOSE.JPG" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Core.Scheduler</strong></h1>
+    <h1>Module <strong>Actions.Assign</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Core</strong> -- SCHEDULER prepares and handles the <strong>execution of functions over scheduled time (intervals)</strong>.</p>
+<p>(SP) (MP) (FSM) Accept or reject process for player (task) assignments.</p>
 
     
 
 <hr/>
 
-<p>SCHEDULER manages the <strong>scheduling of functions</strong>:</p>
+<h1><a href="##(ACT_ASSIGN)">#ACT_ASSIGN</a> FSM template class, extends <a href="Fsm.html##(FSM_PROCESS)">Fsm#FSM_PROCESS</a></h1>
+
+<h2>ACT_ASSIGN state machine:</h2>
+
+<p>This class is a state machine: it manages a process that is triggered by events causing state transitions to occur.
+All derived classes from this class will start with the class name, followed by a _. See the relevant derived class descriptions below.
+Each derived class follows exactly the same process, using the same events and following the same state transitions, 
+but will have <strong>different implementation behaviour</strong> upon each event or state transition.</p>
+
+<h3>ACT_ASSIGN <strong>Events</strong>:</h3>
+
+<p>These are the events defined in this class:</p>
 
 <ul>
-    <li>optionally in an optional specified time interval, </li>
-    <li>optionally <strong>repeating</strong> with a specified time repeat interval, </li>
-    <li>optionally <strong>randomizing</strong> with a specified time interval randomization factor, </li>
-    <li>optionally <strong>stop</strong> the repeating after a specified time interval. </li>
+    <li><strong>Start</strong>:  Start the tasking acceptance process.</li>
+    <li><strong>Assign</strong>:  Assign the task.</li>
+    <li><strong>Reject</strong>:  Reject the task..</li>
+</ul>
+
+<h3>ACT_ASSIGN <strong>Event methods</strong>:</h3>
+
+<p>Event methods are available (dynamically allocated by the state machine), that accomodate for state transitions occurring in the process.
+There are two types of event methods, which you can use to influence the normal mechanisms in the state machine:</p>
+
+<ul>
+    <li><strong>Immediate</strong>: The event method has exactly the name of the event.</li>
+    <li><strong>Delayed</strong>: The event method starts with a __ + the name of the event. The first parameter of the event method is a number value, expressing the delay in seconds when the event will be executed. </li>
+</ul>
+
+<h3>ACT_ASSIGN <strong>States</strong>:</h3>
+
+<ul>
+    <li><strong>UnAssigned</strong>: The player has not accepted the task.</li>
+    <li><strong>Assigned (*)</strong>: The player has accepted the task.</li>
+    <li><strong>Rejected (*)</strong>: The player has not accepted the task.</li>
+    <li><strong>Waiting</strong>: The process is awaiting player feedback.</li>
+    <li><strong>Failed (*)</strong>: The process has failed.</li>
+</ul>
+
+<p>(*) End states of the process.</p>
+
+<h3>ACT_ASSIGN state transition methods:</h3>
+
+<p>State transition functions can be set <strong>by the mission designer</strong> customizing or improving the behaviour of the state.
+There are 2 moments when state transition methods will be called by the state machine:</p>
+
+<ul>
+    <li><p><strong>Before</strong> the state transition. 
+    The state transition method needs to start with the name <strong>OnBefore + the name of the state</strong>. 
+    If the state transition method returns false, then the processing of the state transition will not be done!
+    If you want to change the behaviour of the AIControllable at this event, return false, 
+    but then you'll need to specify your own logic using the AIControllable!</p></li>
+    <li><p><strong>After</strong> the state transition. 
+    The state transition method needs to start with the name <strong>OnAfter + the name of the state</strong>. 
+    These state transition methods need to provide a return value, which is specified at the function description.</p></li>
 </ul>
 
 <hr/>
 
-<h1>Demo Missions</h1>
+<h1>1) <a href="##(ACT_ASSIGN_ACCEPT)">#ACT_ASSIGN_ACCEPT</a> class, extends <a href="Fsm.Assign.html##(ACT_ASSIGN)">Fsm.Assign#ACT_ASSIGN</a></h1>
 
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master-release/SCH%20-%20Scheduler">SCHEDULER Demo Missions source code</a></h3>
+<p>The ACT<em>ASSIGN</em>ACCEPT class accepts by default a task for a player. No player intervention is allowed to reject the task.</p>
 
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master/SCH%20-%20Scheduler">SCHEDULER Demo Missions, only for beta testers</a></h3>
-
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases">ALL Demo Missions pack of the last release</a></h3>
-
-<hr/>
-
-<h1>YouTube Channel</h1>
-
-<h3><a href="">SCHEDULER YouTube Channel (none)</a></h3>
-
-<hr/>
-
-<h3>Contributions:</h3>
+<h2>1.1) ACT<em>ASSIGN</em>ACCEPT constructor:</h2>
 
 <ul>
-    <li>FlightControl : Concept &amp; Testing</li>
+    <li><a href="##(ACT_ASSIGN_ACCEPT).New">ACT_ASSIGN_ACCEPT.New</a>(): Creates a new ACT<em>ASSIGN</em>ACCEPT object.</li>
 </ul>
 
-<h3>Authors:</h3>
+<hr/>
+
+<h1>2) <a href="##(ACT_ASSIGN_MENU_ACCEPT)">#ACT_ASSIGN_MENU_ACCEPT</a> class, extends <a href="Fsm.Assign.html##(ACT_ASSIGN)">Fsm.Assign#ACT_ASSIGN</a></h1>
+
+<p>The ACT<em>ASSIGN</em>MENU_ACCEPT class accepts a task when the player accepts the task through an added menu option.
+This assignment type is useful to conditionally allow the player to choose whether or not he would accept the task.
+The assignment type also allows to reject the task.</p>
+
+<h2>2.1) ACT<em>ASSIGN</em>MENU_ACCEPT constructor:</h2>
+<hr/>
 
 <ul>
-    <li>FlightControl : Design &amp; Programming</li>
+    <li><a href="##(ACT_ASSIGN_MENU_ACCEPT).New">ACT_ASSIGN_MENU_ACCEPT.New</a>(): Creates a new ACT<em>ASSIGN</em>MENU_ACCEPT object.</li>
 </ul>
 
 <hr/>
@@ -1239,182 +1284,63 @@ which are excellent tools to be reused in an OO environment!.</p>
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SCHEDULER')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ACT_ASSIGN')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>SCHEDULER</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>ACT_ASSIGN</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>The SCHEDULER class creates schedule.</p>
+
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##SCHEDULER" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##ACT_ASSIGN" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(SCHEDULER)">#SCHEDULER</a>
-<a id="SCHEDULER" ><strong>SCHEDULER</strong></a>
-    
-<p>The SCHEDULER class creates schedule.</p>
-
+    <a href="##(ACT_ASSIGN)">#ACT_ASSIGN</a>
+<a id="ACT_ASSIGN" ><strong>ACT_ASSIGN</strong></a>
     
 
-<p>A SCHEDULER can manage <strong>multiple</strong> (repeating) schedules. Each planned or executing schedule has a unique <strong>ScheduleID</strong>.
-The ScheduleID is returned when the method <a href="##(SCHEDULER).Schedule">SCHEDULER.Schedule</a>() is called.
-It is recommended to store the ScheduleID in a variable, as it is used in the methods <a href="SCHEDULER.Start.html">SCHEDULER.Start</a>() and <a href="SCHEDULER.Stop.html">SCHEDULER.Stop</a>(),
-which can start and stop specific repeating schedules respectively within a SCHEDULER object.</p>
 
-<h2>SCHEDULER constructor</h2>
+</div>
 
-<p>The SCHEDULER class is quite easy to use, but note that the New constructor has variable parameters:</p>
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ACT_ASSIGN_ACCEPT')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>ACT_ASSIGN_ACCEPT</strong></h2></p></td>
+        <td class="style="width:60%;">
 
-<p>The <a href="##(SCHEDULER).New">SCHEDULER.New</a>() method returns 2 variables:</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##ACT_ASSIGN_ACCEPT" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<ol>
-    <li>The SCHEDULER object reference.</li>
-    <li>The first schedule planned in the SCHEDULER object.</li>
-</ol>
-
-<p>To clarify the different appliances, lets have a look at the following examples: </p>
-
-<h3>Construct a SCHEDULER object without a persistent schedule.</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil ): Setup a new SCHEDULER object, which is persistently executed after garbage collection.</p>
+    <a href="##(ACT_ASSIGN_ACCEPT)">#ACT_ASSIGN_ACCEPT</a>
+<a id="ACT_ASSIGN_ACCEPT" ><strong>ACT_ASSIGN_ACCEPT</strong></a>
     
-    <p>SchedulerObject = SCHEDULER:New()
-    SchedulerID = SchedulerObject:Schedule( nil, ScheduleFunction, {} )</p></li>
-</ul>
 
-<p>The above example creates a new SchedulerObject, but does not schedule anything.
-A separate schedule is created by using the SchedulerObject using the method :Schedule..., which returns a ScheduleID</p>
 
-<h3>Construct a SCHEDULER object without a volatile schedule, but volatile to the Object existence...</h3>
+</div>
 
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object ): Setup a new SCHEDULER object, which is linked to the Object. When the Object is nillified or destroyed, the SCHEDULER object will also be destroyed and stopped after garbage collection.</p>
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ACT_ASSIGN_MENU_ACCEPT')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>ACT_ASSIGN_MENU_ACCEPT</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##ACT_ASSIGN_MENU_ACCEPT" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ACT_ASSIGN_MENU_ACCEPT)">#ACT_ASSIGN_MENU_ACCEPT</a>
+<a id="ACT_ASSIGN_MENU_ACCEPT" ><strong>ACT_ASSIGN_MENU_ACCEPT</strong></a>
     
-    <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject = SCHEDULER:New( ZoneObject )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
-    ...
-    ZoneObject = nil
-    garbagecollect()</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, but does not schedule anything, and is bound to the existence of ZoneObject, which is a ZONE.
-A separate schedule is created by using the SchedulerObject using the method :Schedule()..., which returns a ScheduleID
-Later in the logic, the ZoneObject is put to nil, and garbage is collected.
-As a result, the ScheduleObject will cancel any planned schedule.</p>
-
-<h3>Construct a SCHEDULER object with a persistent schedule.</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil, Function, FunctionArguments, Start, ... ): Setup a new persistent SCHEDULER object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
-    
-    <p>SchedulerObject, SchedulerID = SCHEDULER:New( nil, ScheduleFunction, {} )</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, and does schedule the first schedule as part of the call.
-Note that 2 variables are returned here: SchedulerObject, ScheduleID...</p>
-
-<h3>Construct a SCHEDULER object without a schedule, but volatile to the Object existence...</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object, Function, FunctionArguments, Start, ... ): Setup a new SCHEDULER object, linked to Object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
-    
-    <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
-    ...
-    ZoneObject = nil
-    garbagecollect()</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, and schedules a method call (ScheduleFunction), 
-and is bound to the existence of ZoneObject, which is a ZONE object (ZoneObject).
-Both a ScheduleObject and a SchedulerID variable are returned.
-Later in the logic, the ZoneObject is put to nil, and garbage is collected.
-As a result, the ScheduleObject will cancel the planned schedule.</p>
-
-<h2>SCHEDULER timer stopping and (re-)starting.</h2>
-
-<p>The SCHEDULER can be stopped and restarted with the following methods:</p>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).Start">SCHEDULER.Start</a>(): (Re-)Start the schedules within the SCHEDULER object. If a CallID is provided to :Start(), only the schedule referenced by CallID will be (re-)started.</p></li>
-    <li><p><a href="##(SCHEDULER).Stop">SCHEDULER.Stop</a>(): Stop the schedules within the SCHEDULER object. If a CallID is provided to :Stop(), then only the schedule referenced by CallID will be stopped.</p>
-    
-    <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 10 )
-    ...
-    SchedulerObject:Stop( SchedulerID )
-    ...
-    SchedulerObject:Start( SchedulerID )</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, and does schedule the first schedule as part of the call.
-Note that 2 variables are returned here: SchedulerObject, ScheduleID... <br/>
-Later in the logic, the repeating schedule with SchedulerID is stopped. <br/>
-A bit later, the repeating schedule with SchedulerId is (re)-started.  </p>
-
-<h2>Create a new schedule</h2>
-
-<p>With the method <a href="##(SCHEDULER).Schedule">SCHEDULER.Schedule</a>() a new time event can be scheduled. 
-This method is used by the :New() constructor when a new schedule is planned.</p>
-
-<p>Consider the following code fragment of the SCHEDULER object creation.</p>
-
-<pre><code>ZoneObject = ZONE:New( "ZoneName" )
-SchedulerObject = SCHEDULER:New( ZoneObject )
-</code></pre>
-
-<p>Several parameters can be specified that influence the behaviour of a Schedule.</p>
-
-<h3>A single schedule, immediately executed</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within milleseconds ...</p>
-
-<h3>A single schedule, planned over time</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds ...</p>
-
-<h3>A schedule with a repeating time interval, planned over time</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
-and repeating 60 every seconds ...</p>
-
-<h3>A schedule with a repeating time interval, planned over time, with time interval randomization</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
-and repeating 60 seconds, with a 50% time interval randomization ...
-So the repeating time interval will be randomized using the <strong>0.5</strong>, <br/>
-and will calculate between <strong>60 - ( 60 * 0.5 )</strong> and <strong>60 + ( 60 * 0.5 )</strong> for each repeat, 
-which is in this example between <strong>30</strong> and <strong>90</strong> seconds.</p>
-
-<h3>A schedule with a repeating time interval, planned over time, with time interval randomization, and stop after a time interval</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5, 300 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
-The schedule will repeat every 60 seconds.
-So the repeating time interval will be randomized using the <strong>0.5</strong>, <br/>
-and will calculate between <strong>60 - ( 60 * 0.5 )</strong> and <strong>60 + ( 60 * 0.5 )</strong> for each repeat, 
-which is in this example between <strong>30</strong> and <strong>90</strong> seconds.
-The schedule will stop after <strong>300</strong> seconds.</p>
 
 
 </div>
@@ -1422,26 +1348,26 @@ The schedule will stop after <strong>300</strong> seconds.</p>
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>
   
-  <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Core.Scheduler)" >Type <strong>Core.Scheduler</strong></a></h2></div>
+  <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Actions.Assign)" >Type <strong>Actions.Assign</strong></a></h2></div>
   <div class="w3-container w3-white w3-padding-16" id="module_current_type">
     <div class="w3-white" id="record_type">
 </div>
 
   </div>
-  <div onclick="myFunction('#Types##SCHEDULER')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SCHEDULER)">Type <strong>SCHEDULER</strong></a></h2></div>
-  <div id= "#Types##SCHEDULER" class="w3-container w3-white w3-padding-16" id="module_other_types">
+  <div onclick="myFunction('#Types##ACT_ASSIGN')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ACT_ASSIGN)">Type <strong>ACT_ASSIGN</strong></a></h2></div>
+  <div id= "#Types##ACT_ASSIGN" class="w3-container w3-white w3-padding-16" id="module_other_types">
     <div class="w3-white" id="record_type">
-     <h3> Extends <a href="Core.Base.html##(BASE)">Core.Base#BASE</a> </h3>
+     <h3> Extends <a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a> </h3>
   
-<p>The SCHEDULER class</p>
+<p>ACT_ASSIGN class</p>
 
 <div class="fields">
   <h3>Field(s)</h3>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(SCHEDULER).MasterObject" ><strong>SCHEDULER.MasterObject</strong></a>
+    #string
+<a id="#(ACT_ASSIGN).ClassName" ><strong>ACT_ASSIGN.ClassName</strong></a>
     
 
 
@@ -1451,10 +1377,10 @@ The schedule will stop after <strong>300</strong> seconds.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(SCHEDULER).ScheduleID" ><strong>SCHEDULER.ScheduleID</strong></a>
+    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+<a id="#(ACT_ASSIGN).ProcessUnit" ><strong>ACT_ASSIGN.ProcessUnit</strong></a>
     
-<p>the ID of the scheduler.</p>
+
 
 </div>
 
@@ -1462,8 +1388,19 @@ The schedule will stop after <strong>300</strong> seconds.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
+<a id="#(ACT_ASSIGN).TargetZone" ><strong>ACT_ASSIGN.TargetZone</strong></a>
     
-<a id="#(SCHEDULER).SchedulerObject" ><strong>SCHEDULER.SchedulerObject</strong></a>
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Tasking.Task.html##(TASK)">Tasking.Task#TASK</a>
+<a id="#(ACT_ASSIGN).Task" ><strong>ACT_ASSIGN.Task</strong></a>
     
 
 
@@ -1476,14 +1413,117 @@ The schedule will stop after <strong>300</strong> seconds.</p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4" onclick="myFunction('#Functions##Clear')">
-<h6><a id="#(SCHEDULER).Clear" ><strong>SCHEDULER:Clear()</strong></a></h6>
+<div class="w3-theme-l4" onclick="myFunction('#Functions##New')">
+<h6><a id="#(ACT_ASSIGN).New" ><strong>ACT_ASSIGN:New()</strong></a></h6>
 </div>
     
-<p>Clears all pending schedules.</p>
+<p>Creates a new task assignment state machine.</p>
 
-<div id= "#Functions##Clear" class="w3-hide w3-white">
+    
+<p>The process will accept the task by default, no player intervention accepted.</p>
+
+<div id= "#Functions##New" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Return value:</strong></h5>
+        
+<p><a href="##(ACT_ASSIGN)">#ACT_ASSIGN</a>:
+The task acceptance process.</p>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>  
+</div>
+
+  </div>
+  <div onclick="myFunction('#Types##ACT_ASSIGN_ACCEPT')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ACT_ASSIGN_ACCEPT)">Type <strong>ACT_ASSIGN_ACCEPT</strong></a></h2></div>
+  <div id= "#Types##ACT_ASSIGN_ACCEPT" class="w3-container w3-white w3-padding-16" id="module_other_types">
+    <div class="w3-white" id="record_type">
+     <h3> Extends <a href="##(ACT_ASSIGN)">#ACT_ASSIGN</a> </h3>
+  
+<p>ACT<em>ASSIGN</em>ACCEPT class</p>
+
+<div class="fields">
+  <h3>Field(s)</h3>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ACT_ASSIGN_ACCEPT).ClassName" ><strong>ACT_ASSIGN_ACCEPT.ClassName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+<a id="#(ACT_ASSIGN_ACCEPT).ProcessUnit" ><strong>ACT_ASSIGN_ACCEPT.ProcessUnit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
+<a id="#(ACT_ASSIGN_ACCEPT).TargetZone" ><strong>ACT_ASSIGN_ACCEPT.TargetZone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Tasking.Task.html##(TASK)">Tasking.Task#TASK</a>
+<a id="#(ACT_ASSIGN_ACCEPT).Task" ><strong>ACT_ASSIGN_ACCEPT.Task</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ACT_ASSIGN_ACCEPT).TaskBriefing" ><strong>ACT_ASSIGN_ACCEPT.TaskBriefing</strong></a>
+    
+
+
+</div>
+
+</div>   
+</div>
+<div class="functions">
+  <h3>Function(s)</h3>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Init')">
+<h6><a id="#(ACT_ASSIGN_ACCEPT).Init" ><strong>ACT_ASSIGN_ACCEPT:Init(FsmAssign)</strong></a></h6>
+</div>
+    
+
+
+<div id= "#Functions##Init" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <strong>FsmAssign</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
 </div>
 
 </div>
@@ -1494,80 +1534,24 @@ The schedule will stop after <strong>300</strong> seconds.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##New')">
-<h6><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</strong></a></h6>
+<h6><a id="#(ACT_ASSIGN_ACCEPT).New" ><strong>ACT_ASSIGN_ACCEPT:New(TaskBriefing)</strong></a></h6>
 </div>
     
-<p>SCHEDULER constructor.</p>
+<p>Creates a new task assignment state machine.</p>
+
+    
+<p>The process will accept the task by default, no player intervention accepted.</p>
 
 <div id= "#Functions##New" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
+    <h5><strong>Parameter:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
-          <div class="w3-half">#table
-        <strong>SchedulerObject</strong></div>
-          <div class="w3-half">
-<p>Specified for which Moose object the timer is setup. If a value of nil is provided, a scheduler will be setup without an object reference.</p>
-</div>
+          <div class="w3-half">#string
+        <strong>TaskBriefing</strong></div>
+          <div class="w3-half"><p></p></div>
     </div>
-      <div class="w3-row">
-          <div class="w3-half">#function
-        <strong>SchedulerFunction</strong></div>
-          <div class="w3-half">
-<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#table
-        <strong>SchedulerArguments</strong></div>
-          <div class="w3-half">
-<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>Start</strong></div>
-          <div class="w3-half">
-<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>Repeat</strong></div>
-          <div class="w3-half">
-<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>RandomizeFactor</strong></div>
-          <div class="w3-half">
-<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>Stop</strong></div>
-          <div class="w3-half">
-<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
-</div>
-    </div>
-    <h5><strong>Return values:</strong></h5>
-      <ol>
-        <li>
-        
-<p><a href="##(SCHEDULER)">#SCHEDULER</a>:
-self.</p>
-
-        </li>
-        <li>
-        
-<h1>number:</h1>
-<p>The ScheduleID of the planned schedule.</p>
-
-        </li>
-      </ol>
 </div>
 
 </div>
@@ -1577,100 +1561,221 @@ self.</p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4" onclick="myFunction('#Functions##Remove')">
-<h6><a id="#(SCHEDULER).Remove" ><strong>SCHEDULER:Remove(ScheduleID)</strong></a></h6>
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onafterStart')">
+<h6><a id="#(ACT_ASSIGN_ACCEPT).onafterStart" ><strong>ACT_ASSIGN_ACCEPT:onafterStart(ProcessUnit, Event, From, To, Task)</strong></a></h6>
 </div>
     
-<p>Removes a specific schedule if a valid ScheduleID is provided.</p>
+<p>StateMachine callback function</p>
 
-<div id= "#Functions##Remove" class="w3-hide w3-white">
+<div id= "#Functions##onafterStart" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half"><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+        <strong>ProcessUnit</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>Event</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>From</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>To</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>Task</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onenterAssigned')">
+<h6><a id="#(ACT_ASSIGN_ACCEPT).onenterAssigned" ><strong>ACT_ASSIGN_ACCEPT:onenterAssigned(ProcessUnit, Event, From, To, Task)</strong></a></h6>
+</div>
+    
+<p>StateMachine callback function</p>
+
+<div id= "#Functions##onenterAssigned" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half"><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+        <strong>ProcessUnit</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>Event</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>From</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>To</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>Task</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>  
+</div>
+
+  </div>
+  <div onclick="myFunction('#Types##ACT_ASSIGN_MENU_ACCEPT')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ACT_ASSIGN_MENU_ACCEPT)">Type <strong>ACT_ASSIGN_MENU_ACCEPT</strong></a></h2></div>
+  <div id= "#Types##ACT_ASSIGN_MENU_ACCEPT" class="w3-container w3-white w3-padding-16" id="module_other_types">
+    <div class="w3-white" id="record_type">
+     <h3> Extends <a href="##(ACT_ASSIGN)">#ACT_ASSIGN</a> </h3>
+  
+<p>ACT<em>ASSIGN</em>MENU_ACCEPT class</p>
+
+<div class="fields">
+  <h3>Field(s)</h3>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).ClassName" ><strong>ACT_ASSIGN_MENU_ACCEPT.ClassName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).Menu" ><strong>ACT_ASSIGN_MENU_ACCEPT.Menu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).MenuAcceptTask" ><strong>ACT_ASSIGN_MENU_ACCEPT.MenuAcceptTask</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).MenuRejectTask" ><strong>ACT_ASSIGN_MENU_ACCEPT.MenuRejectTask</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).ProcessUnit" ><strong>ACT_ASSIGN_MENU_ACCEPT.ProcessUnit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).TargetZone" ><strong>ACT_ASSIGN_MENU_ACCEPT.TargetZone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Tasking.Task.html##(TASK)">Tasking.Task#TASK</a>
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).Task" ><strong>ACT_ASSIGN_MENU_ACCEPT.Task</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ACT_ASSIGN_MENU_ACCEPT).TaskBriefing" ><strong>ACT_ASSIGN_MENU_ACCEPT.TaskBriefing</strong></a>
+    
+
+
+</div>
+
+</div>   
+</div>
+<div class="functions">
+  <h3>Function(s)</h3>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Init')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).Init" ><strong>ACT_ASSIGN_MENU_ACCEPT:Init(TaskBriefing)</strong></a></h6>
+</div>
+    
+<p>Creates a new task assignment state machine.</p>
+
+    
+<p>The process will request from the menu if it accepts the task, if not, the unit is removed from the simulator.</p>
+
+<div id= "#Functions##Init" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameter:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>ScheduleID</strong></div>
-          <div class="w3-half">
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
-</div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4" onclick="myFunction('#Functions##Schedule')">
-<h6><a id="#(SCHEDULER).Schedule" ><strong>SCHEDULER:Schedule(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</strong></a></h6>
-</div>
-    
-<p>Schedule a new time event.</p>
-
-    
-<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
-
-<div id= "#Functions##Schedule" class="w3-hide w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#table
-        <strong>SchedulerObject</strong></div>
-          <div class="w3-half">
-<p>Specified for which Moose object the timer is setup. If a value of nil is provided, a scheduler will be setup without an object reference.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#function
-        <strong>SchedulerFunction</strong></div>
-          <div class="w3-half">
-<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#table
-        <strong>SchedulerArguments</strong></div>
-          <div class="w3-half">
-<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>Start</strong></div>
-          <div class="w3-half">
-<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>Repeat</strong></div>
-          <div class="w3-half">
-<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>RandomizeFactor</strong></div>
-          <div class="w3-half">
-<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
-</div>
-    </div>
-      <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>Stop</strong></div>
-          <div class="w3-half">
-<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
-</div>
+          <div class="w3-half">#string
+        <strong>TaskBriefing</strong></div>
+          <div class="w3-half"><p></p></div>
     </div>
     <h5><strong>Return value:</strong></h5>
         
-<h1>number:</h1>
-<p>The ScheduleID of the planned schedule.</p>
+<p><a href="##(ACT_ASSIGN_MENU_ACCEPT)">#ACT_ASSIGN_MENU_ACCEPT</a>:
+self</p>
 
 </div>
 
@@ -1681,23 +1786,20 @@ self.</p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4" onclick="myFunction('#Functions##Start')">
-<h6><a id="#(SCHEDULER).Start" ><strong>SCHEDULER:Start(ScheduleID)</strong></a></h6>
+<div class="w3-theme-l4" onclick="myFunction('#Functions##MenuAssign')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).MenuAssign" ><strong>ACT_ASSIGN_MENU_ACCEPT:MenuAssign(TaskGroup)</strong></a></h6>
 </div>
     
-<p>(Re-)Starts the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+<p>Menu function.</p>
 
-<div id= "#Functions##Start" class="w3-hide w3-white">
+<div id= "#Functions##MenuAssign" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameter:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>ScheduleID</strong></div>
-          <div class="w3-half">
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
-</div>
+        <strong>TaskGroup</strong></div>
+          <div class="w3-half"><p></p></div>
     </div>
 </div>
 
@@ -1708,23 +1810,238 @@ self.</p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4" onclick="myFunction('#Functions##Stop')">
-<h6><a id="#(SCHEDULER).Stop" ><strong>SCHEDULER:Stop(ScheduleID)</strong></a></h6>
+<div class="w3-theme-l4" onclick="myFunction('#Functions##MenuReject')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).MenuReject" ><strong>ACT_ASSIGN_MENU_ACCEPT:MenuReject(TaskGroup)</strong></a></h6>
 </div>
     
-<p>Stops the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+<p>Menu function.</p>
 
-<div id= "#Functions##Stop" class="w3-hide w3-white">
+<div id= "#Functions##MenuReject" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameter:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
-          <div class="w3-half">#number
-        <strong>ScheduleID</strong></div>
-          <div class="w3-half">
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+        <strong>TaskGroup</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
 </div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##New')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).New" ><strong>ACT_ASSIGN_MENU_ACCEPT:New(TaskBriefing)</strong></a></h6>
+</div>
+    
+<p>Init.</p>
+
+<div id= "#Functions##New" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>TaskBriefing</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+        
+<p><a href="##(ACT_ASSIGN_MENU_ACCEPT)">#ACT_ASSIGN_MENU_ACCEPT</a>:
+self</p>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onafterAssign')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).onafterAssign" ><strong>ACT_ASSIGN_MENU_ACCEPT:onafterAssign(ProcessUnit, Event, From, To, Task, TaskGroup)</strong></a></h6>
+</div>
+    
+<p>StateMachine callback function</p>
+
+<div id= "#Functions##onafterAssign" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half"><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+        <strong>ProcessUnit</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>Event</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>From</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>To</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>Task</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>TaskGroup</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onafterReject')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).onafterReject" ><strong>ACT_ASSIGN_MENU_ACCEPT:onafterReject(ProcessUnit, Event, From, To, Task, TaskGroup)</strong></a></h6>
+</div>
+    
+<p>StateMachine callback function</p>
+
+<div id= "#Functions##onafterReject" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half"><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+        <strong>ProcessUnit</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>Event</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>From</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>To</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>Task</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>TaskGroup</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onafterStart')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).onafterStart" ><strong>ACT_ASSIGN_MENU_ACCEPT:onafterStart(ProcessUnit, Event, From, To, Task)</strong></a></h6>
+</div>
+    
+<p>StateMachine callback function</p>
+
+<div id= "#Functions##onafterStart" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half"><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+        <strong>ProcessUnit</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>Event</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>From</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>To</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>Task</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onenterAssigned')">
+<h6><a id="#(ACT_ASSIGN_MENU_ACCEPT).onenterAssigned" ><strong>ACT_ASSIGN_MENU_ACCEPT:onenterAssigned(ProcessUnit, Event, From, To, Task, TaskGroup)</strong></a></h6>
+</div>
+    
+<p>StateMachine callback function</p>
+
+<div id= "#Functions##onenterAssigned" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+          <div class="w3-half"><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+        <strong>ProcessUnit</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>Event</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>From</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+          <div class="w3-half">#string
+        <strong>To</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>Task</strong></div>
+          <div class="w3-half"><p></p></div>
+    </div>
+      <div class="w3-row">
+        <strong>TaskGroup</strong></div>
+          <div class="w3-half"><p></p></div>
     </div>
 </div>
 
@@ -1739,7 +2056,7 @@ self.</p>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Core_Scheduler.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/MOOSE.JPG')";
 }
 </script>
 
