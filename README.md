@@ -70,9 +70,9 @@ Each TASK has a TASK ACTION flow, which is the flow that a player (hosted by a U
 
 * [**MISSION**](Documentation/Tasking.Mission.html): Each MISSION has various TASKs to be executed and accomplished by players.
 
-* [**TASK_A2A_DISPATCHER**](Tasking.Documentation/Task_A2A_Dispatcher.html): Automatically and dynamically dispatch A2A tasks to be executed by human players, as a result of the detection of airborne targets within a Mission scope.
+* [**TASK_A2A_DISPATCHER**](Documentation/Tasking.Task_A2A_Dispatcher.html): Automatically and dynamically dispatch A2A tasks to be executed by human players, as a result of the detection of airborne targets within a Mission scope.
 
-* [**TASK_A2G_DISPATCHER**](Tasking.Documentation/Task_A2G_Dispatcher.html): Automatically and dynamically dispatch A2G tasks to be executed by human players, as a result of the detection of ground targets within a Mission scope.
+* [**TASK_A2G_DISPATCHER**](Documentation/Tasking.Task_A2G_Dispatcher.html): Automatically and dynamically dispatch A2G tasks to be executed by human players, as a result of the detection of ground targets within a Mission scope.
 
 * [**TASK_A2A**](Documentation/Tasking.Task_A2A.html): Models a A2A CAP, INTERCEPT and SWEEP tasks where a Player is routed towards an attack zone without enemies nearby, and various ground targets need to be eliminated.
 
