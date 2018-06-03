@@ -1,8 +1,8 @@
 # AI. Usage Guide
 
-## AI.1. A2A Dispatching
+## 1. A2A Dispatching
 
-### AI.1.1. [**AI A2A Dispatcher**](Documentation/AI.AI_A2A_Dispatcher.html)
+### 1.1. [**AI A2A Dispatcher**](Documentation/AI.AI_A2A_Dispatcher.html)
 
 ![AI A2A Dispatcher](Images\AI_Air_To_Air_Dispatching.JPG)
 
@@ -32,10 +32,10 @@ If you want more options, use the [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_
   * Establish an automatic in air refuel process for CAP using refuel tankers.
   * Setup default settings for all squadrons and A2A defenses.
   * Setup specific settings for specific squadrons.
-  * Quickly setup an A2A defense system using @{#AI_A2A_GCICAP}.
-  * Setup a more advanced defense system using @{#AI_A2A_DISPATCHER}.
+  * Quickly setup an A2A defense system using AI_A2A_GCICAP.
+  * Setup a more advanced defense system using AI_A2A_DISPATCHER.
 
-## AI.2. AI Cargo Dispatching
+## 2. AI Cargo Dispatching
 
 Cargo dispatching will make the AI to transport cargo to deploy zones.
 Cargo can be transported by APC or trucks, or by helicopters.
@@ -50,7 +50,7 @@ Cargo can be transported by APC or trucks, or by helicopters.
   * Home location that will be used for carrier parking, when all cargo has been transported.
   * Automatic activation of carriers when new cargo is to be picked-up (of cargo is spawned for example).
 
-### AI.2.1. [**AI_Cargo_Dispatcher_APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
+### 2.1. [**AI Cargo Dispatching for APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
 
 ![AI_Cargo_Dispatcher_APC](Images\AI_Cargo_Dispatching_For_APC.JPG)
 
@@ -63,7 +63,7 @@ Models the intelligent transportation of infantry and other cargo using **APCs o
   * Infantry loaded as cargo, will unboard in case enemies are nearby and will help defending the vehicles.
   * Different ranges can be setup for enemy defenses.
 
-### AI.2.2. [**AI_Cargo_Dispatcher_Helicopter**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
+### 2.2. [**AI Cargo Dispatching for Helicopters**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
 
 ![AI_Cargo_Dispatcher_Helicopter](Images\AI_Cargo_Dispatching_For_Helicopters.JPG)
 
@@ -77,7 +77,7 @@ Models the intelligent transportation of infantry and other cargo using **Helico
   * Helicopters will orbit the deploy zones when there is no space for landing until the deploy zone is free.
 
 
-## AI.3. [**AI_Balancer**](Documentation/AI.AI_Balancer.html)
+## 3. [**AI Balancing**](Documentation/AI.AI_Balancer.html)
 
 ![AI_Balancer](Images\AI_Balancing.JPG)
 
@@ -91,7 +91,7 @@ Balance player slots with AI to create an engaging simulation environment, indep
   * Configure the behaviour of AI when a human joins a slot for which an AI is active.
 
 
-## AI.4. [**AI_Formation**](Documentation/AI.AI_Formation.html)
+## 4. [**AI Large Formations**](Documentation/AI.AI_Formation.html)
 
 ![AI_Formation](Images\AI_Large_Formations.JPG)
 
@@ -103,4 +103,57 @@ Build large airborne formations of aircraft.
   * Build different formation types.
   * Assign a group leader that will guide the large formation path.
 
+## 5. AI engagement
+
+### 5.1. [**AI Patrolling**](Documentation/AI.AI_Patrol.html)
+
+![AI_Patrol](Images\AI_Air_Patrolling.JPG)
+
+Peform Air Patrolling for airplanes within a patrol zone.
+
+**Features:**
+
+  * Patrol AI airplanes within a given zone.
+  * Trigger detected events when enemy airplanes are detected.
+  * Manage a fuel treshold to RTB on time.
+
+
+### 5.2. [**AI Combat Air Patrolling**](Documentation/AI.AI_Cap.html)
+
+![AI_Patrol](Images\AI_Combat_Air_Patrol.JPG)
+
+Peform Combat Air Patrolling (CAP) for airplanes within a patrol zone.
+
+**Features:**
+
+  * Patrol AI airplanes within a given zone.
+  * Trigger detected events when enemy airplanes are detected.
+  * Manage a fuel treshold to RTB on time.
+  * Engage the enemy when detected.
+
+### 5.3. [**AI Close Air Support**](Documentation/AI.AI_Cas.html)
+
+Peform Close Air Support (CAS) near friendlies within an engagement zone.
+
+**Features:**
+ 
+  * Hold and standby within a patrol zone.
+  * Engage upon command the enemies within an engagement zone.
+  * Loop the zone until all enemies are eliminated.
+  * Trigger different events upon the results achieved.
+  * After combat, return to the patrol zone and hold.
+  * RTB when commanded or after out of fuel.
+
+### 5.4. [**AI Battlefield Area Interdiction**](Documentation/AI.AI_Bai.html)
+
+Peform Battlefield Area Interdiction (BAI) within an engagement zone.
+
+**Features:**
+ 
+  * Hold and standby within a patrol zone.
+  * Engage upon command the assigned targets within an engagement zone.
+  * Loop the zone until all targets are eliminated.
+  * Trigger different events upon the results achieved.
+  * After combat, return to the patrol zone and hold.
+  * RTB when commanded or after out of fuel.
 
