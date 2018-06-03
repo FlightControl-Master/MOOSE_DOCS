@@ -129,7 +129,7 @@ Balance player slots with AI to create an engaging simulation environment, indep
 
 #### [**AI_Formation**](Documentation/AI.AI_Formation.html)
 
-![AI_Formation](Images\AI_Large_Formation.JPG)
+![AI_Formation](Images\AI_Large_Formations.JPG)
 
 Build large airborne formations of aircraft.
 
