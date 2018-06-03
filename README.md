@@ -1,4 +1,4 @@
-# 1. MOOSE Framework - Introduction
+# 1. MOOSE Framework
 
 MOOSE is a **M**ission **O**bject **O**riented **S**cripting **E**nvironment, and is meant for mission designers and mission hosters.
 It allows to quickly setup complex missions using pre-scripted scenarios using the available classes within the MOOSE Framework.
@@ -6,10 +6,10 @@ MOOSE works with DCS world 2.5 and earlier versions.
 
 ![MOOSE Banner](Images\MOOSE.JPG)
 
-## [Please Donate ...](https://donorbox.org/fund-github-subscriptionfor-moose)
+## [Donation ...](https://donorbox.org/fund-github-subscriptionfor-moose)
 
 If you appreciate this development, please support to extend the framework. The development of this framework takes a lot of time.
-A small gift would help me to buy a new small laptop that I can use to extend this framework while commuting to and from work ...
+A small gift would help me fund the costs and time that comes with it, to extend this framework while commuting to and from work ...
 Also, your donations will be saved and spent wisely to the advantage of the community!
 
 If everyone helps with a small amount, it would be really great!
@@ -17,14 +17,14 @@ If everyone helps with a small amount, it would be really great!
 <a class="dbox-donation-button" href="https://donorbox.org/fund-github-subscriptionfor-moose" style="background:#2d81c5 url(https://d1iczxrky3cnb2.cloudfront.net/red_logo.png) no-repeat 37px center; color: #fff;text-decoration: none;font-family: Verdana,sans-serif;display: inline-block;font-size: 16px;padding: 15px 38px 15px 75px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; box-shadow: 0 1px 0 0 #1f5a89; text-shadow: 0 1px rgba(0, 0, 0, 0.3);" >Donate</a>
 
 
-# 2. MOOSE Framework - Explained
+# 2. **[MOOSE Usage Guide](Moose_Usage_Guide.html)**
 
-You need to write lua code (scripts) to apply the MOOSE framework. But it is not really that hard, if you understand a couple of principles.
+You need to write lua code (scripts) to apply the MOOSE framework. 
+But it is not really that hard, if you understand a couple of principles.
+Click on the title to open the guides.
 
-Please refer to the **[MOOSE Usage Guide](Moose_Usage_Guide.html)** to use the MOOSE Framework.
 
-
-# 3. MOOSE Framework - Setup
+# 3. MOOSE Setup
 
 The delivery of MOOSE follows a structured release process. Over time, new features are added that can be used in your mission.
 
