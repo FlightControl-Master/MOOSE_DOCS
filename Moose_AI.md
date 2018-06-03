@@ -1,8 +1,6 @@
 # MOOSE AI Guide
 
-## 1. A2A Dispatching
-
-### 1.1. [**AI A2A Dispatcher**](Documentation/AI.AI_A2A_Dispatcher.html)
+## 1. [**AI A2A Dispatching**](Documentation/AI.AI_A2A_Dispatcher.html)
 
 ![AI A2A Dispatcher](Images\AI_Air_To_Air_Dispatching.JPG)
 
@@ -34,6 +32,7 @@ If you want more options, use the [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_
   * Setup specific settings for specific squadrons.
   * Quickly setup an A2A defense system using AI_A2A_GCICAP.
   * Setup a more advanced defense system using AI_A2A_DISPATCHER.
+
 
 ## 2. AI Cargo Dispatching
 
