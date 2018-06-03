@@ -30,11 +30,11 @@ On the MOOSE framework GITHUB site, you can register issues, feedback and commen
 This allows to track this feedback and issues, in order to provide a structured support and create a milestone plan.
 In other words, treat this development as a project.
 
-## 1.4) MOOSE on slack.com
+## 1.4) MOOSE on Discord
 
-Slack is a team community site. It is a great environment to discuss online the framework.
+Discord is a team community site. It is a great environment to discuss online the framework.
 Various channels are allocated in the environment to discuss specific topics. 
-A channel exists per MOOSE class, so that a focused discuss is possible.
+A channel exists per MOOSE class, to facilitate a focused discussion.
 
-![Slack](Communities/Slack.JPG)
+There are currently more than 300 members on our discord MOOSE channel.
 

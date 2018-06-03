@@ -133,6 +133,8 @@ Peform Combat Air Patrolling (CAP) for airplanes within a patrol zone.
 
 ### 5.3. [**AI Close Air Support**](Documentation/AI.AI_Cas.html)
 
+![AI_Patrol](Images\AI_Close_Air_Support.JPG)
+
 Peform Close Air Support (CAS) near friendlies within an engagement zone.
 
 **Features:**
@@ -144,9 +146,11 @@ Peform Close Air Support (CAS) near friendlies within an engagement zone.
   * After combat, return to the patrol zone and hold.
   * RTB when commanded or after out of fuel.
 
-### 5.4. [**AI Battlefield Area Interdiction**](Documentation/AI.AI_Bai.html)
+### 5.4. [**AI Battlefield Air Interdiction**](Documentation/AI.AI_Bai.html)
 
-Peform Battlefield Area Interdiction (BAI) within an engagement zone.
+![AI_Patrol](Images\AI_Battlefield_Air_Interdiction.JPG)
+
+Peform Battlefield Air Interdiction (BAI) within an engagement zone.
 
 **Features:**
  

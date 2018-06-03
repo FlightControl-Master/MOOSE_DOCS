@@ -30,8 +30,6 @@ MOOSE contains a lot of classes that can be used to enhance your missions.
 The AI classes are designed to make AI perform processes. 
 I use the term processes here, because the AI classes will make the controllable AI to perform a series of tasks that will result in a goal to be achieved.
 
-====
-
 * [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP): Using an easy process you can define an A2A defense system using the Mission Editor.
 * [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER): Same as AI\_A2A\_GCICAP, but is for more advanced or developer type mission designers. This class provides more options.
 
@@ -44,8 +42,6 @@ I use the term processes here, because the AI classes will make the controllable
 * [**AI\_CAS**](Documentation/AI.AI_Cas.html): Make an alive AI Group perform Close Air Support as a dynamic process.
 
 * [**AI\_PATROL**](Documentation/AI.AI_Patrol.html): Make an alive AI Group perform an Air Patrol as a dynamic process.
-
-====
 
 ## MOOSE Demonstration Missions
 
