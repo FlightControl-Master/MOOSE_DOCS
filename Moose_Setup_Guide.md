@@ -1,10 +1,10 @@
-# 1) MOOSE Usage Guide
+# MOOSE Setup Guide
 
 Using the MOOSE framework is very easy, and this document provides you with a detailed explanation how to install
 and use MOOSE within your missions.
 
 
-## 1.1) MOOSE framework on GITHUB
+## 1.1) MOOSE Framework on GITHUB
 
 yFor reference, You can find the source code of [MOOSE framework on GITHUB](https://www.github.com/FlightControl-Master/MOOSE/). 
 It is free for download and usage, since it is released under the GNU 3.0 open source license policy. 
