@@ -24,121 +24,28 @@ You'll need to browse to the right MOOSE Class within the inheritance tree struc
 ## MOOSE Framework is a set of **Classes** to be used by Mission Designers.
 
 MOOSE contains a lot of classes that can be used to enhance your missions.
-There are AI classes, which provide you with the tools to control AI.
-Tasking classes will let human players perform tasks with mission goals.
 
-In a nuttshell, this is what MOOSE can do for you.
-
-### AI Classes
+### [MOOSE AI Guide](Moose_AI_Guide.html)
 
 The AI classes are designed to make AI perform processes. 
 I use the term processes here, because the AI classes will make the controllable AI to perform a series of tasks that will result in a goal to be achieved.
 
-In summary, there are different types of AI classes within the MOOSE framework, that will make AI perform various types of processes.
+====
 
-#### AI A2A Dispatching
+* [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP): Using an easy process you can define an A2A defense system using the Mission Editor.
+* [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER): Same as AI\_A2A\_GCICAP, but is for more advanced or developer type mission designers. This class provides more options.
 
-##### [**AI A2A Dispatcher**](Documentation/AI.AI_A2A_Dispatcher.html)
+* [**AI\_BALANCER**](Documentation/AI.AI_Balancer.html): Compensate in a multi player mission the abscence of players with dynamically spawned AI air units. When players join CLIENTS, the AI will either be destroyed, or will fly back to the home or nearest friendly airbase.
 
-![AI A2A Dispatcher](Images\AI_Air_To_Air_Dispatching.JPG)
+* [**AI\_BAI**](Documentation/AI.AI_Bai.html): Make an alive AI Group perform Battlefield Air Interdiction as a dynamic process.
 
-Create an **A2A defense system** executed by AI to perform CAP or GCI to defend your airspace.  
-There are two classes that are important to learn:
+* [**AI\_CAP**](Documentation/AI.AI_Cap.html): Make an alive AI Group perform Combat Air Patrol as a dynamic process.
 
-   * [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP)
-   * [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER)
-   
-The [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP) is a class for **novice mission designers**, 
-so I recommend novice users to start with using this class. 
-You can quickly configure a working GCICAP process.
-But it will provide less flexibility and options. 
-If you want more options, use the [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER).
+* [**AI\_CAS**](Documentation/AI.AI_Cas.html): Make an alive AI Group perform Close Air Support as a dynamic process.
 
-**Features:**
- 
-  * Setup quickly an A2A defense system for a coalition.
-  * Setup (CAP) Control Air Patrols at defined zones to enhance your A2A defenses.
-  * Setup (GCI) Ground Control Intercept at defined airbases to enhance your A2A defenses.
-  * Define and use an EWR (Early Warning Radar) network.
-  * Define squadrons at airbases.
-  * Enable airbases for A2A defenses.
-  * Add different plane types to different squadrons.
-  * Add multiple squadrons to different airbases.
-  * Define different ranges to engage upon intruders.
-  * Establish an automatic in air refuel process for CAP using refuel tankers.
-  * Setup default settings for all squadrons and A2A defenses.
-  * Setup specific settings for specific squadrons.
-  * Quickly setup an A2A defense system using @{#AI_A2A_GCICAP}.
-  * Setup a more advanced defense system using @{#AI_A2A_DISPATCHER}.
+* [**AI\_PATROL**](Documentation/AI.AI_Patrol.html): Make an alive AI Group perform an Air Patrol as a dynamic process.
 
-#### AI Cargo Dispatching
-
-Cargo dispatching will make the AI to transport cargo to deploy zones.
-Cargo can be transported by APC or trucks, or by helicopters.
-
-**Overall Features:**
-
-  * Quickly transport cargo to various deploy zones using different carrier types.
-  * Various cargo types can be transported. These are infantry groups and crates.
-  * Define a list of deploy zones of various types to transport the cargo to.
-  * Multiple carrier groups can be enabled as one collaborating transportation process.
-  * Different options can be setup to tweak the cargo transporation behaviour.
-  * Home location that will be used for carrier parking, when all cargo has been transported.
-  * Automatic activation of carriers when new cargo is to be picked-up (of cargo is spawned for example).
-
-##### [**AI_Cargo_Dispatcher_APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
-
-![AI_Cargo_Dispatcher_APC](Images\AI_Cargo_Dispatching_For_APC.JPG)
-
-Models the intelligent transportation of infantry and other cargo using **APCs or trucks**.
-
-**Specific Features:**
-
-  * The vehicles follow the roads to ensure the fastest possible cargo transportation over the ground.
-  * Multiple vehicles can transport multiple cargo as one vehicle group.
-  * Infantry loaded as cargo, will unboard in case enemies are nearby and will help defending the vehicles.
-  * Different ranges can be setup for enemy defenses.
-
-##### [**AI_Cargo_Dispatcher_Helicopter**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
-
-![AI_Cargo_Dispatcher_Helicopter](Images\AI_Cargo_Dispatching_For_Helicopters.JPG)
-
-Models the intelligent transportation of infantry and other cargo using **Helicopters**.
-
-**Specific Features:**
-
-  * The helicopters will fly towards the pickup locations to pickup the cargo.
-  * The helicopters will fly towards the deploy zones to deploy the cargo.
-  * Precision deployment as well as randomized deployment within the deploy zones are possible.
-  * Helicopters will orbit the deploy zones when there is no space for landing until the deploy zone is free.
-
-
-#### [**AI_Balancer**](Documentation/AI.AI_Balancer.html)
-
-![AI_Balancer](Images\AI_Balancing.JPG)
-
-Balance player slots with AI to create an engaging simulation environment, independent of the amount of players.
-
-**Features:**
-
-  * Automatically spawn AI as a replacement of free player slots for a coalition.
-  * Make the AI to perform tasks.
-  * Define a maximum amount of AI to be active at the same time.
-  * Configure the behaviour of AI when a human joins a slot for which an AI is active.
-
-
-#### [**AI_Formation**](Documentation/AI.AI_Formation.html)
-
-![AI_Formation](Images\AI_Large_Formations.JPG)
-
-Build large airborne formations of aircraft.
-
-**Features:**
-
-  * Build in-air formations consisting of more than 40 aircraft as one group.
-  * Build different formation types.
-  * Assign a group leader that will guide the large formation path.
-
+====
 
 ## MOOSE Demonstration Missions
 
@@ -171,26 +78,6 @@ Each TASK has a TASK ACTION flow, which is the flow that a player (hosted by a U
 * [**TASK_A2A**](Documentation/Tasking.Task_A2A.html): Models a A2A CAP, INTERCEPT and SWEEP tasks where a Player is routed towards an attack zone without enemies nearby, and various ground targets need to be eliminated.
 
 * [**TASK_A2G**](Documentation/Tasking.Task_A2G.html): Models a A2G SEAD, CAS and BAI tasks where a Player is routed towards an attack zone with enemies nearby, and various ground targets need to be eliminated.
-
-
-## 2.2. MOOSE AI Controlling Classes
-
-MOOSE AI Controlling Classes provide mechanisms to control AI over long lasting processes.  
-These AI Controlling Classes are based on FSM (Finite State Machine) Classes, and provided an encapsulated way to make AI behave or execute an activity.
-
-* [**AI A2A Defenses**](Documentation/AI.AI_A2A_Dispatcher.html): Create automatic A2A defense systems executed by AI and perform CAP or GCI.
-   * [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP): Using an easy process you can define an A2A defense system using the Mission Editor.
-   * [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER): Same as AI\_A2A\_GCICAP, but is for more advanced or developer type mission designers. This class provides more options.
-
-* [**AI\_BALANCER**](Documentation/AI.AI_Balancer.html): Compensate in a multi player mission the abscence of players with dynamically spawned AI air units. When players join CLIENTS, the AI will either be destroyed, or will fly back to the home or nearest friendly airbase.
-
-* [**AI\_BAI**](Documentation/AI.AI_Bai.html): Make an alive AI Group perform Battlefield Air Interdiction as a dynamic process.
-
-* [**AI\_CAP**](Documentation/AI.AI_Cap.html): Make an alive AI Group perform Combat Air Patrol as a dynamic process.
-
-* [**AI\_CAS**](Documentation/AI.AI_Cas.html): Make an alive AI Group perform Close Air Support as a dynamic process.
-
-* [**AI\_PATROL**](Documentation/AI.AI_Patrol.html): Make an alive AI Group perform an Air Patrol as a dynamic process.
 
 
 ## 2.3. MOOSE Functional Classes
