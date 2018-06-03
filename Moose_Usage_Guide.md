@@ -119,7 +119,7 @@ Models the intelligent transportation of infantry and other cargo using **Helico
 
 Balance player slots with AI to create an engaging simulation environment, independent of the amount of players.
 
-** Features:**
+**Features:**
 
   * Automatically spawn AI as a replacement of free player slots for a coalition.
   * Make the AI to perform tasks.
