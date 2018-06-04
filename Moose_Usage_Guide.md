@@ -64,14 +64,14 @@ to identify which methods are properties are defined for which class.
 ## 2. MOOSE Framework Classes
 
 MOOSE contains a lot of classes that can be used to enhance your missions.
-Click on one of the next section links below to open the guides for each of the major areas that are covered by MOOSE.
 
-![MOOSE framework](Presentations\MOOSE\Dia2.JPG)
+![MOOSE framework](Images/MOOSE_Classes.JPG)
 
 Each section has an overview explanation on the different classes that mission designers can use to design compelling simulation scenarios.
 It provides a short explanation of the concepts and its features, as well as important information to know in order to understand how to use the classes.
 For more detailed information on the class, you will be guided to more detailed documentation on each individual class.
 
+Click on one of the next section links below to open the guides for each of the major areas that are covered by MOOSE.
 
 ### 2.1. [MOOSE AI Classes](Moose_AI.html)
 
