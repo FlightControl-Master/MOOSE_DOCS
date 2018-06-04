@@ -6,21 +6,6 @@ MOOSE works with DCS world 2.5 and earlier versions.
 
 ![MOOSE Banner](Images\MOOSE.JPG)
 
-## 1.1. [Donation ...](https://donorbox.org/fund-github-subscriptionfor-moose)
-
-If you appreciate this development, please support to extend the framework. The development of this framework takes a lot of time.
-A small gift would help me fund the costs and time that comes with it, to extend this framework while commuting to and from work ...
-Also, your donations will be saved and spent wisely to the advantage of the community!
-
-If everyone helps with a small amount, it would be really great!
-
-<a class="dbox-donation-button" href="https://donorbox.org/fund-github-subscriptionfor-moose" style="background:#2d81c5 url(https://d1iczxrky3cnb2.cloudfront.net/red_logo.png) no-repeat 37px center; color: #fff;text-decoration: none;font-family: Verdana,sans-serif;display: inline-block;font-size: 16px;padding: 15px 38px 15px 75px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; box-shadow: 0 1px 0 0 #1f5a89; text-shadow: 0 1px rgba(0, 0, 0, 0.3);" >Donate</a>
-
-## 1.2. [MOOSE community on Discord](https://discord.gg/yBPfxC6) 
-
-Join our MOOSE community on Discord. 
-A place where mission designers and developers come together to discuss the latest features.
-We are now with about 5 people supporting Mission Designers on Discord.
 
 # 2. **[MOOSE Usage Guide](Moose_Usage_Guide.html)**
 
@@ -68,12 +53,12 @@ Please consult the **[Contribution Guide](Contribution_Guide.html)** for more in
 Have a look at the **[Interactive Debug Guide](Interactive_Debug_Guide.html)** to setup your system so you can debug your mission code.
 
 
-
 # 4. MOOSE Support Channels
 
 MOOSE is broadcasted, documented and supported through various social media channels.  
 
 Click here for the **[communities guide](Communities.html)** of the MOOSE framework.
+
 
 # 5. MOOSE framework goal
 
@@ -89,6 +74,24 @@ MOOSE is NOT meant to be a one-man show, it is meant to evolve within a growing 
 
 Within the community, key users will support, document, explain and even create new classes for the framework.
 It is the ambition to grow this framework as a de-facto standard for mission designers to use within the DCS World community.
+
+
+# 6. [Donation ...](https://donorbox.org/fund-github-subscriptionfor-moose)
+
+If you appreciate this development, please support to extend the framework. The development takes a lot of time.
+A small gift would help me fund the costs and time that comes with it, to extend this framework while commuting to and from work ...
+Also, your donations will be saved and spent wisely to the advantage of the community!
+
+If everyone helps with a small amount, it would be really great!
+
+<a class="dbox-donation-button" href="https://donorbox.org/fund-github-subscriptionfor-moose" style="background:#2d81c5 url(https://d1iczxrky3cnb2.cloudfront.net/red_logo.png) no-repeat 37px center; color: #fff;text-decoration: none;font-family: Verdana,sans-serif;display: inline-block;font-size: 16px;padding: 15px 38px 15px 75px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; box-shadow: 0 1px 0 0 #1f5a89; text-shadow: 0 1px rgba(0, 0, 0, 0.3);" >Donate</a>
+
+
+# 7. [MOOSE community on Discord](https://discord.gg/yBPfxC6) 
+
+Join our MOOSE community on Discord. 
+A place where mission designers and developers come together to discuss the latest features.
+We are now with about 5 people supporting Mission Designers on Discord.
 
 
 Thank you!

@@ -1,25 +1,63 @@
-# MOOSE Usage Guide for Mission Designers.
+# MOOSE Usage Guide
 
 ## 1. MOOSE is an Object Oriented system.
 
-MOOSE is an Object Oriented framework and defines **Classes**, which are components that combine **Methods** and **Variables**/**Properties** as one encapsulated structure (table).
-Mission Designers can what we call **Instantiate Objects** from these MOOSE classes.
+MOOSE is an Object Oriented framework which provides different **classes** that take control of your simulation scenario.
 
-An example of what this means is shortly explained using the SPAWN class of MOOSE, which you can use to spawn new groups into your running mission.
-The SPAWN class simplifies the process of spawning, and it has many methods that you can use to create variations how you want your spawn object to spawn new groups.
+## 1.1. Classes ...
+
+  * AI - Take control of the AI controlled groups and units to execute specific tasks and processes.
+  * Tasking - Assign tasks to human players, and let them achieve goals for logical missions setup in your simulation scenario.
+  * Functional - Apply additional functionalities on top of the standard DCS simulation capabilities.
+  * Cargo - Declare cargo objects, which are handled by moose in various ways.
+  * Wrapper - The default dcs classes are wrapped by moose wrapper classes, and provide additional funtionality and easier access.
+  * Core - The default dcs simulation capabilities are enhanced by moose, and provide additional functionality and easier access.
+
+You as a mission designer are required to study each class features, and evaluate whether you want to apply
+those features as part of your mission scenario.
+
+## 1.2. Objects ...
+
+If you want to apply a class, you need to **instantiate** the class by creating an **object** of that class.
+Look at a **class** like the **definition of a process**, and the **object** **applies the process**.
+Multiple objects can be created of the same class, and this is the power of an Object Oriented system.
+These objects combine the combine **Methods** and **Variables**/**Properties** of the class as one encapsulated structure, that
+hold state and work independently from each other!
+
+Look at the following example:
+
+Here we use the SPAWN class, which you can use to spawn new groups into your running simulation scenario.
+The SPAWN class simplifies the process of spawning, and it has many methods to spawn new groups.
 
 ```lua
-local SpawnObject = SPAWN:New( "GroupName" ) -- This creates a new SpawnObject from the SPAWN class, using the :New method constructor to instantiate a new SPAWN object searching for the GroupName as the late activated group defined within your Mission Editor.  
--- Nothing is spawned yet..., so let's use now the SpawnObject to spawn a new GROUP.
+-- This creates a new SpawnObject from the SPAWN class, 
+-- using the constructor :New() to instantiate a new SPAWN object.
+-- It will search for the GroupName as the late activated group defined within your Mission Editor.
+-- If found, the object "SpawnObject" will now contain a "copy" of the SPAWN class to apply the spawning process.  
+local SpawnObject = SPAWN:New( "GroupName" ) 
 
-local SpawnGroup = SpawnObject:Spawn() -- Here we use the :Spawn() method of the SPAWN class. This method creates a new group from the GroupName template as defined within the Mission Editor.
+-- Nothing is spawned yet..., so let's use now the SpawnObject to spawn a new GROUP.
+-- We use the method :Spawn() to do that.
+--  This method creates a new group from the GroupName template as defined within the Mission Editor.
+local SpawnGroup = SpawnObject:Spawn() 
 ```
 
-MOOSE Classes **derive or inherit** from each other, that means, within MOOSE there is an **Inheritance** structure where **inherited MOOSE Classes** are re-using properties and methods from the **Parent MOOSE Class**.
-This powerful concept is used everywhere within the MOOSE framework. The main (Parent) Class in the MOOSE framework is the BASE class. Every MOOSE Class is derived from this top BASE Class.
-So is also the SPAWN class derived from the BASE class. The BASE class provides powerful methods for debugging, event handling and implements the class handling logic.
-As a normal MOOSE user, you won't implement any code using inheritance but just know that the inheritance structure is omni present in the intellisense and documentation.
-You'll need to browse to the right MOOSE Class within the inheritance tree structure to identify which methods are properties are defined for which class.
+## 1.3. Inheritance ...
+
+MOOSE classes **derive or inherit** from each other, that means, 
+within MOOSE there is an **inheritance** structure.
+The different moose classes are re-using properties and methods from its **parent classes**.
+
+This powerful concept is used everywhere within the MOOSE framework. 
+The main (Parent) Class in the MOOSE framework is the BASE class. 
+Every MOOSE Class is derived from this top BASE Class.
+So is also the SPAWN class derived from the BASE class. 
+The BASE class provides powerful methods for debugging, 
+event handling and implements the class handling logic.
+As a normal MOOSE user, you won't implement any code using inheritance,
+but just know that the inheritance structure is omni present in the intellisense and documentation.
+You'll need to browse to the right MOOSE Class within the inheritance tree structure,
+to identify which methods are properties are defined for which class.
 
 
 
@@ -28,42 +66,70 @@ You'll need to browse to the right MOOSE Class within the inheritance tree struc
 MOOSE contains a lot of classes that can be used to enhance your missions.
 Click on one of the links below to open the guides for each of the major areas that are covered by MOOSE.
 
-
-### 2.1. [MOOSE AI Guide](Moose_AI.html)
-
-MOOSE AI classes take control over the AI and makes the AI perform various activities. 
-
-
-### 2.2. [MOOSE Tasking Guide](Moose_Tasking.html)
-
-MOOSE Tasking Classes provide a comprehensive Mission Orchestration System.
-Through COMMANDCENTERs, multiple logical MISSIONs can be orchestrated for coalitions.
-Within each MISSION, various TASKs can be defined.
-Each TASK has a TASK ACTION flow, which is the flow that a player (hosted by a UNIT) within the simulator needs to follow and accomplish.
+Each section has an overview explanation on the different classes that mission designers can use to design compelling simulation scenarios.
+It provides a short explanation of the concepts and its features, as well as important information to know in order to understand how to use the classes.
+For more detailed information on the class, you will be guided to more detailed documentation on each individual class.
 
 
-## 2.3. [MOOSE Functional Guide](Moose_Functional.html)
+### 2.1. [MOOSE AI Classes](Moose_AI.html)
 
-MOOSE Functional Classes provide various functions that are useful in mission design.
+AI classes take control over the AI and makes the AI perform various processes.  
+Some very complicated and enhanced classes are implemented to take control of AI.
+It uses the AI to create for you an enhanced simulation experience for your players.
 
-
-## 2.4. [MOOSE Wrappers Guide](Moose_Wrappers.html)
-
-MOOSE Wrapper Classes provide an object oriented hierarchical mechanism to manage the DCS objects within the simulator.
-Wrapper classes provide another easier mechanism to control Groups, Units, Statics, Airbases and other objects.
+**Apply the AI classes to create a truly dynamic defense and attack system driven by AI.**
 
 
-## 2.5. [MOOSE Cargo Guide](Moose_Cargo.html)
+### 2.2. [MOOSE Tasking Classes](Moose_Tasking.html)
 
-MOOSE cargo classes provide the logical means to handle cargo transportation.
+Tasking classes provide a comprehensive Mission Orchestration System for human players.
+Command Centers govern multiple missions to achieve a mission goal.
+Within each mission, various tasks are defined, which can be assigned to human players.
+Upon completion of each task, a mission goal can be achieved, which will result in score points.
+
+**Join the forces and apply the tasking classes to create a truly dynamic co-operative combat scenario.**
 
 
-## 2.6. [MOOSE Core Guide](Moose_Core.html)
+## 2.3. [MOOSE Cargo Classes](Moose_Cargo.html)
+
+Cargo classes provide enhanced means to handle cargo transportation.
+Cargo requires a bit more explanation. MOOSE has implemented **a separate system for cargo handling**.
+It combines the capabilities of DCS world to combine infantry groups, cargo static objects and static objects
+as "cargo" objects.
+It also provides you with **AI cargo transportation** classes, 
+and **Tasking classes for human players**, to transport cargo as part of a mission goal.
+In order to use these MOOSE cargo facilities, you'll have to declare those groups and static objects
+in a special way within your scripts and/or within the mission editor.
+It is not a rocket science, but requires a bit of reading to trying to learn this new method.
+Once you've learned this, a new world will open :-)
+
+**Add the cargo capabilities, so that your mission scenarios are dynamically managing the combat resources.**
+
+
+## 2.4. [MOOSE Functional Classes](Moose_Functional.html)
+
+MOOSE functional classes provide various functions that are useful in mission design.
+These classes vary and enhance the functionality of your simulation scenario.
+
+**Apply various functional classes, to enhance the functionality in your mission scenarios.**
+
+
+## 2.5. [MOOSE Wrapper Classes](Moose_Wrappers.html)
+
+MOOSE wrapper classes provide an object oriented hierarchical mechanism to manage the DCS objects within the simulator.
+Wrapper classes provide a greatly enhanced functionality to control groups, units, statics, scenery, airbases etc.
+
+**Make life easy and use the wrapper classes to take control of individual DCS world objects.**
+
+
+## 2.6. [MOOSE Core Classes](Moose_Core.html)
 
 MOOSE core classes define the base building blocks of the MOOSE framework. 
-These classes are also heavily used within the MOOSE framework.
+The core classes utilize the DCS world core capability and greatly enhance its functionality.
+It also provides new mechanisms that provide you with new tools to create your simulation scenarios.
+Some of these methods are schedulers, event handlers, menu refreshing, enhanced messaging, sound, flags etc.
 
-
+**Learn and understand the different core classes, if you want to develop or enhance your mission scenarios.**
 
 
 ## 3. MOOSE Demonstration Missions
