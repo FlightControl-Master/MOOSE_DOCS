@@ -1458,6 +1458,8 @@ ARTY group are able to assign targets and moves without a key.</p>
     <li><em>radius</em> Scattering radius of the fired shots in meters. Default is 100 m.</li>
     <li><em>weapon</em> Type of weapon to be used. Valid parameters are <em>cannon</em>, <em>rocket</em>, <em>missile</em>, <em>nuke</em>. Default is automatic selection.</li>
     <li><em>battery</em> Name of the ARTY group that the target is assigned to. Note that <strong>the name is case sensitive</strong> and has to be given in quotation marks. Default is all ARTY groups of the right coalition.</li>
+    <li><em>alias</em> Alias of the ARTY group that the target is assigned to. The alias is <strong>case sensitive</strong> and needs to be in quotation marks.</li>
+    <li><em>cluster</em> The cluster of ARTY groups that is addessed. Clusters can be defined by the function <a href="##(ARTY).AddToCluster">ARTY.AddToCluster</a>(<em>clusters</em>). Names are <strong>case sensitive</strong> and need to be in quotation marks.</li>
     <li><em>key</em> A number to authorize the target assignment. Only specifing the correct number will trigger an engagement.</li>
     <li><em>lldms</em> Specify the coordinates in Lat/Long degrees, minutes and seconds format. The actual location of the marker is unimportant here. The group will engage the coordinates given in the lldms keyword.
     Format is DD:MM:SS[N,S] DD:MM:SS[W,E]. See example below. This can be useful when coordinates in this format are obtained from elsewhere.</li>
@@ -1471,10 +1473,14 @@ ARTY group are able to assign targets and moves without a key.</p>
  arty engage, battery "Blue MRLS 1", key 666
  arty engage, battery "Paladin Alpha", weapon nukes, shots 1, time 20:15
  arty engage, lldms 41:51:00N 41:47:58E
+ arty engage, alias "Bob", weapon missiles
+ arty engage, cluster "All Mortas"
+ arty engage, cluster "Northern Batteries" "Southern Batteries"
+ arty engage, cluster "Northern Batteries", cluster "Southern Batteries"
 </code></pre>
 
-<p>Note that the keywords and parameters are <em>case insensitve</em>. Only exception are the battery group names. These must be exactly the same as the names of the goups defined 
-in the mission editor.</p>
+<p>Note that the keywords and parameters are <em>case insensitve</em>. Only exception are the battery, alias and cluster names.
+These must be exactly the same as the names of the goups defined in the mission editor or the aliases and cluster names defined in the script.</p>
 
 <h3>Relocation Assignments</h3>
 
@@ -1486,6 +1492,8 @@ in the mission editor.</p>
     <li><em>on road</em> Group will use mainly roads. Default is off, i.e. it will go in a straight line from its current position to the assigned coordinate.</li>
     <li><em>canceltarget</em> Group will cancel all running firing engagements and immidiately start to move. Default is that group will wait until is current assignment is over.</li>
     <li><em>battery</em> Name of the ARTY group that the relocation is assigned to.</li>
+    <li><em>alias</em> Alias of the ARTY group that the target is assigned to. The alias is <strong>case sensitive</strong> and needs to be in quotation marks.</li>
+    <li><em>cluster</em> The cluster of ARTY groups that is addessed. Clusters can be defined by the function <a href="##(ARTY).AddToCluster">ARTY.AddToCluster</a>(<em>clusters</em>). Names are <strong>case sensitive</strong> and need to be in quotation marks.</li>
     <li><em>key</em> A number to authorize the target assignment. Only specifing the correct number will trigger an engagement.</li>
     <li><em>lldms</em> Specify the coordinates in Lat/Long degrees, minutes and seconds format. The actual location of the marker is unimportant. The group will move to the coordinates given in the lldms keyword.
     Format is DD:MM:SS[N,S] DD:MM:SS[W,E]. See example below. </li>
@@ -1498,6 +1506,10 @@ in the mission editor.</p>
  arty move, battery "Blue Paladin"
  arty move, battery "Blue MRLS", canceltarget, speed 10, on road
  arty move, lldms 41:51:00N 41:47:58E
+ arty move, alias "Bob", weapon missiles
+ arty move, cluster "All Howitzer"
+ arty move, cluster "Northern Batteries" "Southern Batteries"
+ arty move, cluster "Northern Batteries", cluster "Southern Batteries"
 </code></pre>
 
 <h3>Requests</h3>
@@ -1513,7 +1525,7 @@ in the mission editor.</p>
 <p>For example</p>
 <pre><code> arty request, ammo
  arty request, battery "Paladin Bravo", targets
- arty request, battery "MRLS Charly", move
+ arty request, cluster "All Mortars", move
 </code></pre>
 
 <p>The actual location of the marker is irrelevant for these requests.</p>
@@ -1538,6 +1550,7 @@ in the mission editor.</p>
     optional parameter <em>maxdist</em> is the maximum distance im km the group will move. If the distance is greater no relocation is performed. Default is 50 km.</li>
     <li><a href="##(ARTY).SetAutoRelocateAfterEngagement">ARTY.SetAutoRelocateAfterEngagement</a>(<em>rmax</em>, <em>rmin</em>) will cause the ARTY group to change its position after each firing assignment.
     Optional parameters <em>rmax</em>, <em>rmin</em> define the max/min distance for relocation of the group. Default distance is randomly between 300 and 800 m.</li>
+    <li><a href="##(ARTY).AddToCluster">ARTY.AddToCluster</a>(<em>clusters</em>) Can be used to add the ARTY group to one or more clusters. All groups in a cluster can be addressed simultaniously with one marker command.</li>
     <li><a href="##(ARTY).RemoveAllTargets">ARTY.RemoveAllTargets</a>() removes all targets from the target queue.</li>
     <li><a href="##(ARTY).RemoveTarget">ARTY.RemoveTarget</a>(<em>name</em>) deletes the target with <em>name</em> from the target queue.</li>
     <li><a href="##(ARTY).SetMaxFiringRange">ARTY.SetMaxFiringRange</a>(<em>range</em>) defines the maximum firing range. Targets further away than this distance are not engaged.</li>
@@ -2023,6 +2036,17 @@ normandy:Start()
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(ARTY).clusters" ><strong>ARTY.clusters</strong></a>
+    
+<p>Table of names of clusters the group belongs to. Can be used to address all groups within the cluster simultaniously.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(ARTY).currentMove" ><strong>ARTY.currentMove</strong></a>
     
 <p>Holds the current commanded move, if there is one assigned.</p>
@@ -2264,6 +2288,40 @@ normandy:Start()
 </div>
 <div class="functions">
   <h3>Function(s)</h3>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##AddToCluster')">
+<h6><a id="#(ARTY).AddToCluster" ><strong>ARTY:AddToCluster(clusters)</strong></a></h6>
+</div>
+    
+<p>Add ARTY group to one or more clusters.</p>
+
+    
+<p>Enables addressing all ARTY groups within a cluster simultaniously via marker assignments.</p>
+
+<div id= "#Functions##AddToCluster" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>clusters</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Table of cluster names the group should belong to.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -2738,7 +2796,7 @@ paladin:Start()</code></pre>
         </div>
         <div class="w3-half">
           
-<p>(Optional) Alias name the group will be calling itself when sending messages.</p>
+<p>(Optional) Alias name the group will be calling itself when sending messages. Default is the group name.</p>
 
         </div>
     </div>
@@ -4141,6 +4199,40 @@ paladin:Start()</code></pre>
         <div class="w3-half">
           
 <p>Name of the target.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetAlias')">
+<h6><a id="#(ARTY).SetAlias" ><strong>ARTY:SetAlias(alias)</strong></a></h6>
+</div>
+    
+<p>Set alias, i.e.</p>
+
+    
+<p>the name the group will use when sending messages.</p>
+
+<div id= "#Functions##SetAlias" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>alias</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>The alias for the group.</p>
 
         </div>
     </div>
