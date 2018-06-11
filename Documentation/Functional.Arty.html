@@ -1194,7 +1194,7 @@ which are excellent tools to be reused in an OO environment!.</p>
 
 <hr/>
 
-<p>The ARTY class can be used to easily assign and manage targets for artillery units.</p>
+<p>The ARTY class can be used to easily assign and manage targets for artillery units using an advanced queueing system.</p>
 
 <h2>Features:</h2>
 
@@ -1202,9 +1202,14 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Multiple targets can be assigned. No restriction on number of targets.</li>
     <li>Targets can be given a priority. Engagement of targets is executed a according to their priority.</li>
     <li>Engagements can be scheduled, i.e. will be executed at a certain time of the day.</li>
+    <li>Multiple relocations of the group can be assigned and scheduled via queueing system. </li>
     <li>Special weapon types can be selected for each attack, e.g. cruise missiles for Naval units.</li>
-    <li>Automatic rearming once the artillery is out of ammo.</li>
+    <li>Automatic rearming once the artillery is out of ammo (optional).</li>
+    <li>Automatic relocation after each firing engagement to prevent counter strikes (optional).</li>
+    <li>Automatic relocation movements to get the battery within firing range (optional).</li>
+    <li>Simulation of tactical nuclear shells.</li>
     <li>New targets can be added during the mission, e.g. when they are detected by recon units.</li>
+    <li>Targets and relocations can be assigned by placing markers on the F10 map.</li>
     <li>Finite state machine implementation. Mission designer can interact when certain events occur.</li>
 </ul>
 
@@ -1357,9 +1362,9 @@ over surface-to-air missiles to cruise missiles. Obviously, not all of these amm
 can specify the names of the ammo types by the following functions:</p>
 
 <ul>
-    <li><a href="##(ARTY).SetShellTypes">ARTY.SetShellTypes</a>(<em>tableofnames</em>): Defines the ammo types for unguided cannons. Default is <em>tableofnames</em>={"weapons.shells"}, i.e. <strong>all</strong> types of shells are counted.</li>
-    <li><a href="##(ARTY).SetRocketTypes">ARTY.SetRocketTypes</a>(<em>tableofnames</em>): Defines the ammo types of unguided rockets. Default is <em>tableofnames</em>={"weapons.nurs"}, i.e. <strong>all</strong> types of rockets are counted.</li>
-    <li><a href="##(ARTY).SetMissileTypes">ARTY.SetMissileTypes</a>(<em>tableofnames</em>): Defines the ammo types of guided missiles. Default is <em>tableofnames</em>={"weapons.missiles"}, i.e. <strong>all</strong> types of missiles are counted.</li>
+    <li><a href="##(ARTY).SetShellTypes">ARTY.SetShellTypes</a>(<em>tableofnames</em>): Defines the ammo types for unguided cannons, e.g. <em>tableofnames</em>={"weapons.shells"}, i.e. <strong>all</strong> types of shells are counted.</li>
+    <li><a href="##(ARTY).SetRocketTypes">ARTY.SetRocketTypes</a>(<em>tableofnames</em>): Defines the ammo types of unguided rockets, e.g. <em>tableofnames</em>={"weapons.nurs"}, i.e. <strong>all</strong> types of rockets are counted.</li>
+    <li><a href="##(ARTY).SetMissileTypes">ARTY.SetMissileTypes</a>(<em>tableofnames</em>): Defines the ammo types of guided missiles, e.g. is <em>tableofnames</em>={"weapons.missiles"}, i.e. <strong>all</strong> types of missiles are counted.</li>
 </ul>
 
 <p><strong>Note</strong> that the default parameters "weapons.shells", "weapons.nurs", "weapons.missiles" <strong>should in priciple</strong> capture all the corresponding ammo types.
@@ -1379,9 +1384,8 @@ This is done via the <em>weapontype</em> parameter of the <a href="##(ARTY).Assi
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.Auto: Automatic weapon selection by the DCS logic. This is the default setting.</li>
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.Cannon: Only cannons are used during the attack. Corresponding ammo type are shells and can be defined by <a href="##(ARTY).SetShellTypes">ARTY.SetShellTypes</a>.</li>
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.Rockets: Only unguided are used during the attack. Corresponding ammo type are rockets/nurs and can be defined by <a href="##(ARTY).SetRocketTypes">ARTY.SetRocketTypes</a>.</li>
-    <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.UnguidedAny: Any unguided weapon (cannons or rockes) will be used.</li>
-    <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.GuidedMissile: Any guided missiles are used during the attack. Corresponding ammo type are missiles and can be defined by <a href="##(ARTY).SetMissileTypes">ARTY.SetMissileTypes</a>.</li>
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.CruiseMissile: Only cruise missiles are used during the attack. Corresponding ammo type are missiles and can be defined by <a href="##(ARTY).SetMissileTypes">ARTY.SetMissileTypes</a>.</li>
+    <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.TacticalNukes: Use tactical nuclear shells. This works only with units that have shells and is described below.</li>
 </ul>
 
 <h2>Assigning Moves</h2>
@@ -1423,16 +1427,122 @@ The parameter <em>coord</em> specifies the coordinate of the rearming place whic
 
 <p>After the rearming is complete, both groups will move back to their original positions.</p>
 
+<h2>Tactical Nukes</h2>
+
+<p>ARTY groups that can fire shells can also be used to fire tactical nukes. This is achieved by setting the weapon type to <strong>ARTY.WeaponType.TacticalNukes</strong> in the
+<a href="##(ARTY).AssignTargetCoord">ARTY.AssignTargetCoord</a>() function.</p>
+
+<p>By default, they group does not have any nukes available. To give the group the ability the function <a href="##(ARTY).SetTacNukeShells">ARTY.SetTacNukeShells</a>(<em>n</em>) can be used.
+This supplies the group with <em>n</em> nuclear shells, where <em>n</em> is restricted to the number of conventional shells the group can carry.
+Note that the group must always have convenctional shells left in order to fire a nuclear shell. </p>
+
+<p>The default explostion strength is 0.075 kilo tons TNT. The can be changed with the <a href="##(ARTY).SetTacNukeWarhead">ARTY.SetTacNukeWarhead</a>(<em>strength</em>), where <em>strength</em> is given in kilo tons TNT.</p>
+
+
+<h2>Assignments via Markers on F10 Map</h2>
+
+<p>Targets and relocations can be assigned by players via placing a mark on the F10 map. The marker text must contain certain keywords.</p>
+
+<p>This feature can be turned on with the <a href="##(ARTY).SetMarkAssignmentsOn">ARTY.SetMarkAssignmentsOn</a>(<em>key</em>, <em>readonly</em>). The parameter <em>key</em> is optional. When set, it can be used as PIN, i.e. only
+players who know the correct key are able to assign and cancel targets or relocations. Default behavior is that all players belonging to the same coalition as the
+ARTY group are able to assign targets and moves without a key.</p>
+
+<h3>Target Assignments</h3>
+<p>A new target can be assigned by writing <strong>arty engage</strong> in the marker text. This can be followed by a <strong>comma separated list</strong> of optional keywords and parameters:</p>
+
+<ul>
+    <li><em>time</em> Time for which which the engagement is schedules, e.g. 08:42. Default is as soon as possible.</li>
+    <li><em>prio</em>  Priority of the engagement as number between 1 (high prio) and 100 (low prio). Default is 50, i.e. medium priority.</li>
+    <li><em>shots</em> Number of shots (shells, rockets or missiles) fired at each engagement. Default is 5.</li>
+    <li><em>maxengage</em> Number of times the target is engaged. Default is 1.</li>
+    <li><em>radius</em> Scattering radius of the fired shots in meters. Default is 100 m.</li>
+    <li><em>weapon</em> Type of weapon to be used. Valid parameters are <em>cannon</em>, <em>rocket</em>, <em>missile</em>, <em>nuke</em>. Default is automatic selection.</li>
+    <li><em>battery</em> Name of the ARTY group that the target is assigned to. Note that <strong>the name is case sensitive</strong> and has to be given in quotation marks. Default is all ARTY groups of the right coalition.</li>
+    <li><em>key</em> A number to authorize the target assignment. Only specifing the correct number will trigger an engagement.</li>
+    <li><em>lldms</em> Specify the coordinates in Lat/Long degrees, minutes and seconds format. The actual location of the marker is unimportant here. The group will engage the coordinates given in the lldms keyword.
+    Format is DD:MM:SS[N,S] DD:MM:SS[W,E]. See example below. This can be useful when coordinates in this format are obtained from elsewhere.</li>
+    <li><em>readonly</em> The marker is readonly and cannot be deleted by users. Hence, assignment cannot be cancelled by removing the marker.</li>
+</ul>
+
+<p>Here are examples of valid marker texts:</p>
+<pre><code> arty engage
+ arty engage, shots 20, prio 10, time 08:15, weapon cannons
+ arty engage, battery "Blue Paladin 1" "Blue MRLS 1", shots 10, time 10:15
+ arty engage, battery "Blue MRLS 1", key 666
+ arty engage, battery "Paladin Alpha", weapon nukes, shots 1, time 20:15
+ arty engage, lldms 41:51:00N 41:47:58E
+</code></pre>
+
+<p>Note that the keywords and parameters are <em>case insensitve</em>. Only exception are the battery group names. These must be exactly the same as the names of the goups defined 
+in the mission editor.</p>
+
+<h3>Relocation Assignments</h3>
+
+<p>Markers can also be used to relocate the group with the keyphrase <strong>arty move</strong>. This is done in a similar way as assigning targets. Here, the (optional) keywords and parameters are:</p>
+
+<ul>
+    <li><em>time</em> Time for which which the relocation/move is schedules, e.g. 08:42. Default is as soon as possible.</li>
+    <li><em>speed</em> The speed in km/h the group will drive at. Default is 70% of its max possible speed.</li>
+    <li><em>on road</em> Group will use mainly roads. Default is off, i.e. it will go in a straight line from its current position to the assigned coordinate.</li>
+    <li><em>canceltarget</em> Group will cancel all running firing engagements and immidiately start to move. Default is that group will wait until is current assignment is over.</li>
+    <li><em>battery</em> Name of the ARTY group that the relocation is assigned to.</li>
+    <li><em>key</em> A number to authorize the target assignment. Only specifing the correct number will trigger an engagement.</li>
+    <li><em>lldms</em> Specify the coordinates in Lat/Long degrees, minutes and seconds format. The actual location of the marker is unimportant. The group will move to the coordinates given in the lldms keyword.
+    Format is DD:MM:SS[N,S] DD:MM:SS[W,E]. See example below. </li>
+    <li><em>readonly</em> Marker cannot be deleted by users any more. Hence, assignment cannot be cancelled by removing the marker.</li>
+</ul>
+
+<p>Here are some examples:</p>
+<pre><code> arty move
+ arty move, time 23:45, speed 50, on road
+ arty move, battery "Blue Paladin"
+ arty move, battery "Blue MRLS", canceltarget, speed 10, on road
+ arty move, lldms 41:51:00N 41:47:58E
+</code></pre>
+
+<h3>Requests</h3>
+
+<p>Marks can also be to send requests to the ARTY group. This is done by the keyword <strong>arty request</strong>, which can have the keywords</p>
+
+<ul>
+    <li><em>target</em> All assigned targets are reported.</li>
+    <li><em>move</em> All assigned relocation moves are reported.</li>
+    <li><em>ammo</em> Current ammunition status is reported.</li>
+</ul>
+
+<p>For example</p>
+<pre><code> arty request, ammo
+ arty request, battery "Paladin Bravo", targets
+ arty request, battery "MRLS Charly", move
+</code></pre>
+
+<p>The actual location of the marker is irrelevant for these requests.</p>
+
+<h3>Cancel</h3>
+
+<p>Current actions can be cancelled by the keyword <strong>arty cancel</strong>. Actions that can be cancelled are current engagements, relocations and rearming assignments.</p>
+
+<p>For example</p>
+<pre><code> arty cancel, target, battery "Paladin Bravo"
+ arty cancel, move
+ arty cancel, rearming, battery "MRLS Charly"
+</code></pre>
+
+
 <h2>Fine Tuning</h2>
 
 <p>The mission designer has a few options to tailor the ARTY object according to his needs.</p>
 
 <ul>
+    <li><a href="##(ARTY).SetAutoRelocateToFiringRange">ARTY.SetAutoRelocateToFiringRange</a>(<em>maxdist</em>, <em>onroad</em>) lets the ARTY group automatically move to within firing range if a current target is outside the min/max firing range. The 
+    optional parameter <em>maxdist</em> is the maximum distance im km the group will move. If the distance is greater no relocation is performed. Default is 50 km.</li>
+    <li><a href="##(ARTY).SetAutoRelocateAfterEngagement">ARTY.SetAutoRelocateAfterEngagement</a>(<em>rmax</em>, <em>rmin</em>) will cause the ARTY group to change its position after each firing assignment.
+    Optional parameters <em>rmax</em>, <em>rmin</em> define the max/min distance for relocation of the group. Default distance is randomly between 300 and 800 m.</li>
     <li><a href="##(ARTY).RemoveAllTargets">ARTY.RemoveAllTargets</a>() removes all targets from the target queue.</li>
     <li><a href="##(ARTY).RemoveTarget">ARTY.RemoveTarget</a>(<em>name</em>) deletes the target with <em>name</em> from the target queue.</li>
     <li><a href="##(ARTY).SetMaxFiringRange">ARTY.SetMaxFiringRange</a>(<em>range</em>) defines the maximum firing range. Targets further away than this distance are not engaged.</li>
     <li><a href="##(ARTY).SetMinFiringRange">ARTY.SetMinFiringRange</a>(<em>range</em>) defines the minimum firing range. Targets closer than this distance are not engaged.</li>
-    <li><a href="##(ARTY).SetRearmingGroup">ARTY.SetRearmingGroup</a>(<em>group</em>) sets the group resposible for rearming of the ARTY group once it is out of ammo.</li>
+    <li><a href="##(ARTY).SetRearmingGroup">ARTY.SetRearmingGroup</a>(<em>group</em>) sets the group responsible for rearming of the ARTY group once it is out of ammo.</li>
     <li><a href="##(ARTY).SetReportON">ARTY.SetReportON</a>() and <a href="##(ARTY).SetReportOFF">ARTY.SetReportOFF</a>() can be used to enable/disable status reports of the ARTY group send to all coalition members.</li>
     <li><a href="##(ARTY).SetWaitForShotTime">ARTY.SetWaitForShotTime</a>(<em>waittime</em>) sets the time after which a target is deleted from the queue if no shooting event occured after the target engagement started.
     Default is 300 seconds. Note that this can for example happen, when the assigned target is out of range.</li>
@@ -1580,17 +1690,6 @@ normandy:Start()
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(ARTY).FullAmmo" ><strong>ARTY.FullAmmo</strong></a>
-    
-<p>Full amount of all ammunition taking the number of alive units into account.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(ARTY).IniGroupStrength" ><strong>ARTY.IniGroupStrength</strong></a>
     
 <p>Inital number of units in the ARTY group.</p>
@@ -1615,7 +1714,7 @@ normandy:Start()
     #boolean
 <a id="#(ARTY).IsArtillery" ><strong>ARTY.IsArtillery</strong></a>
     
-<p>If true, ARTY group has attribute "Artillery".</p>
+<p>If true, ARTY group has attribute "Artillery". This is automatically derived from the DCS descriptor table.</p>
 
 </div>
 
@@ -1692,7 +1791,7 @@ normandy:Start()
     #number
 <a id="#(ARTY).Nukes0" ><strong>ARTY.Nukes0</strong></a>
     
-<p>Initial amount of tactical nukes of the whole group.</p>
+<p>Initial amount of tactical nukes of the whole group. Default is 0.</p>
 
 </div>
 
@@ -1758,7 +1857,7 @@ normandy:Start()
     #number
 <a id="#(ARTY).RearmingGroupSpeed" ><strong>ARTY.RearmingGroupSpeed</strong></a>
     
-<p>Speed in km/h the rearming unit moves at. Default 50 km/h.</p>
+<p>Speed in km/h the rearming unit moves at. Default is 50% of the max speed possible of the group.</p>
 
 </div>
 
@@ -1846,6 +1945,17 @@ normandy:Start()
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(ARTY).alias" ><strong>ARTY.alias</strong></a>
+    
+<p>Name of the ARTY group.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(ARTY).ammomissiles" ><strong>ARTY.ammomissiles</strong></a>
     
@@ -1879,6 +1989,39 @@ normandy:Start()
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(ARTY).autorelocate" ><strong>ARTY.autorelocate</strong></a>
+    
+<p>ARTY group will automatically move to within the max/min firing range.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).autorelocatemaxdist" ><strong>ARTY.autorelocatemaxdist</strong></a>
+    
+<p>Max distance [m] the ARTY group will travel to get within firing range. Default 50000 m = 50 km.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARTY).autorelocateonroad" ><strong>ARTY.autorelocateonroad</strong></a>
+    
+<p>ARTY group will use mainly road to automatically get within firing range. Default is false. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(ARTY).currentMove" ><strong>ARTY.currentMove</strong></a>
     
@@ -1901,10 +2044,76 @@ normandy:Start()
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ARTY).db" ><strong>ARTY.db</strong></a>
+    
+<p>Database of common artillery unit properties.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ARTY).groupname" ><strong>ARTY.groupname</strong></a>
+    
+<p>Name of the ARTY group as defined in the mission editor.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ARTY).id" ><strong>ARTY.id</strong></a>
     
 <p>Some ID to identify who we are in output of the DCS.log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARTY).ismobile" ><strong>ARTY.ismobile</strong></a>
+    
+<p>If true, ARTY group can move.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARTY).markallow" ><strong>ARTY.markallow</strong></a>
+    
+<p>If true, Players are allowed to assign targets and moves for ARTY group by placing markers on the F10 map. Default is false.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).markkey" ><strong>ARTY.markkey</strong></a>
+    
+<p>Authorization key. Only player who know this key can assign targets and moves via markers on the F10 map. Default no authorization required.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARTY).markreadonly" ><strong>ARTY.markreadonly</strong></a>
+    
+<p>Marks for targets are readonly and cannot be removed by players. Default is false.</p>
 
 </div>
 
@@ -1926,7 +2135,7 @@ normandy:Start()
     #number
 <a id="#(ARTY).minrange" ><strong>ARTY.minrange</strong></a>
     
-<p>Minimum firing range in kilometers. Targets closer than this distance are not engaged. Default 0.5 km.</p>
+<p>Minimum firing range in kilometers. Targets closer than this distance are not engaged. Default 0.1 km.</p>
 
 </div>
 
@@ -2058,8 +2267,28 @@ normandy:Start()
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Arrived')">
+<h6><a id="#(ARTY).Arrived" ><strong>ARTY:Arrived()</strong></a></h6>
+</div>
+    
+<p>Tell ARTY group it has arrived at its destination.</p>
+
+    
+<p>Triggers the FSM event "Arrived".</p>
+
+<div id= "#Functions##Arrived" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##AssignMoveCoord')">
-<h6><a id="#(ARTY).AssignMoveCoord" ><strong>ARTY:AssignMoveCoord(coord, time, speed, onroad, cancel, name)</strong></a></h6>
+<h6><a id="#(ARTY).AssignMoveCoord" ><strong>ARTY:AssignMoveCoord(coord, time, speed, onroad, cancel, name, unique)</strong></a></h6>
 </div>
     
 <p>Assign coordinate to where the ARTY group should move.</p>
@@ -2132,6 +2361,17 @@ normandy:Start()
         <div class="w3-half">
           
 <p>(Optional) Name of the coordinate. Default is LL DMS string of the coordinate. If the name was already given, the numbering "#01", "#02",... is appended automatically.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>unique</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Move is unique. If the move name is already known, the move is rejected. Default false.</p>
 
         </div>
     </div>
@@ -2293,6 +2533,80 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##CeaseFire')">
+<h6><a id="#(ARTY).CeaseFire" ><strong>ARTY:CeaseFire(target)</strong></a></h6>
+</div>
+    
+<p>Order ARTY group to cease firing on a target.</p>
+
+    
+<p>Triggers the FSM event "CeaseFire".</p>
+
+<div id= "#Functions##CeaseFire" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##CombatReady')">
+<h6><a id="#(ARTY).CombatReady" ><strong>ARTY:CombatReady()</strong></a></h6>
+</div>
+    
+<p>Tell ARTY group it is combat ready.</p>
+
+    
+<p>Triggers the FSM event "CombatReady".</p>
+
+<div id= "#Functions##CombatReady" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Dead')">
+<h6><a id="#(ARTY).Dead" ><strong>ARTY:Dead()</strong></a></h6>
+</div>
+    
+<p>Function called when a unit of the ARTY group died.</p>
+
+    
+<p>Triggers the FSM event "Dead".</p>
+
+<div id= "#Functions##Dead" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##GetAmmo')">
 <h6><a id="#(ARTY).GetAmmo" ><strong>ARTY:GetAmmo(display)</strong></a></h6>
 </div>
@@ -2362,15 +2676,49 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Move')">
+<h6><a id="#(ARTY).Move" ><strong>ARTY:Move(move)</strong></a></h6>
+</div>
+    
+<p>Order ARTY group to move to another location.</p>
+
+    
+<p>Triggers the FSM event "Move".</p>
+
+<div id= "#Functions##Move" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>move</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the relocation move data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##New')">
-<h6><a id="#(ARTY).New" ><strong>ARTY:New(group)</strong></a></h6>
+<h6><a id="#(ARTY).New" ><strong>ARTY:New(group, alias)</strong></a></h6>
 </div>
     
 <p>Creates a new ARTY object.</p>
 
 <div id= "#Functions##New" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
+    <h5><strong>Parameters:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
@@ -2384,21 +2732,1333 @@ paladin:Start()</code></pre>
 
         </div>
     </div>
-    <h5><strong>Return values:</strong></h5>
-    <div class="w3-row">
+      <div class="w3-row">
         <div class="w3-half">
-          <a href="##(ARTY)">#ARTY</a>:
+        <strong>alias</strong>
         </div>
         <div class="w3-half">
           
-<p>ARTY object.</p>
+<p>(Optional) Alias name the group will be calling itself when sending messages.</p>
 
         </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        <a href="##(ARTY)">#ARTY</a>:
+      </div>
+      <div class="w3-half">
+        
+<p>ARTY object or nil if group does not exist or is not a ground or naval group.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##NewMove')">
+<h6><a id="#(ARTY).NewMove" ><strong>ARTY:NewMove(move)</strong></a></h6>
+</div>
+    
+<p>Add a new relocation move for the ARTY group.</p>
+
+    
+<p>Triggers the FSM event "NewMove".</p>
+
+<div id= "#Functions##NewMove" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
         <div class="w3-half">
+          #table
+        <strong>move</strong>
         </div>
         <div class="w3-half">
           
-<p>nil If group does not exist or is not a ground or naval group.</p>
+<p>Array holding the relocation move data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##NewTarget')">
+<h6><a id="#(ARTY).NewTarget" ><strong>ARTY:NewTarget(target)</strong></a></h6>
+</div>
+    
+<p>Add a new target for the ARTY group.</p>
+
+    
+<p>Triggers the FSM event "NewTarget".</p>
+
+<div id= "#Functions##NewTarget" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterArrvied')">
+<h6><a id="#(ARTY).OnAfterArrvied" ><strong>ARTY:OnAfterArrvied(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfer "Arrived" event.</p>
+
+<div id= "#Functions##OnAfterArrvied" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterCeaseFire')">
+<h6><a id="#(ARTY).OnAfterCeaseFire" ><strong>ARTY:OnAfterCeaseFire(Controllable, From, Event, To, target)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "CeaseFire" event.</p>
+
+<div id= "#Functions##OnAfterCeaseFire" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target info.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterDead')">
+<h6><a id="#(ARTY).OnAfterDead" ><strong>ARTY:OnAfterDead(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "Dead" event.</p>
+
+<div id= "#Functions##OnAfterDead" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterMove')">
+<h6><a id="#(ARTY).OnAfterMove" ><strong>ARTY:OnAfterMove(Controllable, From, Event, To, move)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfer "Move" event.</p>
+
+<div id= "#Functions##OnAfterMove" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>move</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the move info.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterNewMove')">
+<h6><a id="#(ARTY).OnAfterNewMove" ><strong>ARTY:OnAfterNewMove(Controllable, From, Event, To, move)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfer "NewMove" event.</p>
+
+<div id= "#Functions##OnAfterNewMove" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>move</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the move info.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterNewTarget')">
+<h6><a id="#(ARTY).OnAfterNewTarget" ><strong>ARTY:OnAfterNewTarget(Controllable, From, Event, To, target)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "NewTarget" event.</p>
+
+<div id= "#Functions##OnAfterNewTarget" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target info.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterOpenFire')">
+<h6><a id="#(ARTY).OnAfterOpenFire" ><strong>ARTY:OnAfterOpenFire(Controllable, From, Event, To, target)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "OpenFire" event.</p>
+
+<div id= "#Functions##OnAfterOpenFire" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target info.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterRearm')">
+<h6><a id="#(ARTY).OnAfterRearm" ><strong>ARTY:OnAfterRearm(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "Rearm" event.</p>
+
+<div id= "#Functions##OnAfterRearm" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterRearmed')">
+<h6><a id="#(ARTY).OnAfterRearmed" ><strong>ARTY:OnAfterRearmed(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "Rearmed" event.</p>
+
+<div id= "#Functions##OnAfterRearmed" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterStart')">
+<h6><a id="#(ARTY).OnAfterStart" ><strong>ARTY:OnAfterStart(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "Start" event.</p>
+
+<div id= "#Functions##OnAfterStart" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterStatus')">
+<h6><a id="#(ARTY).OnAfterStatus" ><strong>ARTY:OnAfterStatus(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "Status" event.</p>
+
+<div id= "#Functions##OnAfterStatus" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnAfterWinchester')">
+<h6><a id="#(ARTY).OnAfterWinchester" ><strong>ARTY:OnAfterWinchester(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnAfter "Winchester" event.</p>
+
+<div id= "#Functions##OnAfterWinchester" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnEnterCombatReady')">
+<h6><a id="#(ARTY).OnEnterCombatReady" ><strong>ARTY:OnEnterCombatReady(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnEnter "CombatReady" state.</p>
+
+<div id= "#Functions##OnEnterCombatReady" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnEnterFiring')">
+<h6><a id="#(ARTY).OnEnterFiring" ><strong>ARTY:OnEnterFiring(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnEnter "Firing" state.</p>
+
+<div id= "#Functions##OnEnterFiring" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnEnterMoving')">
+<h6><a id="#(ARTY).OnEnterMoving" ><strong>ARTY:OnEnterMoving(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnEnter "Moving" state.</p>
+
+<div id= "#Functions##OnEnterMoving" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.  </p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnEnterOutOfAmmo')">
+<h6><a id="#(ARTY).OnEnterOutOfAmmo" ><strong>ARTY:OnEnterOutOfAmmo(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnEnter "OutOfAmmo" state.</p>
+
+<div id= "#Functions##OnEnterOutOfAmmo" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnEnterRearmed')">
+<h6><a id="#(ARTY).OnEnterRearmed" ><strong>ARTY:OnEnterRearmed(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnEnter "Rearmed" state.</p>
+
+<div id= "#Functions##OnEnterRearmed" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OnEnterRearming')">
+<h6><a id="#(ARTY).OnEnterRearming" ><strong>ARTY:OnEnterRearming(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>User function for OnEnter "Rearming" state.</p>
+
+<div id= "#Functions##OnEnterRearming" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##OpenFire')">
+<h6><a id="#(ARTY).OpenFire" ><strong>ARTY:OpenFire(target)</strong></a></h6>
+</div>
+    
+<p>Order ARTY group to open fire on a target.</p>
+
+    
+<p>Triggers the FSM event "OpenFire".</p>
+
+<div id= "#Functions##OpenFire" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target data.</p>
 
         </div>
     </div>
@@ -2465,6 +4125,9 @@ paladin:Start()</code></pre>
     
 <p>Delete a target from target list.</p>
 
+    
+<p>If the target is currently engaged, it is cancelled.</p>
+
 <div id= "#Functions##RemoveTarget" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameter:</strong></h5>
@@ -2478,6 +4141,96 @@ paladin:Start()</code></pre>
         <div class="w3-half">
           
 <p>Name of the target.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetAutoRelocateAfterEngagement')">
+<h6><a id="#(ARTY).SetAutoRelocateAfterEngagement" ><strong>ARTY:SetAutoRelocateAfterEngagement(rmax, rmin)</strong></a></h6>
+</div>
+    
+<p>Set relocate after firing.</p>
+
+    
+<p>Group will find a new location after each engagement. Default is off</p>
+
+<div id= "#Functions##SetAutoRelocateAfterEngagement" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>rmax</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Max distance in meters, the group will move to relocate. Default is 800 m.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>rmin</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Min distance in meters, the group will move to relocate. Default is 300 m.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetAutoRelocateToFiringRange')">
+<h6><a id="#(ARTY).SetAutoRelocateToFiringRange" ><strong>ARTY:SetAutoRelocateToFiringRange(maxdistance, onroad)</strong></a></h6>
+</div>
+    
+<p>Set automatic relocation of ARTY group if a target is assigned which is out of range.</p>
+
+    
+<p>The unit will drive automatically towards or away from the target to be in max/min firing range.</p>
+
+<div id= "#Functions##SetAutoRelocateToFiringRange" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>maxdistance</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) The maximum distance in km the group will travel to get within firing range. Default is 50 km. No automatic relocation is performed if targets are assigned which are further away.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>onroad</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) If true, ARTY group uses roads whenever possible. Default false, i.e. group will move in a straight line to the assigned coordinate. </p>
 
         </div>
     </div>
@@ -2520,6 +4273,65 @@ paladin:Start()</code></pre>
 <p>Information is printed to screen.</p>
 
 <div id= "#Functions##SetDebugON" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetMarkAssignmentsOn')">
+<h6><a id="#(ARTY).SetMarkAssignmentsOn" ><strong>ARTY:SetMarkAssignmentsOn(key, readonly)</strong></a></h6>
+</div>
+    
+<p>Enable assigning targets and moves by placing markers on the F10 map.</p>
+
+<div id= "#Functions##SetMarkAssignmentsOn" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>key</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Authorization key. Only players knowing this key can assign targets. Default is no authorization required.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>readonly</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Marks are readonly and cannot be removed by players. This also means that targets cannot be cancelled by removing the mark. Default false.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetMarkTargetsOff')">
+<h6><a id="#(ARTY).SetMarkTargetsOff" ><strong>ARTY:SetMarkTargetsOff()</strong></a></h6>
+</div>
+    
+<p>Disable assigning targets by placing markers on the F10 map.</p>
+
+<div id= "#Functions##SetMarkTargetsOff" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
 </div>
 
@@ -2585,7 +4397,7 @@ paladin:Start()</code></pre>
         </div>
         <div class="w3-half">
           
-<p>Min range in kilometers. Default is 0.5 km.</p>
+<p>Min range in kilometers. Default is 0.1 km.</p>
 
         </div>
     </div>
@@ -2712,7 +4524,7 @@ paladin:Start()</code></pre>
         </div>
         <div class="w3-half">
           
-<p>Group that is supposed to rearm the ARTY group.</p>
+<p>Group that is supposed to rearm the ARTY group. For the blue coalition, this is often a unarmed M818 transport whilst for red an unarmed Ural-375 transport can be used.</p>
 
         </div>
     </div>
@@ -2774,7 +4586,7 @@ paladin:Start()</code></pre>
         </div>
         <div class="w3-half">
           
-<p>Speed in km/h. Default 50 km/h.</p>
+<p>Speed in km/h.</p>
 
         </div>
     </div>
@@ -2809,82 +4621,6 @@ paladin:Start()</code></pre>
         <div class="w3-half">
           
 <p>Coordinates of the rearming place.</p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4" onclick="myFunction('#Functions##SetRelocateAfterEngagement')">
-<h6><a id="#(ARTY).SetRelocateAfterEngagement" ><strong>ARTY:SetRelocateAfterEngagement(switch)</strong></a></h6>
-</div>
-    
-<p>Set relocate after firing.</p>
-
-    
-<p>Group will find a new location after each engagement. Default is off</p>
-
-<div id= "#Functions##SetRelocateAfterEngagement" class="w3-hide w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #number
-        <strong>switch</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(Optional) If true, activate relocation. If false, deactivate relocation.</p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4" onclick="myFunction('#Functions##SetRelocateDistance')">
-<h6><a id="#(ARTY).SetRelocateDistance" ><strong>ARTY:SetRelocateDistance(rmax, rmin)</strong></a></h6>
-</div>
-    
-<p>Set relocation distance.</p>
-
-<div id= "#Functions##SetRelocateDistance" class="w3-hide w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #number
-        <strong>rmax</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(Optional) Max distance in meters, the group will move to relocate. Default is 800 m.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #number
-        <strong>rmin</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(Optional) Min distance in meters, the group will move to relocate. Default is 300 m.</p>
 
         </div>
     </div>
@@ -3182,6 +4918,102 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Start')">
+<h6><a id="#(ARTY).Start" ><strong>ARTY:Start()</strong></a></h6>
+</div>
+    
+<p>Function to start the ARTY FSM process.</p>
+
+<div id= "#Functions##Start" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Status')">
+<h6><a id="#(ARTY).Status" ><strong>ARTY:Status()</strong></a></h6>
+</div>
+    
+<p>Function to update the status of the ARTY group and tigger FSM events.</p>
+
+    
+<p>Triggers the FSM event "Status".</p>
+
+<div id= "#Functions##Status" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##Winchester')">
+<h6><a id="#(ARTY).Winchester" ><strong>ARTY:Winchester()</strong></a></h6>
+</div>
+    
+<p>Tell ARTY group it is out of ammo.</p>
+
+    
+<p>Triggers the FSM event "Winchester".</p>
+
+<div id= "#Functions##Winchester" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckDB')">
+<h6><a id="#(ARTY)._CheckDB" ><strong>ARTY:_CheckDB(displayname)</strong></a></h6>
+</div>
+    
+<p>Check the DB for properties of the specified artillery unit type.</p>
+
+<div id= "#Functions##_CheckDB" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+        <strong>displayname</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #table:
+      </div>
+      <div class="w3-half">
+        
+<p>Properties of the requested artillery type. Returns nil if no matching DB entry could be found.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckMoves')">
 <h6><a id="#(ARTY)._CheckMoves" ><strong>ARTY:_CheckMoves()</strong></a></h6>
 </div>
@@ -3305,6 +5137,47 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckOutOfAmmo')">
+<h6><a id="#(ARTY)._CheckOutOfAmmo" ><strong>ARTY:_CheckOutOfAmmo(targets)</strong></a></h6>
+</div>
+    
+<p>Check if group is (partly) out of ammo of a special weapon type.</p>
+
+<div id= "#Functions##_CheckOutOfAmmo" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>targets</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Table of targets.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>@boolean True if any target requests a weapon type that is empty.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckRearmed')">
 <h6><a id="#(ARTY)._CheckRearmed" ><strong>ARTY:_CheckRearmed()</strong></a></h6>
 </div>
@@ -3356,6 +5229,23 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckTargetsInRange')">
+<h6><a id="#(ARTY)._CheckTargetsInRange" ><strong>ARTY:_CheckTargetsInRange()</strong></a></h6>
+</div>
+    
+<p>Check all targets whether they are in range.</p>
+
+<div id= "#Functions##_CheckTargetsInRange" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckTimedTargets')">
 <h6><a id="#(ARTY)._CheckTimedTargets" ><strong>ARTY:_CheckTimedTargets()</strong></a></h6>
 </div>
@@ -3372,6 +5262,96 @@ paladin:Start()</code></pre>
       <div class="w3-half">
         
 <p>Target which is due to be attacked now. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckWeaponTypeAvailable')">
+<h6><a id="#(ARTY)._CheckWeaponTypeAvailable" ><strong>ARTY:_CheckWeaponTypeAvailable(target)</strong></a></h6>
+</div>
+    
+<p>Check if a selected weapon type is available for this target, i.e.</p>
+
+    
+<p>if the current amount of ammo of this weapon type is currently available.</p>
+
+<div id= "#Functions##_CheckWeaponTypeAvailable" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Target array data structure.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #number:
+      </div>
+      <div class="w3-half">
+        
+<p>Amount of shells, rockets or missiles available of the weapon type selected for the target.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_CheckWeaponTypePossible')">
+<h6><a id="#(ARTY)._CheckWeaponTypePossible" ><strong>ARTY:_CheckWeaponTypePossible(target)</strong></a></h6>
+</div>
+    
+<p>Check if a selected weapon type is in principle possible for this group.</p>
+
+    
+<p>The current amount of ammo might be zero but the group still can be rearmed at a later point in time.</p>
+
+<div id= "#Functions##_CheckWeaponTypePossible" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Target array data structure.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+<p>True if the group can carry this weapon type, false otherwise.</p>
 
       </div>
     </div>
@@ -3543,6 +5523,117 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_GetHeading')">
+<h6><a id="#(ARTY)._GetHeading" ><strong>ARTY:_GetHeading(a, b)</strong></a></h6>
+</div>
+    
+<p> Heading from point a to point b in degrees.</p>
+
+<div id= "#Functions##_GetHeading" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>a</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Coordinate.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>b</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Coordinate.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #number:
+      </div>
+      <div class="w3-half">
+        
+<p>angle Angle from a to b in degrees.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_GetMarkIDfromName')">
+<h6><a id="#(ARTY)._GetMarkIDfromName" ><strong>ARTY:_GetMarkIDfromName(name)</strong></a></h6>
+</div>
+    
+<p>Get the marker ID from the assigned task name.</p>
+
+<div id= "#Functions##_GetMarkIDfromName" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>name</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Name of the assignment.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return values:</strong></h5>
+    <div class="w3-row">
+        <div class="w3-half">
+          #string:
+        </div>
+        <div class="w3-half">
+          
+<p>Name of the ARTY group or nil</p>
+
+        </div>
+        <div class="w3-half">
+          #number:
+        </div>
+        <div class="w3-half">
+          
+<p>ID of the marked target or nil.</p>
+
+        </div>
+        <div class="w3-half">
+          #number:
+        </div>
+        <div class="w3-half">
+          
+<p>ID of the marked relocation move or nil</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_GetMoveIndexByName')">
 <h6><a id="#(ARTY)._GetMoveIndexByName" ><strong>ARTY:_GetMoveIndexByName(name)</strong></a></h6>
 </div>
@@ -3627,6 +5718,345 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_LLDMS2DD')">
+<h6><a id="#(ARTY)._LLDMS2DD" ><strong>ARTY:_LLDMS2DD(l1, l2)</strong></a></h6>
+</div>
+    
+<p>Convert Latitude and Lontigude from DMS to DD.</p>
+
+<div id= "#Functions##_LLDMS2DD" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>l1</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Latitude or longitude as string in the format DD:MM:SS N/S/W/E</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>l2</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Latitude or longitude as string in the format DD:MM:SS N/S/W/E</p>
+
+        </div>
+    </div>
+    <h5><strong>Return values:</strong></h5>
+    <div class="w3-row">
+        <div class="w3-half">
+          #number:
+        </div>
+        <div class="w3-half">
+          
+<p>Latitude in decimal degree format.</p>
+
+        </div>
+        <div class="w3-half">
+          #number:
+        </div>
+        <div class="w3-half">
+          
+<p>Longitude in decimal degree format.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkMoveName')">
+<h6><a id="#(ARTY)._MarkMoveName" ><strong>ARTY:_MarkMoveName(markerid)</strong></a></h6>
+</div>
+    
+<p>Create a name for a relocation move initiated by placing a marker.</p>
+
+<div id= "#Functions##_MarkMoveName" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>markerid</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>ID of the placed marker.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #string:
+      </div>
+      <div class="w3-half">
+        
+<p>Name of relocation move.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkRequestAmmo')">
+<h6><a id="#(ARTY)._MarkRequestAmmo" ><strong>ARTY:_MarkRequestAmmo()</strong></a></h6>
+</div>
+    
+<p>Request ammo via mark.</p>
+
+<div id= "#Functions##_MarkRequestAmmo" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkRequestMoves')">
+<h6><a id="#(ARTY)._MarkRequestMoves" ><strong>ARTY:_MarkRequestMoves()</strong></a></h6>
+</div>
+    
+<p>Request Moves.</p>
+
+<div id= "#Functions##_MarkRequestMoves" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkRequestStatus')">
+<h6><a id="#(ARTY)._MarkRequestStatus" ><strong>ARTY:_MarkRequestStatus()</strong></a></h6>
+</div>
+    
+<p>Request status via mark.</p>
+
+<div id= "#Functions##_MarkRequestStatus" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkRequestTargets')">
+<h6><a id="#(ARTY)._MarkRequestTargets" ><strong>ARTY:_MarkRequestTargets()</strong></a></h6>
+</div>
+    
+<p>Request Targets.</p>
+
+<div id= "#Functions##_MarkRequestTargets" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkTargetName')">
+<h6><a id="#(ARTY)._MarkTargetName" ><strong>ARTY:_MarkTargetName(markerid)</strong></a></h6>
+</div>
+    
+<p>Create a name for an engagement initiated by placing a marker.</p>
+
+<div id= "#Functions##_MarkTargetName" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>markerid</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>ID of the placed marker.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #string:
+      </div>
+      <div class="w3-half">
+        
+<p>Name of target engagement.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MarkerKeyAuthentification')">
+<h6><a id="#(ARTY)._MarkerKeyAuthentification" ><strong>ARTY:_MarkerKeyAuthentification(text)</strong></a></h6>
+</div>
+    
+<p>Extract engagement assignments and parameters from mark text.</p>
+
+<div id= "#Functions##_MarkerKeyAuthentification" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>text</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Marker text.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+<p>If true, authentification successful. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_Markertext')">
+<h6><a id="#(ARTY)._Markertext" ><strong>ARTY:_Markertext(text)</strong></a></h6>
+</div>
+    
+<p>Extract engagement assignments and parameters from mark text.</p>
+
+<div id= "#Functions##_Markertext" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>text</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Marker text to be analyzed.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #table:
+      </div>
+      <div class="w3-half">
+        
+<p>Table with assignment parameters, e.g. number of shots, radius, time etc.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_MissileCategoryName')">
+<h6><a id="#(ARTY)._MissileCategoryName" ><strong>ARTY:_MissileCategoryName(categorynumber)</strong></a></h6>
+</div>
+    
+<p>Returns a name of a missile category.</p>
+
+<div id= "#Functions##_MissileCategoryName" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>categorynumber</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Number of missile category from weapon missile category enumerator. See https://wiki.hoggitworld.com/view/DCS<em>Class</em>Weapon</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #string:
+      </div>
+      <div class="w3-half">
+        
+<p>Missile category name. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_Move')">
 <h6><a id="#(ARTY)._Move" ><strong>ARTY:_Move(group, ToCoord, Speed, OnRoad)</strong></a></h6>
 </div>
@@ -3667,7 +6097,7 @@ paladin:Start()</code></pre>
         </div>
         <div class="w3-half">
           
-<p>Speed in km/h.</p>
+<p>(Optional) Speed in km/h. Default is 70% of max speed the group can do.</p>
 
         </div>
     </div>
@@ -3782,6 +6212,71 @@ paladin:Start()</code></pre>
         </div>
         <div class="w3-half">
           <p></p>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_OnEventMarkChange')">
+<h6><a id="#(ARTY)._OnEventMarkChange" ><strong>ARTY:_OnEventMarkChange(Event)</strong></a></h6>
+</div>
+    
+<p>Function called when a F10 map mark was changed.</p>
+
+    
+<p>This happens when a user enters text.</p>
+
+<div id= "#Functions##_OnEventMarkChange" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##_OnEventMarkRemove')">
+<h6><a id="#(ARTY)._OnEventMarkRemove" ><strong>ARTY:_OnEventMarkRemove(Event)</strong></a></h6>
+</div>
+    
+<p>Function called when a F10 map mark was removed.</p>
+
+<div id= "#Functions##_OnEventMarkRemove" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event data.</p>
+
         </div>
     </div>
 </div>
@@ -3998,7 +6493,7 @@ paladin:Start()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_StatusReport')">
-<h6><a id="#(ARTY)._StatusReport" ><strong>ARTY:_StatusReport()</strong></a></h6>
+<h6><a id="#(ARTY)._StatusReport" ><strong>ARTY:_StatusReport(display)</strong></a></h6>
 </div>
     
 <p>After "Start" event.</p>
@@ -4008,6 +6503,20 @@ paladin:Start()</code></pre>
 
 <div id= "#Functions##_StatusReport" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>display</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) If true, send message to coalition. Default false.</p>
+
+        </div>
+    </div>
 </div>
 
 </div>
@@ -4018,14 +6527,14 @@ paladin:Start()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_TargetInRange')">
-<h6><a id="#(ARTY)._TargetInRange" ><strong>ARTY:_TargetInRange(target)</strong></a></h6>
+<h6><a id="#(ARTY)._TargetInRange" ><strong>ARTY:_TargetInRange(target, message)</strong></a></h6>
 </div>
     
 <p>Check if target is in range.</p>
 
 <div id= "#Functions##_TargetInRange" class="w3-hide w3-white">
   <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
+    <h5><strong>Parameters:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
@@ -4039,16 +6548,43 @@ paladin:Start()</code></pre>
 
         </div>
     </div>
-    <h5><strong>Return value:</strong></h5>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>message</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) If true, send a message to the coalition if the target is not in range. Default is no message is send.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return values:</strong></h5>
     <div class="w3-row">
-      <div class="w3-half">
-        #boolean:
-      </div>
-      <div class="w3-half">
-        
+        <div class="w3-half">
+          #boolean:
+        </div>
+        <div class="w3-half">
+          
 <p>True if target is in range, false otherwise.</p>
 
-      </div>
+        </div>
+        <div class="w3-half">
+          #boolean:
+        </div>
+        <div class="w3-half">
+          
+<p>True if ARTY group is too far away from the target, i.e. distance > max firing range.</p>
+
+        </div>
+        <div class="w3-half">
+          #boolean:
+        </div>
+        <div class="w3-half">
+          
+<p>True if ARTY group is too close to the target, i.e. distance &lt; min finring range.</p>
+
+        </div>
     </div>
 </div>
 
@@ -4204,6 +6740,432 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__Arrived')">
+<h6><a id="#(ARTY).__Arrived" ><strong>ARTY:__Arrived(delay)</strong></a></h6>
+</div>
+    
+<p>Tell ARTY group it has arrived at its destination after a delay.</p>
+
+    
+<p>Triggers the FSM event "Arrived".</p>
+
+<div id= "#Functions##__Arrived" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__CeaseFire')">
+<h6><a id="#(ARTY).__CeaseFire" ><strong>ARTY:__CeaseFire(delay, target)</strong></a></h6>
+</div>
+    
+<p>Order ARTY group to cease firing on a target after a delay.</p>
+
+    
+<p>Triggers the FSM event "CeaseFire".</p>
+
+<div id= "#Functions##__CeaseFire" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__CombatReady')">
+<h6><a id="#(ARTY).__CombatReady" ><strong>ARTY:__CombatReady(delay)</strong></a></h6>
+</div>
+    
+<p>Tell ARTY group it is combat ready after a delay.</p>
+
+    
+<p>Triggers the FSM event "CombatReady".</p>
+
+<div id= "#Functions##__CombatReady" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.  </p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__Dead')">
+<h6><a id="#(ARTY).__Dead" ><strong>ARTY:__Dead(Delay)</strong></a></h6>
+</div>
+    
+<p>Function called when a unit of the ARTY group died after a delay.</p>
+
+    
+<p>Triggers the FSM event "Dead".</p>
+
+<div id= "#Functions##__Dead" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>in seconds.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__Move')">
+<h6><a id="#(ARTY).__Move" ><strong>ARTY:__Move(delay, move)</strong></a></h6>
+</div>
+    
+<p>Order ARTY group to move to another location after a delay.</p>
+
+    
+<p>Triggers the FSM event "Move".</p>
+
+<div id= "#Functions##__Move" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>move</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the relocation move data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__NewMove')">
+<h6><a id="#(ARTY).__NewMove" ><strong>ARTY:__NewMove(delay, move)</strong></a></h6>
+</div>
+    
+<p>Add a new relocation for the ARTY group after a delay.</p>
+
+    
+<p>Triggers the FSM event "NewMove".</p>
+
+<div id= "#Functions##__NewMove" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>move</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the relocation move data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__NewTarget')">
+<h6><a id="#(ARTY).__NewTarget" ><strong>ARTY:__NewTarget(delay, target)</strong></a></h6>
+</div>
+    
+<p>Add a new target for the ARTY group with a delay.</p>
+
+    
+<p>Triggers the FSM event "NewTarget".</p>
+
+<div id= "#Functions##__NewTarget" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__OpenFire')">
+<h6><a id="#(ARTY).__OpenFire" ><strong>ARTY:__OpenFire(delay, target)</strong></a></h6>
+</div>
+    
+<p>Order ARTY group to open fire on a target with a delay.</p>
+
+    
+<p>Triggers the FSM event "Move".</p>
+
+<div id= "#Functions##__OpenFire" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>target</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Array holding the target data.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__Start')">
+<h6><a id="#(ARTY).__Start" ><strong>ARTY:__Start(Delay)</strong></a></h6>
+</div>
+    
+<p>Function to start the ARTY FSM process after a delay.</p>
+
+<div id= "#Functions##__Start" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>before start in seconds.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__Status')">
+<h6><a id="#(ARTY).__Status" ><strong>ARTY:__Status(Delay)</strong></a></h6>
+</div>
+    
+<p>Function to update the status of the ARTY group and tigger FSM events after a delay.</p>
+
+    
+<p>Triggers the FSM event "Status".</p>
+
+<div id= "#Functions##__Status" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>in seconds.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##__Winchester')">
+<h6><a id="#(ARTY).__Winchester" ><strong>ARTY:__Winchester(delay)</strong></a></h6>
+</div>
+    
+<p>Tell ARTY group it is out of ammo after a delay.</p>
+
+    
+<p>Triggers the FSM event "Winchester".</p>
+
+<div id= "#Functions##__Winchester" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>delay</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Delay in seconds.  </p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##_split')">
 <h6><a id="#(ARTY)._split" ><strong>ARTY:_split(str, sep)</strong></a></h6>
 </div>
@@ -4250,6 +7212,38 @@ paladin:Start()</code></pre>
 <p>Split text.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##onEvent')">
+<h6><a id="#(ARTY).onEvent" ><strong>ARTY:onEvent(Event)</strong></a></h6>
+</div>
+    
+<p>After "Start" event.</p>
+
+    
+<p>Initialized ROE and alarm state. Starts the event handler.</p>
+
+<div id= "#Functions##onEvent" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
     </div>
 </div>
 
@@ -4473,7 +7467,7 @@ paladin:Start()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##onafterMove')">
-<h6><a id="#(ARTY).onafterMove" ><strong>ARTY:onafterMove(Controllable, From, Event, To, ToCoord, Speed, OnRoad)</strong></a></h6>
+<h6><a id="#(ARTY).onafterMove" ><strong>ARTY:onafterMove(Controllable, From, Event, To, move)</strong></a></h6>
 </div>
     
 <p>After "Move" event.</p>
@@ -4532,34 +7526,12 @@ paladin:Start()</code></pre>
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-        <strong>ToCoord</strong>
+          #table
+        <strong>move</strong>
         </div>
         <div class="w3-half">
           
-<p>Coordinate to which the ARTY group should move.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #number
-        <strong>Speed</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>Speed in km/h at which the grou p should move.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #boolean
-        <strong>OnRoad</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>If true group should move on road mainly. </p>
+<p>Table containing the move parameters.</p>
 
         </div>
     </div>
@@ -4638,17 +7610,6 @@ paladin:Start()</code></pre>
 
         </div>
     </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        #boolean:
-      </div>
-      <div class="w3-half">
-        
-<p>If true, proceed to onafterOpenfire.</p>
-
-      </div>
-    </div>
 </div>
 
 </div>
@@ -4723,17 +7684,6 @@ paladin:Start()</code></pre>
 <p>Array holding the target parameters.</p>
 
         </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        #boolean:
-      </div>
-      <div class="w3-half">
-        
-<p>If true, proceed to onafterOpenfire.</p>
-
-      </div>
     </div>
 </div>
 
@@ -5225,7 +8175,7 @@ paladin:Start()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##onbeforeMove')">
-<h6><a id="#(ARTY).onbeforeMove" ><strong>ARTY:onbeforeMove(Controllable, From, Event, To, ToCoord, OnRoad)</strong></a></h6>
+<h6><a id="#(ARTY).onbeforeMove" ><strong>ARTY:onbeforeMove(Controllable, From, Event, To, move, ToCoord, OnRoad)</strong></a></h6>
 </div>
     
 <p>Before "Move" event.</p>
@@ -5279,6 +8229,17 @@ paladin:Start()</code></pre>
         <div class="w3-half">
           
 <p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #table
+        <strong>move</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Table containing the move parameters.</p>
 
         </div>
     </div>
