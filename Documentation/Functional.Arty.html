@@ -1448,35 +1448,42 @@ players who know the correct key are able to assign and cancel targets or reloca
 ARTY group are able to assign targets and moves without a key.</p>
 
 <h3>Target Assignments</h3>
-<p>A new target can be assigned by writing <strong>arty engage</strong> in the marker text. This can be followed by a <strong>comma separated list</strong> of optional keywords and parameters:</p>
+<p>A new target can be assigned by writing <strong>arty engage</strong> in the marker text.
+This is followed by a <strong>comma separated list</strong> of (optional) keywords and parameters.
+First, it is important to address the ARTY group or groups that should engage. This can be done in numrous ways. The keywords are <em>battery</em>, <em>alias</em>, <em>cluster</em>.
+It is also possible to address all ARTY groups by the keyword <em>everyone</em> or <em>allbatteries</em>. These two can be used synonymously.
+<strong>Note that</strong>, if no battery is assigned nothing will happen.</p>
 
 <ul>
+    <li><em>everyone</em> or <em>allbatteries</em> The target is assigned to all batteries.</li>
+    <li><em>battery</em> Name of the ARTY group that the target is assigned to. Note that <strong>the name is case sensitive</strong> and has to be given in quotation marks. Default is all ARTY groups of the right coalition.</li>
+    <li><em>alias</em> Alias of the ARTY group that the target is assigned to. The alias is <strong>case sensitive</strong> and needs to be in quotation marks.</li>
+    <li><em>cluster</em> The cluster of ARTY groups that is addessed. Clusters can be defined by the function <a href="##(ARTY).AddToCluster">ARTY.AddToCluster</a>(<em>clusters</em>). Names are <strong>case sensitive</strong> and need to be in quotation marks.</li>
+    <li><em>key</em> A number to authorize the target assignment. Only specifing the correct number will trigger an engagement.</li>
     <li><em>time</em> Time for which which the engagement is schedules, e.g. 08:42. Default is as soon as possible.</li>
     <li><em>prio</em>  Priority of the engagement as number between 1 (high prio) and 100 (low prio). Default is 50, i.e. medium priority.</li>
     <li><em>shots</em> Number of shots (shells, rockets or missiles) fired at each engagement. Default is 5.</li>
     <li><em>maxengage</em> Number of times the target is engaged. Default is 1.</li>
     <li><em>radius</em> Scattering radius of the fired shots in meters. Default is 100 m.</li>
     <li><em>weapon</em> Type of weapon to be used. Valid parameters are <em>cannon</em>, <em>rocket</em>, <em>missile</em>, <em>nuke</em>. Default is automatic selection.</li>
-    <li><em>battery</em> Name of the ARTY group that the target is assigned to. Note that <strong>the name is case sensitive</strong> and has to be given in quotation marks. Default is all ARTY groups of the right coalition.</li>
-    <li><em>alias</em> Alias of the ARTY group that the target is assigned to. The alias is <strong>case sensitive</strong> and needs to be in quotation marks.</li>
-    <li><em>cluster</em> The cluster of ARTY groups that is addessed. Clusters can be defined by the function <a href="##(ARTY).AddToCluster">ARTY.AddToCluster</a>(<em>clusters</em>). Names are <strong>case sensitive</strong> and need to be in quotation marks.</li>
-    <li><em>key</em> A number to authorize the target assignment. Only specifing the correct number will trigger an engagement.</li>
     <li><em>lldms</em> Specify the coordinates in Lat/Long degrees, minutes and seconds format. The actual location of the marker is unimportant here. The group will engage the coordinates given in the lldms keyword.
     Format is DD:MM:SS[N,S] DD:MM:SS[W,E]. See example below. This can be useful when coordinates in this format are obtained from elsewhere.</li>
     <li><em>readonly</em> The marker is readonly and cannot be deleted by users. Hence, assignment cannot be cancelled by removing the marker.</li>
 </ul>
 
 <p>Here are examples of valid marker texts:</p>
-<pre><code> arty engage
+<pre><code> arty engage, battery "Blue Paladin Alpha"
+ arty engage, everyone
+ arty engage, allbatteries
+ arty engage, alias "Bob", weapon missiles
+ arty engage, cluster "All Mortas"
+ arty engage, cluster "Northern Batteries" "Southern Batteries"
+ arty engage, cluster "Northern Batteries", cluster "Southern Batteries"
  arty engage, shots 20, prio 10, time 08:15, weapon cannons
  arty engage, battery "Blue Paladin 1" "Blue MRLS 1", shots 10, time 10:15
  arty engage, battery "Blue MRLS 1", key 666
  arty engage, battery "Paladin Alpha", weapon nukes, shots 1, time 20:15
  arty engage, lldms 41:51:00N 41:47:58E
- arty engage, alias "Bob", weapon missiles
- arty engage, cluster "All Mortas"
- arty engage, cluster "Northern Batteries" "Southern Batteries"
- arty engage, cluster "Northern Batteries", cluster "Southern Batteries"
 </code></pre>
 
 <p>Note that the keywords and parameters are <em>case insensitve</em>. Only exception are the battery, alias and cluster names.
@@ -1501,15 +1508,14 @@ These must be exactly the same as the names of the goups defined in the mission 
 </ul>
 
 <p>Here are some examples:</p>
-<pre><code> arty move
- arty move, time 23:45, speed 50, on road
- arty move, battery "Blue Paladin"
+<pre><code> arty move, battery "Blue Paladin"
  arty move, battery "Blue MRLS", canceltarget, speed 10, on road
- arty move, lldms 41:51:00N 41:47:58E
+ arty move, cluster "mobile", lldms 41:51:00N 41:47:58E
  arty move, alias "Bob", weapon missiles
  arty move, cluster "All Howitzer"
  arty move, cluster "Northern Batteries" "Southern Batteries"
  arty move, cluster "Northern Batteries", cluster "Southern Batteries"
+ arty move, everyone
 </code></pre>
 
 <h3>Requests</h3>
@@ -1523,7 +1529,7 @@ These must be exactly the same as the names of the goups defined in the mission 
 </ul>
 
 <p>For example</p>
-<pre><code> arty request, ammo
+<pre><code> arty request, everyone, ammo
  arty request, battery "Paladin Bravo", targets
  arty request, cluster "All Mortars", move
 </code></pre>
