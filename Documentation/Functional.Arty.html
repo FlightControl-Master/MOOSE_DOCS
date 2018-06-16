@@ -1207,7 +1207,7 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Automatic rearming once the artillery is out of ammo (optional).</li>
     <li>Automatic relocation after each firing engagement to prevent counter strikes (optional).</li>
     <li>Automatic relocation movements to get the battery within firing range (optional).</li>
-    <li>Simulation of tactical nuclear shells.</li>
+    <li>Simulation of tactical nuclear shells as well as illumination and smoke shells.</li>
     <li>New targets can be added during the mission, e.g. when they are detected by recon units.</li>
     <li>Targets and relocations can be assigned by placing markers on the F10 map.</li>
     <li>Finite state machine implementation. Mission designer can interact when certain events occur.</li>
@@ -1386,6 +1386,8 @@ This is done via the <em>weapontype</em> parameter of the <a href="##(ARTY).Assi
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.Rockets: Only unguided are used during the attack. Corresponding ammo type are rockets/nurs and can be defined by <a href="##(ARTY).SetRocketTypes">ARTY.SetRocketTypes</a>.</li>
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.CruiseMissile: Only cruise missiles are used during the attack. Corresponding ammo type are missiles and can be defined by <a href="##(ARTY).SetMissileTypes">ARTY.SetMissileTypes</a>.</li>
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.TacticalNukes: Use tactical nuclear shells. This works only with units that have shells and is described below.</li>
+    <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.IlluminationShells: Use illumination shells. This works only with units that have shells and is described below.</li>
+    <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.SmokeShells: Use smoke shells. This works only with units that have shells and is described below.</li>
 </ul>
 
 <h2>Assigning Moves</h2>
@@ -1479,11 +1481,11 @@ It is also possible to address all ARTY groups by the keyword <em>everyone</em> 
  arty engage, cluster "All Mortas"
  arty engage, cluster "Northern Batteries" "Southern Batteries"
  arty engage, cluster "Northern Batteries", cluster "Southern Batteries"
- arty engage, shots 20, prio 10, time 08:15, weapon cannons
+ arty engage, cluster "Horwitzers", shots 20, prio 10, time 08:15, weapon cannons
  arty engage, battery "Blue Paladin 1" "Blue MRLS 1", shots 10, time 10:15
  arty engage, battery "Blue MRLS 1", key 666
  arty engage, battery "Paladin Alpha", weapon nukes, shots 1, time 20:15
- arty engage, lldms 41:51:00N 41:47:58E
+ arty engage, battery "Horwitzer 1", lldms 41:51:00N 41:47:58E
 </code></pre>
 
 <p>Note that the keywords and parameters are <em>case insensitve</em>. Only exception are the battery, alias and cluster names.
@@ -1542,10 +1544,22 @@ These must be exactly the same as the names of the goups defined in the mission 
 
 <p>For example</p>
 <pre><code> arty cancel, target, battery "Paladin Bravo"
- arty cancel, move
+ arty cancel, everyone, move
  arty cancel, rearming, battery "MRLS Charly"
 </code></pre>
 
+<h3>Settings</h3>
+
+<p>A few options can be set by marks. The corresponding keyword is <strong>arty set</strong>. This can be used to define the rearming place and group for a battery.</p>
+
+<p>To set the reamring place of a group at the marker position type</p>
+<pre><code> arty set, battery "Paladin Alpha", rearming place
+</code></pre>
+
+<p>Setting the rearming group is independent of the position of the mark. Just create one anywhere on the map and type</p>
+<pre><code> arty set, battery "Mortar Bravo", rearming group "Ammo Truck M818"
+</code></pre>
+<p>Note that the name of the rearming group has to be given in quotation marks and spellt exactly as the group name defined in the mission editor.   </p>
 
 <h2>Fine Tuning</h2>
 
@@ -1753,6 +1767,28 @@ normandy:Start()
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(ARTY).Nillu" ><strong>ARTY.Nillu</strong></a>
+    
+<p>Number of illumination shells the group has available. Note that if normal shells are empty, firing illumination shells is also not possible any more.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).Nillu0" ><strong>ARTY.Nillu0</strong></a>
+    
+<p>Initial amount of illumination shells of the whole group. Default is 0.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(ARTY).Nmissiles0" ><strong>ARTY.Nmissiles0</strong></a>
     
 <p>Initial amount of missiles of the whole group.</p>
@@ -1797,9 +1833,31 @@ normandy:Start()
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(ARTY).Nsmoke" ><strong>ARTY.Nsmoke</strong></a>
+    
+<p>Number of smoke shells the group has available. Note that if normal shells are empty, firing smoke shells is also not possible any more.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).Nsmoke0" ><strong>ARTY.Nsmoke0</strong></a>
+    
+<p>Initial amount of smoke shells of the whole group. Default is 0.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(ARTY).Nukes" ><strong>ARTY.Nukes</strong></a>
     
-<p>Number of nuclear shells, the group has available. Default is same number as normal shells. Note that if normal shells are empty, firing nukes is also not possible any more.</p>
+<p>Number of nuclear shells, the group has available. Note that if normal shells are empty, firing nukes is also not possible any more.</p>
 
 </div>
 
@@ -1888,6 +1946,17 @@ normandy:Start()
 <a id="#(ARTY).RearmingPlaceCoord" ><strong>ARTY.RearmingPlaceCoord</strong></a>
     
 <p>Coordinates of the rearming place. If the place is more than 100 m away from the ARTY group, the group will go there.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Utilities.Utils.html##(SMOKECOLOR)">Utilities.Utils#SMOKECOLOR</a>
+<a id="#(ARTY).Smoke" ><strong>ARTY.Smoke</strong></a>
+    
+<p>color of smoke shells. Default SMOKECOLOR.red.</p>
 
 </div>
 
@@ -2100,6 +2169,39 @@ normandy:Start()
 <a id="#(ARTY).id" ><strong>ARTY.id</strong></a>
     
 <p>Some ID to identify who we are in output of the DCS.log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).illuMaxalt" ><strong>ARTY.illuMaxalt</strong></a>
+    
+<p>Maximum altitude in meters the illumination warhead will detonate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).illuMinalt" ><strong>ARTY.illuMinalt</strong></a>
+    
+<p>Minimum altitude in meters the illumination warhead will detonate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARTY).illuPower" ><strong>ARTY.illuPower</strong></a>
+    
+<p>Power of illumination warhead in mega candela. Default 1 mcd.</p>
 
 </div>
 
@@ -4381,6 +4483,97 @@ paladin:Start()</code></pre>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetIlluminationMinMaxAlt')">
+<h6><a id="#(ARTY).SetIlluminationMinMaxAlt" ><strong>ARTY:SetIlluminationMinMaxAlt(minalt, maxalt)</strong></a></h6>
+</div>
+    
+<p>Set minimum and maximum detotation altitude for illumination shells.</p>
+
+    
+<p>A value between min/max is selected randomly.
+The illumination bomb will burn for 300 seconds (5 minutes). Assuming a descent rate of ~3 m/s the "optimal" altitude would be 900 m. </p>
+
+<div id= "#Functions##SetIlluminationMinMaxAlt" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>minalt</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Minium altitude in meters. Default 500 m.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>maxalt</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Maximum altitude in meters. Default 1000 m.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetIlluminationShells')">
+<h6><a id="#(ARTY).SetIlluminationShells" ><strong>ARTY:SetIlluminationShells(n, power)</strong></a></h6>
+</div>
+    
+<p>Set number of illumination shells available to the group.</p>
+
+    
+<p>Note that it can be max the number of normal shells. Also if all normal shells are empty, firing illumination shells is also not possible any more until group gets rearmed.</p>
+
+<div id= "#Functions##SetIlluminationShells" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>n</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Number of illumination shells for the whole group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>power</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Power of illumination warhead in mega candela. Default 1.0 mcd.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4" onclick="myFunction('#Functions##SetMarkAssignmentsOn')">
 <h6><a id="#(ARTY).SetMarkAssignmentsOn" ><strong>ARTY:SetMarkAssignmentsOn(key, readonly)</strong></a></h6>
 </div>
@@ -4821,6 +5014,51 @@ paladin:Start()</code></pre>
         <div class="w3-half">
           
 <p>Table of shell type names.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetSmokeShells')">
+<h6><a id="#(ARTY).SetSmokeShells" ><strong>ARTY:SetSmokeShells(n, color)</strong></a></h6>
+</div>
+    
+<p>Set number of smoke shells available to the group.</p>
+
+    
+<p>Note that it can be max the number of normal shells. Also if all normal shells are empty, firing smoke shells is also not possible any more until group gets rearmed.</p>
+
+<div id= "#Functions##SetSmokeShells" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>n</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Number of smoke shells for the whole group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Utilities.Utils.html##(SMOKECOLOR)">Utilities.Utils#SMOKECOLOR</a>
+        <strong>color</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Color of the smoke. Default SMOKECOLOR.Red.</p>
 
         </div>
     </div>
