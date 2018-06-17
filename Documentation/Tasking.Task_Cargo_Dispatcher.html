@@ -968,7 +968,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task_Cargo.html">Tasking.Task_Cargo</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> -- The TASK_CARGO models tasks for players to transport <a href="Cargo.html">Cargo</a>.</p>
+<p><strong>Tasking</strong> -- Base class to model tasks for players to transport <a href="Cargo.html">Cargo</a>.</p>
 </p></div>
          
        </div>         
@@ -1440,7 +1440,7 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(TASK_CARGO_DISPATCHER).DefaultDeployZones" ><strong>TASK_CARGO_DISPATCHER.DefaultDeployZones</strong></a>
     
 
@@ -1566,7 +1566,7 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##AddTransportTask')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).AddTransportTask" ><strong>TASK_CARGO_DISPATCHER:AddTransportTask(TaskName, SetCargo, Briefing)</strong></a></h6>
+<h6><a id="#(TASK_CARGO_DISPATCHER).AddTransportTask" ><strong>TASK_CARGO_DISPATCHER:AddTransportTask(TaskPrefix, SetCargo, Briefing, TaskName)</strong></a></h6>
 </div>
     
 <p>Add a Transport task to transport cargo from fixed locations to a deployment zone.</p>
@@ -1579,11 +1579,13 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
       <div class="w3-row">
         <div class="w3-half">
           #string
-        <strong>TaskName</strong>
+        <strong>TaskPrefix</strong>
         </div>
         <div class="w3-half">
           
-<p>(optional) The name of the transport task. </p>
+<p>(optional) The prefix of the transport task. 
+This prefix will be appended with a . + a number of 3 digits.
+If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
 
         </div>
     </div>
@@ -1609,10 +1611,18 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
 
         </div>
     </div>
+      <div class="w3-row">
+        <div class="w3-half">
+        <strong>TaskName</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
     <h5><strong>Return value:</strong></h5>
     <div class="w3-row">
       <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
+        <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>:
       </div>
       <div class="w3-half">
         
@@ -1622,7 +1632,25 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
     </div>
       <h5><strong>Usage:</strong></h5>
     <pre class="example"><code>
-  -- Add a Transport task to transport cargo of different types to a Transport Deployment Zone.</code></pre>
+  -- Add a Transport task to transport cargo of different types to a Transport Deployment Zone.
+ TaskDispatcher = TASK_CARGO_DISPATCHER:New( Mission, TransportGroups )
+ 
+ local CargoSetWorkmaterials = SET_CARGO:New():FilterTypes( "Workmaterials" ):FilterStart()
+ local EngineerCargoGroup = CARGO_GROUP:New( GROUP:FindByName( "Engineers" ), "Workmaterials", "Engineers", 250 )
+ local ConcreteCargo = CARGO_SLINGLOAD:New( STATIC:FindByName( "Concrete" ), "Workmaterials", "Concrete", 150, 50 )
+ local CrateCargo = CARGO_CRATE:New( STATIC:FindByName( "Crate" ), "Workmaterials", "Crate", 150, 50 )
+ local EnginesCargo = CARGO_CRATE:New( STATIC:FindByName( "Engines" ), "Workmaterials", "Engines", 150, 50 )
+ local MetalCargo = CARGO_CRATE:New( STATIC:FindByName( "Metal" ), "Workmaterials", "Metal", 150, 50 )
+ 
+ -- Here we add the task. We name the task "Build a Workplace".
+ -- We provide the CargoSetWorkmaterials, and a briefing as the 2nd and 3rd parameter.
+ -- The :AddTransportTask() returns a Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT object, which we keep as a reference for further actions.
+ -- The WorkplaceTask holds the created and returned Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT object.
+ local WorkplaceTask = TaskDispatcher:AddTransportTask( "Build a Workplace", CargoSetWorkmaterials, "Transport the workers, engineers and the equipment near the Workplace." )
+ 
+ -- Here we set a TransportDeployZone. We use the WorkplaceTask as the reference, and provide a ZONE object.
+ TaskDispatcher:SetTransportDeployZone( WorkplaceTask, ZONE:New( "Workplace" ) )
+ </code></pre>
 
 </div>
 
@@ -1670,48 +1698,6 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
 <p>If there is no CSAR task required.</p>
 
         </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4" onclick="myFunction('#Functions##GetTransportTask')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).GetTransportTask" ><strong>TASK_CARGO_DISPATCHER:GetTransportTask(TaskName)</strong></a></h6>
-</div>
-    
-<p>Add a Transport task to transport cargo from fixed locations to a deployment zone.</p>
-
-<div id= "#Functions##GetTransportTask" class="w3-hide w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #string
-        <strong>TaskName</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(optional) The name of the transport task. </p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
     </div>
 </div>
 
@@ -2150,7 +2136,7 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##SetTransportDeployZone')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetTransportDeployZone" ><strong>TASK_CARGO_DISPATCHER:SetTransportDeployZone(TaskName, TransportDeployZone)</strong></a></h6>
+<h6><a id="#(TASK_CARGO_DISPATCHER).SetTransportDeployZone" ><strong>TASK_CARGO_DISPATCHER:SetTransportDeployZone(Task, TransportDeployZone)</strong></a></h6>
 </div>
     
 <p>Define one deploy zone for the Transport tasks.</p>
@@ -2162,12 +2148,12 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          #string
-        <strong>TaskName</strong>
+          <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>
+        <strong>Task</strong>
         </div>
         <div class="w3-half">
           
-<p>(optional) The name of the Transport task. </p>
+<p>The name of the Transport task. </p>
 
         </div>
     </div>
@@ -2192,6 +2178,10 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
 
       </div>
     </div>
+      <h5><strong>Usage:</strong></h5>
+    <pre class="example"><code>
+</code></pre>
+
 </div>
 
 </div>
@@ -2202,7 +2192,7 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##SetTransportDeployZones')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetTransportDeployZones" ><strong>TASK_CARGO_DISPATCHER:SetTransportDeployZones(TaskName, TransportDeployZones)</strong></a></h6>
+<h6><a id="#(TASK_CARGO_DISPATCHER).SetTransportDeployZones" ><strong>TASK_CARGO_DISPATCHER:SetTransportDeployZones(Task, TransportDeployZones)</strong></a></h6>
 </div>
     
 <p>Define the deploy zones for the Transport tasks.</p>
@@ -2214,12 +2204,12 @@ So, this method will be called only <strong>ONCE</strong> when a player joins a 
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          #string
-        <strong>TaskName</strong>
+          <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>
+        <strong>Task</strong>
         </div>
         <div class="w3-half">
           
-<p>(optional) The name of the Transport task.</p>
+<p>The name of the Transport task. </p>
 
         </div>
     </div>
