@@ -1390,8 +1390,8 @@ This is done via the <em>weapontype</em> parameter of the <a href="##(ARTY).Assi
     <li><a href="##(ARTY).WeaponType">ARTY.WeaponType</a>.SmokeShells: Use smoke shells. This works only with units that have shells and is described below.</li>
 </ul>
 
-<h2>Assigning Moves</h2>
-<p>The ARTY group can be commanded to move. This is done by the <a href="##(ARTY).AssignMoveCoord">ARTY.AssignMoveCoord</a>(*coord<em>,</em>time<em>,</em>speed<em>,</em>onroad<em>,</em>cancel<em>,</em>name*) function.
+<h2>Assigning Relocation Movements</h2>
+<p>The ARTY group can be commanded to move. This is done by the <a href="##(ARTY).AssignMoveCoord">ARTY.AssignMoveCoord</a>(<em>coord</em>, <em>time</em>, <em>speed</em>, <em>onroad</em>, <em>cancel</em>, <em>name</em>) function.
 With this multiple timed moves of the group can be scheduled easily. By default, these moves will only be executed if the group is state <strong>CombatReady</strong>.</p>
 
 <h3>Parameters</h3>
@@ -1429,7 +1429,11 @@ The parameter <em>coord</em> specifies the coordinate of the rearming place whic
 
 <p>After the rearming is complete, both groups will move back to their original positions.</p>
 
-<h2>Tactical Nukes</h2>
+<h2>Simulated Weapons</h2>
+
+<p>In addtion to the standard weapons a group has available some special weapon types that are not possible to use in the native DCS environment are simulated.</p>
+
+<h3>Tactical Nukes</h3>
 
 <p>ARTY groups that can fire shells can also be used to fire tactical nukes. This is achieved by setting the weapon type to <strong>ARTY.WeaponType.TacticalNukes</strong> in the
 <a href="##(ARTY).AssignTargetCoord">ARTY.AssignTargetCoord</a>() function.</p>
@@ -1439,6 +1443,27 @@ This supplies the group with <em>n</em> nuclear shells, where <em>n</em> is rest
 Note that the group must always have convenctional shells left in order to fire a nuclear shell. </p>
 
 <p>The default explostion strength is 0.075 kilo tons TNT. The can be changed with the <a href="##(ARTY).SetTacNukeWarhead">ARTY.SetTacNukeWarhead</a>(<em>strength</em>), where <em>strength</em> is given in kilo tons TNT.</p>
+
+<h3>Illumination Shells</h3>
+
+<p>ARTY groups that possess shells can fire shells with illumination bombs. First, the group needs to be equipped with this weapon. This is done by the 
+function <a href="ARTY.SetIlluminationShells.html">ARTY.SetIlluminationShells</a>(<em>n</em>, <em>power</em>), where <em>n</em> is the number of shells the group has available and <em>power</em> the illumination power in mega candela (mcd).</p>
+
+<p>In order to execute an engagement with illumination shells one has to use the weapon type <em>ARTY.WeaponType.IlluminationShells</em> in the
+<a href="##(ARTY).AssignTargetCoord">ARTY.AssignTargetCoord</a>() function.</p>
+
+<p>In the simulation, the explosive shell that is fired is destroyed once it gets close to the target point but before it can actually impact.
+At this position an illumination bomb is triggered at a random altitude between 500 and 1000 meters. This interval can be set by the function
+<a href="ARTY.SetIlluminationMinMaxAlt.html">ARTY.SetIlluminationMinMaxAlt</a>(<em>minalt</em>, <em>maxalt</em>).</p>
+
+<h3>Smoke Shells</h3>
+
+<p>In a similar way to illumination shells, ARTY groups can also employ smoke shells. The numer of smoke shells the group has available is set by the function
+<a href="##(ARTY).SetSmokeShells">ARTY.SetSmokeShells</a>(<em>n</em>, <em>color</em>), where <em>n</em> is the number of shells and <em>color</em> defines the smoke color. Default is SMOKECOLOR.Red.</p>
+
+<p>The weapon type to be used in the <a href="##(ARTY).AssignTargetCoord">ARTY.AssignTargetCoord</a>() function is <em>ARTY.WeaponType.SmokeShells</em>.</p>
+
+<p>The explosive shell the group fired is destroyed shortly before its impact on the ground and smoke of the speficied color is triggered at that position.</p>
 
 
 <h2>Assignments via Markers on F10 Map</h2>
@@ -1571,6 +1596,7 @@ These must be exactly the same as the names of the goups defined in the mission 
     <li><a href="##(ARTY).SetAutoRelocateAfterEngagement">ARTY.SetAutoRelocateAfterEngagement</a>(<em>rmax</em>, <em>rmin</em>) will cause the ARTY group to change its position after each firing assignment.
     Optional parameters <em>rmax</em>, <em>rmin</em> define the max/min distance for relocation of the group. Default distance is randomly between 300 and 800 m.</li>
     <li><a href="##(ARTY).AddToCluster">ARTY.AddToCluster</a>(<em>clusters</em>) Can be used to add the ARTY group to one or more clusters. All groups in a cluster can be addressed simultaniously with one marker command.</li>
+    <li><a href="##(ARTY).SetSpeed">ARTY.SetSpeed</a>(<em>speed</em>) sets the speed in km/h the group moves at if not explicitly stated otherwise.</li>
     <li><a href="##(ARTY).RemoveAllTargets">ARTY.RemoveAllTargets</a>() removes all targets from the target queue.</li>
     <li><a href="##(ARTY).RemoveTarget">ARTY.RemoveTarget</a>(<em>name</em>) deletes the target with <em>name</em> from the target queue.</li>
     <li><a href="##(ARTY).SetMaxFiringRange">ARTY.SetMaxFiringRange</a>(<em>range</em>) defines the maximum firing range. Targets further away than this distance are not engaged.</li>
@@ -5059,6 +5085,37 @@ The illumination bomb will burn for 300 seconds (5 minutes). Assuming a descent 
         <div class="w3-half">
           
 <p>(Optional) Color of the smoke. Default SMOKECOLOR.Red.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4" onclick="myFunction('#Functions##SetSpeed')">
+<h6><a id="#(ARTY).SetSpeed" ><strong>ARTY:SetSpeed(speed)</strong></a></h6>
+</div>
+    
+<p>Set default speed the group is moving at if not specified otherwise.</p>
+
+<div id= "#Functions##SetSpeed" class="w3-hide w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h.</p>
 
         </div>
     </div>
