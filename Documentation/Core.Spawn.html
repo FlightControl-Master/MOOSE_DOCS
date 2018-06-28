@@ -1574,9 +1574,6 @@ can be used to switch off the initial delay. Because there is no delay by defaul
     
 
 
-    
-<p> Don't repeat the group from Take-Off till Landing and back Take-Off by ReSpawning.</p>
-
 </div>
 
 </div>   
@@ -1744,26 +1741,9 @@ can be used to switch off the initial delay. Because there is no delay by defaul
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(SPAWN).SpawnInitKeepUnitNames" ><strong>SPAWN.SpawnInitKeepUnitNames</strong></a>
-    
-
-
-    
-<p> Overwrite unit names by default with group name.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
 <a id="#(SPAWN).SpawnInitLimit" ><strong>SPAWN.SpawnInitLimit</strong></a>
     
 
-
-    
-<p> By default, no InitLimit</p>
 
 </div>
 
@@ -1785,7 +1765,7 @@ can be used to switch off the initial delay. Because there is no delay by defaul
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(SPAWN).SpawnMaxGroups" ><strong>SPAWN.SpawnMaxGroups</strong></a>
     
 
@@ -1799,7 +1779,7 @@ can be used to switch off the initial delay. Because there is no delay by defaul
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(SPAWN).SpawnMaxUnitsAlive" ><strong>SPAWN.SpawnMaxUnitsAlive</strong></a>
     
 
@@ -1940,7 +1920,7 @@ can be used to switch off the initial delay. Because there is no delay by defaul
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
+    
 <a id="#(SPAWN).SpawnUnControlled" ><strong>SPAWN.SpawnUnControlled</strong></a>
     
 
@@ -1994,17 +1974,6 @@ can be used to switch off the initial delay. Because there is no delay by defaul
 
     
 <p> When working in UnControlled mode, all planes are Spawned in UnControlled mode before the scheduler starts.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(SPAWN).uncontrolled" ><strong>SPAWN.uncontrolled</strong></a>
-    
-
 
 </div>
 
@@ -3869,7 +3838,7 @@ local SpawnObject = SPAWN
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4" onclick="myFunction('#Functions##SpawnAtAirbase')">
-<h6><a id="#(SPAWN).SpawnAtAirbase" ><strong>SPAWN:SpawnAtAirbase(SpawnAirbase, Takeoff, TakeoffAltitude)</strong></a></h6>
+<h6><a id="#(SPAWN).SpawnAtAirbase" ><strong>SPAWN:SpawnAtAirbase(SpawnAirbase, Takeoff, TakeoffAltitude, TerminalType, EmergencyAirSpawn)</strong></a></h6>
 </div>
     
 <p>Will spawn a group at an <a href="Wrapper.Airbase.html">Wrapper.Airbase</a>.</p>
@@ -3935,24 +3904,38 @@ You need to provide the <strong>exact name</strong> of the airbase as the parame
 
         </div>
     </div>
-    <h5><strong>Return values:</strong></h5>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Airbase.html##(AIRBASE.TerminalType)">Wrapper.Airbase#AIRBASE.TerminalType</a>
+        <strong>TerminalType</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(optional) The terminal type the aircraft should be spawned at. See <a href="Wrapper.Airbase.html##(AIRBASE).TerminalType">Wrapper.Airbase#AIRBASE.TerminalType</a>.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>EmergencyAirSpawn</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(optional) If true (default), groups are spawned in air if there is no parking spot at the airbase. If false, nothing is spawned if no parking spot is available.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
     <div class="w3-row">
-        <div class="w3-half">
-          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>:
-        </div>
-        <div class="w3-half">
-          
-<p>that was spawned.</p>
+      <div class="w3-half">
+        <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>:
+      </div>
+      <div class="w3-half">
+        
+<p>that was spawned or nil when nothing was spawned.</p>
 
-        </div>
-        <div class="w3-half">
-          #nil:
-        </div>
-        <div class="w3-half">
-          
-<p>Nothing was spawned.</p>
-
-        </div>
+      </div>
     </div>
       <h5><strong>Usage:</strong></h5>
     <pre class="example"><code>  Spawn_Plane = SPAWN:New( "Plane" )
@@ -3970,6 +3953,8 @@ You need to provide the <strong>exact name</strong> of the airbase as the parame
   Spawn_Heli:SpawnAtAirbase( AIRBASE:FindByName( "FARP Air" ), SPAWN.Takeoff.Air )
   
   Spawn_Heli:SpawnAtAirbase( AIRBASE:FindByName( "Carrier" ), SPAWN.Takeoff.Cold )
+  
+  Spawn_Plane:SpawnAtAirbase( AIRBASE:FindByName( AIRBASE.Caucasus.Krymsk ), SPAWN.Takeoff.Cold, nil, AIRBASE.TerminalType.OpenBig )
 </code></pre>
 
 </div>
