@@ -462,7 +462,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Core.Point.html">Core.Point</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Core</strong> -- <strong>POINT_VEC</strong> classes define an <strong>extensive API</strong> to <strong>manage 3D points</strong> in the simulation space.</p>
+<p><strong>Core</strong> -- Defines an <strong>extensive API</strong> to <strong>manage 3D points</strong> in the DCS World 3D simulation space.</p>
 </p></div>
          
        </div>         
@@ -1289,9 +1289,9 @@ obtain <strong>various reports</strong> related to the task.</p>
 Depending on the task progress, a <strong>scoring</strong> can be allocated to award pilots of the achievements made.
 The scoring is fully flexible, and different levels of awarding can be provided depending on the task type and complexity.</p>
 
-<h2>1. Task Statuses</h2>
+<h1>1) Task Statuses</h1>
 
-<h3>1.1. Task status overview.</h3>
+<h2>1.1) Task status overview.</h2>
 
 <p>A task has a state, reflecting the progress and completion of the task:</p>
 
@@ -1304,20 +1304,27 @@ The scoring is fully flexible, and different levels of awarding can be provided 
     <li><strong>Cancelled</strong>: Expresses that the task is cancelled by HQ or through a logical situation where a cancellation of the task is required.</li>
 </ul>
 
-<p>A normal flow of task status would evolve from the <strong>Planned</strong> state, to the <strong>Assigned</strong> state ending either in a <strong>Success</strong> or a <strong>Failed</strong> state.
-The state completion is by default set to <strong>Success</strong>, if the goals of the task have been reached, but can be overruled by a goal method.</p>
 
-<p>Depending on the tactical situation, a task can be <strong>Rejected</strong> or <strong>Cancelled</strong> by the mission governer.
+<p>A normal flow of task status would evolve from the <strong>Planned</strong> state, to the <strong>Assigned</strong> state ending either in a <strong>Success</strong> or a <strong>Failed</strong> state.</p>
+
+<pre><code> Planned -&gt; Assigned -&gt; Success
+                     -&gt; Failed
+</code></pre>
+
+<p>The state completion is by default set to <strong>Success</strong>, if the goals of the task have been reached, but can be overruled by a goal method.</p>
+
+<p>Depending on the tactical situation, a task can be <strong>Cancelled</strong> by the mission governer.
 It is actually the mission designer who has the flexibility to decide at which conditions a task would be set to <strong>Success</strong>, <strong>Failed</strong> or <strong>Cancelled</strong>.
-It all depends on the task goals, and the phase/evolution of the task conditions that would accomplish the goals.
-For example, if the task goal is to merely destroy a target, and the target is mid-mission destroyed by another event than the pilot destroying the target,
+This decision all depends on the task goals, and the phase/evolution of the task conditions that would accomplish the goals.</p>
+
+<p>For example, if the task goal is to merely destroy a target, and the target is mid-mission destroyed by another event than the pilot destroying the target,
 the task goal could be set to <strong>Failed</strong>, or .. <strong>Cancelled</strong> ...
 However, it could very well be also acceptable that the task would be flagged as <strong>Success</strong>.</p>
 
 <p>The tasking mechanism governs beside the progress also a scoring mechanism, and in case of goal completion without any active pilot involved
 in the execution of the task, could result in a <strong>Success</strong> task completion status, but no score would be awared, as there were no players involved. </p>
 
-<h3>1.2. Task status events.</h3>
+<h2>1.2) Task status events.</h2>
 
 <p>The task statuses can be set by using the following methods:</p>
 
@@ -1332,12 +1339,12 @@ in the execution of the task, could result in a <strong>Success</strong> task co
 <p>The mentioned derived TASK_ classes are implementing the task status transitions out of the box.
 So no extra logic needs to be written.</p>
 
-<h2>2. Goal conditions for a task.</h2>
+<h1>2) Goal conditions for a task.</h1>
 
 <p>Every 30 seconds, a <a href="##(Task).Goal">Task.Goal</a> trigger method is fired. 
 You as a mission designer, can capture the <strong>Goal</strong> event trigger to check your own task goal conditions and take action!</p>
 
-<h3>2.1. Goal event handler <code>OnAfterGoal()</code>.</h3>
+<h2>2.1) Goal event handler <code>OnAfterGoal()</code>.</h2>
 
 <p>And this is a really great feature! Imagine a task which has <strong>several conditions to check</strong> before the task can move into <strong>Success</strong> state.
 You can do this with the OnAfterGoal method.</p>
@@ -1355,23 +1362,30 @@ You can do this with the OnAfterGoal method.</p>
  end
 </code></pre>
 
-<p>So the <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would be called every 30 seconds automatically, and within this method, you can now check the conditions and take respective action.</p>
+<p>So the <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would be called every 30 seconds automatically, 
+and within this method, you can now check the conditions and take respective action.</p>
 
-<h3>2.2. Goal event trigger <code>Goal()</code>.</h3>
+<h2>2.2) Goal event trigger <code>Goal()</code>.</h2>
 
 <p>If you would need to check a goal at your own defined event timing, then just call the <a href="##(TASK).Goal">TASK.Goal</a>() method within your logic.
 The <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would then directly be called and would execute the logic. 
-Note that you can also delay the goal check by using the delayed event trigger syntax <code>:__Goal( Dalay )</code>. </p>
+Note that you can also delay the goal check by using the delayed event trigger syntax <code>:__Goal( Delay )</code>. </p>
 
 
-<h2>3) Add scoring when reaching a certain task status:</h2>
+<h1>3) Add scoring when reaching a certain task status:</h1>
 
 <p>Upon reaching a certain task status in a task, additional scoring can be given. If the Mission has a scoring system attached, the scores will be added to the mission scoring.
 Use the method <a href="##(TASK).AddScore">TASK.AddScore</a>() to add scores when a status is reached.</p>
 
-<h2>1.4) Task briefing:</h2>
+<h1>4) Task briefing:</h1>
 
-<p>A task briefing can be given that is shown to the player when he is assigned to the task.</p>
+<p>A task briefing is a text that is shown to the player when he is assigned to the task.
+The briefing is broadcasted by the command center owning the mission.</p>
+
+<p>The briefing is part of the parameters in the <a href="##(TASK).New">TASK.New</a>() constructor, 
+but can separately be modified later in your mission using the
+<a href="##(TASK).SetBriefing">TASK.SetBriefing</a>() method.</p>
+
 
 
 </div>
