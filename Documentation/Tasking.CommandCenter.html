@@ -462,7 +462,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Core.Point.html">Core.Point</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Core</strong> -- <strong>POINT_VEC</strong> classes define an <strong>extensive API</strong> to <strong>manage 3D points</strong> in the simulation space.</p>
+<p><strong>Core</strong> -- Defines an <strong>extensive API</strong> to <strong>manage 3D points</strong> in the DCS World 3D simulation space.</p>
 </p></div>
          
        </div>         
@@ -896,7 +896,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task.html">Tasking.Task</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> -- This module contains the TASK class, the main engine to run human taskings.</p>
+<p><strong>Tasking</strong> -- A task object governs the main engine to administer human taskings.</p>
 </p></div>
          
        </div>         
@@ -921,6 +921,18 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
 <p><strong>Tasking</strong> - The TASK_Protect models tasks for players to protect or capture specific zones.</p>
+</p></div>
+         
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/MOOSE.JPG" alt="Image" style="height-min:120px;">
+           <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task_A2A.html">Tasking.Task_A2A</a></strong></h3></div>
+         </div>
+         <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Tasking</strong> - The TASK_A2A models tasks for players in Air to Air engagements.</p>
 </p></div>
          
        </div>         
@@ -1017,18 +1029,6 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
 <p>This module contains the TASK_MANAGER class and derived classes.</p>
-</p></div>
-         
-       </div>         
-     </div>
-     <div class="w3-col s12 m6 l4">
-       <div class="w3-card-4 w3-white w3-margin">
-         <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/MOOSE.JPG" alt="Image" style="height-min:120px;">
-           <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Tasking.Task_A2A.html">Tasking.Tasking.Task_A2A</a></strong></h3></div>
-         </div>
-         <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> - The TASK_A2A models tasks for players in Air to Air engagements.</p>
 </p></div>
          
        </div>         
@@ -1233,15 +1233,20 @@ which are excellent tools to be reused in an OO environment!.</p>
 
     
 <p> 
- The commandcenter communicates important messages between the various groups of human players executing tasks in missions.</p>
+Command centers govern missions, communicates the task assignments between human players of the coalition, and manages the menu flow.
+It can assign a random task to a player when requested.
+The commandcenter provides the facilitites to communicate between human players online, executing a task.</p>
 
-<h2>COMMANDCENTER constructor</h2>
+<h2>1. Create a command center object.</h2>
 
 <ul>
     <li><a href="##(COMMANDCENTER).New">COMMANDCENTER.New</a>(): Creates a new COMMANDCENTER object.</li>
 </ul>
 
-<h2>Mission Management</h2>
+<h2>2. Command center mission management.</h2>
+
+<p>Command centers manage missions. These can be added, removed and provides means to retrieve missions.
+These methods are heavily used by the task dispatcher classes.</p>
 
 <ul>
     <li><a href="##(COMMANDCENTER).AddMission">COMMANDCENTER.AddMission</a>(): Adds a mission to the commandcenter control.</li>
@@ -1249,7 +1254,88 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li><a href="##(COMMANDCENTER).GetMissions">COMMANDCENTER.GetMissions</a>(): Retrieves the missions table controlled by the commandcenter.</li>
 </ul>
 
-<h2>Reference Zones</h2>
+<h2>3. Communication management between players.</h2>
+
+<p>Command center provide means of communication between players. 
+Because a command center is a central object governing multiple missions, <br/>
+there are several levels at which communication needs to be done.
+Within MOOSE, communication is facilitated using the message system within the DCS simulator.</p>
+
+<p>Messages can be sent between players at various levels:</p>
+
+<ul>
+    <li>On a global level, to all players.</li>
+    <li>On a coalition level, only to the players belonging to the same coalition.</li>
+    <li>On a group level, to the players belonging to the same group.</li>
+</ul>
+
+<p>Messages can be sent to <strong>all players</strong> by the command center using the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).MessageToAll">Tasking.CommandCenter#COMMANDCENTER.MessageToAll</a>().</p>
+
+<p>To send messages to <strong>the coalition of the command center</strong>, there are two methods available:</p>
+
+<ul>
+    <li>Use the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).MessageToCoalition">Tasking.CommandCenter#COMMANDCENTER.MessageToCoalition</a>() to send a specific message to the coalition, with a given message display duration.</li>
+    <li>You can send a specific type of message using the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).MessageTypeToCoalition">Tasking.CommandCenter#COMMANDCENTER.MessageTypeToCoalition</a>().
+    This will send a message of a specific type to the coalition, and as a result its display duration will be flexible according the message display time selection by the human player.</li>
+</ul>
+
+<p>To send messages <strong>to the group</strong> of human players, there are also two methods available:</p>
+
+<ul>
+    <li>Use the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).MessageToGroup">Tasking.CommandCenter#COMMANDCENTER.MessageToGroup</a>() to send a specific message to a group, with a given message display duration.</li>
+    <li>You can send a specific type of message using the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).MessageTypeToGroup">Tasking.CommandCenter#COMMANDCENTER.MessageTypeToGroup</a>().
+    This will send a message of a specific type to the group, and as a result its display duration will be flexible according the message display time selection by the human player .</li>
+</ul>
+
+<p>Messages are considered to be sometimes disturbing for human players, therefore, the settings menu provides the means to activate or deactivate messages.
+For more information on the message types and display timings that can be selected and configured using the menu, refer to the <a href="Core.Settings.html">Core.Settings</a> menu description.</p>
+
+<h2>4. Command center detailed methods.</h2>
+
+<p>Various methods are added to manage command centers.</p>
+
+<h3>4.1. Naming and description.</h3>
+
+<p>There are 3 methods that can be used to retrieve the description of a command center:</p>
+
+<ul>
+    <li>Use the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).GetName">Tasking.CommandCenter#COMMANDCENTER.GetName</a>() to retrieve the name of the command center. 
+    This is the name given as part of the <a href="Tasking.CommandCenter.html##(COMMANDCENTER).New">Tasking.CommandCenter#COMMANDCENTER.New</a>() constructor.
+    The returned name using this method, is not to be used for message communication.</li>
+</ul>
+
+<p>A textual description can be retrieved that provides the command center name to be used within message communication:</p>
+
+<ul>
+    <li><a href="Tasking.CommandCenter.html##(COMMANDCENTER).GetShortText">Tasking.CommandCenter#COMMANDCENTER.GetShortText</a>() returns the command center name as <code>CC [CommandCenterName]</code>.</li>
+    <li><a href="Tasking.CommandCenter.html##(COMMANDCENTER).GetText">Tasking.CommandCenter#COMMANDCENTER.GetText</a>() returns the command center name as <code>Command Center [CommandCenterName]</code>.</li>
+</ul>
+
+<h3>4.2. The coalition of the command center.</h3>
+
+<p>The method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).GetCoalition">Tasking.CommandCenter#COMMANDCENTER.GetCoalition</a>() returns the coalition of the command center.
+The return value is an enumeration of the type <a href="DCS.html##(coalition).side">DCS#coalition.side</a>, which contains the RED, BLUE and NEUTRAL coalition. </p>
+
+<h3>4.3. The command center is a real object.</h3>
+
+<p>The command center must be represented by a live object within the DCS simulator. As a result, the command center <br/>
+can be a <a href="Wrapper.Unit.html">Wrapper.Unit</a>, a <a href="Wrapper.Group.html">Wrapper.Group</a>, an <a href="Wrapper.Airbase.html">Wrapper.Airbase</a> or a <a href="Wrapper.Static.html">Wrapper.Static</a> object.</p>
+
+<p>Using the method <a href="Tasking.CommandCenter.html##(COMMANDCENTER).GetPositionable">Tasking.CommandCenter#COMMANDCENTER.GetPositionable</a>() you retrieve the polymorphic positionable object representing
+the command center, but just be aware that you should be able to use the representable object derivation methods.</p>
+
+<h3>5. Command center reports.</h3>
+
+<p>Because a command center giverns multiple missions, there are several reports available that are generated by command centers.
+These reports are generated using the following methods:</p>
+
+<ul>
+    <li><a href="Tasking.CommandCenter.html##(COMMANDCENTER).ReportSummary">Tasking.CommandCenter#COMMANDCENTER.ReportSummary</a>(): Creates a summary report of all missions governed by the command center.</li>
+    <li><a href="Tasking.CommandCenter.html##(COMMANDCENTER).ReportDetails">Tasking.CommandCenter#COMMANDCENTER.ReportDetails</a>(): Creates a detailed report of all missions governed by the command center.</li>
+    <li><a href="Tasking.CommandCenter.html##(COMMANDCENTER).ReportMissionPlayers">Tasking.CommandCenter#COMMANDCENTER.ReportMissionPlayers</a>(): Creates a report listing the players active at the missions governed by the command center.</li>
+</ul>
+
+<h2>6. Reference Zones.</h2>
 
 <p>Command Centers may be aware of certain Reference Zones within the battleground. These Reference Zones can refer to
 known areas, recognizable buildings or sites, or any other point of interest.

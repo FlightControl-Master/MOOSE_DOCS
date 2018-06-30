@@ -462,7 +462,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Core.Point.html">Core.Point</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Core</strong> -- <strong>POINT_VEC</strong> classes define an <strong>extensive API</strong> to <strong>manage 3D points</strong> in the simulation space.</p>
+<p><strong>Core</strong> -- Defines an <strong>extensive API</strong> to <strong>manage 3D points</strong> in the DCS World 3D simulation space.</p>
 </p></div>
          
        </div>         
@@ -896,7 +896,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task.html">Tasking.Task</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> -- This module contains the TASK class, the main engine to run human taskings.</p>
+<p><strong>Tasking</strong> -- A task object governs the main engine to administer human taskings.</p>
 </p></div>
          
        </div>         
@@ -921,6 +921,18 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
 <p><strong>Tasking</strong> - The TASK_Protect models tasks for players to protect or capture specific zones.</p>
+</p></div>
+         
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/MOOSE.JPG" alt="Image" style="height-min:120px;">
+           <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task_A2A.html">Tasking.Task_A2A</a></strong></h3></div>
+         </div>
+         <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Tasking</strong> - The TASK_A2A models tasks for players in Air to Air engagements.</p>
 </p></div>
          
        </div>         
@@ -1017,18 +1029,6 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
 <p>This module contains the TASK_MANAGER class and derived classes.</p>
-</p></div>
-         
-       </div>         
-     </div>
-     <div class="w3-col s12 m6 l4">
-       <div class="w3-card-4 w3-white w3-margin">
-         <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/MOOSE.JPG" alt="Image" style="height-min:120px;">
-           <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Tasking.Task_A2A.html">Tasking.Tasking.Task_A2A</a></strong></h3></div>
-         </div>
-         <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> - The TASK_A2A models tasks for players in Air to Air engagements.</p>
 </p></div>
          
        </div>         
@@ -1218,7 +1218,7 @@ which are excellent tools to be reused in an OO environment!.</p>
       <tr>
         <td class="style="width:40%;"><p><h2>Global <strong>MISSION</strong></h2></p></td>
         <td class="style="width:60%;">
-
+<p>Models goals to be achieved and can contain multiple tasks to be executed to achieve the goals.</p>
 </td>
       </tr>
     </table>
@@ -1229,6 +1229,122 @@ which are excellent tools to be reused in an OO environment!.</p>
     <a href="##(MISSION)">#MISSION</a>
 <a id="MISSION" ><strong>MISSION</strong></a>
     
+<p>Models goals to be achieved and can contain multiple tasks to be executed to achieve the goals.</p>
+
+    
+
+<p>A mission contains multiple tasks and can be of different task types.
+These tasks need to be assigned to human players to be executed.</p>
+
+<p>A mission can have multiple states, which will evolve as the mission progresses during the DCS simulation.</p>
+
+<ul>
+    <li><strong>IDLE</strong>: The mission is defined, but not started yet. No task has yet been joined by a human player as part of the mission.</li>
+    <li><strong>ENGAGED</strong>: The mission is ongoing, players have joined tasks to be executed.</li>
+    <li><strong>COMPLETED</strong>: The goals of the mission has been successfully reached, and the mission is flagged as completed.</li>
+    <li><strong>FAILED</strong>: For a certain reason, the goals of the mission has not been reached, and the mission is flagged as failed.</li>
+    <li><strong>HOLD</strong>: The mission was enaged, but for some reason it has been put on hold.</li>
+</ul>
+
+<p>Note that a mission goals need to be checked by a goal check trigger: <a href="##(MISSION).OnBeforeMissionGoals">MISSION.OnBeforeMissionGoals</a>(), which may return false if the goal has not been reached.
+This goal is checked automatically by the mission object every x seconds.</p>
+
+<ul>
+    <li><a href="##(MISSION).Start">MISSION.Start</a>() or <a href="##(MISSION).__Start">MISSION.__Start</a>() will start the mission, and will bring it from <strong>IDLE</strong> state to <strong>ENGAGED</strong> state.</li>
+    <li><a href="##(MISSION).Stop">MISSION.Stop</a>() or <a href="##(MISSION).__Stop">MISSION.__Stop</a>() will stop the mission, and will bring it from <strong>ENGAGED</strong> state to <strong>IDLE</strong> state.</li>
+    <li><a href="##(MISSION).Complete">MISSION.Complete</a>() or <a href="##(MISSION).__Complete">MISSION.__Complete</a>() will complete the mission, and will bring the mission state to <strong>COMPLETED</strong>.
+    Note that the mission must be in state <strong>ENGAGED</strong> to be able to complete the mission.</li>
+    <li><a href="##(MISSION).Fail">MISSION.Fail</a>() or <a href="##(MISSION).__Fail">MISSION.__Fail</a>() will fail the mission, and will bring the mission state to <strong>FAILED</strong>.
+    Note that the mission must be in state <strong>ENGAGED</strong> to be able to fail the mission.</li>
+    <li><a href="##(MISSION).Hold">MISSION.Hold</a>() or <a href="##(MISSION).__Hold">MISSION.__Hold</a>() will hold the mission, and will bring the mission state to <strong>HOLD</strong>.
+    Note that the mission must be in state <strong>ENGAGED</strong> to be able to hold the mission.
+    Re-engage the mission using the engage trigger.</li>
+</ul>
+
+<p>The following sections provide an overview of the most important methods that can be used as part of a mission object.
+Note that the <a href="Tasking.CommandCenter.html">Tasking.CommandCenter</a> system is using most of these methods to manage the missions in its system.</p>
+
+<h2>1. Create a mission object.</h2>
+
+<ul>
+    <li><a href="##(MISSION).New">MISSION.New</a>(): Creates a new MISSION object.</li>
+</ul>
+
+<h2>2. Mission task management.</h2>
+
+<p>Missions maintain tasks, which can be added or removed, or enquired.</p>
+
+<ul>
+    <li><a href="##(MISSION).AddTask">MISSION.AddTask</a>(): Adds a task to the mission.</li>
+    <li><a href="##(MISSION).RemoveTask">MISSION.RemoveTask</a>(): Removes a task from the mission.</li>
+</ul>
+
+<h2>3. Mission detailed methods.</h2>
+
+<p>Various methods are added to manage missions.</p>
+
+<h3>3.1. Naming and description.</h3>
+
+<p>There are several methods that can be used to retrieve the properties of a mission:</p>
+
+<ul>
+    <li>Use the method <a href="##(MISSION).GetName">MISSION.GetName</a>() to retrieve the name of the mission. 
+    This is the name given as part of the <a href="##(MISSION).New">MISSION.New</a>() constructor.</li>
+</ul>
+
+<p>A textual description can be retrieved that provides the mission name to be used within message communication:</p>
+
+<ul>
+    <li><a href="##(MISSION).GetShortText">MISSION.GetShortText</a>() returns the mission name as <code>Mission "MissionName"</code>.</li>
+    <li><a href="##(MISSION).GetText">MISSION.GetText</a>() returns the mission  name as <code>Mission "MissionName (MissionPriority)"</code>. A longer version including the priority text of the mission.</li>
+</ul>
+
+<h3>3.2. Get task information.</h3>
+
+<ul>
+    <li><a href="##(MISSION).GetTasks">MISSION.GetTasks</a>(): Retrieves a list of the tasks controlled by the mission.</li>
+    <li><a href="##(MISSION).GetTask">MISSION.GetTask</a>(): Retrieves a specific task controlled by the mission.</li>
+    <li><a href="##(MISSION).GetTasksRemaining">MISSION.GetTasksRemaining</a>(): Retrieve a list of the tasks that aren't finished or failed, and are governed by the mission.</li>
+    <li><a href="##(MISSION).GetGroupTasks">MISSION.GetGroupTasks</a>(): Retrieve a list of the tasks that can be asigned to a <a href="Wrapper.Group.html">Wrapper.Group</a>.</li>
+    <li><a href="##(MISSION).GetTaskTypes">MISSION.GetTaskTypes</a>(): Retrieve a list of the different task types governed by the mission.</li>
+</ul>
+
+<h3>3.3. Get the command center.</h3>
+
+<ul>
+    <li><a href="##(MISSION).GetCommandCenter">MISSION.GetCommandCenter</a>(): Retrieves the <a href="Tasking.CommandCenter.html">Tasking.CommandCenter</a> governing the mission.</li>
+</ul>
+
+<h3>3.4. Get the groups active in the mission as a <a href="Core.Set.html">Core.Set</a>.</h3>
+
+<ul>
+    <li><a href="##(MISSION).GetGroups">MISSION.GetGroups</a>(): Retrieves a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a> of all the groups active in the mission (as part of the tasks).</li>
+</ul>
+
+<h3>3.5. Get the names of the players.</h3>
+
+<ul>
+    <li><a href="##(MISSION).GetPlayerNames">MISSION.GetPlayerNames</a>(): Retrieves the list of the players that were active within th mission..</li>
+</ul>
+
+<h2>4. Menu management.</h2>
+
+<p>A mission object is able to manage its own menu structure. Use the <a href="##(MISSION).GetMenu">MISSION.GetMenu</a>() and <a href="##(MISSION).SetMenu">MISSION.SetMenu</a>() to manage the underlying submenu
+structure managing the tasks of the mission.</p>
+
+<h2>5. Reporting management.</h2>
+
+<p>Several reports can be generated for a mission, and will return a text string that can be used to display using the <a href="Core.Message.html">Core.Message</a> system.</p>
+
+<ul>
+    <li><a href="##(MISSION).ReportBriefing">MISSION.ReportBriefing</a>(): Generates the briefing for the mission.</li>
+    <li><a href="##(MISSION).ReportOverview">MISSION.ReportOverview</a>(): Generates an overview of the tasks and status of the mission.</li>
+    <li><a href="##(MISSION).ReportDetails">MISSION.ReportDetails</a>(): Generates a detailed report of the tasks of the mission.</li>
+    <li><a href="##(MISSION).ReportSummary">MISSION.ReportSummary</a>(): Generates a summary report of the tasks of the mission.</li>
+    <li><a href="##(MISSION).ReportPlayersPerTask">MISSION.ReportPlayersPerTask</a>(): Generates a report showing the active players per task.</li>
+    <li><a href="##(MISSION).ReportPlayersProgress">MISSION.ReportPlayersProgress</a>(): Generates a report showing the task progress per player.</li>
+</ul>
+
 
 
 </div>
@@ -1246,33 +1362,8 @@ which are excellent tools to be reused in an OO environment!.</p>
   <div id= "#Types##MISSION" class="w3-container w3-white w3-padding-16" id="module_other_types">
     <div class="w3-white" id="record_type">
      <h3> Extends <a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a> </h3>
-  
-<p>The MISSION class</p>
-
 <div class="fields">
   <h3>Field(s)</h3>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(MISSION).AssignedGroups" ><strong>MISSION.AssignedGroups</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(MISSION).ClassName" ><strong>MISSION.ClassName</strong></a>
-    
-
-
-</div>
-
-</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -1289,28 +1380,6 @@ which are excellent tools to be reused in an OO environment!.</p>
 
     <a href="Core.Menu.html##(MENU_COALITION)">Core.Menu#MENU_COALITION</a>
 <a id="#(MISSION).MissionMenu" ><strong>MISSION.MissionMenu</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(MISSION).MissionStatus" ><strong>MISSION.MissionStatus</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(MISSION).Name" ><strong>MISSION.Name</strong></a>
     
 
 
