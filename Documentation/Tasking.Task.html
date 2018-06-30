@@ -980,7 +980,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task_Cargo.html">Tasking.Task_Cargo</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> -- Base class to model tasks for players to transport <a href="Cargo.html">Cargo</a>.</p>
+<p> <strong>Tasking</strong> -- Base class to model tasks for players to transport <a href="Cargo.Cargo.html">Cargo.Cargo</a>.</p>
 </p></div>
          
        </div>         
@@ -992,7 +992,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task_Cargo_CSAR.html">Tasking.Task_Cargo_CSAR</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> -- Models tasks for players to execute CSAR <a href="Cargo.html">Cargo</a> downed pilots.</p>
+<p><strong>Tasking</strong> -- Orchestrates the task for players to execute CSAR for downed pilots <a href="Cargo.Cargo.html">Cargo.Cargo</a>.</p>
 </p></div>
          
        </div>         
@@ -1016,7 +1016,7 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Tasking.Task_Cargo_Transport.html">Tasking.Task_Cargo_Transport</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Tasking</strong> -- The TASK_CARGO models tasks for players to transport <a href="Cargo.html">Cargo</a>.</p>
+<p><strong>Tasking</strong> -- Models tasks for players to transport <a href="Cargo.Cargo.html">Cargo.Cargo</a>.</p>
 </p></div>
          
        </div>         
@@ -1195,6 +1195,7 @@ which are excellent tools to be reused in an OO environment!.</p>
 <p><strong>Features:</strong></p>
 
 <ul>
+    <li>A base class for other task classes filling in the details and making a concrete task process.</li>
     <li>Manage the overall task execution, following-up the progression made by the pilots and actors.</li>
     <li>Provide a mechanism to set a task status, depending on the progress made within the task.</li>
     <li>Manage a task briefing.</li>
@@ -1202,6 +1203,203 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Manage the task menu system.</li>
     <li>Manage the task goal and scoring.</li>
 </ul>
+
+<hr/>
+
+<h1>1) Tasking from a player perspective.</h1>
+
+<p>Tasking can be controlled by using the "other" menu in the radio menu of the player group.</p>
+
+<p><img src="../Tasking/Menu_Main.JPG" alt="Other Menu"/></p>
+
+<h2>1.1) Command Centers govern multiple Missions.</h2>
+
+<p>Depending on the tactical situation, your coalition may have one (or multiple) command center(s).
+These command centers govern one (or multiple) mission(s).</p>
+
+<p>For each command center, there will be a separate <strong>Command Center Menu</strong> that focuses on the missions governed by that command center.</p>
+
+<p><img src="../Tasking/Menu_CommandCenter.JPG" alt="Command Center"/></p>
+
+<p>In the above example menu structure, there is one command center with the name <strong><code>[Lima]</code></strong>.
+The command center has one <a href="Tasking.Mission.html">Tasking.Mission</a>, named <strong><code>"Overlord"</code></strong> with <strong><code>High</code></strong> priority.</p>
+
+<h2>1.2) Missions govern multiple Tasks.</h2>
+
+<p>A mission has a mission goal to be achieved by the players within the coalition.
+The mission goal is actually dependent on the tactical situation of the overall battlefield and the conditions set to achieve the goal.
+So a mission can be much more than just shoot stuff ... It can be a combination of different conditions or events to complete a mission goal.</p>
+
+<p>A mission can be in a specific state during the simulation run. For more information about these states, please check the <a href="Tasking.Mission.html">Tasking.Mission</a> section.</p>
+
+<p>To achieve the mission goal, a mission administers <a href="Tasking.Task.html">Tasking.Task</a>s that are set to achieve the mission goal by the human players.
+Each of these tasks can be <strong>dynamically created</strong> using a task dispatcher, or <strong>coded</strong> by the mission designer.
+Each mission has a separate <strong>Mission Menu</strong>, that focuses on the administration of these tasks.</p>
+
+<p>On top, a mission has a mission briefing, can help to allocate specific points of interest on the map, and provides various reports.</p>
+
+<p><img src="../Tasking/Menu_Mission.JPG" alt="Mission"/></p>
+
+<p>The above shows a mission menu in detail of <strong><code>"Overlord"</code></strong>.</p>
+
+<p>The two other menus are related to task assignment. Which will be detailed later.</p>
+
+<h3>1.2.1) Mission briefing.</h3>
+
+<p>The task briefing will show a message containing a description of the mission goal, and other tactical information.</p>
+
+<p><img src="../Tasking/Report_Briefing.JPG" alt="Mission"/></p>
+
+<h3>1.2.2) Mission Map Locations.</h3>
+
+<p>Various points of interest as part of the mission can be indicated on the map using the <em>Mark Task Locations on Map</em> menu.
+As a result, the map will contain various points of interest for the player (group).</p>
+
+<p><img src="../Tasking/Report_Mark_Task_Location.JPG" alt="Mission"/></p>
+
+<h3>1.2.3) Mission Task Reports.</h3>
+
+<p>Various reports can be generated on the status of each task governed within the mission.</p>
+
+<p><img src="../Tasking/Report_Task_Summary.JPG" alt="Mission"/></p>
+
+<p>The Task Overview Report will show each task, with its task status and a short coordinate information.</p>
+
+<p><img src="../Tasking/Report_Tasks_Planned.JPG" alt="Mission"/></p>
+
+<p>The other Task Menus will show for each task more details, for example here the planned tasks report. 
+Note that the order of the tasks are shortest distance first to the unit position seated by the player.</p>
+
+<h3>1.2.4) Mission Statistics.</h3>
+
+<p>Various statistics can be displayed regarding the mission.</p>
+
+<p><img src="../Tasking/Report_Statistics_Progress.JPG" alt="Mission"/></p>
+
+<p>A statistic report on the progress of the mission. Each task achievement will increase the %-tage to 100% as a goal to complete the task.</p>
+
+<h2>1.3) Join a Task.</h2>
+
+<p>The mission menu contains a very important option, that is to join a task governed within the mission.
+In order to join a task, select the <strong>Join Planned Task</strong> menu, and a new menu will be given.</p>
+
+<p><img src="../Tasking/Menu_Join_Planned_Tasks.JPG" alt="Mission"/></p>
+
+<p>A mission governs multiple tasks, as explained earlier. Each task is of a certain task type.
+This task type was introduced to have some sort of task classification system in place for the player.
+A short acronym is shown that indicates the task type. The meaning of each acronym can be found in the task types explanation.</p>
+
+<p><img src="../Tasking/Menu_Join_Tasks.JPG" alt="Mission"/></p>
+
+<p>When the player selects a task type, a list of the available tasks of that type are listed...
+In this case the <strong><code>SEAD</code></strong> task type was selected and a list of available <strong><code>SEAD</code></strong> tasks can be selected.</p>
+
+<p><img src="../Tasking/Menu_Join_Planned_Task.JPG" alt="Mission"/></p>
+
+<p>A new list of menu options are now displayed that allow to join the task selected, but also to obtain first some more information on the task.</p>
+
+<h3>1.3.1) Report Task Details.</h3>
+
+<p><img src="../Tasking/Report_Task_Detailed.JPG" alt="Mission"/></p>
+
+<p>When selected, a message is displayed that shows detailed information on the task, like the coordinate, enemy target information, threat level etc.</p>
+
+<h3>1.3.2) Mark Task Location on Map.</h3>
+
+<p><img src="../Tasking/Report_Task_Detailed.JPG" alt="Mission"/></p>
+
+<p>When selected, the target location on the map is indicated with specific information on the task.</p>
+
+<h3>1.3.3) Join Task.</h3>
+
+<p><img src="../Tasking/Report_Task_Detailed.JPG" alt="Mission"/></p>
+
+<p>By joining a task, the player will indicate that the task is assigned to him, and the task is started.
+The Command Center will communicate several task details to the player and the coalition of the player.</p>
+
+<h2>1.4) Task Control and Actions.</h2>
+
+<p><img src="../Tasking/Menu_Main_Task.JPG" alt="Mission"/></p>
+
+<p>When a player has joined a task, a <strong>Task Action Menu</strong> is available to be used by the player. </p>
+
+<p><img src="../Tasking/Menu_Task.JPG" alt="Mission"/></p>
+
+<p>The task action menu contains now menu items specific to the task, but also one generic menu item, which is to control the task.
+This <strong>Task Control Menu</strong> allows to display again the task details and the task map location information.
+But it also allows to abort a task!</p>
+
+<p>Depending on the task type, the task action menu can contain more menu items which are specific to the task.
+For example, cargo transportation tasks will contain various additional menu items to select relevant cargo coordinates,
+or to load/unload cargo.</p>
+
+<h2>1.5) Automatic task assignment.</h2>
+
+<p><img src="../Tasking/Menu_CommandCenter.JPG" alt="Command Center"/></p>
+
+<p>When we take back the command center menu, you see two addtional <strong>Assign Task</strong> menu items.
+The menu <strong>Assign Task On</strong> will automatically allocate a task to the player.
+After the selection of this menu, the menu will change into <strong>Assign Task Off</strong>,
+and will need to be selected again by the player to switch of the automatic task assignment.</p>
+
+<p>The other option is to select <strong>Assign Task</strong>, which will assign a new random task to the player.</p>
+
+<p>When a task is automatically assigned to a player, the task needs to be confirmed as accepted within 30 seconds.
+If this is not the case, the task will be cancelled automatically, and a new random task will be assigned to the player.
+This will continue to happen until the player accepts the task or switches off the automatic task assignment process.</p>
+
+<p>The player can accept the task using the menu <strong>Confirm Task Acceptance</strong> ...</p>
+
+<h2>1.6) Task states.</h2>
+
+<p>A task has a state, reflecting the progress or completion status of the task:</p>
+
+<ul>
+    <li><strong>Planned</strong>: Expresses that the task is created, but not yet in execution and is not assigned yet to a pilot.</li>
+    <li><strong>Assigned</strong>: Expresses that the task is assigned to a group of pilots, and that the task is in execution mode.</li>
+    <li><strong>Success</strong>: Expresses the successful execution and finalization of the task.</li>
+    <li><strong>Failed</strong>: Expresses the failure of a task.</li>
+    <li><strong>Abort</strong>: Expresses that the task is aborted by by the player using the abort menu.</li>
+    <li><strong>Cancelled</strong>: Expresses that the task is cancelled by HQ or through a logical situation where a cancellation of the task is required.</li>
+</ul>
+
+<h3>1.6.1) Task progress.</h3>
+
+<p>The task governor takes care of the <strong>progress</strong> and <strong>completion</strong> of the task <strong>goal(s)</strong>.
+Tasks are executed by <strong>human pilots</strong> and actors within a DCS simulation.
+Pilots can use a <strong>menu system</strong> to engage or abort a task, and provides means to
+understand the <strong>task briefing</strong> and goals, and the relevant <strong>task locations</strong> on the map and 
+obtain <strong>various reports</strong> related to the task.</p>
+
+<h3>1.6.2) Task completion.</h3>
+
+<p>As the task progresses, the <strong>task status</strong> will change over time, from Planned state to Completed state.
+<strong>Multiple pilots</strong> can execute the same task, as such, the tasking system provides a <strong>co-operative model</strong> for joint task execution.
+Depending on the task progress, a <strong>scoring</strong> can be allocated to award pilots of the achievements made.
+The scoring is fully flexible, and different levels of awarding can be provided depending on the task type and complexity.</p>
+
+<p>A normal flow of task status would evolve from the <strong>Planned</strong> state, to the <strong>Assigned</strong> state ending either in a <strong>Success</strong> or a <strong>Failed</strong> state.</p>
+
+<pre><code> Planned -&gt; Assigned -&gt; Success
+                     -&gt; Failed
+                     -&gt; Cancelled
+</code></pre>
+
+<p>The state completion is by default set to <strong>Success</strong>, if the goals of the task have been reached, but can be overruled by a goal method.</p>
+
+<p>Depending on the tactical situation, a task can be <strong>Cancelled</strong> by the mission governer.
+It is actually the mission designer who has the flexibility to decide at which conditions a task would be set to <strong>Success</strong>, <strong>Failed</strong> or <strong>Cancelled</strong>.
+This decision all depends on the task goals, and the phase/evolution of the task conditions that would accomplish the goals.</p>
+
+<p>For example, if the task goal is to merely destroy a target, and the target is mid-mission destroyed by another event than the pilot destroying the target,
+the task goal could be set to <strong>Failed</strong>, or .. <strong>Cancelled</strong> ...
+However, it could very well be also acceptable that the task would be flagged as <strong>Success</strong>.</p>
+
+<p>The tasking mechanism governs beside the progress also a scoring mechanism, and in case of goal completion without any active pilot involved
+in the execution of the task, could result in a <strong>Success</strong> task completion status, but no score would be awared, as there were no players involved. </p>
+
+<p>These different completion states are important for the mission designer to reflect scoring to a player.
+A success could mean a positive score to be given, while a failure could mean a negative score or penalties to be awarded.</p>
 
 <hr/>
 
@@ -1236,8 +1434,11 @@ which are excellent tools to be reused in an OO environment!.</p>
 
 <p>A task is governed by a <a href="Tasking.Mission.html">Tasking.Mission</a> object. Tasks are of different types.
 The <a href="##(TASK)">#TASK</a> object is used or derived by more detailed tasking classes that will implement the task execution mechanisms
-and goals. The following TASK_ classes are derived from <a href="##(TASK)">#TASK</a>.</p>
+and goals. </p>
 
+<h1>1) Derived task classes.</h1>
+
+<p>The following TASK_ classes are derived from <a href="##(TASK)">#TASK</a>.</p>
 
 <pre><code> TASK
    TASK_A2A
@@ -1253,9 +1454,7 @@ and goals. The following TASK_ classes are derived from <a href="##(TASK)">#TASK
      TASK_CARGO_CSAR
 </code></pre>
 
-
-
-<h4>A2A Tasks</h4>
+<h2>1.1) A2A Tasks</h2>
 
 <ul>
     <li><a href="Tasking.Task_A2A.html##(TASK_A2A_ENGAGE)">Tasking.Task_A2A#TASK_A2A_ENGAGE</a> - Models an A2A engage task of a target group of airborne intruders mid-air.</li>
@@ -1263,7 +1462,7 @@ and goals. The following TASK_ classes are derived from <a href="##(TASK)">#TASK
     <li><a href="Tasking.Task_A2A.html##(TASK_A2A_SWEEP)">Tasking.Task_A2A#TASK_A2A_SWEEP</a> - Models an A2A sweep task to clean an area of previously detected intruders mid-air.</li>
 </ul>
 
-<h4>A2G Tasks</h4>
+<h2>1.2) A2G Tasks</h2>
 
 <ul>
     <li><a href="Tasking.Task_A2G.html##(TASK_A2G_SEAD)">Tasking.Task_A2G#TASK_A2G_SEAD</a> - Models an A2G Suppression or Extermination of Air Defenses task to clean an area of air to ground defense threats.</li>
@@ -1271,60 +1470,15 @@ and goals. The following TASK_ classes are derived from <a href="##(TASK)">#TASK
     <li><a href="Tasking.Task_A2G.html##(TASK_A2G_BAI)">Tasking.Task_A2G#TASK_A2G_BAI</a> - Models an A2G Battlefield Air Interdiction task to provide air support to nearby friendlies near the front-line.</li>
 </ul>
 
-<h4>Cargo Tasks</h4>
+<h2>1.3) Cargo Tasks</h2>
 
 <ul>
     <li><a href="Tasking.Task_Cargo.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo#TASK_CARGO_TRANSPORT</a> - Models the transportation of cargo to deployment zones. </li>
     <li><a href="Tasking.Task_Cargo.html##(TASK_CARGO_CSAR)">Tasking.Task_Cargo#TASK_CARGO_CSAR</a> - Models the rescue of downed friendly pilots from behind enemy lines.    </li>
 </ul>
 
-<p>The above task objects take care of the <strong>progress</strong> and <strong>completion</strong> of the task <strong>goal(s)</strong>.
-Tasks are executed by <strong>human pilots</strong> and actors within a DCS simulation.
-Pilots can use a <strong>menu system</strong> to engage or abort a task, and provides means to
-understand the <strong>task briefing</strong> and goals, and the relevant <strong>task locations</strong> on the map and 
-obtain <strong>various reports</strong> related to the task.</p>
 
-<p>As the task progresses, the <strong>task status</strong> will change over time, from Planned state to Completed state.
-<strong>Multiple pilots</strong> can execute the same task, as such, the tasking system provides a <strong>co-operative model</strong> for joint task execution.
-Depending on the task progress, a <strong>scoring</strong> can be allocated to award pilots of the achievements made.
-The scoring is fully flexible, and different levels of awarding can be provided depending on the task type and complexity.</p>
-
-<h1>1) Task Statuses</h1>
-
-<h2>1.1) Task status overview.</h2>
-
-<p>A task has a state, reflecting the progress and completion of the task:</p>
-
-<ul>
-    <li><strong>Planned</strong>: Expresses that the task is created, but not yet in execution and is not assigned yet to a pilot.</li>
-    <li><strong>Assigned</strong>: Expresses that the task is assigned to a group of pilots, and that the task is in execution mode.</li>
-    <li><strong>Success</strong>: Expresses the successful execution and finalization of the task.</li>
-    <li><strong>Failed</strong>: Expresses the failure of a task.</li>
-    <li><strong>Abort</strong>: Expresses that the task is aborted by by the player using the abort menu.</li>
-    <li><strong>Cancelled</strong>: Expresses that the task is cancelled by HQ or through a logical situation where a cancellation of the task is required.</li>
-</ul>
-
-
-<p>A normal flow of task status would evolve from the <strong>Planned</strong> state, to the <strong>Assigned</strong> state ending either in a <strong>Success</strong> or a <strong>Failed</strong> state.</p>
-
-<pre><code> Planned -&gt; Assigned -&gt; Success
-                     -&gt; Failed
-</code></pre>
-
-<p>The state completion is by default set to <strong>Success</strong>, if the goals of the task have been reached, but can be overruled by a goal method.</p>
-
-<p>Depending on the tactical situation, a task can be <strong>Cancelled</strong> by the mission governer.
-It is actually the mission designer who has the flexibility to decide at which conditions a task would be set to <strong>Success</strong>, <strong>Failed</strong> or <strong>Cancelled</strong>.
-This decision all depends on the task goals, and the phase/evolution of the task conditions that would accomplish the goals.</p>
-
-<p>For example, if the task goal is to merely destroy a target, and the target is mid-mission destroyed by another event than the pilot destroying the target,
-the task goal could be set to <strong>Failed</strong>, or .. <strong>Cancelled</strong> ...
-However, it could very well be also acceptable that the task would be flagged as <strong>Success</strong>.</p>
-
-<p>The tasking mechanism governs beside the progress also a scoring mechanism, and in case of goal completion without any active pilot involved
-in the execution of the task, could result in a <strong>Success</strong> task completion status, but no score would be awared, as there were no players involved. </p>
-
-<h2>1.2) Task status events.</h2>
+<h1>2) Task status events.</h1>
 
 <p>The task statuses can be set by using the following methods:</p>
 
@@ -1339,12 +1493,12 @@ in the execution of the task, could result in a <strong>Success</strong> task co
 <p>The mentioned derived TASK_ classes are implementing the task status transitions out of the box.
 So no extra logic needs to be written.</p>
 
-<h1>2) Goal conditions for a task.</h1>
+<h1>3) Goal conditions for a task.</h1>
 
 <p>Every 30 seconds, a <a href="##(Task).Goal">Task.Goal</a> trigger method is fired. 
 You as a mission designer, can capture the <strong>Goal</strong> event trigger to check your own task goal conditions and take action!</p>
 
-<h2>2.1) Goal event handler <code>OnAfterGoal()</code>.</h2>
+<h2>3.1) Goal event handler <code>OnAfterGoal()</code>.</h2>
 
 <p>And this is a really great feature! Imagine a task which has <strong>several conditions to check</strong> before the task can move into <strong>Success</strong> state.
 You can do this with the OnAfterGoal method.</p>
@@ -1365,19 +1519,19 @@ You can do this with the OnAfterGoal method.</p>
 <p>So the <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would be called every 30 seconds automatically, 
 and within this method, you can now check the conditions and take respective action.</p>
 
-<h2>2.2) Goal event trigger <code>Goal()</code>.</h2>
+<h2>3.2) Goal event trigger <code>Goal()</code>.</h2>
 
 <p>If you would need to check a goal at your own defined event timing, then just call the <a href="##(TASK).Goal">TASK.Goal</a>() method within your logic.
 The <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would then directly be called and would execute the logic. 
 Note that you can also delay the goal check by using the delayed event trigger syntax <code>:__Goal( Delay )</code>. </p>
 
 
-<h1>3) Add scoring when reaching a certain task status:</h1>
+<h1>4) Score task completion.</h1>
 
 <p>Upon reaching a certain task status in a task, additional scoring can be given. If the Mission has a scoring system attached, the scores will be added to the mission scoring.
 Use the method <a href="##(TASK).AddScore">TASK.AddScore</a>() to add scores when a status is reached.</p>
 
-<h1>4) Task briefing:</h1>
+<h1>5) Task briefing.</h1>
 
 <p>A task briefing is a text that is shown to the player when he is assigned to the task.
 The briefing is broadcasted by the command center owning the mission.</p>
