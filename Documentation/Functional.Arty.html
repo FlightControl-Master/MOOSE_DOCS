@@ -613,7 +613,9 @@ are design patterns allowing efficient (long-lasting) processes and workflows.</
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="DCS.html">DCS</a></strong></h3></div>
          </div>
          <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p>DCS API prototypes</p>
+<p>DCS API prototypes
+See <a href="https://wiki.hoggitworld.com/view/Simulator_Scripting_Engine_Documentation">https://wiki.hoggitworld.com/view/Simulator_Scripting_Engine_Documentation</a> 
+for further explanation and examples.</p>
 </p></div>
          
        </div>         
@@ -1610,7 +1612,15 @@ These must be exactly the same as the names of the goups defined in the mission 
 <p>Setting the rearming group is independent of the position of the mark. Just create one anywhere on the map and type</p>
 <pre><code> arty set, battery "Mortar Bravo", rearming group "Ammo Truck M818"
 </code></pre>
-<p>Note that the name of the rearming group has to be given in quotation marks and spellt exactly as the group name defined in the mission editor.   </p>
+<p>Note that the name of the rearming group has to be given in quotation marks and spellt exactly as the group name defined in the mission editor.</p>
+
+<h2>Transporting</h2>
+
+<p>ARTY groups can be transported to another location as <a href="Cargo.Cargo.html">Cargo.Cargo</a> by means of classes such as <a href="AI.AI_Cargo_APC.html">AI.AI_Cargo_APC</a>, <a href="AI.AI_Cargo_Dispatcher_APC.html">AI.AI_Cargo_Dispatcher_APC</a>, 
+<a href="AI.AI_Cargo_Helicopter.html">AI.AI_Cargo_Helicopter</a>, <a href="AI.AI_Cargo_Dispatcher_Helicopter.html">AI.AI_Cargo_Dispatcher_Helicopter</a> or <a href="AI.AI_Cargo_Airplane.html">AI.AI_Cargo_Airplane</a>.</p>
+
+<p>In order to do this, one needs to define an ARTY object via the <a href="##(ARTY).NewFromCargoGroup">ARTY.NewFromCargoGroup</a>(<em>cargogroup</em>, <em>alias</em>) function.
+The first argument <em>cargogroup</em> has to be a <a href="Cargo.CargoGroup.html##(CARGO_GROUP)">Cargo.CargoGroup#CARGO_GROUP</a> object. The second argument <em>alias</em> is a string which can be freely chosen by the user.</p>
 
 <h2>Fine Tuning</h2>
 
@@ -1703,6 +1713,25 @@ normandy:SetMissileTypes({"BGM"})
 normandy:Start()
 </code></pre>
 
+<h3>Transportation as Cargo</h3>
+<p>This example demonstates how an ARTY group can be transported to another location as cargo.</p>
+<pre><code> -- Define a group as CARGO_GROUP
+ CargoGroupMortars=CARGO_GROUP:New(GROUP:FindByName("Mortars"), "Mortars", "Mortar Platoon Alpha", 100 , 10)
+
+ -- Define the mortar CARGO GROUP as ARTY object
+ mortars=ARTY:NewFromCargoGroup(CargoGroupMortars, "Mortar Platoon Alpha")
+
+ -- Start ARTY process
+ mortars:Start()
+
+ -- Setup AI cargo dispatcher for e.g. helos
+ SetHeloCarriers = SET_GROUP:New():FilterPrefixes("CH-47D"):FilterStart()
+ SetCargoMortars = SET_CARGO:New():FilterTypes("Mortars"):FilterStart()
+ SetZoneDepoly   = SET_ZONE:New():FilterPrefixes("Deploy"):FilterStart()
+ CargoHelo=AI_CARGO_DISPATCHER_HELICOPTER:New(SetHeloCarriers, SetCargoMortars, SetZoneDepoly)
+ CargoHelo:Start()
+</code></pre>
+<p>The ARTY group will be transported and resume its normal operation after it has been deployed. New targets can be assigned at any time also during the transportation process.</p>
 
 
 </div>
@@ -2162,6 +2191,17 @@ normandy:Start()
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Cargo.CargoGroup.html##(CARGO_GROUP)">Cargo.CargoGroup#CARGO_GROUP</a>
+<a id="#(ARTY).cargogroup" ><strong>ARTY.cargogroup</strong></a>
+    
+<p>Cargo group object if ARTY group is a cargo that will be transported to another place.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(ARTY).clusters" ><strong>ARTY.clusters</strong></a>
     
@@ -2254,6 +2294,17 @@ normandy:Start()
 <a id="#(ARTY).illuPower" ><strong>ARTY.illuPower</strong></a>
     
 <p>Power of illumination warhead in mega candela. Default 1 mcd.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARTY).iscargo" ><strong>ARTY.iscargo</strong></a>
+    
+<p>If true, ARTY group is defined as possible cargo. If it is immobile, targets out of range are not deleted from the queue.</p>
 
 </div>
 
@@ -2932,7 +2983,7 @@ paladin:Start()</code></pre>
 <h6><a id="#(ARTY).New" ><strong>ARTY:New(group, alias)</strong></a></h6>
 </div>
     
-<p>Creates a new ARTY object.</p>
+<p>Creates a new ARTY object from a MOOSE group object.</p>
 
 <div id= "#Functions##New" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -2947,6 +2998,58 @@ paladin:Start()</code></pre>
         <div class="w3-half">
           
 <p>The GROUP object for which artillery tasks should be assigned.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+        <strong>alias</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(Optional) Alias name the group will be calling itself when sending messages. Default is the group name.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        <a href="##(ARTY)">#ARTY</a>:
+      </div>
+      <div class="w3-half">
+        
+<p>ARTY object or nil if group does not exist or is not a ground or naval group.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##NewFromCargoGroup')">
+<h6><a id="#(ARTY).NewFromCargoGroup" ><strong>ARTY:NewFromCargoGroup(cargogroup, alias)</strong></a></h6>
+</div>
+    
+<p>Creates a new ARTY object from a MOOSE CARGO_GROUP object.</p>
+
+<div id= "#Functions##NewFromCargoGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Cargo.CargoGroup.html##(CARGO_GROUP)">Cargo.CargoGroup#CARGO_GROUP</a>
+        <strong>cargogroup</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>The CARGO GROUP object for which artillery tasks should be assigned.</p>
 
         </div>
     </div>
@@ -8526,6 +8629,84 @@ The illumination bomb will burn for 300 seconds (5 minutes). Assuming a descent 
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterUnLoaded')">
+<h6><a id="#(ARTY).onafterUnLoaded" ><strong>ARTY:onafterUnLoaded(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>After "UnLoaded" event.</p>
+
+    
+<p>Group is combat ready again.</p>
+
+<div id= "#Functions##onafterUnLoaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+<p>If true, proceed to onafterLoaded.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
 <div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterWinchester')">
 <h6><a id="#(ARTY).onafterWinchester" ><strong>ARTY:onafterWinchester(Controllable, From, Event, To)</strong></a></h6>
 </div>
@@ -8583,6 +8764,84 @@ The illumination bomb will burn for 300 seconds (5 minutes). Assuming a descent 
 <p>To state.</p>
 
         </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onbeforeLoaded')">
+<h6><a id="#(ARTY).onbeforeLoaded" ><strong>ARTY:onbeforeLoaded(Controllable, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>Before "Loaded" event.</p>
+
+    
+<p>Checks if group is currently firing and removes the target by calling CeaseFire.</p>
+
+<div id= "#Functions##onbeforeLoaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Controllable.html##(CONTROLLABLE)">Wrapper.Controllable#CONTROLLABLE</a>
+        <strong>Controllable</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Controllable of the group.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+<p>If true, proceed to onafterLoaded.</p>
+
+      </div>
     </div>
 </div>
 
