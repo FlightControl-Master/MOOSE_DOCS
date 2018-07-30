@@ -61,6 +61,8 @@ Also **humans can achieve tasks** by to **transporting cargo** as part of a task
 
 ### 2.1. [**TASK\_CARGO\_DISPATCHER**](Documentation/Tasking.Task_Cargo_Dispatcher.html)
 
+![TASK\_CARGO\_DISPATCHER](Images\Task_Cargo_Dispatcher.JPG)
+
 The [**TASK\_CARGO\_DISPATCHER**](Documentation/Tasking.Task_Cargo_Dispatcher.html) allows you to setup various tasks for let human
 players transport cargo as part of a task. 
 
