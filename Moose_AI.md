@@ -49,32 +49,6 @@ Cargo can be transported by APC or trucks, or by helicopters.
   * Home location that will be used for carrier parking, when all cargo has been transported.
   * Automatic activation of carriers when new cargo is to be picked-up (of cargo is spawned for example).
 
-### 2.1. [**AI Cargo Dispatching for APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
-
-![AI_Cargo_Dispatcher_APC](Images\AI_Cargo_Dispatching_For_APC.JPG)
-
-Models the intelligent transportation of infantry and other cargo using **APCs or trucks**.
-
-**Specific Features:**
-
-  * The vehicles follow the roads to ensure the fastest possible cargo transportation over the ground.
-  * Multiple vehicles can transport multiple cargo as one vehicle group.
-  * Infantry loaded as cargo, will unboard in case enemies are nearby and will help defending the vehicles.
-  * Different ranges can be setup for enemy defenses.
-
-### 2.2. [**AI Cargo Dispatching for Helicopters**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
-
-![AI_Cargo_Dispatcher_Helicopter](Images\AI_Cargo_Dispatching_For_Helicopters.JPG)
-
-Models the intelligent transportation of infantry and other cargo using **Helicopters**.
-
-**Specific Features:**
-
-  * The helicopters will fly towards the pickup locations to pickup the cargo.
-  * The helicopters will fly towards the deploy zones to deploy the cargo.
-  * Precision deployment as well as randomized deployment within the deploy zones are possible.
-  * Helicopters will orbit the deploy zones when there is no space for landing until the deploy zone is free.
-
 
 ## 3. [**AI Balancing**](Documentation/AI.AI_Balancer.html)
 
