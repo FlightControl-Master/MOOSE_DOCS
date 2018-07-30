@@ -12,7 +12,7 @@ Instead, you can declare cargo within your missions of the following types:
 
 ## 1. [**CARGO\_GROUP**](Documentation/Cargo.CargoGroup.html)
 
-![CARGO\_GROUP](Images\Cargo_Groups.JPG.JPG)
+![CARGO\_GROUP](Images\Cargo_Groups.JPG)
 
 Management of **moveable** and **grouped** cargo logistics, which are based on a [**GROUP**](Documentation/Wrapper.Group.html) object.
 Typical cargo of this type can be infantry or (small) vehicles.
@@ -22,7 +22,6 @@ Typical cargo of this type can be infantry or (small) vehicles.
   * Board cargo into a carrier.
   * Unboard cargo from a carrier.
   * Automatic detection of destroyed cargo.
-  * Loading / Unloading of cargo.
   * Respawn cargo.
   * Maintain cargo status.
   * Communication of cargo through messages.
@@ -31,7 +30,7 @@ Typical cargo of this type can be infantry or (small) vehicles.
 
 ## 2. [**CARGO_CRATE**](Documentation/Cargo.CargoCrate.html)
 
-![CARGO\_CRATE](Images\Cargo_Crates.JPG.JPG)
+![CARGO\_CRATE](Images\Cargo_Crates.JPG)
 
 Management of single cargo crates, which are based on a [**STATIC**](Documentation/Wrapper.Static.html) object.
 Typical cargo of this type can be crates, oil barrels, wooden crates etc.
@@ -40,10 +39,8 @@ Like flags, tires etc.
 
 **Features:**
 
-  * Board cargo into a carrier.
-  * Unboard cargo from a carrier.
-  * Automatic detection of destroyed cargo.
   * Loading / Unloading of cargo.
+  * Automatic detection of destroyed cargo.
   * Respawn cargo.
   * Maintain cargo status.
   * Communication of cargo through messages.
@@ -52,17 +49,15 @@ Like flags, tires etc.
 
 ## 3. [**CARGO_SLINGLOAD**](Documentation/Cargo.CargoSlingload.html)
 
-![CARGO\_SLINGLOAD](Images\Cargo_Slingload.JPG.JPG)
+![CARGO\_SLINGLOAD](Images\Cargo_Slingload.JPG)
 
 Management of **sling loadable** cargo crates, which are based on a [**STATIC**](Documentation/Wrapper.Static.html) object. 
 This cargo can only be slingloaded.
 
 **Features:**
 
-  * Board cargo into a carrier.
-  * Unboard cargo from a carrier.
+  * Slingload cargo.
   * Automatic detection of destroyed cargo.
-  * Loading / Unloading of cargo.
   * Respawn cargo.
   * Maintain cargo status.
   * Communication of cargo through messages.
