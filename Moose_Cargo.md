@@ -45,7 +45,7 @@ Models the intelligent transportation of infantry and other cargo using **Helico
   * Helicopters will orbit the deploy zones when there is no space for landing until the deploy zone is free.
 
 
-## 1.3. [**AI\_CARGO\_DISPATCHER_AIRPLANE**](Documentation/AI.AI_Cargo_Dispatcher_Airplane.html)
+### 1.3. [**AI\_CARGO\_DISPATCHER_AIRPLANE**](Documentation/AI.AI_Cargo_Dispatcher_Airplane.html)
 
 ![AI_Cargo_Dispatcher_Airplane](Images\AI_Cargo_Dispatching_For_Airplanes.JPG)
 
@@ -73,6 +73,48 @@ The cargo dispatcher will implement for you mechanisms to create cargo transport
   * As setup by the mission designer.
   * Dynamically create CSAR missions (when a pilot is downed as part of a downed plane).
   * Dynamically spawn new cargo and create cargo taskings!
+
+**Features:**
+
+  * Creates a task to transport @{Cargo.Cargo} to and between deployment zones.
+  * Derived from the TASK_CARGO class, which is derived from the TASK class.
+  * Orchestrate the task flow, so go from Planned to Assigned to Success, Failed or Cancelled.
+  * Co-operation tasking, so a player joins a group of players executing the same task.
+ 
+ 
+**A complete task menu system to allow players to:**
+   
+   * Join the task, abort the task.
+   * Mark the task location on the map.
+   * Provide details of the target.
+   * Route to the cargo.
+   * Route to the deploy zones.
+   * Load/Unload cargo.
+   * Board/Unboard cargo.
+   * Slingload cargo.
+   * Display the task briefing.
+   
+   
+**A complete mission menu system to allow players to:**
+  
+   * Join a task, abort the task.
+   * Display task reports.
+   * Display mission statistics.
+   * Mark the task locations on the map.
+   * Provide details of the targets.
+   * Display the mission briefing.
+   * Provide status updates as retrieved from the command center.
+   * Automatically assign a random task as part of a mission.
+   * Manually assign a specific task as part of a mission.
+   
+   
+**A settings system, using the settings menu:**
+  
+   * Tweak the duration of the display of messages.
+   * Switch between metric and imperial measurement system.
+   * Switch between coordinate formats used in messages: BR, BRA, LL DMS, LL DDM, MGRS.
+   * Different settings modes for A2G and A2A operations.
+   * Various other options.
 
 
 ## 3. Cargo management classes.
@@ -146,8 +188,6 @@ This cargo can only be slingloaded.
 
 
 ### 3.4. [**CARGO_UNIT**](Documentation/Cargo.CargoUnit.html)
-
-![CARGO\_SLINGLOAD](Images\Cargo_Unit.JPG.JPG)
 
 Management of **moveable** units, which are based on a [**UNIT**](Documentation/Wrapper.Unit.html) object. 
 Note that this is an **Internal** class and is only mentioned here for reference!
