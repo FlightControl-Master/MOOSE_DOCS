@@ -11,6 +11,8 @@ Click on each individual class for detailed features and explanations!
 
 ## 1. AI Cargo Dispatching
 
+![AI\_CARGO\_DISPATCHER](Images\AI_Cargo_Dispatcher.JPG)
+
 You can make various AI transport cargo, setting up an automatic system that will make AI transport cargo (automatically)
 through the battlefield. Depending on the type of AI, various classes are implemented:
 
