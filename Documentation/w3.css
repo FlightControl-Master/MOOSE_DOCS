@@ -28,7 +28,7 @@ html,body{font-family:Verdana,sans-serif;font-size:15px;line-height:1.5}html{ove
 h1,h2,h3,h4,h5,h6,.w3-slim,.w3-wide{font-family:"Segoe UI",Arial,sans-serif}
 h1{font-size:36px}h2{font-size:30px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}
 .w3-serif{font-family:"Times New Roman",Times,serif}
-h1,h2,h3,h4,h5,h6{font-weight:400;margin:10px 0}.w3-wide{letter-spacing:4px}
+h1,h2,h3,h4,h5,h6{font-weight:800;margin:10px 0}.w3-wide{letter-spacing:4px}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{font-weight:inherit}
 hr{height:0;border:0;border-top:1px solid #eee;margin:20px 0}
 img{margin-bottom:-5px}a{color:inherit}
