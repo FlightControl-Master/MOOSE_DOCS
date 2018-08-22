@@ -695,49 +695,6 @@ for further explanation and examples.</p>
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin">
          <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/JTAC.JPG" alt="Image" style="height-min:120px;">
-           <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Functional.Jtac.html">Functional.Jtac</a></strong></h3></div>
-         </div>
-         <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Functional</strong> - (R2.4) JTAC</p>
-
-<hr/>
-
-<p>JTAC mimic</p>
-
-<h2>Features:</h2>
-
-<ul>
-    <li>Feature 1</li>
-    <li>Feature 2</li>
-</ul>
-
-<hr/>
-
-<h1>Demo Missions</h1>
-
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS">MOOSE - ALL Demo Missions</a></h3>
-
-<hr/>
-
-<h1>YouTube Channel</h1>
-
-<h3><a href="https://www.youtube.com/channel/UCjrA9j5LQoWsG4SpS8i79Qg">MOOSE YouTube Channel</a></h3>
-
-<hr/>
-
-<h3>Author: <strong><a href="https://forums.eagle.ru/member.php?u=115026">funkyfranky</a></strong></h3>
-
-<h3>Contributions: <a href="https://forums.eagle.ru/member.php?u=89536">FlightControl</a></h3>
-
-<hr/>
-</p></div>
-         
-       </div>         
-     </div>
-     <div class="w3-col s12 m6 l4">
-       <div class="w3-card-4 w3-white w3-margin">
-         <div class="w3-display-container w3-text-white w3-text-shadow">
            <img src= "../Images/Missile_Trainer.JPG" alt="Image" style="height-min:120px;">
            <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Functional.MissileTrainer.html">Functional.MissileTrainer</a></strong></h3></div>
          </div>
@@ -829,6 +786,18 @@ for further explanation and examples.</p>
 <ul>
     <li><strong>Functional</strong> - (R2.4) Suppress fire of ground units when they get hit.</li>
 </ul>
+</p></div>
+         
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/Warehouse.JPG" alt="Image" style="height-min:120px;">
+           <div class="w3-display-bottommiddle w3-container style="word-break:break-word;"><h3><strong><a href="Functional.Warehouse.html">Functional.Warehouse</a></strong></h3></div>
+         </div>
+         <div class="w3-padding-large w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Functional</strong> - (R2.4) - Manages assets of an airbase and transportation to other airbases upon request.</p>
 </p></div>
          
        </div>         
@@ -1372,6 +1341,49 @@ However, the aircraft will by default not engage any enemies. Think of them as b
 The "old" aircraft is despawned (destroyed) after it has shut-down its engines and a new aircraft of the same type is spawned at a random departure airport anywhere on the map.
 Hence, the default flight plan for a RAT aircraft will be: Fly from airport A to B, get respawned at C and fly to D, get respawned at E and fly to F, ...
 This ensures that you always have a constant number of AI aircraft on your map.</p>
+
+<h2>Parking Problems</h2>
+
+<p>One big issue in DCS is that not all aircraft can be spawned on every airport or airbase. In particular, bigger aircraft might not have a valid parking spot at smaller airports and 
+airstripes. This can lead to multiple problems in DCS.</p>
+
+<ul>
+    <li>Landing: When an aircraft tries to land at an airport where it does not have a valid parking spot, it is immidiately despawned the moment its wheels touch the runway, i.e.
+    when a landing event is triggered. This leads to the loss of the RAT aircraft. On possible way to circumvent the this problem is to let another RAT aircraft spawn at landing
+    and not when it shuts down its engines. See the <a href="RAT.RespawnAfterLanding.html">RAT.RespawnAfterLanding</a>() function.</li>
+    <li>Spawning: When a big aircraft is dynamically spawned on a small airbase a few things can go wrong. For example, it could be spawned at a parking spot with a shelter.
+    Or it could be damaged by a scenery object when it is taxiing out to the runway, or it could overlap with other aircraft on parking spots near by.</li>
+</ul>
+
+<p>You can check yourself if an aircraft has a valid parking spot at an airbase by dragging its group on the airport in the mission editor and set it to start from ramp.
+If it stays at the airport, it has a valid parking spot, if it jumps to another airport, it does not have a valid parking spot on that airbase.</p>
+
+<h3>Setting the Terminal Type</h3>
+<p>Each parking spot has a specific type depending on its size or if a helicopter spot or a shelter etc. The classification is not perfect but it is the best we have.
+If you encounter problems described above, you can request a specific terminal type for the RAT aircraft. This can be done by the <a href="##(RAT).SetTerminalType">RAT.SetTerminalType</a>(<em>terminaltype</em>)
+function. The parameter <em>terminaltype</em> can be set as follows</p>
+
+<ul>
+    <li>AIRBASE.TerminalType.HelicopterOnly: Special spots for Helicopers.</li>
+    <li>AIRBASE.TerminalType.Shelter: Hardened Air Shelter. Currently only on Caucaus map.</li>
+    <li>AIRBASE.TerminalType.OpenMed: Open/Shelter air airplane only.</li>
+    <li>AIRBASE.TerminalType.OpenBig: Open air spawn points. Generally larger but does not guarantee large aircraft are capable of spawning there.</li>
+    <li>AIRBASE.TerminalType.OpenMedOrBig: Combines OpenMed and OpenBig spots.</li>
+    <li>AIRBASE.TerminalType.HelicopterUnsable: Combines HelicopterOnly, OpenMed and OpenBig.</li>
+    <li>AIRBASE.TerminalType.FighterAircraft: Combines Shelter, OpenMed and OpenBig spots. So effectively all spots usable by fixed wing aircraft.</li>
+</ul>
+
+<p>So for example</p>
+<pre><code> c17=RAT:New("C-17")
+ c17:SetTerminalType(AIRBASE.TerminalType.OpenBig)
+ c17:Spawn(5)
+</code></pre>
+
+<p>This would randomly spawn five C-17s but only on airports which have big open air parking spots. Note that also only destination airports are allowed
+which do have this type of parking spot. This should ensure that the aircraft is able to land at the destination without beeing despawned immidiately.</p>
+
+<p>Also, the aircraft are spawned only on the requested parking spot types and not on any other type. If no parking spot of this type is availabe at the
+moment of spawning, the group is automatically spawned in air above the selected airport.</p>
 
 <h2>Examples</h2>
 
@@ -2653,6 +2665,17 @@ manager:Stop(7200)
 <a id="#(RAT).termtype" ><strong>RAT.termtype</strong></a>
     
 <p>Type of terminal to be used when spawning at an airbase.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RAT).type" ><strong>RAT.type</strong></a>
+    
+
 
 </div>
 
@@ -4410,7 +4433,7 @@ You can set the country explicitly via the RAT:SetCountry() function if necessar
 <p>Set country of RAT group.</p>
 
     
-<p>See https://wiki.hoggitworld.com/view/DCS_enum_country</p>
+<p>See <a href="https://wiki.hoggitworld.com/view/DCS_enum_country">DCS_enum_country</a>.</p>
 
 <p>This overrules the coalition settings. So if you want your group to be of a specific coalition, you have to set a country that is part of that coalition.</p>
 
@@ -4421,7 +4444,7 @@ You can set the country explicitly via the RAT:SetCountry() function if necessar
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          <a href="##(DCS.country.id)">#DCS.country.id</a>
+          <a href="DCS.html##(country.id)">DCS#country.id</a>
         <strong>id</strong>
         </div>
         <div class="w3-half">
@@ -5811,7 +5834,9 @@ Default is "takeoff-coldorhot". So there is a 50% chance that the aircraft start
 <p>Set the terminal type the aircraft use when spawning at an airbase.</p>
 
     
-<p>Cf. https://wiki.hoggitworld.com/view/DCS_func_getParking</p>
+<p>See <a href="https://wiki.hoggitworld.com/view/DCS_func_getParking">DCS_func_getParking</a>.
+Note that some additional terminal types have been introduced. Check <a href="Wrapper.Airbase.html##(AIRBASE)">Wrapper.Airbase#AIRBASE</a> class for details.
+Also note that only airports which have this kind of terminal are possible departures and/or destinations.</p>
 
 <div id= "#Functions##SetTerminalType" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5838,8 +5863,14 @@ Default is "takeoff-coldorhot". So there is a 50% chance that the aircraft start
         
 <p>RAT self object.</p>
 
+
       </div>
     </div>
+      <h5><strong>Usage:</strong></h5>
+    <pre class="example"><code>c17=RAT:New("C-17 BIG Plane")
+c17:SetTerminalType(AIRBASE.TerminalType.OpenBig) -- Only very big parking spots are used.
+c17:Spawn(5)</code></pre>
+
 </div>
 
 </div>
@@ -6980,6 +7011,9 @@ So all event listeners will catch the DEAD event of this DCS group.</p>
 </div>
     
 <p>Get all "friendly" airports of the current map.</p>
+
+    
+<p>Fills the self.airports{} table.</p>
 
 <div id= "#Functions##_GetAirportsOfCoalition" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -9538,7 +9572,8 @@ function myLoadFunction() {
 </div>
 <script>
 function w3_open() {
-    document.getElementsByClassName("w3-sidenav")[0].style.width = "100%";
+    document.getElementsByClassName("w3-sidenav")[0].style.width = "95vw";
+    document.getElementsByClassName("w3-sidenav")[0].style.maxWidth = "1400px";
     document.getElementsByClassName("w3-sidenav")[0].style.display = "block";
 }
 function w3_close() {
