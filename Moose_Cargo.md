@@ -33,6 +33,28 @@ This class models cargo to be transported between **zones**!
   * Infantry loaded as cargo, will unboard in case enemies are nearby and will help defending the vehicles.
   * Different ranges can be setup for enemy defenses.
 
+**Test Missions:**
+
+   * [**AID-CGO-100 - APC - Pickup and Deploy**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-100%20-%20APC%20-%20Pickup%20and%20Deploy)  
+   Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
+   Note that the APCs have different cargo limits, so the cargo groups will only board when there is sufficient space within the APC.
+   
+   * [**AID-CGO-110 - APC - Deploy at Group Zones**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-110%20-%20APC%20-%20Deploy%20at%20Group%20Zones)  
+   Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
+   The caro infantry are spread out over the battlefield...
+   The cargo infantry will be deployed around the ZONE_GROUP object!
+   Check the script!
+
+   * [**AID-CGO-120 - APC - Pickup and Deploy Large**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-120%20-%20APC%20-%20Pickup%20and%20Deploy%20Large)  
+   Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
+   Cargo is transported to random zones around the battle field.
+   
+   * [**AID-CGO-150 - APC - Manpads against enemy helicopters**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-150%20-%20APC%20-%20Manpads%20against%20enemy%20helicopters)  
+   Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
+   The APCs are manned with manpads, so when the enemy helicopters arrive too close to the APCs, the manpads will unboard and will defend the APCs.
+
+
+---
 
 ### 1.2. [**AI\_CARGO\_DISPATCHER_HELICOPTER**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
 
@@ -49,6 +71,8 @@ This class models cargo to be transported between **zones**!
   * Helicopters will orbit the deploy zones when there is no space for landing until the deploy zone is free.
 
 
+---
+
 ### 1.3. [**AI\_CARGO\_DISPATCHER_AIRPLANE**](Documentation/AI.AI_Cargo_Dispatcher_Airplane.html)
 
 ![AI_Cargo_Dispatcher_Airplane](Images\AI_Cargo_Dispatching_For_Airplanes.JPG)
@@ -61,6 +85,7 @@ This class models cargo to be transported between **airbases**!
   * The airplanes will fly towards the pickup airbases to pickup the cargo.
   * The airplanes will fly towards the deploy airbases to deploy the cargo.
 
+===
 
 ## 2. Human cargo transportation dispatching.
  
