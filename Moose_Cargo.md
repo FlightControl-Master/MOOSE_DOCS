@@ -1,27 +1,30 @@
 # MOOSE CARGO Guide
 
-MOOSE implements a whole enhanced and new mechanism to create virtual cargo within your missions.
-Cargo can be represented by groups, static objects, static cargo objects and can be boarded, loaded or sling loaded as part of
-human or AI task dispatching!
-In order to use the new MOOSE cargo management, system, you'll need to declare cargo objects as part of your mission script,
-and setup either an AI or a human dispatcher to transport cargo around the battlefield.
+MOOSE implements a whole new enhanced mechanism to **create virtual cargo** within your missions.
+Within the new system, virtual cargo can be represented by **groups of units**, **static objects**, **static cargo objects** 
+and can be **boarded**, **loaded** or **sling loaded**!
 
-Click on each individual class for detailed features and explanations!
+In order to use the new MOOSE cargo management, system, you'll need to declare cargo objects as part of your mission script,
+and setup either an **AI or a human cargo (task) dispatcher** to transport this virtual cargo around the battlefield.
+For this, several MOOSE classes have been created for cargo dispatchment, which are listed below.
+
+Click on each individual MOOSE class for detailed features and explanations as part of the detailed MOOSE documentation.
 
 
 ## 1. AI Cargo Dispatching
 
 ![AI\_CARGO\_DISPATCHER](Images\AI_Cargo_Dispatcher.JPG)
 
-You can make various AI transport cargo, setting up an automatic system that will make AI transport cargo (automatically)
-through the battlefield. Depending on the type of AI, various classes are implemented:
+This section details the classes that you can use to setup an automatic cargo dispatching system that will make 
+AI carriers transport cargo (automatically) through the battlefield. Depending on the type of AI unit types, various classes are implemented:
 
 
 ### 1.1. [**AI\_CARGO\_DISPATCHER_APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
 
 ![AI_Cargo_Dispatcher_APC](Images\AI_Cargo_Dispatching_For_APC.JPG)
 
-Models the intelligent transportation of infantry and other cargo using **APCs or trucks**.
+Models the intelligent transportation of **infantry** and other **small or lightweight cargo** using **APCs or trucks**.
+This class models cargo to be transported between **zones**!
 
 **Features:**
 
@@ -35,7 +38,8 @@ Models the intelligent transportation of infantry and other cargo using **APCs o
 
 ![AI_Cargo_Dispatcher_Helicopter](Images\AI_Cargo_Dispatching_For_Helicopters.JPG)
 
-Models the intelligent transportation of infantry and other cargo using **Helicopters**.
+Models the intelligent transportation of **infantry** and other **small cargo** using **Helicopters**.
+This class models cargo to be transported between **zones**!
 
 **Features:**
 
@@ -49,7 +53,8 @@ Models the intelligent transportation of infantry and other cargo using **Helico
 
 ![AI_Cargo_Dispatcher_Airplane](Images\AI_Cargo_Dispatching_For_Airplanes.JPG)
 
-Models the intelligent transportation of infantry and other cargo using **Airplanes**.
+Models the intelligent transportation of **infantry, vehicles** and other **heavy cargo** using **Airplanes**.
+This class models cargo to be transported between **airbases**!
 
 **Features:**
 
@@ -116,6 +121,53 @@ The cargo dispatcher will implement for you mechanisms to create cargo transport
    * Different settings modes for A2G and A2A operations.
    * Various other options.
 
+### Test Missions
+
+#### TAD-CGO-001 - Transport Test 
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport engineers towards a stadium.
+
+#### TAD-CGO-002 - Transport Test - Crate
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport a crate.
+
+#### TAD-CGO-003 - Transport Test - Infantry and Crate
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport a crate and an infantry group.
+
+#### TAD-CGO-004 - Transport Test - Infantry and Slingload
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport an infantry group and slingload a crate.
+
+#### TAD-CGO-005 - Transport Test - Various Cargo
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo.
+
+#### TAD-CGO-006 - Transport Test - Multiple Clients
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo for multiple player slots (clients).
+So this simulates cargo transportation task in co-operation mode.
+
+#### TAD-CGO-007 - Transport Test - Cargo Fun
+
+Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo for multiple player slots (clients).
+So this simulates cargo transportation task in co-operation mode, to transport lots of cargo around.
+
+#### TAD-CGO-008 - Transport Test - PickedUp and Deployed Handling
+
+Based on TAD-CGO-007, but now adds custom events when cargo is picked up and deployed.
+When cargo is deployed, random enemy forces will be spawned into the sim, which provides an extra challenge!
+
+#### TAD-CGO-009 - Transport Test - Respawning Cargo
+
+When the cargo is destroyed, the cargo will be respawned automatically.
+
+#### TAD-CGO-010 - Transport Test - Register Cargos
+
+Demonstrates how to shorten your cargo declaration scripts by declaring your cargo into your mission file using the #CARGO naming syntax!
+
+
+
 
 ## 3. Cargo management classes.
 
@@ -127,7 +179,7 @@ in a special way within your scripts and/or within the mission editor.
 
 The main [**CARGO**](Documentation/Cargo.Cargo.html) class is the base class for all the cargo management.
 It contains the required functionality to load / board / unload / unboard cargo, and manage the state of each cargo object.
-From this CARGo class are other CARGO_ classes derived, which inherit the properties and functions from CARGO,
+From this CARGO class are other CARGO_ classes derived, which inherit the properties and functions from CARGO,
 but implement a specific process to handle specific cargo objects!
 It is not the purpose to use directly the CARGO class within your missions.
 However, consult the CARGO documention as it provides a comprehensive description on how to manage cargo within your missions.
