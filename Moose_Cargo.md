@@ -124,37 +124,39 @@ The cargo dispatcher will implement for you mechanisms to create cargo transport
 
 **Test Missions:**
 
-   * **TAD-CGO-001 - Transport Test**  
+   * [**TAD-CGO-001 - Transport Test**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-001%20-%20Transport%20Test)  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport engineers towards a stadium.
 
-   * **TAD-CGO-002 - Transport Test - Crate**  
+   * [**TAD-CGO-002 - Transport Test - Crate**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-002%20-%20Transport%20Test%20-%20Crate)  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport a crate.
 
-   * **TAD-CGO-003 - Transport Test - Infantry and Crate**  
+   * [**TAD-CGO-003 - Transport Test - Infantry and Crate**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-003%20-%20Transport%20Test%20-%20Infantry%20and%20Crate)	  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport a crate and an infantry group.
 
-   * **TAD-CGO-004 - Transport Test - Infantry and Slingload**  
+   * [**TAD-CGO-004 - Transport Test - Infantry and Slingload**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-004%20-%20Transport%20Test%20-%20Infantry%20and%20Slingload)  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport an infantry group and slingload a crate.
 
-   * **TAD-CGO-005 - Transport Test - Various Cargo**  
+   * [**TAD-CGO-005 - Transport Test - Various Cargo**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-005%20-%20Transport%20Test%20-%20Various%20Cargo)  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo.
+     Note that the Communication truck moving nearby the stationary cargo is taking care of the cargo reporting.
+     So, when the carrier is nearby the cargo, the communication truck will report to the carrier the cargo presence.
 
-   * **TAD-CGO-006 - Transport Test - Multiple Clients**  
+   * [**TAD-CGO-006 - Transport Test - Multiple Clients**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-006%20-%20Transport%20Test%20-%20Multiple%20Clients)  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo for multiple player slots (clients).
      So this simulates cargo transportation task in co-operation mode.
 
-   * **TAD-CGO-007 - Transport Test - Cargo Fun**  
+   * [**TAD-CGO-007 - Transport Test - Cargo Fun**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-007%20-%20Transport%20Test%20-%20Cargo%20Fun)  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo for multiple player slots (clients).
      So this simulates cargo transportation task in co-operation mode, to transport lots of cargo around.
 
-   * **TAD-CGO-008 - Transport Test - PickedUp and Deployed Handling**  
+   * [**TAD-CGO-008 - Transport Test - PickedUp and Deployed Handling**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-008%20-%20Transport%20Test%20-%20PickedUp%20and%20Deployed%20Handling)  
      Based on TAD-CGO-007, but now adds custom events when cargo is picked up and deployed.
      When cargo is deployed, random enemy forces will be spawned into the sim, which provides an extra challenge!
 
-   * **TAD-CGO-009 - Transport Test - Respawning Cargo**  
+   * [**TAD-CGO-009 - Transport Test - Respawning Cargo**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-009%20-%20Transport%20Test%20-%20Respawning%20Cargo)  
      When the cargo is destroyed, the cargo will be respawned automatically.
 
-   * **TAD-CGO-010 - Transport Test - Register Cargos**  
+   * [**TAD-CGO-010 - Transport Test - Register Cargos**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-010%20-%20Transport%20Test%20-%20Register%20Cargos)  
      Demonstrates how to shorten your cargo declaration scripts by declaring your cargo into your mission file using the #CARGO naming syntax!
 
 
