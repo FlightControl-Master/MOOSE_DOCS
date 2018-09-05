@@ -1190,85 +1190,20 @@ which are excellent tools to be reused in an OO environment!.</p>
    </div>
   </nav>
   
-<img src="..\Images\Task_Cargo_Dispatcher.JPG" alt="Banner Image"/>   
+<img src="..\Images\Cargo.JPG" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Tasking.Task_Cargo_Dispatcher</strong></h1>
+    <h1>Module <strong>AI.AI_Cargo</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Tasking</strong> - Creates and manages player TASK_CARGO tasks.</p>
+<p><strong>AI</strong> -- (R2.4) - Models the intelligent transportation of infantry and other cargo.</p>
 
     
-
-<p>The <strong>TASK_CARGO_DISPATCHER</strong> allows you to setup various tasks for let human
-players transport cargo as part of a task. </p>
-
-<p>The cargo dispatcher will implement for you mechanisms to create cargo transportation tasks:</p>
-
-<ul>
-    <li>As setup by the mission designer.</li>
-    <li>Dynamically create CSAR missions (when a pilot is downed as part of a downed plane).</li>
-    <li>Dynamically spawn new cargo and create cargo taskings!</li>
-</ul>
-
-
-
-<p><strong>Specific features:</strong></p>
-
-<ul>
-    <li>Creates a task to transport <a href="Cargo.Cargo.html">Cargo.Cargo</a> to and between deployment zones.</li>
-    <li>Derived from the TASK_CARGO class, which is derived from the TASK class.</li>
-    <li>Orchestrate the task flow, so go from Planned to Assigned to Success, Failed or Cancelled.</li>
-    <li>Co-operation tasking, so a player joins a group of players executing the same task.</li>
-</ul>
-
-
-<p><strong>A complete task menu system to allow players to:</strong></p>
-
-<ul>
-    <li>Join the task, abort the task.</li>
-    <li>Mark the task location on the map.</li>
-    <li>Provide details of the target.</li>
-    <li>Route to the cargo.</li>
-    <li>Route to the deploy zones.</li>
-    <li>Load/Unload cargo.</li>
-    <li>Board/Unboard cargo.</li>
-    <li>Slingload cargo.</li>
-    <li>Display the task briefing.</li>
-</ul>
-
-
-<p><strong>A complete mission menu system to allow players to:</strong></p>
-
-<ul>
-    <li>Join a task, abort the task.</li>
-    <li>Display task reports.</li>
-    <li>Display mission statistics.</li>
-    <li>Mark the task locations on the map.</li>
-    <li>Provide details of the targets.</li>
-    <li>Display the mission briefing.</li>
-    <li>Provide status updates as retrieved from the command center.</li>
-    <li>Automatically assign a random task as part of a mission.</li>
-    <li>Manually assign a specific task as part of a mission.</li>
-</ul>
-
-
-<p> <strong>A settings system, using the settings menu:</strong></p>
-
-<ul>
-    <li>Tweak the duration of the display of messages.</li>
-    <li>Switch between metric and imperial measurement system.</li>
-    <li>Switch between coordinate formats used in messages: BR, BRA, LL DMS, LL DDM, MGRS.</li>
-    <li>Different settings modes for A2G and A2A operations.</li>
-    <li>Various other options.</li>
-</ul>
 
 <hr/>
 
 <h3>Author: <strong>FlightControl</strong></h3>
-
-<h3>Contributions:</h3>
 
 <hr/>
 
@@ -1276,257 +1211,61 @@ players transport cargo as part of a task. </p>
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TASK_CARGO_DISPATCHER')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##AI_CARGO')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>TASK_CARGO_DISPATCHER</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>AI_CARGO</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Implements the dynamic dispatching of cargo tasks.</p>
+<p>Base class for the dynamic cargo handling capability for AI groups.</p>
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##TASK_CARGO_DISPATCHER" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##AI_CARGO" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>
-<a id="TASK_CARGO_DISPATCHER" ><strong>TASK_CARGO_DISPATCHER</strong></a>
+    <a href="##(AI_CARGO)">#AI_CARGO</a>
+<a id="AI_CARGO" ><strong>AI_CARGO</strong></a>
     
-<p>Implements the dynamic dispatching of cargo tasks.</p>
+<p>Base class for the dynamic cargo handling capability for AI groups.</p>
 
     
 
-<p>The <strong>TASK_CARGO_DISPATCHER</strong> allows you to setup various tasks for let human
-players transport cargo as part of a task. </p>
+<p>Carriers can be mobilized to intelligently transport infantry and other cargo within the simulation.
+The AI_CARGO module uses the <a href="Cargo.html">Cargo</a> capabilities within the MOOSE framework.
+CARGO derived objects must be declared within the mission to make the AI_CARGO object recognize the cargo.
+Please consult the <a href="Cargo.html">Cargo</a> module for more information. </p>
 
-<p>There are currently <strong>two types of tasks</strong> that can be constructed:</p>
-
-<ul>
-    <li>A <strong>normal cargo transport</strong> task, which tasks humans to transport cargo from a location towards a deploy zone.</li>
-    <li>A <strong>CSAR</strong> cargo transport task. CSAR tasks are <strong>automatically generated</strong> when a friendly (AI) plane is downed and the friendly pilot ejects... 
-    You as a player (the helo pilot) can go out in the battlefield, fly behind enemy lines, and rescue the pilot (back to a deploy zone).</li>
-</ul>
-
-<p>Let's explore <strong>step by step</strong> how to setup the task cargo dispatcher.</p>
-
-<h1>1. Setup a mission environment.</h1>
-
-<p>It is easy, as it works just like any other task setup, so setup a command center and a mission.</p>
-
-<h2>1.1. Create a command center.</h2>
-
-<p>First you need to create a command center using the <a href="Tasking.CommandCenter.html##(COMMANDCENTER).New">Tasking.CommandCenter#COMMANDCENTER.New</a>() constructor.</p>
-
-<pre><code>local CommandCenter = COMMANDCENTER
-   :New( HQ, "Lima" ) -- Create the CommandCenter.
-</code></pre>
-
-<h2>1.2. Create a mission.</h2>
-
-<p>Tasks work in a mission, which groups these tasks to achieve a joint mission goal.
-A command center can govern multiple missions.
-Create a new mission, using the <a href="Tasking.Mission.html##(MISSION).New">Tasking.Mission#MISSION.New</a>() constructor.</p>
-
-<pre><code>-- Declare the Mission for the Command Center.
-local Mission = MISSION
-  :New( CommandCenter, 
-        "Overlord", 
-        "High", 
-        "Transport the cargo.", 
-        coalition.side.RED 
-      ) 
-</code></pre>
-
-
-<h1>2. Dispatch a <strong>transport cargo</strong> task.</h1>
-
-<p>So, now that we have a command center and a mission, we now create the transport task.
-We create the transport task using the <a href="##(TASK_CARGO_DISPATCHER).AddTransportTask">TASK_CARGO_DISPATCHER.AddTransportTask</a>() constructor.</p>
-
-<h2>2.1. Create the cargo in the mission.</h2>
-
-<p>Because a transport task will not generate the cargo itself, you'll need to create it first.</p>
-
-<pre><code>-- Here we define the "cargo set", which is a collection of cargo objects.
--- The cargo set will be the input for the cargo transportation task.
--- So a transportation object is handling a cargo set, which is automatically updated when new cargo is added/deleted.
-local WorkmaterialsCargoSet = SET_CARGO:New():FilterTypes( "Workmaterials" ):FilterStart()
-
--- Now we add cargo into the battle scene.
-local PilotGroup = GROUP:FindByName( "Engineers" )
-
--- CARGO_GROUP can be used to setup cargo with a GROUP object underneath.
--- We name the type of this group "Workmaterials", so that this cargo group will be included within the WorkmaterialsCargoSet.
--- Note that the name of the cargo is "Engineer Team 1".
-local CargoGroup = CARGO_GROUP:New( PilotGroup, "Workmaterials", "Engineer Team 1", 500 )
-</code></pre>
-
-<p>What is also needed, is to have a set of <a href="Core.Group.html">Core.Group</a>s defined that contains the clients of the players.</p>
-
-<pre><code>-- Allocate the Transport, which are the helicopters to retrieve the pilot, that can be manned by players.
--- The name of these helicopter groups containing one client begins with "Transport", as modelled within the mission editor.
-local PilotGroupSet = SET_GROUP:New():FilterPrefixes( "Transport" ):FilterStart()
-</code></pre>
-
-<h2>2.2. Setup the cargo transport task.</h2>
-
-<p>First, we need to create a TASK_CARGO_DISPATCHER object.</p>
-
-<pre><code>TaskDispatcher = TASK_CARGO_DISPATCHER:New( Mission, PilotGroupSet )
-</code></pre>
-
-<p>So, the variable <code>TaskDispatcher</code> will contain the object of class TASK_CARGO_DISPATCHER, which will allow you to dispatch cargo transport tasks:</p>
+<p>The derived classes from this module are:</p>
 
 <ul>
-    <li>for mission <code>Mission</code>.</li>
-    <li>for the group set <code>PilotGroupSet</code>.</li>
+    <li><a href="AI.AI_Cargo_APC.html">AI.AI_Cargo_APC</a> - Cargo transportation using APCs and other vehicles between zones.</li>
+    <li><a href="AI.AI_Cargo_Helicopter.html">AI.AI_Cargo_Helicopter</a> - Cargo transportation using helicopters between zones.</li>
+    <li><a href="AI.AI_Cargo_Airplane.html">AI.AI_Cargo_Airplane</a> - Cargo transportation using airplanes to and from airbases.
+    </li>
 </ul>
-
-<p>Now that we have <code>TaskDispatcher</code> object, we can now <strong>create the TransportTask</strong>, using the <a href="##(TASK_CARGO_DISPATCHER).AddTransportTask">TASK_CARGO_DISPATCHER.AddTransportTask</a>() method!</p>
-
-<pre><code>local TransportTask = TaskDispatcher:AddTransportTask( 
-  "Transport workmaterials", 
-  WorkmaterialsCargoSet, 
-  "Transport the workers, engineers and the equipment near the Workplace." )
-</code></pre>
-
-<p>As a result of this code, the <code>TransportTask</code> (returned) variable will contain an object of <a href="##(TASK_CARGO_TRANSPORT)">#TASK_CARGO_TRANSPORT</a>!
-We pass to the method the title of the task, and the <code>WorkmaterialsCargoSet</code>, which is the set of cargo groups to be transported!
-This object can also be used to setup additional things, or to control this specific task with special actions.</p>
-
-<p>And you're done! As you can see, it is a bit of work, but the reward is great.
-And, because all this is done using program interfaces, you can build a mission with a <strong>dynamic cargo transport task mechanism</strong> yourself!
-Based on events happening within your mission, you can use the above methods to create new cargo, and setup a new task for cargo transportation to a group of players!</p>
-
-
-<h1>3. Dispatch CSAR tasks.</h1>
-
-<p>CSAR tasks can be dynamically created when a friendly pilot ejects, or can be created manually.
-We'll explore both options.</p>
-
-<h2>3.1. CSAR task dynamic creation.</h2>
-
-<p>Because there is an "event" in a running simulation that creates CSAR tasks, the method <a href="##(TASK_CARGO_DISPATCHER).StartCSARTasks">TASK_CARGO_DISPATCHER.StartCSARTasks</a>() will create automatically:</p>
-
-<ol>
-    <li>a new downed pilot at the location where the plane was shot</li>
-    <li>declare that pilot as cargo</li>
-    <li>creates a CSAR task automatically to retrieve that pilot</li>
-    <li>requires deploy zones to be specified where to transport the downed pilot to, in order to complete that task.</li>
-</ol>
-
-<p>You create a CSAR task dynamically in a very easy way:</p>
-
-<pre><code>TaskDispatcher:StartCSARTasks( 
-  "CSAR", 
-  { ZONE_UNIT:New( "Hospital", STATIC:FindByName( "Hospital" ), 100 ) }, 
-  "One of our pilots has ejected. Go out to Search and Rescue our pilot!\n" .. 
-  "Use the radio menu to let the command center assist you with the CSAR tasking."
-)
-</code></pre>
-
-<p>The method <a href="##(TASK_CARGO_DISPATCHER).StopCSARTasks">TASK_CARGO_DISPATCHER.StopCSARTasks</a>() will automatically stop with the creation of CSAR tasks when friendly pilots eject.</p>
-
-<p><strong>Remarks:</strong> </p>
-
-<ul>
-    <li>the ZONE_UNIT can also be a ZONE, or a ZONE_POLYGON object, or any other ZONE_ object!</li>
-    <li>you can declare the array of zones in another variable, or course!</li>
-</ul>
-
-
-<h2>3.2. CSAR task manual creation.</h2>
-
-<p>We create the CSAR task using the <a href="##(TASK_CARGO_DISPATCHER).AddCSARTask">TASK_CARGO_DISPATCHER.AddCSARTask</a>() constructor.</p>
-
-<p>The method will create a new CSAR task, and will generate the pilots cargo itself, at the specified coordinate.</p>
-
-<p>What is first needed, is to have a set of <a href="Core.Group.html">Core.Group</a>s defined that contains the clients of the players.</p>
-
-<pre><code>-- Allocate the Transport, which are the helicopter to retrieve the pilot, that can be manned by players.
-local GroupSet = SET_GROUP:New():FilterPrefixes( "Transport" ):FilterStart()
-</code></pre>
-
-<p>We need to create a TASK_CARGO_DISPATCHER object.</p>
-
-<pre><code>TaskDispatcher = TASK_CARGO_DISPATCHER:New( Mission, GroupSet )
-</code></pre>
-
-<p>So, the variable <code>TaskDispatcher</code> will contain the object of class TASK_CARGO_DISPATCHER, which will allow you to dispatch cargo CSAR tasks:</p>
-
-<ul>
-    <li>for mission <code>Mission</code>.</li>
-    <li>for the group of players (pilots) captured within the <code>GroupSet</code> (those groups with a name starting with <code>"Transport"</code>).</li>
-</ul>
-
-<p>Now that we have a PilotsCargoSet and a GroupSet, we can now create the CSAR task manually.</p>
-
-<pre><code>-- Declare the CSAR task.
-local CSARTask = TaskDispatcher:AddCSARTask( 
-  "CSAR Task",
-  Coordinate,
-  270,
-  "Bring the pilot back!"
-)
-</code></pre>
-
-<p>As a result of this code, the <code>CSARTask</code> (returned) variable will contain an object of <a href="##(TASK_CARGO_CSAR)">#TASK_CARGO_CSAR</a>!
-We pass to the method the title of the task, and the <code>WorkmaterialsCargoSet</code>, which is the set of cargo groups to be transported!
-This object can also be used to setup additional things, or to control this specific task with special actions.
-Note that when you declare a CSAR task manually, you'll still need to specify a deployment zone!</p>
-
-<h1>4. Setup the deploy zone(s).</h1>
-
-<p>The task cargo dispatcher also foresees methods to setup the deployment zones to where the cargo needs to be transported!</p>
-
-<p>There are two levels on which deployment zones can be configured:</p>
-
-<ul>
-    <li>Default deploy zones: The TASK_CARGO_DISPATCHER object can have default deployment zones, which will apply over all tasks active in the task dispatcher.</li>
-    <li>Task specific deploy zones: The TASK_CARGO_DISPATCHER object can have specific deployment zones which apply to a specific task only!</li>
-</ul>
-
-<p>Note that for Task specific deployment zones, there are separate deployment zone creation methods per task type!</p>
-
-<h2>4.1. Setup default deploy zones.</h2>
-
-<p>Use the <a href="##(TASK_CARGO_DISPATCHER).SetDefaultDeployZone">TASK_CARGO_DISPATCHER.SetDefaultDeployZone</a>() to setup one deployment zone, and <a href="##(TASK_CARGO_DISPATCHER).SetDefaultDeployZones">TASK_CARGO_DISPATCHER.SetDefaultDeployZones</a>() to setup multiple default deployment zones in one call.</p>
-
-<h2>4.2. Setup task specific deploy zones for a <strong>transport task</strong>.</h2>
-
-<p>Use the <a href="##(TASK_CARGO_DISPATCHER).SetTransportDeployZone">TASK_CARGO_DISPATCHER.SetTransportDeployZone</a>() to setup one deployment zone, and <a href="##(TASK_CARGO_DISPATCHER).SetTransportDeployZones">TASK_CARGO_DISPATCHER.SetTransportDeployZones</a>() to setup multiple default deployment zones in one call.</p>
-
-<h2>4.3. Setup task specific deploy zones for a <strong>CSAR task</strong>.</h2>
-
-<p>Use the <a href="##(TASK_CARGO_DISPATCHER).SetCSARDeployZone">TASK_CARGO_DISPATCHER.SetCSARDeployZone</a>() to setup one deployment zone, and <a href="##(TASK_CARGO_DISPATCHER).SetCSARDeployZones">TASK_CARGO_DISPATCHER.SetCSARDeployZones</a>() to setup multiple default deployment zones in one call.</p>
-
-
-
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>
   
-  <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Tasking.Task_Cargo_Dispatcher)" >Type <strong>Tasking.Task_Cargo_Dispatcher</strong></a></h2></div>
+  <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI.AI_Cargo)" >Type <strong>AI.AI_Cargo</strong></a></h2></div>
   <div class="w3-container w3-white w3-padding-16" id="module_current_type">
     <div class="w3-white" id="record_type">
 </div>
 
   </div>
-  <div onclick="myFunction('#Types##TASK_CARGO_DISPATCHER')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CARGO_DISPATCHER)">Type <strong>TASK_CARGO_DISPATCHER</strong></a></h2></div>
-  <div id= "#Types##TASK_CARGO_DISPATCHER" class="w3-container w3-white w3-padding-16" id="module_other_types">
+  <div onclick="myFunction('#Types##AI_CARGO')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_CARGO)">Type <strong>AI_CARGO</strong></a></h2></div>
+  <div id= "#Types##AI_CARGO" class="w3-container w3-white w3-padding-16" id="module_other_types">
     <div class="w3-white" id="record_type">
-     <h3> Extends <a href="Tasking.Task_Manager.html##(TASK_MANAGER)">Tasking.Task_Manager#TASK_MANAGER</a> </h3>
-  
-<p>TASK_CARGO_DISPATCHER class.</p>
-
+     <h3> Extends <a href="Core.Fsm.html##(FSM_CONTROLLABLE)">Core.Fsm#FSM_CONTROLLABLE</a> </h3>
 <div class="fields">
   <h3>Field(s)</h3>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(TASK_CARGO_DISPATCHER).CSARBriefing" ><strong>TASK_CARGO_DISPATCHER.CSARBriefing</strong></a>
+<a id="#(AI_CARGO).CargoCarrier" ><strong>AI_CARGO.CargoCarrier</strong></a>
     
 
 
@@ -1536,30 +1275,8 @@ Note that when you declare a CSAR task manually, you'll still need to specify a 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(TASK_CARGO_DISPATCHER).CSARDeployZones" ><strong>TASK_CARGO_DISPATCHER.CSARDeployZones</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(TASK_CARGO_DISPATCHER).CSARTaskName" ><strong>TASK_CARGO_DISPATCHER.CSARTaskName</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(TASK_CARGO_DISPATCHER).CSARTasks" ><strong>TASK_CARGO_DISPATCHER.CSARTasks</strong></a>
+    <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>
+<a id="#(AI_CARGO).CargoSet" ><strong>AI_CARGO.CargoSet</strong></a>
     
 
 
@@ -1570,7 +1287,7 @@ Note that when you declare a CSAR task manually, you'll still need to specify a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
-<a id="#(TASK_CARGO_DISPATCHER).DefaultDeployZones" ><strong>TASK_CARGO_DISPATCHER.DefaultDeployZones</strong></a>
+<a id="#(AI_CARGO).Carrier_Cargo" ><strong>AI_CARGO.Carrier_Cargo</strong></a>
     
 
 
@@ -1580,8 +1297,19 @@ Note that when you declare a CSAR task manually, you'll still need to specify a 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AI_CARGO).Relocating" ><strong>AI_CARGO.Relocating</strong></a>
     
-<a id="#(TASK_CARGO_DISPATCHER).Mission" ><strong>TASK_CARGO_DISPATCHER.Mission</strong></a>
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AI_CARGO).Transporting" ><strong>AI_CARGO.Transporting</strong></a>
     
 
 
@@ -1594,237 +1322,34 @@ Note that when you declare a CSAR task manually, you'll still need to specify a 
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##AddCSARTask')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).AddCSARTask" ><strong>TASK_CARGO_DISPATCHER:AddCSARTask(CSARTaskPrefix, CSARCoordinate, CSARHeading, CSARCountry, CSARBriefing)</strong></a></h6>
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##Deploy')">
+<h6><a id="#(AI_CARGO).Deploy" ><strong>AI_CARGO:Deploy(Coordinate, Speed)</strong></a></h6>
 </div>
     
-<p>Add a CSAR task to retrieve a downed pilot.</p>
+<p>Deploy Trigger for AI_CARGO</p>
 
-    
-<p>You need to specify a coordinate from where the pilot will be spawned to be rescued.</p>
-
-<div id= "#Functions##AddCSARTask" class="w3-show w3-white">
+<div id= "#Functions##Deploy" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameters:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          #string
-        <strong>CSARTaskPrefix</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(optional) The prefix of the CSAR task. </p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
           <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-        <strong>CSARCoordinate</strong>
+        <strong>Coordinate</strong>
         </div>
         <div class="w3-half">
-          
-<p>The coordinate where a downed pilot will be spawned.</p>
-
+          <p></p>
         </div>
     </div>
       <div class="w3-row">
         <div class="w3-half">
           #number
-        <strong>CSARHeading</strong>
+        <strong>Speed</strong>
         </div>
         <div class="w3-half">
           
-<p>The heading of the pilot in degrees.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          <a href="DCSCountry.html##(Country)">DCSCountry#Country</a>
-        <strong>CSARCountry</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The country ID of the pilot that will be spawned.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #string
-        <strong>CSARBriefing</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The briefing of the CSAR task.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        #string:
-      </div>
-      <div class="w3-half">
-        
-<p>The CSAR Task Name as a string. The Task Name is the main key and is shown in the task list of the Mission Tasking menu.</p>
-
-      </div>
-    </div>
-      <h5><strong>Usage:</strong></h5>
-    <pre class="example"><code>
-  -- Add a CSAR task to rescue a downed pilot from within a coordinate.
-  local Coordinate = PlaneUnit:GetPointVec2()
-  TaskA2ADispatcher:AddCSARTask( "CSAR Task", Coordinate )
-  
-  -- Add a CSAR task to rescue a downed pilot from within a coordinate of country RUSSIA, which is pointing to the west (270°).
-  local Coordinate = PlaneUnit:GetPointVec2()
-  TaskA2ADispatcher:AddCSARTask( "CSAR Task", Coordinate, 270, Country.RUSSIA )
-  </code></pre>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##AddTransportTask')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).AddTransportTask" ><strong>TASK_CARGO_DISPATCHER:AddTransportTask(TaskPrefix, SetCargo, Briefing, TaskName)</strong></a></h6>
-</div>
-    
-<p>Add a Transport task to transport cargo from fixed locations to a deployment zone.</p>
-
-<div id= "#Functions##AddTransportTask" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #string
-        <strong>TaskPrefix</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(optional) The prefix of the transport task. 
-This prefix will be appended with a . + a number of 3 digits.
-If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          <a href="Core.SetCargo.html##(SET_CARGO)">Core.SetCargo#SET_CARGO</a>
-        <strong>SetCargo</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The SetCargo to be transported.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #string
-        <strong>Briefing</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The briefing of the task transport to be shown to the player.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>TaskName</strong>
-        </div>
-        <div class="w3-half">
-          <p></p>
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-      <h5><strong>Usage:</strong></h5>
-    <pre class="example"><code>
-  -- Add a Transport task to transport cargo of different types to a Transport Deployment Zone.
- TaskDispatcher = TASK_CARGO_DISPATCHER:New( Mission, TransportGroups )
- 
- local CargoSetWorkmaterials = SET_CARGO:New():FilterTypes( "Workmaterials" ):FilterStart()
- local EngineerCargoGroup = CARGO_GROUP:New( GROUP:FindByName( "Engineers" ), "Workmaterials", "Engineers", 250 )
- local ConcreteCargo = CARGO_SLINGLOAD:New( STATIC:FindByName( "Concrete" ), "Workmaterials", "Concrete", 150, 50 )
- local CrateCargo = CARGO_CRATE:New( STATIC:FindByName( "Crate" ), "Workmaterials", "Crate", 150, 50 )
- local EnginesCargo = CARGO_CRATE:New( STATIC:FindByName( "Engines" ), "Workmaterials", "Engines", 150, 50 )
- local MetalCargo = CARGO_CRATE:New( STATIC:FindByName( "Metal" ), "Workmaterials", "Metal", 150, 50 )
- 
- -- Here we add the task. We name the task "Build a Workplace".
- -- We provide the CargoSetWorkmaterials, and a briefing as the 2nd and 3rd parameter.
- -- The :AddTransportTask() returns a Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT object, which we keep as a reference for further actions.
- -- The WorkplaceTask holds the created and returned Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT object.
- local WorkplaceTask = TaskDispatcher:AddTransportTask( "Build a Workplace", CargoSetWorkmaterials, "Transport the workers, engineers and the equipment near the Workplace." )
- 
- -- Here we set a TransportDeployZone. We use the WorkplaceTask as the reference, and provide a ZONE object.
- TaskDispatcher:SetTransportDeployZone( WorkplaceTask, ZONE:New( "Workplace" ) )
- </code></pre>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##EvaluateCSAR')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).EvaluateCSAR" ><strong>TASK_CARGO_DISPATCHER:EvaluateCSAR(CSARUnit)</strong></a></h6>
-</div>
-    
-<p>Evaluates of a CSAR task needs to be started.</p>
-
-<div id= "#Functions##EvaluateCSAR" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>CSARUnit</strong>
-        </div>
-        <div class="w3-half">
-          <p></p>
-        </div>
-    </div>
-    <h5><strong>Return values:</strong></h5>
-    <div class="w3-row">
-        <div class="w3-half">
-          <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>:
-        </div>
-        <div class="w3-half">
-          
-<p>The SetCargo to be rescued.</p>
-
-        </div>
-        <div class="w3-half">
-          #nil:
-        </div>
-        <div class="w3-half">
-          
-<p>If there is no CSAR task required.</p>
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
 
         </div>
     </div>
@@ -1837,25 +1362,31 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##ManageTasks')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).ManageTasks" ><strong>TASK_CARGO_DISPATCHER:ManageTasks()</strong></a></h6>
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##IsRelocating')">
+<h6><a id="#(AI_CARGO).IsRelocating" ><strong>AI_CARGO:IsRelocating()</strong></a></h6>
 </div>
     
-<p>Assigns tasks to the <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
 
-<div id= "#Functions##ManageTasks" class="w3-show w3-white">
+
+<div id= "#Functions##IsRelocating" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        #boolean:
-      </div>
-      <div class="w3-half">
-        
-<p>Return true if you want the task assigning to continue... false will cancel the loop.</p>
+</div>
 
-      </div>
-    </div>
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##IsTransporting')">
+<h6><a id="#(AI_CARGO).IsTransporting" ><strong>AI_CARGO:IsTransporting()</strong></a></h6>
+</div>
+    
+
+
+<div id= "#Functions##IsTransporting" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
 </div>
 
 </div>
@@ -1866,10 +1397,10 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##New')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).New" ><strong>TASK_CARGO_DISPATCHER:New(Mission, SetGroup)</strong></a></h6>
+<h6><a id="#(AI_CARGO).New" ><strong>AI_CARGO:New(Carrier, CargoSet, CombatRadius)</strong></a></h6>
 </div>
     
-<p>TASK_CARGO_DISPATCHER constructor.</p>
+<p>Creates a new AI_CARGO object.</p>
 
 <div id= "#Functions##New" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -1878,34 +1409,39 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
-        <strong>Mission</strong>
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
         </div>
         <div class="w3-half">
-          
-<p>The mission for which the task dispatching is done.</p>
-
+          <p></p>
         </div>
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
-        <strong>SetGroup</strong>
+          <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>
+        <strong>CargoSet</strong>
         </div>
         <div class="w3-half">
-          
-<p>The set of groups that can join the tasks within the mission.</p>
-
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>CombatRadius</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
         </div>
     </div>
     <h5><strong>Return value:</strong></h5>
     <div class="w3-row">
       <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
+        <a href="##(AI_CARGO)">#AI_CARGO</a>:
       </div>
       <div class="w3-half">
         
-<p>self</p>
+
 
       </div>
     </div>
@@ -1918,13 +1454,13 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnAfterAssign')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).OnAfterAssign" ><strong>TASK_CARGO_DISPATCHER:OnAfterAssign(From, Event, To, Task, TaskUnit, PlayerName)</strong></a></h6>
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnAfterDeploy')">
+<h6><a id="#(AI_CARGO).OnAfterDeploy" ><strong>AI_CARGO:OnAfterDeploy(From, Event, To, Coordinate, Speed)</strong></a></h6>
 </div>
     
-<p>OnAfter Transition Handler for Event Assign.</p>
+<p>Deploy Handler OnAfter for AI_CARGO</p>
 
-<div id= "#Functions##OnAfterAssign" class="w3-show w3-white">
+<div id= "#Functions##OnAfterDeploy" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameters:</strong></h5>
       <div class="w3-row">
@@ -1935,8 +1471,559 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
         <strong>From</strong>
         </div>
         <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
           
-<p>The From State string.</p>
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnAfterLoaded')">
+<h6><a id="#(AI_CARGO).OnAfterLoaded" ><strong>AI_CARGO:OnAfterLoaded(Carrier, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>Loaded Handler OnAfter for AI_CARGO</p>
+
+<div id= "#Functions##OnAfterLoaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnAfterPickup')">
+<h6><a id="#(AI_CARGO).OnAfterPickup" ><strong>AI_CARGO:OnAfterPickup(From, Event, To, Coordinate, Speed)</strong></a></h6>
+</div>
+    
+<p>Pickup Handler OnAfter for AI_CARGO</p>
+
+<div id= "#Functions##OnAfterPickup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnAfterUnloaded')">
+<h6><a id="#(AI_CARGO).OnAfterUnloaded" ><strong>AI_CARGO:OnAfterUnloaded(Carrier, From, Event, To)</strong></a></h6>
+</div>
+    
+<p>Unloaded Handler OnAfter for AI_CARGO</p>
+
+<div id= "#Functions##OnAfterUnloaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnBeforeDeploy')">
+<h6><a id="#(AI_CARGO).OnBeforeDeploy" ><strong>AI_CARGO:OnBeforeDeploy(From, Event, To, Coordinate, Speed)</strong></a></h6>
+</div>
+    
+<p>Deploy Handler OnBefore for AI_CARGO</p>
+
+<div id= "#Functions##OnBeforeDeploy" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnBeforePickup')">
+<h6><a id="#(AI_CARGO).OnBeforePickup" ><strong>AI_CARGO:OnBeforePickup(From, Event, To, Coordinate, Speed)</strong></a></h6>
+</div>
+    
+<p>Pickup Handler OnBefore for AI_CARGO</p>
+
+<div id= "#Functions##OnBeforePickup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h. Default is 50% of max possible speed the group can do. </p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##Pickup')">
+<h6><a id="#(AI_CARGO).Pickup" ><strong>AI_CARGO:Pickup(Coordinate, Speed)</strong></a></h6>
+</div>
+    
+<p>Pickup Trigger for AI_CARGO</p>
+
+<div id= "#Functions##Pickup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##__Deploy')">
+<h6><a id="#(AI_CARGO).__Deploy" ><strong>AI_CARGO:__Deploy(Delay, Coordinate, Speed)</strong></a></h6>
+</div>
+    
+<p>Deploy Asynchronous Trigger for AI_CARGO</p>
+
+<div id= "#Functions##__Deploy" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Delay</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##__Pickup')">
+<h6><a id="#(AI_CARGO).__Pickup" ><strong>AI_CARGO:__Pickup(Delay, Coordinate, Speed)</strong></a></h6>
+</div>
+    
+<p>Pickup Asynchronous Trigger for AI_CARGO</p>
+
+<div id= "#Functions##__Pickup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Delay</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+        <strong>Coordinate</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Pickup place. If not given, loading starts at the current location.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>Speed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Speed in km/h. Default is 50% of max possible speed the group can do.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterBoard')">
+<h6><a id="#(AI_CARGO).onafterBoard" ><strong>AI_CARGO:onafterBoard(Carrier, From, Event, To, Cargo, CarrierUnit, PickupZone)</strong></a></h6>
+</div>
+    
+<p>On after Board event.</p>
+
+<div id= "#Functions##onafterBoard" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
 
         </div>
     </div>
@@ -1947,7 +2034,7 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
         </div>
         <div class="w3-half">
           
-<p>The Event string.</p>
+<p>Event.</p>
 
         </div>
     </div>
@@ -1958,23 +2045,65 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
         </div>
         <div class="w3-half">
           
-<p>The To State string.</p>
+<p>To state.</p>
 
         </div>
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          <a href="Tasking.Task_A2A.html##(TASK_A2A)">Tasking.Task_A2A#TASK_A2A</a>
-        <strong>Task</strong>
+          <a href="Cargo.Cargo.html##(CARGO)">Cargo.Cargo#CARGO</a>
+        <strong>Cargo</strong>
         </div>
         <div class="w3-half">
-          <p></p>
+          
+<p>Cargo object.</p>
+
         </div>
     </div>
       <div class="w3-row">
         <div class="w3-half">
           <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-        <strong>TaskUnit</strong>
+        <strong>CarrierUnit</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>PickupZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(optional) The zone where the cargo will be picked up. The PickupZone can be nil, if there wasn't any PickupZoneSet provided.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterDeployed')">
+<h6><a id="#(AI_CARGO).onafterDeployed" ><strong>AI_CARGO:onafterDeployed(Carrier, From, Event, To, DeployZone)</strong></a></h6>
+</div>
+    
+<p>On after Deployed event.</p>
+
+<div id= "#Functions##onafterDeployed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
         </div>
         <div class="w3-half">
           <p></p>
@@ -1983,7 +2112,299 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
       <div class="w3-row">
         <div class="w3-half">
           #string
-        <strong>PlayerName</strong>
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>DeployZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>The zone wherein the cargo is deployed. This can be any zone type, like a ZONE, ZONE_GROUP, ZONE_AIRBASE.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterLoaded')">
+<h6><a id="#(AI_CARGO).onafterLoaded" ><strong>AI_CARGO:onafterLoaded(Carrier, From, Event, To, PickupZone, Cargo)</strong></a></h6>
+</div>
+    
+<p>On after Loaded event.</p>
+
+<div id= "#Functions##onafterLoaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>PickupZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(optional) The zone where the cargo will be picked up. The PickupZone can be nil, if there wasn't any PickupZoneSet provided.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+        <strong>Cargo</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        #boolean:
+      </div>
+      <div class="w3-half">
+        
+<p>Cargo loaded.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterPickedUp')">
+<h6><a id="#(AI_CARGO).onafterPickedUp" ><strong>AI_CARGO:onafterPickedUp(Carrier, From, Event, To, PickupZone)</strong></a></h6>
+</div>
+    
+<p>On after PickedUp event.</p>
+
+<div id= "#Functions##onafterPickedUp" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>PickupZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(optional) The zone where the cargo will be picked up. The PickupZone can be nil, if there wasn't any PickupZoneSet provided.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterUnboard')">
+<h6><a id="#(AI_CARGO).onafterUnboard" ><strong>AI_CARGO:onafterUnboard(Carrier, From, Event, To, Cargo, DeployZone, CarrierUnit)</strong></a></h6>
+</div>
+    
+<p>On after Unboard event.</p>
+
+<div id= "#Functions##onafterUnboard" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Cargo</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Cargo#CARGO Cargo Cargo object.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>DeployZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>The zone wherein the cargo is deployed. This can be any zone type, like a ZONE, ZONE_GROUP, ZONE_AIRBASE.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+        <strong>CarrierUnit</strong>
         </div>
         <div class="w3-half">
           <p></p>
@@ -1998,21 +2419,168 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##OnEventEjection')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).OnEventEjection" ><strong>TASK_CARGO_DISPATCHER:OnEventEjection(EventData)</strong></a></h6>
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterUnload')">
+<h6><a id="#(AI_CARGO).onafterUnload" ><strong>AI_CARGO:onafterUnload(Carrier, From, Event, To, DeployZone)</strong></a></h6>
 </div>
     
-<p>Handle the event when a pilot ejects.</p>
+<p>On after Unload event.</p>
 
-<div id= "#Functions##OnEventEjection" class="w3-show w3-white">
+<div id= "#Functions##onafterUnload" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
+    <h5><strong>Parameters:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
-        <strong>EventData</strong>
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>DeployZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>The zone wherein the cargo is deployed. This can be any zone type, like a ZONE, ZONE_GROUP, ZONE_AIRBASE.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onafterUnloaded')">
+<h6><a id="#(AI_CARGO).onafterUnloaded" ><strong>AI_CARGO:onafterUnloaded(Carrier, From, Event, To, Cargo, Deployed, DeployZone, CarrierUnit)</strong></a></h6>
+</div>
+    
+<p>On after Unloaded event.</p>
+
+<div id= "#Functions##onafterUnloaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameters:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
+        </div>
+        <div class="w3-half">
+          <p></p>
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>From</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>From state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Event</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Event.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>To</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #string
+        <strong>Cargo</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Cargo#CARGO Cargo Cargo object.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #boolean
+        <strong>Deployed</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Cargo is deployed.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>DeployZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>The zone wherein the cargo is deployed. This can be any zone type, like a ZONE, ZONE_GROUP, ZONE_AIRBASE.</p>
+
+        </div>
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+        <strong>CarrierUnit</strong>
         </div>
         <div class="w3-half">
           <p></p>
@@ -2027,409 +2595,69 @@ If no TaskPrefix is given, then "Transport" will be used as the prefix. </p>
 <div>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetCSARDeployZone')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetCSARDeployZone" ><strong>TASK_CARGO_DISPATCHER:SetCSARDeployZone(CSARTaskName, CSARDeployZone)</strong></a></h6>
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##onbeforeLoad')">
+<h6><a id="#(AI_CARGO).onbeforeLoad" ><strong>AI_CARGO:onbeforeLoad(Carrier, From, Event, To, PickupZone)</strong></a></h6>
 </div>
     
-<p>Define one deploy zone for the CSAR tasks.</p>
+<p>On before Load event.</p>
 
-<div id= "#Functions##SetCSARDeployZone" class="w3-show w3-white">
+<div id= "#Functions##onbeforeLoad" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
     <h5><strong>Parameters:</strong></h5>
       <div class="w3-row">
     </div>
       <div class="w3-row">
         <div class="w3-half">
-          #string
-        <strong>CSARTaskName</strong>
+          <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+        <strong>Carrier</strong>
         </div>
         <div class="w3-half">
-          
-<p>(optional) The name of the CSAR task. </p>
-
+          <p></p>
         </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>CSARDeployZone</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>A CSAR deploy zone.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetCSARDeployZones')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetCSARDeployZones" ><strong>TASK_CARGO_DISPATCHER:SetCSARDeployZones(CSARTaskName, CSARDeployZones)</strong></a></h6>
-</div>
-    
-<p>Define the deploy zones for the CSAR tasks.</p>
-
-<div id= "#Functions##SetCSARDeployZones" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
     </div>
       <div class="w3-row">
         <div class="w3-half">
           #string
-        <strong>CSARTaskName</strong>
+        <strong>From</strong>
         </div>
         <div class="w3-half">
           
-<p>(optional) The name of the CSAR task.</p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>CSARDeployZones</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>A list of the CSAR deploy zones.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetCSARRadius')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetCSARRadius" ><strong>TASK_CARGO_DISPATCHER:SetCSARRadius(CSARRadius)</strong></a></h6>
-</div>
-    
-<p>Define the radius to when a CSAR task will be generated for any downed pilot within range of the nearest CSAR airbase.</p>
-
-<div id= "#Functions##SetCSARRadius" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #number
-        <strong>CSARRadius</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>(Optional, Default = 50000) The radius in meters to decide whether a CSAR needs to be created.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-      <h5><strong>Usage:</strong></h5>
-    <pre class="example"><code>
-  -- Set 20km as the radius to CSAR any downed pilot within range of the nearest CSAR airbase.
-  TaskA2ADispatcher:SetEngageRadius( 20000 )
-  
-  -- Set 50km as the radius to to CSAR any downed pilot within range of the nearest CSAR airbase.
-  TaskA2ADispatcher:SetEngageRadius() -- 50000 is the default value.
-  </code></pre>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetDefaultDeployZone')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetDefaultDeployZone" ><strong>TASK_CARGO_DISPATCHER:SetDefaultDeployZone(DefaultDeployZone)</strong></a></h6>
-</div>
-    
-<p>Define one default deploy zone for all the cargo tasks.</p>
-
-<div id= "#Functions##SetDefaultDeployZone" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>DefaultDeployZone</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>A default deploy zone.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetDefaultDeployZones')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetDefaultDeployZones" ><strong>TASK_CARGO_DISPATCHER:SetDefaultDeployZones(DefaultDeployZones)</strong></a></h6>
-</div>
-    
-<p>Define the deploy zones for all the cargo tasks.</p>
-
-<div id= "#Functions##SetDefaultDeployZones" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameter:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>DefaultDeployZones</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>A list of the deploy zones.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetTransportDeployZone')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetTransportDeployZone" ><strong>TASK_CARGO_DISPATCHER:SetTransportDeployZone(Task, TransportDeployZone)</strong></a></h6>
-</div>
-    
-<p>Define one deploy zone for the Transport tasks.</p>
-
-<div id= "#Functions##SetTransportDeployZone" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>
-        <strong>Task</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The name of the Transport task. </p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>TransportDeployZone</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>A Transport deploy zone.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-      <h5><strong>Usage:</strong></h5>
-    <pre class="example"><code>
-</code></pre>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetTransportDeployZones')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).SetTransportDeployZones" ><strong>TASK_CARGO_DISPATCHER:SetTransportDeployZones(Task, TransportDeployZones)</strong></a></h6>
-</div>
-    
-<p>Define the deploy zones for the Transport tasks.</p>
-
-<div id= "#Functions##SetTransportDeployZones" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          <a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a>
-        <strong>Task</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The name of the Transport task. </p>
-
-        </div>
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-        <strong>TransportDeployZones</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>A list of the Transport deploy zones.</p>
-
-        </div>
-    </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##StartCSARTasks')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).StartCSARTasks" ><strong>TASK_CARGO_DISPATCHER:StartCSARTasks(CSARTaskName, CSARDeployZones, CSARBriefing)</strong></a></h6>
-</div>
-    
-<p>Start the generation of CSAR tasks to retrieve a downed pilots.</p>
-
-    
-<p>You need to specify a task briefing, a task name, default deployment zone(s).
-This method can only be used once!</p>
-
-<div id= "#Functions##StartCSARTasks" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Parameters:</strong></h5>
-      <div class="w3-row">
-    </div>
-      <div class="w3-row">
-        <div class="w3-half">
-          #string
-        <strong>CSARTaskName</strong>
-        </div>
-        <div class="w3-half">
-          
-<p>The CSAR task name.</p>
+<p>From state.</p>
 
         </div>
     </div>
       <div class="w3-row">
         <div class="w3-half">
           #string
-        <strong>CSARDeployZones</strong>
+        <strong>Event</strong>
         </div>
         <div class="w3-half">
           
-<p>The zones to where the CSAR deployment should be directed.</p>
+<p>Event.</p>
 
         </div>
     </div>
       <div class="w3-row">
         <div class="w3-half">
           #string
-        <strong>CSARBriefing</strong>
+        <strong>To</strong>
         </div>
         <div class="w3-half">
           
-<p>The briefing of the CSAR tasks.</p>
+<p>To state.</p>
 
         </div>
     </div>
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
+      <div class="w3-row">
+        <div class="w3-half">
+          <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+        <strong>PickupZone</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>(optional) The zone where the cargo will be picked up. The PickupZone can be nil, if there wasn't any PickupZoneSet provided.</p>
 
-
-      </div>
+        </div>
     </div>
 </div>
 
@@ -2437,68 +2665,6 @@ This method can only be used once!</p>
 </div>
 
 </div>
-<div>
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##StopCSARTasks')">
-<h6><a id="#(TASK_CARGO_DISPATCHER).StopCSARTasks" ><strong>TASK_CARGO_DISPATCHER:StopCSARTasks()</strong></a></h6>
-</div>
-    
-<p>Stop the generation of CSAR tasks to retrieve a downed pilots.</p>
-
-<div id= "#Functions##StopCSARTasks" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-    <h5><strong>Return value:</strong></h5>
-    <div class="w3-row">
-      <div class="w3-half">
-        <a href="##(TASK_CARGO_DISPATCHER)">#TASK_CARGO_DISPATCHER</a>:
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-</div>
-</div>  
-</div>
-
-  </div>
-  <div onclick="myFunction('#Types##TASK_CARGO_DISPATCHER.CSAR')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CARGO_DISPATCHER.CSAR)">Type <strong>TASK_CARGO_DISPATCHER.CSAR</strong></a></h2></div>
-  <div id= "#Types##TASK_CARGO_DISPATCHER.CSAR" class="w3-container w3-white w3-padding-16" id="module_other_types">
-    <div class="w3-white" id="record_type">
-<div class="fields">
-  <h3>Field(s)</h3>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-<a id="#(TASK_CARGO_DISPATCHER.CSAR).PilotUnit" ><strong>TASK_CARGO_DISPATCHER.CSAR.PilotUnit</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Tasking.Task.html##(TASK)">Tasking.Task#TASK</a>
-<a id="#(TASK_CARGO_DISPATCHER.CSAR).Task" ><strong>TASK_CARGO_DISPATCHER.CSAR.Task</strong></a>
-    
-
-
-</div>
-
-</div>   
-</div>
-<div class="functions">
-  <h3>Function(s)</h3>
 </div>  
 </div>
 
@@ -2506,7 +2672,7 @@ This method can only be used once!</p>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Task_Cargo_Dispatcher.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Cargo.JPG')";
 }
 </script>
 
