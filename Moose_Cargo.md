@@ -1,14 +1,17 @@
 # MOOSE CARGO Guide
 
 MOOSE implements a whole new enhanced mechanism to **create virtual cargo** within your missions.
-Within the new system, virtual cargo can be represented by **groups of units**, **static objects**, **static cargo objects** 
-and can be **boarded**, **loaded** or **sling loaded**!
+Within this new system, virtual cargo can be represented by:
+
+   * Moveable cargo, represented by **groups of units**, and can be **boarded** into **carriers**, which can be **APCs or vehicles**, **helicopters**, **planes** or **ships**.
+   * Stationary cargo, reprented by **static objects** or **static cargo objects**, and can be loaded into **carriers**, which can be **APCs** or **vehicles**, **helicopters**, **planes** or **ships**. 
+   * Sling Loadable cargo, reprented by **static cargo objects**, and can be sling loaded by **helicopter carriers**.
 
 In order to use the new MOOSE cargo management, system, you'll need to declare cargo objects as part of your mission script,
 and setup either an **AI or a human cargo (task) dispatcher** to transport this virtual cargo around the battlefield.
 For this, several MOOSE classes have been created for cargo dispatchment, which are listed below.
 
-Click on each individual MOOSE class for detailed features and explanations as part of the detailed MOOSE documentation.
+Click on each individual MOOSE class for detailed features, usage explanations as part of the detailed MOOSE documentation.
 
 
 ## 1. AI Cargo Dispatching
@@ -186,8 +189,14 @@ The cargo dispatcher will implement for you mechanisms to create cargo transport
 
 
 
+## 3. The cargo system explained.
 
-## 3. Cargo management classes.
+The following section provides a detailed explanation on the cargo system, how to use etc.
+
+https://flightcontrol-master.github.io/MOOSE_DOCS_DEVELOP/Documentation/Cargo.Cargo.html
+
+
+## 4. Cargo management classes.
 
 MOOSE has implemented **a separate system for cargo handling**.
 It combines the capabilities of DCS world to combine infantry groups, cargo static objects and static objects
@@ -203,7 +212,7 @@ It is not the purpose to use directly the CARGO class within your missions.
 However, consult the CARGO documention as it provides a comprehensive description on how to manage cargo within your missions.
 
 
-### 3.1. [**CARGO\_GROUP**](Documentation/Cargo.CargoGroup.html)
+### 4.1. [**CARGO\_GROUP**](Documentation/Cargo.CargoGroup.html)
 
 ![CARGO\_GROUP](Images\Cargo_Groups.JPG)
 
@@ -221,7 +230,7 @@ Typical cargo of this type can be infantry or (small) vehicles.
   * Automatic declaration of group objects to be treated as MOOSE cargo in the mission editor!
 
 
-### 3.2. [**CARGO_CRATE**](Documentation/Cargo.CargoCrate.html)
+### 4.2. [**CARGO_CRATE**](Documentation/Cargo.CargoCrate.html)
 
 ![CARGO\_CRATE](Images\Cargo_Crates.JPG)
 
@@ -240,7 +249,7 @@ Like flags, tires etc.
   * Automatic declaration of group objects to be treated as MOOSE cargo in the mission editor!
 
 
-### 3.3. [**CARGO_SLINGLOAD**](Documentation/Cargo.CargoSlingload.html)
+### 4.3. [**CARGO_SLINGLOAD**](Documentation/Cargo.CargoSlingload.html)
 
 ![CARGO\_SLINGLOAD](Images\Cargo_Slingload.JPG)
 
@@ -257,7 +266,7 @@ This cargo can only be slingloaded.
   * Automatic declaration of group objects to be treated as MOOSE cargo in the mission editor!
 
 
-### 3.4. [**CARGO_UNIT**](Documentation/Cargo.CargoUnit.html)
+### 4.4. [**CARGO_UNIT**](Documentation/Cargo.CargoUnit.html)
 
 Management of **moveable** units, which are based on a [**UNIT**](Documentation/Wrapper.Unit.html) object. 
 Note that this is an **Internal** class and is only mentioned here for reference!
