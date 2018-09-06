@@ -52,6 +52,12 @@ This class models cargo to be transported between **zones**!
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
    Cargo is transported to random zones around the battle field.
    
+   * [**AID-CGO-140 - APC - Event Handling**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-140%20-%20APC%20-%20Event%20Handling)  
+   Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
+   Cargo is transported to random zones around the battle field.
+   Every time a carrier is picking up a cargo, or is dropping a cargo, or is returning home, messages are displayed.
+   This demonstrates the usage of event handlers, how to capture them, and how you can tailor your own code within the event handler code sections.
+   
    * [**AID-CGO-150 - APC - Manpads against enemy helicopters**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-150%20-%20APC%20-%20Manpads%20against%20enemy%20helicopters)  
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
    The APCs are manned with manpads, so when the enemy helicopters arrive too close to the APCs, the manpads will unboard and will defend the APCs.
