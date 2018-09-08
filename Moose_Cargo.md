@@ -14,15 +14,18 @@ For this, several MOOSE classes have been created for cargo dispatchment, which 
 Click on each individual MOOSE class for detailed features, usage explanations as part of the detailed MOOSE documentation.
 
 
-## 1. AI Cargo Dispatching
+## 1. [**AI\_CARGO\_DISPATCHER**](Documentation/AI.AI_Cargo_Dispatcher.html)
 
 ![AI\_CARGO\_DISPATCHER](Images\AI_Cargo_Dispatcher.JPG)
 
 This section details the classes that you can use to setup an automatic cargo dispatching system that will make 
-AI carriers transport cargo (automatically) through the battlefield. Depending on the type of AI unit types, various classes are implemented:
+AI carriers transport cargo (automatically) through the battlefield. Depending on the type of AI unit types, various classes are implemented.
+
+However, this class is the **BASE class** and contains the main functionality for the underlying more detailed implementation classes.
+So, please read the documentation of the AI\_CARGO\_DISPATCHER class first (by clicking on it!)
 
 
-### 1.1. [**AI\_CARGO\_DISPATCHER_APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
+### 1.1. [**AI\_CARGO\_DISPATCHER\_APC**](Documentation/AI.AI_Cargo_Dispatcher_APC.html)
 
 ![AI_Cargo_Dispatcher_APC](Images\AI_Cargo_Dispatching_For_APC.JPG)
 
@@ -38,34 +41,39 @@ This class models cargo to be transported between **zones**!
 
 **Test Missions:**
 
-   * [**AID-CGO-100 - APC - Pickup and Deploy**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-100%20-%20APC%20-%20Pickup%20and%20Deploy)  
+   * [**AID-CGO-100 - APC - Pickup and Deploy**]  
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
    Note that the APCs have different cargo limits, so the cargo groups will only board when there is sufficient space within the APC.
    
-   * [**AID-CGO-110 - APC - Deploy at Group Zones**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-110%20-%20APC%20-%20Deploy%20at%20Group%20Zones)  
+   * [**AID-CGO-110 - APC - Deploy at Group Zones**]  
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
    The caro infantry are spread out over the battlefield...
    The cargo infantry will be deployed around the ZONE_GROUP object!
    Check the script!
 
-   * [**AID-CGO-120 - APC - Pickup and Deploy Large**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-120%20-%20APC%20-%20Pickup%20and%20Deploy%20Large)  
+   * [**AID-CGO-120 - APC - Pickup and Deploy Large**]  
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
    Cargo is transported to random zones around the battle field.
    
-   * [**AID-CGO-140 - APC - Event Handling**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-140%20-%20APC%20-%20Event%20Handling)  
+   * [**AID-CGO-140 - APC - Event Handling**]  
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
    Cargo is transported to random zones around the battle field.
    Every time a carrier is picking up a cargo, or is dropping a cargo, or is returning home, messages are displayed.
    This demonstrates the usage of event handlers, how to capture them, and how you can tailor your own code within the event handler code sections.
    
-   * [**AID-CGO-150 - APC - Manpads against enemy helicopters**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/AID%20-%20AI%20Dispatching/AID-CGO%20-%20AI%20Cargo%20Dispatching/AID-CGO-150%20-%20APC%20-%20Manpads%20against%20enemy%20helicopters)  
+   * [**AID-CGO-150 - APC - Manpads against enemy helicopters**]  
    Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
-   The APCs are manned with manpads, so when the enemy helicopters arrive too close to the APCs, the manpads will unboard and will defend the APCs.
+   The APCs are manned with infantry carrying stingers, so when the enemy helicopters arrive too close to the APCs, the manpads will unboard and will defend the APCs.
+
+   * [**AID-CGO-151 - APC - Manpads and not defending the carrier**]  
+   Creates an AI cargo dispatcher, and dispatches various cargo using various APCs around the battle field.
+   The APCs are manned with infantry carrying stingers, however, carrier defenses are disables, because the CombatRadius is 0.
+   When the enemy helicopters arrive too close to the APCs, the manpads will NOT unboard and will NOT defend the APCs.
 
 
 ---
 
-### 1.2. [**AI\_CARGO\_DISPATCHER_HELICOPTER**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
+### 1.2. [**AI\_CARGO\_DISPATCHER\_HELICOPTER**](Documentation/AI.AI_Cargo_Dispatcher_Helicopter.html)
 
 ![AI_Cargo_Dispatcher_Helicopter](Images\AI_Cargo_Dispatching_For_Helicopters.JPG)
 
@@ -82,7 +90,7 @@ This class models cargo to be transported between **zones**!
 
 ---
 
-### 1.3. [**AI\_CARGO\_DISPATCHER_AIRPLANE**](Documentation/AI.AI_Cargo_Dispatcher_Airplane.html)
+### 1.3. [**AI\_CARGO\_DISPATCHER\_AIRPLANE**](Documentation/AI.AI_Cargo_Dispatcher_Airplane.html)
 
 ![AI_Cargo_Dispatcher_Airplane](Images\AI_Cargo_Dispatching_For_Airplanes.JPG)
 
@@ -158,39 +166,39 @@ The cargo dispatcher will implement for you mechanisms to create cargo transport
 
 **Test Missions:**
 
-   * [**TAD-CGO-001 - Transport Test**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-001%20-%20Transport%20Test)  
+   * [**TAD-CGO-001 - Transport Test**]  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport engineers towards a stadium.
 
-   * [**TAD-CGO-002 - Transport Test - Crate**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-002%20-%20Transport%20Test%20-%20Crate)  
+   * [**TAD-CGO-002 - Transport Test - Crate**]  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport a crate.
 
-   * [**TAD-CGO-003 - Transport Test - Infantry and Crate**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-003%20-%20Transport%20Test%20-%20Infantry%20and%20Crate)	  
+   * [**TAD-CGO-003 - Transport Test - Infantry and Crate**]	  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport a crate and an infantry group.
 
-   * [**TAD-CGO-004 - Transport Test - Infantry and Slingload**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-004%20-%20Transport%20Test%20-%20Infantry%20and%20Slingload)  
+   * [**TAD-CGO-004 - Transport Test - Infantry and Slingload**]  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport an infantry group and slingload a crate.
 
-   * [**TAD-CGO-005 - Transport Test - Various Cargo**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-005%20-%20Transport%20Test%20-%20Various%20Cargo)  
+   * [**TAD-CGO-005 - Transport Test - Various Cargo**]  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo.
      Note that the Communication truck moving nearby the stationary cargo is taking care of the cargo reporting.
      So, when the carrier is nearby the cargo, the communication truck will report to the carrier the cargo presence.
 
-   * [**TAD-CGO-006 - Transport Test - Multiple Clients**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-006%20-%20Transport%20Test%20-%20Multiple%20Clients)  
+   * [**TAD-CGO-006 - Transport Test - Multiple Clients**]  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo for multiple player slots (clients).
      So this simulates cargo transportation task in co-operation mode.
 
-   * [**TAD-CGO-007 - Transport Test - Cargo Fun**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-007%20-%20Transport%20Test%20-%20Cargo%20Fun)  
+   * [**TAD-CGO-007 - Transport Test - Cargo Fun**]  
      Creates a task cargo dispatcher, and adds a cargo transport task to transport various cargo for multiple player slots (clients).
      So this simulates cargo transportation task in co-operation mode, to transport lots of cargo around.
 
-   * [**TAD-CGO-008 - Transport Test - PickedUp and Deployed Handling**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-008%20-%20Transport%20Test%20-%20PickedUp%20and%20Deployed%20Handling)  
+   * [**TAD-CGO-008 - Transport Test - PickedUp and Deployed Handling**]  
      Based on TAD-CGO-007, but now adds custom events when cargo is picked up and deployed.
      When cargo is deployed, random enemy forces will be spawned into the sim, which provides an extra challenge!
 
-   * [**TAD-CGO-009 - Transport Test - Respawning Cargo**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-009%20-%20Transport%20Test%20-%20Respawning%20Cargo)  
+   * [**TAD-CGO-009 - Transport Test - Respawning Cargo**]  
      When the cargo is destroyed, the cargo will be respawned automatically.
 
-   * [**TAD-CGO-010 - Transport Test - Register Cargos**](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/TAD%20-%20Task%20Dispatching/CGO%20-%20Cargo%20Dispatching/TAD-CGO-010%20-%20Transport%20Test%20-%20Register%20Cargos)  
+   * [**TAD-CGO-010 - Transport Test - Register Cargos**]  
      Demonstrates how to shorten your cargo declaration scripts by declaring your cargo into your mission file using the #CARGO naming syntax!
 
 
