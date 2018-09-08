@@ -1238,11 +1238,13 @@ Please consult the <a href="Cargo.Cargo.html">Cargo.Cargo</a> module for more in
 
 <h2>Cargo loading.</h2>
 
-<p>The module will load automatically cargo when the APCs are within boarding or loading range.
-The boarding or loading range is specified when the cargo is created in the simulation, and therefore, this range depends on the type of cargo
-and the specified boarding range.</p>
+<p>The module will load automatically cargo when the APCs are within boarding or loading radius.
+The boarding or loading radius is specified when the cargo is created in the simulation, and therefore, this radius depends on the type of cargo
+and the specified boarding radius.</p>
 
-<h2>Enemies nearby.</h2>
+<h2><strong>Defending</strong> the APCs when enemies nearby.</h2>
+
+<p>Cargo will defend the carrier with its available arms, and to avoid cargo being lost within the battlefield.</p>
 
 <p>When the APCs are approaching enemy units, something special is happening. 
 The APCs will stop moving, and the loaded infantry will unboard and follow the APCs and will help to defend the group.
@@ -1250,13 +1252,17 @@ The carrier will hold the route once the unboarded infantry is further than 50 m
 to ensure that the APCs are not too far away from the following running infantry.
 Once all enemies are cleared, the infantry will board again automatically into the APCs. Once boarded, the APCs will follow its pre-defined route.</p>
 
-<p>A combat range needs to be specified in meters at the <a href="##(AI_CARGO_APC).New">AI_CARGO_APC.New</a>() method. 
-This combat range will trigger the unboarding of troops when enemies are within the combat range around the APCs.
-During my tests, I've noticed that there is a balance between ensuring that the infantry is within sufficient hit range (effectiveness) versus
+<p>A combat radius needs to be specified in meters at the <a href="##(AI_CARGO_APC).New">AI_CARGO_APC.New</a>() method. 
+This combat radius will trigger the unboarding of troops when enemies are within the combat radius around the APCs.
+During my tests, I've noticed that there is a balance between ensuring that the infantry is within sufficient hit radius (effectiveness) versus
 vulnerability of the infantry. It all depends on the kind of enemies that are expected to be encountered. 
-A combat range of 350 meters to 500 meters has been proven to be the most effective and efficient.</p>
+A combat radius of 350 meters to 500 meters has been proven to be the most effective and efficient.</p>
 
-<h2>Infantry health.</h2>
+<p>However, when the defense of the carrier, is not required, it must be switched off.
+This is done by disabling the defense of the carrier using the method <a href="##(AI_CARGO_APC).SetCombatRadius">AI_CARGO_APC.SetCombatRadius</a>(), and providing a combat radius of 0 meters.
+It can be switched on later when required by reenabling the defense using the method and providing a combat radius larger than 0.</p>
+
+<h2>Infantry or cargo <strong>health</strong>.</h2>
 
 <p>When infantry is unboarded from the APCs, the infantry is actually respawned into the battlefield. 
 As a result, the unboarding infantry is very <em>healthy</em> every time it unboards.
@@ -1351,17 +1357,6 @@ The APCs will follow nearby roads as much as possible, to ensure fast and clean 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AI_CARGO_APC).CombatRadius" ><strong>AI_CARGO_APC.CombatRadius</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(AI_CARGO_APC).Relocating" ><strong>AI_CARGO_APC.Relocating</strong></a>
     
@@ -1435,7 +1430,7 @@ The APCs will follow nearby roads as much as possible, to ensure fast and clean 
 <h6><a id="#(AI_CARGO_APC).FindCarrier" ><strong>AI_CARGO_APC:FindCarrier(Coordinate, Radius)</strong></a></h6>
 </div>
     
-<p>Find a free Carrier within a range.</p>
+<p>Find a free Carrier within a radius.</p>
 
 <div id= "#Functions##FindCarrier" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -1563,7 +1558,9 @@ The APCs will follow nearby roads as much as possible, to ensure fast and clean 
         <strong>APC</strong>
         </div>
         <div class="w3-half">
-          <p></p>
+          
+<p>The carrier APC group.</p>
+
         </div>
     </div>
       <div class="w3-row">
@@ -1572,7 +1569,9 @@ The APCs will follow nearby roads as much as possible, to ensure fast and clean 
         <strong>CargoSet</strong>
         </div>
         <div class="w3-half">
-          <p></p>
+          
+<p>The set of cargo to be transported.</p>
+
         </div>
     </div>
       <div class="w3-row">
@@ -1581,7 +1580,9 @@ The APCs will follow nearby roads as much as possible, to ensure fast and clean 
         <strong>CombatRadius</strong>
         </div>
         <div class="w3-half">
-          <p></p>
+          
+<p>Provide the combat radius to defend the carrier by unboarding the cargo when enemies are nearby. When the combat radius is 0, no defense will happen of the carrier.</p>
+
         </div>
     </div>
     <h5><strong>Return value:</strong></h5>
@@ -1635,6 +1636,61 @@ The APCs will follow nearby roads as much as possible, to ensure fast and clean 
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div>
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l4 w3-show"  onclick="myFunction('#Functions##SetCombatRadius')">
+<h6><a id="#(AI_CARGO_APC).SetCombatRadius" ><strong>AI_CARGO_APC:SetCombatRadius(CombatRadius)</strong></a></h6>
+</div>
+    
+<p>Enable/Disable unboarding of cargo (infantry) when enemies are nearby (to help defend the carrier).</p>
+
+    
+<p>This is only valid for APCs and trucks etc, thus ground vehicles.</p>
+
+<div id= "#Functions##SetCombatRadius" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h5><strong>Parameter:</strong></h5>
+      <div class="w3-row">
+    </div>
+      <div class="w3-row">
+        <div class="w3-half">
+          #number
+        <strong>CombatRadius</strong>
+        </div>
+        <div class="w3-half">
+          
+<p>Provide the combat radius to defend the carrier by unboarding the cargo when enemies are nearby. 
+When the combat radius is 0, no defense will happen of the carrier. 
+When the combat radius is not provided, no defense will happen!</p>
+
+        </div>
+    </div>
+    <h5><strong>Return value:</strong></h5>
+    <div class="w3-row">
+      <div class="w3-half">
+        <a href="##(AI_CARGO_APC)">#AI_CARGO_APC</a>:
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+      <h5><strong>Usage:</strong></h5>
+    <pre class="example"><code>
+-- Disembark the infantry when the carrier is under attack.
+AICargoAPC:SetCombatRadius( true )
+
+-- Keep the cargo in the carrier when the carrier is under attack.
+AICargoAPC:SetCombatRadius( false )</code></pre>
+
 </div>
 
 </div>
