@@ -1,10 +1,10 @@
-# 1) MOOSE framework support channels
+# MOOSE framework support channels
 
 MOOSE is broadcasted, documented and supported through various social media channels.
 
-## 1.1) MOOSE broadcast channels on YouTube
+## 1. [MOOSE on YouTube](https://www.youtube.com/channel/UCjrA9j5LQoWsG4SpS8i79Qg)
 
-MOOSE has a [broadcast channel](https://www.youtube.com/channel/UCjrA9j5LQoWsG4SpS8i79Qg/playlists) on youtube. 
+MOOSE has a [broadcast channel](https://www.youtube.com/channel/UCjrA9j5LQoWsG4SpS8i79Qg) on youtube. 
 These videos are grouped into playlists, which explain specific MOOSE capabilities, 
 and gradually build up the "understanding" and "what is possible" to do with the MOOSE framework.
 I really, really encourage all to watch the explanation videos.
@@ -18,23 +18,23 @@ Some mandatory videos to watch are:
   * [MOOSE Tasking](https://www.youtube.com/playlist?list=PL7ZUrU4zZUl3CgxN2iAViiGLTPpQ-Ajdg)
   * [MOOSE Task Dispatching](https://www.youtube.com/playlist?list=PL7ZUrU4zZUl3I6ieFM-cjey-rncF1ktNI)
 
-## 1.2) MOOSE on Eagle Dynamics forums
+## 2. [MOOSE on Eagle Dynamics forums](https://forums.eagle.ru/showthread.php?t=138043)
 
 This is a default thread at the Eagle Dynamics forums where the MOOSE framework can be discussed and supported.
 The thread is called [MOOSE - Mission Object Oriented Scripting Framework](https://forums.eagle.ru/showthread.php?t=138043).
 
-## 1.3) MOOSE on GITHUB.
+## 3. MOOSE development on [GitHub](https://github.com/FlightControl-Master/MOOSE).
 
-I encourage that you create also a user at GITHUB.
-On the MOOSE framework GITHUB site, you can register issues, feedback and comments in the issues section of the site.
+I encourage that you create also a user at GitHub.
+On the GitHub site, you can register issues, feedback and comments in the issues section of the site.
 This allows to track this feedback and issues, in order to provide a structured support and create a milestone plan.
 In other words, treat this development as a project.
 
-## 1.4) MOOSE on slack.com
+## 4. [MOOSE community on Discord](https://discord.gg/yBPfxC6) 
 
-Slack is a team community site. It is a great environment to discuss online the framework.
-Various channels are allocated in the environment to discuss specific topics. 
-A channel exists per MOOSE class, so that a focused discuss is possible.
+Join our MOOSE community on Discord. 
+A place where mission designers and developers come together to discuss the latest features.
+We are now with about 5 people supporting Mission Designers on Discord.
 
-![Slack](Communities/Slack.JPG)
+There are currently more than 300 members on our discord MOOSE channel.
 
