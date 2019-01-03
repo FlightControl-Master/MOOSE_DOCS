@@ -1499,22 +1499,17 @@ and that the number of aircraft in the landing pattern is smaller than four.</p>
 
 <h3>Request Refueling</h3>
 
-<p>If a recovery tanker was setup via the <a href="##(AIRBOSS).SetRecoveryTanker">AIRBOSS.SetRecoveryTanker</a> function, the player can request refueling. If the tanker is ready, refueling is granted and the player
-can leave the marshal stack for refueling. The stack will collapse and the player needs to request marshal again, when refueling is finished.</p>
+<p>If a recovery taker has been set up via the <a href="##(AIRBOSS).SetRecoveryTanker">AIRBOSS.SetRecoveryTanker</a>, the player can request refueling at any time. If currently in the marshal stack, the stack above will collapse.
+The player will be informed if the tanker is currently busy or going RTB to refuel itsel at its home base. Once the re-fueling is complete, the player has to re-register to the marshal stack.</p>
+
+<h3>[Reset My Status]</h3>
+
+<p>This will reset the current player status. If player is currently in a marshal stack, he will be removed from the marshal queue and the stack above will collapse.
+The player needs to re-register later if desired. If player is currently in the landing pattern, he will be removed from the pattern queue.</p>
 
 <h2>Help Menu</h2>
 
 <p>This menu provides commands to help the player. </p>
-
-<h3>Skill Level Submenu</h3>
-
-<p>The player can choose between three skill or difficulty levels.</p>
-
-<ul>
-    <li><strong>Flight Student</strong>: The player receives tips at certain stages of the pattern, e.g. if he is at the right altitude, speed, etc.</li>
-    <li><strong>Naval Aviator</strong>: Less tips are show. Player should be familiar with the procedures and its aircraft parameters. </li>
-    <li><strong>TOPGUN Graduate</strong>: Only very few information is provided to the player. This is for pros.</li>
-</ul>
 
 <h3>Mark Zones Submenu</h3>
 
@@ -1526,6 +1521,16 @@ can leave the marshal stack for refueling. The stack will collapse and the playe
     <li><strong>Flare Pattern Zones</strong> Similar to smoke but uses flares to mark the pattern zones.</li>
     <li><strong>Smoke Marshal Zone</strong> This smokes the surrounding area of the currently assigned Marshal zone of the player. Player has to be registered in Marshal queue.</li>
     <li><strong>Flare Marshal Zone</strong> Similar to smoke but uses flares to mark the Marshal zone.</li>
+</ul>
+
+<h3>Skill Level Submenu</h3>
+
+<p>The player can choose between three skill or difficulty levels.</p>
+
+<ul>
+    <li><strong>Flight Student</strong>: The player receives tips at certain stages of the pattern, e.g. if he is at the right altitude, speed, etc.</li>
+    <li><strong>Naval Aviator</strong>: Less tips are show. Player should be familiar with the procedures and its aircraft parameters. </li>
+    <li><strong>TOPGUN Graduate</strong>: Only very few information is provided to the player. This is for the pros.</li>
 </ul>
 
 <h3>My Status</h3>
@@ -1544,11 +1549,6 @@ It provides information about current pitch, roll, yaw, lineup and glideslope er
 <h3>Marshal Radio Check</h3>
 
 <p>Marshal will transmit a short message on his radio frequency. See <a href="##(AIRBOSS).SetMarshalRadio">AIRBOSS.SetMarshalRadio</a>.</p>
-
-<h3>[Reset My Status]</h3>
-
-<p>This will reset the current player status. If player is currently in a marshal stack, he will be removed from the marshal queue and the stack will collapse.
-The player needs to re-register later if desired. If player is currently in the landing pattern, he will be removed from the pattern queue.</p>
 
 <h2>Kneeboard Menu</h2>
 
@@ -1595,19 +1595,20 @@ Once you are in the groove the LSO will ask you to "Call the ball." and then ack
 <p>LSO grading starts when the player enters the groove. The flight path and aircraft attitude is evaluated at certain steps</p>
 
 <ul>
-    <li><strong>X</strong> At the Start</li>
-    <li><strong>IM</strong> In the Middle</li>
-    <li><strong>IC</strong> In Close</li>
-    <li><strong>AR</strong> At the Ramp</li>
-    <li><strong>IW</strong> In the Wiress</li>
+    <li><strong>X</strong> At the Start (0.75 NM = 1389 m from the rundown).</li>
+    <li><strong>IM</strong> In the Middle (0.375 NM = 695 from the rundown).</li>
+    <li><strong>IC</strong> In Close (0.18 NM = 333 m from the rundown).</li>
+    <li><strong>AR</strong> At the Ramp (0.027 NM = 50 m from the rundown).</li>
+    <li><strong>IW</strong> In the Wiress (at the landing position).</li>
 </ul>
 
 <p>Grading at each step includes the above calls, i.e.</p>
 
 <ul>
     <li><strong>L</strong>ined <strong>U</strong>p <strong>L</strong>eft or <strong>R</strong>ight: LUL, LUR</li>
-    <li>Too <strong>H</strong>igh or too <strong>L</strong>ow: H, L</li>
+    <li>Too <strong>H</strong>igh or too <strong>LO</strong>w: H, LO</li>
     <li>Too <strong>F</strong>ast or too <strong>SLO</strong>w: F, SLO</li>
+    <li>Fly through <strong>down* or **up</strong>: \, /</li>
 </ul>
 
 <p>Each grading, x, is subdivided by</p>
@@ -1619,7 +1620,16 @@ Once you are in the groove the LSO will ask you to "Call the ball." and then ack
 
 <p>The position at the landing event is analyzed and the corresponding trapped wire calculated. If no wire was caught, the LSO will give the bolter call.</p>
 
-<p>If a player is sigifiantly off from the ideal parameters in close or at the ramp, the LSO will wave the player off.</p>
+<p>If a player is sigifiantly off from the ideal parameters from IC to AR, the LSO will wave the player off. Thresholds for wave off are</p>
+
+<ul>
+    <li>Line up error > 3.0 degrees left or right and/or</li>
+    <li>Glide slope error &lt; -1.2 degrees or > 1.8 degrees and/or</li>
+    <li>AOA depending on aircraft type and only applied if skill level is "TOPGUN graduate".</li>
+</ul>
+
+<p>Line up and glide slope error thresholds were tested using <a href="VFA-113 Stingers LSO Mod">https://forums.eagle.ru/showthread.php?t=211557</a>,
+if the aircraft is outside the red box.</p>
 
 <h2>Pattern Wave Off</h2>
 
@@ -2475,6 +2485,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._DisplayAttitude">AIRBOSS:_DisplayAttitude(_unitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Turn player's aircraft attitude display on or off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._DisplayCarrierInfo">AIRBOSS:_DisplayCarrierInfo(_unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Report information about carrier.</p>
@@ -2490,6 +2506,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._DisplayDebriefing">AIRBOSS:_DisplayDebriefing(_unitName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Display last debriefing.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._DisplayMarshalQueue">AIRBOSS:_DisplayMarshalQueue(_unitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Display marshal queue.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2535,7 +2557,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GS">AIRBOSS:_GS(step)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GS">AIRBOSS:_GS(n, previous, step)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get short name of the grove step.</p>
 </td>
@@ -2568,6 +2590,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetCarrierFuture">AIRBOSS:_GetCarrierFuture(time)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Estimated the carrier position at some point in the future given the current waypoints and speeds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetCharlieTime">AIRBOSS:_GetCharlieTime(flightgroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Calculate an estimate of the charlie time of the player based on how many other aircraft are in the marshal or pattern queue before him.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3228,6 +3256,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).recoverytimes">AIRBOSS.recoverytimes</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>List of time windows when aircraft are recovered including the recovery case and holding offset.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).recoverywindow">AIRBOSS.recoverywindow</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Current or next recovery window opened.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4389,6 +4423,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightGroup).Tcharlie">AIRBOSS.FlightGroup.Tcharlie</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Charlie (abs) time in seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightGroup).actype">AIRBOSS.FlightGroup.actype</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Aircraft type name.</p>
@@ -4516,6 +4556,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).FlyThrough">AIRBOSS.GrooveData.FlyThrough</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Fly through up "/" or fly through down "\".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).GSE">AIRBOSS.GrooveData.GSE</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Glide slope error in degrees.</p>
@@ -4567,43 +4613,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).AR">AIRBOSS.GroovePos.AR</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>At the ramp.</p>
+<p>"AR": At the ramp.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).IC">AIRBOSS.GroovePos.IC</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>In close.</p>
+<p>"IC": In close.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).IM">AIRBOSS.GroovePos.IM</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>In the middle.</p>
+<p>"IM": In the middle.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).IW">AIRBOSS.GroovePos.IW</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>In the wires.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).RB">AIRBOSS.GroovePos.RB</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Roger ball.</p>
+<p>"IW": In the wires.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).X0">AIRBOSS.GroovePos.X0</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Entering the groove.</p>
+<p>"X0": Entering the groove.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).XX">AIRBOSS.GroovePos.XX</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>At the start, i.e. 3/4 from the run down.</p>
+<p>"XX": At the start, i.e. 3/4 from the run down.</p>
 </td>
           </tr>
         </table>
@@ -4766,7 +4806,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).WAVEOFF">AIRBOSS.LSOCall.WAVEOFF</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>"Wave off" call</p>
+<p>"Wave off" call.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4798,6 +4838,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).details">AIRBOSS.LSOgrade.details</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Detailed flight analysis.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).finalscore">AIRBOSS.LSOgrade.finalscore</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5007,12 +5053,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PatternStep).GROOVE_RB">AIRBOSS.PatternStep.GROOVE_RB</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>"Groove Roger Ball".</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PatternStep).GROOVE_XX">AIRBOSS.PatternStep.GROOVE_XX</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Groove X".</p>
@@ -5135,6 +5175,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).finalscore">AIRBOSS.PlayerData.finalscore</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Final score if points are averaged over multiple passes.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).grades">AIRBOSS.PlayerData.grades</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>LSO grades of player passes.</p>
@@ -5171,12 +5217,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).menu">AIRBOSS.PlayerData.menu</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>F10 radio menu</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).name">AIRBOSS.PlayerData.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Player name. </p>
@@ -5195,6 +5235,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).points">AIRBOSS.PlayerData.points</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Points of passes until finally landed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).seclead">AIRBOSS.PlayerData.seclead</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -5210,6 +5256,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).step">AIRBOSS.PlayerData.step</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Current/next pattern step.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).time">AIRBOSS.PlayerData.time</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -6162,6 +6214,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AIRBOSS).recoverytimes" ><strong>AIRBOSS.recoverytimes</strong></a>
     
 <p>List of time windows when aircraft are recovered including the recovery case and holding offset.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.Recovery)">#AIRBOSS.Recovery</a>
+<a id="#(AIRBOSS).recoverywindow" ><strong>AIRBOSS.recoverywindow</strong></a>
+    
+<p>Current or next recovery window opened.</p>
 
 </div>
 
@@ -9848,6 +9911,39 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._DisplayAttitude" ><strong>AIRBOSS:_DisplayAttitude(_unitname)</strong></a></h2>
+</div>
+    
+<p>Turn player's aircraft attitude display on or off.</p>
+
+<div id= "#Functions##_DisplayAttitude" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the player unit.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._DisplayCarrierInfo" ><strong>AIRBOSS:_DisplayCarrierInfo(_unitname)</strong></a></h2>
 </div>
     
@@ -9939,6 +10035,39 @@ So best stick to the defaults up to 30 degrees.</p>
           <div class="w3-half">
               
 <p>Name fo the player unit.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._DisplayMarshalQueue" ><strong>AIRBOSS:_DisplayMarshalQueue(_unitname)</strong></a></h2>
+</div>
+    
+<p>Display marshal queue.</p>
+
+<div id= "#Functions##_DisplayMarshalQueue" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the player unit.</p>
 
           </div>
         </div>
@@ -10284,7 +10413,7 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._GS" ><strong>AIRBOSS:_GS(step)</strong></a></h2>
+<h2><a id="#(AIRBOSS)._GS" ><strong>AIRBOSS:_GS(n, previous, step)</strong></a></h2>
 </div>
     
 <p>Get short name of the grove step.</p>
@@ -10295,18 +10424,41 @@ So best stick to the defaults up to 30 degrees.</p>
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>step</strong></strong>
+            <strong><strong>n</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Step</p>
+<p>Use -1 for previous or +1 for next. Default 0.</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>previous</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true return previous step. E.g. </p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>step</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -10573,6 +10725,50 @@ So best stick to the defaults up to 30 degrees.</p>
       <div class="w3-half">
         
 <p>Coordinate of the carrier at the given time.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetCharlieTime" ><strong>AIRBOSS:_GetCharlieTime(flightgroup)</strong></a></h2>
+</div>
+    
+<p>Calculate an estimate of the charlie time of the player based on how many other aircraft are in the marshal or pattern queue before him.</p>
+
+<div id= "#Functions##_GetCharlieTime" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
+            <strong><strong>flightgroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Flight data.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Charlie (abs) time in seconds. Or nil, if stack&lt;0 or no recovery window will open.</p>
 
       </div>
     </div>
@@ -15596,6 +15792,17 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(AIRBOSS.Recovery)">#AIRBOSS.Recovery</a>
+<a id="#(AIRBOSS).recoverywindow" ><strong>AIRBOSS.recoverywindow</strong></a>
+    
+<p>Current or next recovery window opened.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Ops.RecoveryTanker.html##(RECOVERYTANKER)">Ops.RecoveryTanker#RECOVERYTANKER</a>
 <a id="#(AIRBOSS).tanker" ><strong>AIRBOSS.tanker</strong></a>
     
@@ -17626,6 +17833,17 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
 <a id="#(AIRBOSS).recoverytimes" ><strong>AIRBOSS.recoverytimes</strong></a>
     
 <p>List of time windows when aircraft are recovered including the recovery case and holding offset.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.Recovery)">#AIRBOSS.Recovery</a>
+<a id="#(AIRBOSS).recoverywindow" ><strong>AIRBOSS.recoverywindow</strong></a>
+    
+<p>Current or next recovery window opened.</p>
 
 </div>
 
@@ -21022,6 +21240,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AIRBOSS.FlightGroup).Tcharlie" ><strong>AIRBOSS.FlightGroup.Tcharlie</strong></a>
+    
+<p>Charlie (abs) time in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(AIRBOSS.FlightGroup).actype" ><strong>AIRBOSS.FlightGroup.actype</strong></a>
     
@@ -21246,6 +21475,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(AIRBOSS.GrooveData).FlyThrough" ><strong>AIRBOSS.GrooveData.FlyThrough</strong></a>
+    
+<p>Fly through up "/" or fly through down "\".</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(AIRBOSS.GrooveData).GSE" ><strong>AIRBOSS.GrooveData.GSE</strong></a>
     
@@ -21330,7 +21570,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.GroovePos).AR" ><strong>AIRBOSS.GroovePos.AR</strong></a>
     
-<p>At the ramp.</p>
+<p>"AR": At the ramp.</p>
 
 </div>
 
@@ -21341,7 +21581,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.GroovePos).IC" ><strong>AIRBOSS.GroovePos.IC</strong></a>
     
-<p>In close.</p>
+<p>"IC": In close.</p>
 
 </div>
 
@@ -21352,7 +21592,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.GroovePos).IM" ><strong>AIRBOSS.GroovePos.IM</strong></a>
     
-<p>In the middle.</p>
+<p>"IM": In the middle.</p>
 
 </div>
 
@@ -21363,18 +21603,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.GroovePos).IW" ><strong>AIRBOSS.GroovePos.IW</strong></a>
     
-<p>In the wires.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(AIRBOSS.GroovePos).RB" ><strong>AIRBOSS.GroovePos.RB</strong></a>
-    
-<p>Roger ball.</p>
+<p>"IW": In the wires.</p>
 
 </div>
 
@@ -21385,7 +21614,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.GroovePos).X0" ><strong>AIRBOSS.GroovePos.X0</strong></a>
     
-<p>Entering the groove.</p>
+<p>"X0": Entering the groove.</p>
 
 </div>
 
@@ -21396,7 +21625,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.GroovePos).XX" ><strong>AIRBOSS.GroovePos.XX</strong></a>
     
-<p>At the start, i.e. 3/4 from the run down.</p>
+<p>"XX": At the start, i.e. 3/4 from the run down.</p>
 
 </div>
 
@@ -21686,7 +21915,7 @@ BASE:TraceOnOff( false )</code></pre>
     <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
 <a id="#(AIRBOSS.LSOCall).WAVEOFF" ><strong>AIRBOSS.LSOCall.WAVEOFF</strong></a>
     
-<p>"Wave off" call</p>
+<p>"Wave off" call.</p>
 
 </div>
 
@@ -21735,6 +21964,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.LSOgrade).details" ><strong>AIRBOSS.LSOgrade.details</strong></a>
     
 <p>Detailed flight analysis.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AIRBOSS.LSOgrade).finalscore" ><strong>AIRBOSS.LSOgrade.finalscore</strong></a>
+    
+
 
 </div>
 
@@ -22103,17 +22343,6 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
-<a id="#(AIRBOSS.PatternStep).GROOVE_RB" ><strong>AIRBOSS.PatternStep.GROOVE_RB</strong></a>
-    
-<p>"Groove Roger Ball".</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
 <a id="#(AIRBOSS.PatternStep).GROOVE_XX" ><strong>AIRBOSS.PatternStep.GROOVE_XX</strong></a>
     
 <p>"Groove X".</p>
@@ -22326,6 +22555,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AIRBOSS.PlayerData).finalscore" ><strong>AIRBOSS.PlayerData.finalscore</strong></a>
+    
+<p>Final score if points are averaged over multiple passes.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AIRBOSS.PlayerData).grades" ><strong>AIRBOSS.PlayerData.grades</strong></a>
     
@@ -22341,6 +22581,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
 <p>Data table at each position in the groove. Elemets are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
+    
+
 
 </div>
 
@@ -22381,17 +22632,6 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
-<a id="#(AIRBOSS.PlayerData).menu" ><strong>AIRBOSS.PlayerData.menu</strong></a>
-    
-<p>F10 radio menu</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #string
 <a id="#(AIRBOSS.PlayerData).name" ><strong>AIRBOSS.PlayerData.name</strong></a>
     
@@ -22418,6 +22658,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).patternwo" ><strong>AIRBOSS.PlayerData.patternwo</strong></a>
     
 <p>If true, player was waved of during the pattern.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(AIRBOSS.PlayerData).points" ><strong>AIRBOSS.PlayerData.points</strong></a>
+    
+<p>Points of passes until finally landed.</p>
 
 </div>
 
@@ -22454,6 +22705,20 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).step" ><strong>AIRBOSS.PlayerData.step</strong></a>
     
 <p>Current/next pattern step.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AIRBOSS.PlayerData).time" ><strong>AIRBOSS.PlayerData.time</strong></a>
+    
+
+
+    
+<p> Set new time stamp.</p>
 
 </div>
 
