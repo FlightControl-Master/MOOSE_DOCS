@@ -1230,19 +1230,19 @@ which are excellent tools to be reused in an OO environment!.</p>
 <ul>
     <li>CASE I, II and III recoveries.</li>
     <li>Supports human pilots as well as AI flight groups.</li>
-    <li>Automatic LSO grading (WIP).</li>
-    <li>Different skill levels from on-the-fly tips for flight students to ziplip for pros.</li>
-    <li>Define recovery time windows with individual recovery cases.</li>
+    <li>Automatic LSO grading (WIP) including (optional) live grading while in the groove.</li>
+    <li>Different skill levels from on-the-fly tips for flight students to <em>ziplip</em> for pros.</li>
+    <li>Define recovery time windows with individual recovery cases in the same mission.</li>
     <li>Automatic TACAN and ICLS channel setting of carrier.</li>
     <li>Separate radio channels for LSO and Marshal transmissions.</li>
     <li>Voice over support for LSO and Marshal radio transmissions.</li>
-    <li>F10 radio menu including carrier info (weather, radio frequencies, TACAN/ICLS channels), player LSO grades,
-    help function (player aircraft attitude, marking of pattern zones etc).</li>
+    <li>F10 radio menu including carrier info (weather, radio frequencies, TACAN/ICLS channels), player LSO grades, help function (aircraft attitude, marking of zones etc).</li>
     <li>Recovery tanker and refueling option via integration of <a href="Ops.RecoveryTanker.html">Ops.RecoveryTanker</a> class.</li>
     <li>Rescue helicopter option via <a href="Ops.RescueHelo.html">Ops.RescueHelo</a> class.</li>
-    <li>Many parameters customizable by convenient user API functions. </li>
+    <li>Many parameters customizable by convenient user API functions.</li>
     <li>Multiple carrier support due to object oriented approach.</li>
     <li>Unlimited number of players.</li>
+    <li>Persistence of player results (optional). LSO grading data is saved to csv file.</li>
     <li>Finite State Machine (FSM) implementation.</li>
 </ul>
 
@@ -1275,7 +1275,6 @@ But each aircraft or carrier needs a different set of optimized individual param
 <h3>Some Open Questions?</h3>
 
 <ul>
-    <li>What are the conditions for a foul deck wave off?</li>
     <li>What is the next step after a pattern wave off during Case II or III recovery?</li>
     <li>What is the condition for a "fly through" (\ or /) LSO grade?</li>
     <li>The above question is one of many regarding LSO grade. If you have more info, please share.</li>
@@ -1727,7 +1726,7 @@ issue a pattern wave off. Currently, this is only implemented for Case I recover
 <p>A foul deck waveoff is called by the LSO if an aircraft is detected within the landing area when an approaching aircraft is crossing the ship's wake during Case I/II operations, 
 or with an aircraft approaching the 3/4 NM during Case III operations.</p>
 
-<p>The approaching aircraft will be notified via radio comms an is supposed to overfly the landing area and enter the Bolter pattern. <strong>The pass is not graded</strong>.</p>
+<p>The approaching aircraft will be notified via LSO radio comms and is supposed to overfly the landing area to enter the Bolter pattern. <strong>This pass is not graded</strong>.</p>
 
 <h1>AI Handling</h1>
 
@@ -1755,6 +1754,101 @@ orbit task needs to be created.</p>
 <p>The AI performs a very realistic Case I recovery. Therefore, we already have a good Case I and II recovery simulation since the final part of Case II is a
 Case I recovery. However, I don't think the AI can do a proper Case III recovery. If you give the AI the landing command, it is out of our hands and will
 always go for a Case I in the final pattern part. Maybe this will improve in future DCS version but right now, there is not much we can do about it.</p>
+
+<h1>Persistence of Player Results</h1>
+
+<p>LSO grades of players can be saved to disk and later reloaded when a new mission is started.</p>
+
+<h2>Prerequisites</h2>
+
+<p><strong>Important</strong> By default, DCS does not allow for writing data to files. Therefore, one first has to comment out the line "sanitizeModule('io')" and "sanitizeModule('lfs')", i.e.</p>
+
+<pre><code>do
+  sanitizeModule('os')
+  --sanitizeModule('io')    -- required for saving files
+  --sanitizeModule('lfs')   -- optional for setting the default path to your "Saved Games\DCS" folder 
+  require = nil
+  loadlib = nil
+end
+</code></pre>
+
+<p>in the file "MissionScripting.lua", which is located in the subdirectory "Scripts" of your DCS installation root directory.</p>
+
+<p><em>* WARNING *</em> Desanitizing the "io" and "lfs" modules makes your machine or server vunarable to attacks from the outside! Use this at your own risk.</p>
+
+<h2>Save Results</h2>
+
+<p>Saving asset data to file is achieved by the <a href="AIRBOSS.Save.html">AIRBOSS.Save</a>(<em>path</em>, <em>filename</em>) function.</p>
+
+<p>The parameter <em>path</em> specifies the path on the file system where the
+player grades are saved. If you do not specify a path, the file is saved your the DCS installation root directory if the <strong>lfs</strong> module is <em>not</em> desanizied or
+your "Saved Games\DCS" folder in case you did desanitize the <strong>lfs</strong> module.</p>
+
+<p>The parameter <em>filename</em> is optional and defines the name of the saved file. By default this is automatically created from the AIRBOSS carrier name/alias, i.e.
+"Airboss-USS Stennis_LSOgrades.csv", if the alias is "USS Stennis".</p>
+
+<p>In the easiest case, you desanitize the <strong>io</strong> and <strong>lfs</strong> modules and just add the line</p>
+
+<pre><code>airbossStennis:Save()
+</code></pre>
+
+<p>If you want to specify an explicit path you can do this by</p>
+
+<pre><code>airbossStennis:Save("D:\\My Airboss Data\\")
+</code></pre>
+
+<p>This will save all player grades to in "D:\My Airboss Data\Airboss-USS Stennis_LSOgrades.csv".</p>
+
+<h3>Automatic Saving</h3>
+
+<p>The player grades can be saved automatically after each graded player pass via the <a href="AIRBOSS.SetAutoSave.html">AIRBOSS.SetAutoSave</a>(<em>path</em>, <em>filename</em>) function. Again the parameters <em>path</em> and <em>filename</em> are optional.
+In the simplest case, you desanitize the <strong>lfs</strong> module and just add</p>
+
+
+<pre><code>airbossStennis:SetAutoSave()
+</code></pre>
+
+<p>Note that the the stats are saved after the <em>final</em> grade has been given, i.e. the player has landed on the carrier. After intermediate results such as bolters or waveoffs the stats are not automatically saved.</p>
+
+<p>In case you want to specify an explicit path, you can write</p>
+
+<pre><code>airbossStennis:SetAutoSave("D:\\My Airboss Data\\")
+</code></pre>
+
+<h2>Results Output</h2>
+
+<p><img src="..\Presentations\AIRBOSS\Airboss_PersistenceResultsTable.png" alt="Banner Image"/></p>
+
+<p>The results file is stored as comma separated file. The columns are
+   * <em>Name</em>: The player name.
+   * <em>Pass</em>: A running number counting the passes of the player
+   * <em>Points Final</em>: The final points (i.e. when the player has landed). This is the average over all previous bolters or waveoffs, if any.
+   * <em>Points Pass</em>: The points of each pass including bolters and waveoffs.
+   * <em>Grade</em>: LSO grade.
+   * <em>Details</em>: Detailed analysis of deviations within the groove.
+   * <em>Wire</em>: Trapped wire, if any.
+   * <em>Tgroove</em>: Time in the groove in seconds (not applicable during Case III).
+   * <em>Case</em>: The recovery case operations in progress during the pass.</p>
+
+<h2>Load Results</h2>
+
+<p>Loading player grades from file is achieved by the <a href="AIRBOSS.Load.html">AIRBOSS.Load</a>(<em>path</em>, <em>filename</em>) function. The parameter <em>path</em> specifies the path on the file system where the
+data is loaded from. If you do not specify a path, the file is loaded from your the DCS installation root directory.
+The parameter <em>filename</em> is optional and defines the name of the file to load. By default this is automatically generated from the AIBOSS carrier name/alias, for example
+"Airboss-USS Stennis_LSOgrades.csv".</p>
+
+<p>Note that the AIRBOSS FSM <strong>must not be started</strong> in order to load the data. In other words, loading should happen <strong>after</strong> the
+<a href="##(AIRBOSS).New">AIRBOSS.New</a> command is specified in the code but <strong>before</strong> the <a href="##(AIRBOSS).Start">AIRBOSS.Start</a> command is given.</p>
+
+<p>Loading the player results is done by</p>
+
+<pre><code>airbossStennis:New("USS Stennis")
+airbossStennis:Load("D:\\My Airboss Data\\")
+-- Additional specification of parameters such as recovery windows etc, if required.
+airbossStennis:Start()
+</code></pre>
+
+<p>This sequence loads all available player grades from file.</p>
 
 <h1>Debugging</h1>
 
@@ -2006,6 +2100,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Load">AIRBOSS:Load(path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Load" that loads the player scores from a file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).MarshalCall">AIRBOSS.MarshalCall</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2075,6 +2175,18 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Nmaxpattern">AIRBOSS.Nmaxpattern</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Max number of aircraft in landing pattern.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnAfterLoad">AIRBOSS:OnAfterLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Load" event user function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnAfterSave">AIRBOSS:OnAfterSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Save" event user function.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2180,6 +2292,18 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Save">AIRBOSS:Save(path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Save" that saved the player scores to a file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetAutoSave">AIRBOSS:SetAutoSave(path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enable auto save of player results each time a player is <em>finally</em> graded.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetCarrierControlledArea">AIRBOSS:SetCarrierControlledArea(radius)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set carrier controlled area (CCA).</p>
@@ -2267,6 +2391,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetMenuMarkZones">AIRBOSS:SetMenuMarkZones(switch)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enable or disable F10 radio menu for marking zones via smoke or flares.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetMenuSmokeZones">AIRBOSS:SetMenuSmokeZones(switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enable or disable F10 radio menu for marking zones via smoke.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2699,12 +2829,6 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetAngels">AIRBOSS:_GetAngels(alt)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Convert altitude from meters to angels (thousands of feet).</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetCarrierFuture">AIRBOSS:_GetCarrierFuture(time)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Estimated the carrier position at some point in the future given the current waypoints and speeds.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3195,6 +3319,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).__Load">AIRBOSS:__Load(delay, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM delayed event "Load" that loads the player scores from a file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).__RecoveryCase">AIRBOSS:__RecoveryCase(delay, Case, Offset)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the delayed FSM event "RecoveryCase" that sets the used aircraft recovery case.</p>
@@ -3210,6 +3340,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).__RecoveryStop">AIRBOSS:__RecoveryStop(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM delayed event "RecoveryStop" that stops the recovery of aircraft.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).__Save">AIRBOSS:__Save(delay, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM delayed event "Save" that saved the player scores to a file.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3240,6 +3376,30 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).alias">AIRBOSS.alias</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Alias of the carrier.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).autosave">AIRBOSS.autosave</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, all player grades are automatically saved to a file on disk.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).autosavefile">AIRBOSS.autosavefile</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).autosavefilename">AIRBOSS.autosavefilename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>File name of the auto player grades save file. Default is auto generated from carrier name/alias.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).autosavepath">AIRBOSS.autosavepath</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Path where the player grades file is saved on auto save.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3351,15 +3511,21 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onEvent">AIRBOSS:onEvent(Event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).menusmokezones">AIRBOSS.menusmokezones</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>General event handler.</p>
+<p>If false, disables the option to mark zones via smoke.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterIdle">AIRBOSS:onafterIdle(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "Idle" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterLoad">AIRBOSS:onafterLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Load" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3381,6 +3547,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterSave">AIRBOSS:onafterSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Save" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterStart">AIRBOSS:onafterStart(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after Start event.</p>
@@ -3399,9 +3571,27 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onbeforeLoad">AIRBOSS:onbeforeLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "Load" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onbeforeSave">AIRBOSS:onbeforeSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "Save" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).players">AIRBOSS.players</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table of players. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).playerscores">AIRBOSS.playerscores</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table holding all player scores and grades.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5005,6 +5195,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).case">AIRBOSS.LSOgrade.case</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Recovery case.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).details">AIRBOSS.LSOgrade.details</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Detailed flight analysis.</p>
@@ -5013,7 +5209,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).finalscore">AIRBOSS.LSOgrade.finalscore</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Points received after player has finally landed. This is the average over all incomplete passes (bolter, waveoff) before.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5366,12 +5562,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).fouldeckwo">AIRBOSS.PlayerData.fouldeckwo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, player was waved off because of a foul deck.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).grades">AIRBOSS.PlayerData.grades</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>LSO grades of player passes.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6214,6 +6404,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).autosave" ><strong>AIRBOSS.autosave</strong></a>
+    
+<p>If true, all player grades are automatically saved to a file on disk.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AIRBOSS).autosavefile" ><strong>AIRBOSS.autosavefile</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).autosavefilename" ><strong>AIRBOSS.autosavefilename</strong></a>
+    
+<p>File name of the auto player grades save file. Default is auto generated from carrier name/alias.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).autosavepath" ><strong>AIRBOSS.autosavepath</strong></a>
+    
+<p>Path where the player grades file is saved on auto save.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Radio.html##(BEACON)">Core.Radio#BEACON</a>
 <a id="#(AIRBOSS).beacon" ><strong>AIRBOSS.beacon</strong></a>
     
@@ -6412,10 +6646,32 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).menusmokezones" ><strong>AIRBOSS.menusmokezones</strong></a>
+    
+<p>If false, disables the option to mark zones via smoke.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AIRBOSS).players" ><strong>AIRBOSS.players</strong></a>
     
 <p>Table of players. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(AIRBOSS).playerscores" ><strong>AIRBOSS.playerscores</strong></a>
+    
+<p>Table holding all player scores and grades.</p>
 
 </div>
 
@@ -6978,6 +7234,55 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).Load" ><strong>AIRBOSS:Load(path, filename)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Load" that loads the player scores from a file.</p>
+
+    
+<p>AIRBOSS FSM must <strong>not</strong> be started at this point.</p>
+
+<div id= "#Functions##Load" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is located. Default is the DCS installation root directory.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name. Default is AIRBOSS-<ALIAS>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).MessageToAll" ><strong>AIRBOSS:MessageToAll(message, sender, receiver, duration, clear, delay, soundoff)</strong></a></h2>
 </div>
     
@@ -7502,6 +7807,182 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnAfterLoad" ><strong>AIRBOSS:OnAfterLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Load" event user function.</p>
+
+    
+<p>Called when the player scores are loaded from disk.</p>
+
+<div id= "#Functions##OnAfterLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is located. Default is the DCS installation root directory or your "Saved Games\DCS" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name. Default is AIRBOSS-<ALIAS>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnAfterSave" ><strong>AIRBOSS:OnAfterSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Save" event user function.</p>
+
+    
+<p>Called when the player scores are saved to disk.</p>
+
+<div id= "#Functions##OnAfterSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is saved. Default is the DCS installation root directory or your "Saved Games\DCS" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name. Default is AIRBOSS-<ALIAS>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).OnEventBirth" ><strong>AIRBOSS:OnEventBirth(EventData)</strong></a></h2>
 </div>
     
@@ -7884,6 +8365,112 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).Save" ><strong>AIRBOSS:Save(path, filename)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Save" that saved the player scores to a file.</p>
+
+<div id= "#Functions##Save" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is saved. Default is the DCS installation root directory or your "Saved Games\DCS" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name. Default is AIRBOSS-<ALIAS>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetAutoSave" ><strong>AIRBOSS:SetAutoSave(path, filename)</strong></a></h2>
+</div>
+    
+<p>Enable auto save of player results each time a player is <em>finally</em> graded.</p>
+
+    
+<p><em>Finally</em> means after the player landed on the carrier! After intermediate passes (bolter or waveoff) the stats are <em>not</em> saved.</p>
+
+<div id= "#Functions##SetAutoSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where to save the asset data file. Default is the DCS root installation directory or your "Saved Games\DCS" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>File name. Default is generated automatically from airboss carrier name/alias.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).SetCarrierControlledArea" ><strong>AIRBOSS:SetCarrierControlledArea(radius)</strong></a></h2>
 </div>
     
@@ -8081,7 +8668,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(ARIBOSS)">#ARIBOSS</a>:</p>
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -8111,7 +8698,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(ARIBOSS)">#ARIBOSS</a>:</p>
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -8547,6 +9134,50 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetMenuSmokeZones" ><strong>AIRBOSS:SetMenuSmokeZones(switch)</strong></a></h2>
+</div>
+    
+<p>Enable or disable F10 radio menu for marking zones via smoke.</p>
+
+<div id= "#Functions##SetMenuSmokeZones" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true or nil, menu is enabled. If false, menu is not available to players.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).SetPatrolAdInfinitum" ><strong>AIRBOSS:SetPatrolAdInfinitum(switch)</strong></a></h2>
 </div>
     
@@ -8710,7 +9341,7 @@ So best stick to the defaults up to 30 degrees.</p>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(ARIBOSS)">#ARIBOSS</a>:</p>
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -8931,7 +9562,7 @@ So best stick to the defaults up to 30 degrees.</p>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(ARIBOSS)">#ARIBOSS</a>:</p>
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -11326,50 +11957,6 @@ So best stick to the defaults up to 30 degrees.</p>
       <div class="w3-half">
         
 <p>Altitude in Anglels = thousands of feet using math.floor().</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._GetCarrierFuture" ><strong>AIRBOSS:_GetCarrierFuture(time)</strong></a></h2>
-</div>
-    
-<p>Estimated the carrier position at some point in the future given the current waypoints and speeds.</p>
-
-<div id= "#Functions##_GetCarrierFuture" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AIRBOSS</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>time</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Absolute mission time at which the carrier position is requested.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Coordinate of the carrier at the given time.</p>
 
       </div>
     </div>
@@ -15107,6 +15694,68 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).__Load" ><strong>AIRBOSS:__Load(delay, path, filename)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM delayed event "Load" that loads the player scores from a file.</p>
+
+    
+<p>AIRBOSS FSM must <strong>not</strong> be started at this point.</p>
+
+<div id= "#Functions##__Load" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is located. Default is the DCS installation root directory or your "Saved Games\DCS" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name. Default is AIRBOSS-<ALIAS>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).__RecoveryCase" ><strong>AIRBOSS:__RecoveryCase(delay, Case, Offset)</strong></a></h2>
 </div>
     
@@ -15272,6 +15921,65 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).__Save" ><strong>AIRBOSS:__Save(delay, path, filename)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM delayed event "Save" that saved the player scores to a file.</p>
+
+<div id= "#Functions##__Save" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is saved. Default is the DCS installation root directory or your "Saved Games\DCS" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name. Default is AIRBOSS-<ALIAS>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).__Start" ><strong>AIRBOSS:__Start(delay)</strong></a></h2>
 </div>
     
@@ -15344,39 +16052,6 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).onEvent" ><strong>AIRBOSS:onEvent(Event)</strong></a></h2>
-</div>
-    
-<p>General event handler.</p>
-
-<div id= "#Functions##onEvent" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AIRBOSS</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>DCS event table.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).onafterIdle" ><strong>AIRBOSS:onafterIdle(From, Event, To)</strong></a></h2>
 </div>
     
@@ -15428,6 +16103,94 @@ Also set player step to undefined if applicable or remove human flight if option
           <div class="w3-half">
               
 <p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).onafterLoad" ><strong>AIRBOSS:onafterLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Load" event.</p>
+
+    
+<p>Loads grades of all players from file.</p>
+
+<div id= "#Functions##onafterLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is loaded from. Default is the DCS root installation folder or your "Saved Games\DCS" folder if lfs was desanizied.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving the player grades. Default is "AIRBOSS-<ALIAS>_LSOgrades.csv".</p>
 
           </div>
         </div>
@@ -15677,6 +16440,94 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).onafterSave" ><strong>AIRBOSS:onafterSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Save" event.</p>
+
+    
+<p>Player data is saved to file.</p>
+
+<div id= "#Functions##onafterSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is saved. If nil, file is saved in the DCS root installtion directory or your "Saved Games" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving the player grades. Default is "AIRBOSS-<ALIAS>_LSOgrades.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).onafterStart" ><strong>AIRBOSS:onafterStart(From, Event, To)</strong></a></h2>
 </div>
     
@@ -15852,6 +16703,182 @@ Also set player step to undefined if applicable or remove human flight if option
           <div class="w3-half">
               
 <p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).onbeforeLoad" ><strong>AIRBOSS:onbeforeLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On before "Load" event.</p>
+
+    
+<p>Checks if the file that the player grades from exists.</p>
+
+<div id= "#Functions##onbeforeLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is loaded from. Default is the DCS installation root directory or your "Saved Games\DCS" folder if lfs was desanizized. </p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving the player grades. Default is "AIRBOSS-<ALIAS>_LSOgrades.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).onbeforeSave" ><strong>AIRBOSS:onbeforeSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On before "Save" event.</p>
+
+    
+<p>Checks if io and lfs are available.</p>
+
+<div id= "#Functions##onbeforeSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is saved. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving the player grades. Default is "AIRBOSS-<ALIAS>_LSOgrades.csv".</p>
 
           </div>
         </div>
@@ -16430,6 +17457,50 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).autosave" ><strong>AIRBOSS.autosave</strong></a>
+    
+<p>If true, all player grades are automatically saved to a file on disk.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AIRBOSS).autosavefile" ><strong>AIRBOSS.autosavefile</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).autosavefilename" ><strong>AIRBOSS.autosavefilename</strong></a>
+    
+<p>File name of the auto player grades save file. Default is auto generated from carrier name/alias.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).autosavepath" ><strong>AIRBOSS.autosavepath</strong></a>
+    
+<p>Path where the player grades file is saved on auto save.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Radio.html##(BEACON)">Core.Radio#BEACON</a>
 <a id="#(AIRBOSS).beacon" ><strong>AIRBOSS.beacon</strong></a>
     
@@ -16628,10 +17699,32 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).menusmokezones" ><strong>AIRBOSS.menusmokezones</strong></a>
+    
+<p>If false, disables the option to mark zones via smoke.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AIRBOSS).players" ><strong>AIRBOSS.players</strong></a>
     
 <p>Table of players. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(AIRBOSS).playerscores" ><strong>AIRBOSS.playerscores</strong></a>
+    
+<p>Table holding all player scores and grades.</p>
 
 </div>
 
@@ -18508,6 +19601,50 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).autosave" ><strong>AIRBOSS.autosave</strong></a>
+    
+<p>If true, all player grades are automatically saved to a file on disk.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AIRBOSS).autosavefile" ><strong>AIRBOSS.autosavefile</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).autosavefilename" ><strong>AIRBOSS.autosavefilename</strong></a>
+    
+<p>File name of the auto player grades save file. Default is auto generated from carrier name/alias.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).autosavepath" ><strong>AIRBOSS.autosavepath</strong></a>
+    
+<p>Path where the player grades file is saved on auto save.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Radio.html##(BEACON)">Core.Radio#BEACON</a>
 <a id="#(AIRBOSS).beacon" ><strong>AIRBOSS.beacon</strong></a>
     
@@ -18706,10 +19843,32 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).menusmokezones" ><strong>AIRBOSS.menusmokezones</strong></a>
+    
+<p>If false, disables the option to mark zones via smoke.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AIRBOSS).players" ><strong>AIRBOSS.players</strong></a>
     
 <p>Table of players. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(AIRBOSS).playerscores" ><strong>AIRBOSS.playerscores</strong></a>
+    
+<p>Table holding all player scores and grades.</p>
 
 </div>
 
@@ -22881,6 +24040,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AIRBOSS.LSOgrade).case" ><strong>AIRBOSS.LSOgrade.case</strong></a>
+    
+<p>Recovery case.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(AIRBOSS.LSOgrade).details" ><strong>AIRBOSS.LSOgrade.details</strong></a>
     
@@ -22892,10 +24062,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(AIRBOSS.LSOgrade).finalscore" ><strong>AIRBOSS.LSOgrade.finalscore</strong></a>
     
-
+<p>Points received after player has finally landed. This is the average over all incomplete passes (bolter, waveoff) before.</p>
 
 </div>
 
@@ -23459,9 +24629,6 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
-    
-<p> Set case.</p>
-
 </div>
 
 </div>   
@@ -23523,32 +24690,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
-<a id="#(AIRBOSS.PlayerData).grades" ><strong>AIRBOSS.PlayerData.grades</strong></a>
-    
-<p>LSO grades of player passes.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(AIRBOSS.GroovePos)">#AIRBOSS.GroovePos</a>
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
 <p>Data table at each position in the groove. Elemets are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
-    
-
 
 </div>
 
@@ -23675,7 +24820,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set new time stamp.</p>
+<p> Set time stamp.</p>
 
 </div>
 
