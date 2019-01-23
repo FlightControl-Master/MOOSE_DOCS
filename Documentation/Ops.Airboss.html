@@ -1230,7 +1230,7 @@ which are excellent tools to be reused in an OO environment!.</p>
 <ul>
     <li>CASE I, II and III recoveries.</li>
     <li>Supports human pilots as well as AI flight groups.</li>
-    <li>Automatic LSO grading (WIP) including (optional) live grading while in the groove.</li>
+    <li>Automatic LSO grading including (optional) live grading while in the groove.</li>
     <li>Different skill levels from on-the-fly tips for flight students to <em>ziplip</em> for pros. Can be set for each player individually.</li>
     <li>Define recovery time windows with individual recovery cases in the same mission.</li>
     <li>Automatic TACAN and ICLS channel setting of carrier.</li>
@@ -1239,6 +1239,7 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>F10 radio menu including carrier info (weather, radio frequencies, TACAN/ICLS channels), player LSO grades, help function (aircraft attitude, marking of zones etc).</li>
     <li>Recovery tanker and refueling option via integration of <a href="Ops.RecoveryTanker.html">Ops.RecoveryTanker</a> class.</li>
     <li>Rescue helicopter option via <a href="Ops.RescueHelo.html">Ops.RescueHelo</a> class.</li>
+    <li>Combine multiple human player to sections.</li>
     <li>Many parameters customizable by convenient user API functions.</li>
     <li>Multiple carrier support due to object oriented approach.</li>
     <li>Unlimited number of players.</li>
@@ -1507,6 +1508,11 @@ It provides information about current pitch, roll, yaw, orientation of the plane
 
 <p>Marshal will transmit a short message on his radio frequency. See <a href="##(AIRBOSS).SetMarshalRadio">AIRBOSS.SetMarshalRadio</a>.</p>
 
+<h3>Subtitles On/Off</h3>
+
+<p>This command toggles the display of radio message subtitles. By default subtitles are on.
+Note that subtitles for radio messages which do not have a complete voice over are always displayed.</p>
+
 <h2>Kneeboard Menu</h2>
 
 <p><img src="..\Presentations\AIRBOSS\Airboss_MenuKneeboard.png" alt="Banner Image"/></p>
@@ -1547,10 +1553,11 @@ within a radius of 100 meters become members of the section.</p>
 
 <p>The responsibilities of the section leader are:</p>
 
-<pre><code> * To request Marshal. The section members are not allowed to do this and have to follow the lead to his assigned stack.
- * To lead the right way to the pattern if the flight is allowed to commence.
- * The lead is also the only one who can request commence if the flight wants to bypass the Marshal stack.
-</code></pre>
+<ul>
+    <li>To request Marshal. The section members are not allowed to do this and have to follow the lead to his assigned stack.</li>
+    <li>To lead the right way to the pattern if the flight is allowed to commence.</li>
+    <li>The lead is also the only one who can request commence if the flight wants to bypass the Marshal stack.</li>
+</ul>
 
 <p>Each time the command is issued by the lead, the complete section is set up from scratch. Members which are not inside the 100 m radius any more are
 removed and/or new members which are now in range are added.</p>
@@ -1738,7 +1745,7 @@ The parameters are:</p>
 Players can request marshal via the F10 menu and will also be given a marshal stack. Currently, human players can request commence via the F10 radio regardless of
 whether a window is open or not and will be allowed to enter the pattern (if not already full). This will probably change in the future.</p>
 
-<p>At the moment there is no automatic recovery case set depending on weather or daytime. So it is the AIRBOSS (you) who needs to make that decision.
+<p>At the moment there is no automatic recovery case set depending on weather or daytime. So it is the AIRBOSS (i.e. you as mission designer) who needs to make that decision.
 It is probably a good idea to synchronize the timing with the waypoints of the carrier. For example, setting up the waypoints such that the carrier
 already has turning into the wind, when a recovery window opens.</p>
 
@@ -1897,6 +1904,35 @@ always go for a Case I in the final pattern part. Maybe this will improve in fut
 
 <hr/>
 
+<h1>Examples</h1>
+
+<p>In this section a few simple examples are given to illustrate the scripting part.</p>
+
+<h2>Simple Case</h2>
+
+<pre><code>-- Create AIRBOSS object.
+local AirbossStennis=AIRBOSS:New("USS Stennis")
+
+-- Add recovery windows:
+-- Case I from 9 to 12 am.
+local window1=AirbossStennis:AddRecoveryWindow("8:55",  "12:00", 1)
+-- Case II with +15 degrees holding offset from 1500 for 90 min.
+local window2=AirbossStennis:AddRecoveryWindow("14:55", "16:30", 2, 15)
+-- Case III with +30 degrees holding offset from 2100 to 2330.
+local window3=AirbossStennis:AddRecoveryWindow("21:00", "23:30", 3, 30)
+
+-- Load all saved player grades from your "Saved Games\DCS" folder (if lfs was desanitized).
+AirbossStennis:Load()
+
+-- Automatically save player results to your "Saved Games\DCS" folder each time a player get a final grade from the LSO.
+AirbossStennis:SetAutoSave()
+
+-- Start airboss class.
+AirbossStennis:Start()
+</code></pre>
+
+<hr/>
+
 <h1>Debugging</h1>
 
 <p>In case you have problems, it is always a good idea to have a look at your DCS log file. You find it in your "Saved Games" folder, so for example in</p>
@@ -1976,6 +2012,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).BreakLate">AIRBOSS.BreakLate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Late break checkpoint.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Broadcast">AIRBOSS:Broadcast(radio, call, loud)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Broadcast radio message.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2225,7 +2267,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).MessageToPattern">AIRBOSS:MessageToPattern(message, sender, receiver, duration, clear, delay, soundoff)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).MessageToPattern">AIRBOSS:MessageToPattern(message, sender, receiver, duration, clear, delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Send text message to all players in the pattern queue.</p>
 </td>
@@ -2371,13 +2413,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).RadioTransmission">AIRBOSS:RadioTransmission(radio, call, loud, delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Add Radio transmission to radio queue</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).RadioTransmit">AIRBOSS:RadioTransmit(radio, call, loud, delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Transmission radio message.</p>
+<p>Add Radio transmission to radio queue.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2567,6 +2603,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetRadioUnitName">AIRBOSS:SetRadioUnitName(unitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set unit name for sending radio messages.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetRecoveryCase">AIRBOSS:SetRecoveryCase(case)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the default recovery case.</p>
@@ -2612,6 +2654,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetWarehouse">AIRBOSS:SetWarehouse(warehouse)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Define warehouse associated with the carrier.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Sound2Player">AIRBOSS:Sound2Player(playerData, radio, call, loud, delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Player user sound to player if he is inside the CCA.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3113,6 +3161,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetRadioSender">AIRBOSS:_GetRadioSender()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get unit from which we want to transmit a radio message.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetRelativeHeading">AIRBOSS:_GetRelativeHeading(unit, runway)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get relative heading of player wrt carrier.</p>
@@ -3336,9 +3390,21 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._NeedsSubtitle">AIRBOSS:_NeedsSubtitle(call)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if a call needs a subtitle because the complete voice overs are not available.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._NewPlayer">AIRBOSS:_NewPlayer(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Initialize player data after birth event of player unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._NewRadioCall">AIRBOSS:_NewRadioCall(call, sender, subtitle, subduration, modexreceiver, modexsender)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Generate a new radio call (deepcopy) from an existing default call.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3387,6 +3453,18 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._PrintQueue">AIRBOSS:_PrintQueue(queue, name)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Print holding queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RadioFilename">AIRBOSS:_RadioFilename(call, loud)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get full file name for radio call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RadioSubtitle">AIRBOSS:_RadioSubtitle(radio, call, loud)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create radio subtitle from radio call.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3879,6 +3957,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).recoverywindow">AIRBOSS.recoverywindow</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Current or next recovery window opened.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).senderac">AIRBOSS.senderac</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the aircraft acting as sender for broadcasting radio messages from the carrier. DCS shortcoming workaround.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5313,6 +5397,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).CLICK">AIRBOSS.LSOCall.CLICK</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Radio end transmission click sound.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).COMELEFT">AIRBOSS.LSOCall.COMELEFT</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Come left" call.</p>
@@ -5412,6 +5502,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).N9">AIRBOSS.LSOCall.N9</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Nine" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).NOISE">AIRBOSS.LSOCall.NOISE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Static noise sound.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5531,6 +5627,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.MarshalCall).CLICK">AIRBOSS.MarshalCall.CLICK</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Radio end transmission click sound.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.MarshalCall).FLYNEEDLES">AIRBOSS.MarshalCall.FLYNEEDLES</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Fly your needles" call.</p>
@@ -5594,6 +5696,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.MarshalCall).N9">AIRBOSS.MarshalCall.N9</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Nine" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.MarshalCall).NOISE">AIRBOSS.MarshalCall.NOISE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Static noise sound.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5968,6 +6076,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AIRBOSS.Radio)">Type <strong>AIRBOSS.Radio</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(AIRBOSS.Radio)">AIRBOSS.Radio</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AIRBOSS.Radio</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.Radio).alias">AIRBOSS.Radio.alias</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Radio alias.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.Radio).frequency">AIRBOSS.Radio.frequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Frequency in Hz.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.Radio).modulation">AIRBOSS.Radio.modulation</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Band modulation.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AIRBOSS.RadioCall)">Type <strong>AIRBOSS.RadioCall</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
      <strong><a href="##(AIRBOSS.RadioCall)">AIRBOSS.RadioCall</a></strong>
@@ -5994,6 +6133,30 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.RadioCall).loud">AIRBOSS.RadioCall.loud</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Loud version of sound file available.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.RadioCall).modexreceiver">AIRBOSS.RadioCall.modexreceiver</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Onboard number of the receiver (optional).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.RadioCall).modexsender">AIRBOSS.RadioCall.modexsender</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Onboard number of the sender (optional).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.RadioCall).sender">AIRBOSS.RadioCall.sender</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sender of the message (optional). Default radia alias.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.RadioCall).subduration">AIRBOSS.RadioCall.subduration</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Duration in seconds the subtitle is displayed.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6403,7 +6566,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS).LSORadio" ><strong>AIRBOSS.LSORadio</strong></a>
     
 <p>Radio for LSO calls.</p>
@@ -6458,7 +6621,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS).MarshalRadio" ><strong>AIRBOSS.MarshalRadio</strong></a>
     
 <p>Radio for carrier calls.</p>
@@ -7088,6 +7251,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(AIRBOSS).senderac" ><strong>AIRBOSS.senderac</strong></a>
+    
+<p>Name of the aircraft acting as sender for broadcasting radio messages from the carrier. DCS shortcoming workaround.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AIRBOSS).staticweather" ><strong>AIRBOSS.staticweather</strong></a>
     
@@ -7265,6 +7439,65 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).Broadcast" ><strong>AIRBOSS:Broadcast(radio, call, loud)</strong></a></h2>
+</div>
+    
+<p>Broadcast radio message.</p>
+
+<div id= "#Functions##Broadcast" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
+            <strong><strong>radio</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio sending transmission.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+            <strong><strong>call</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio sound files and subtitles.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>loud</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Play loud version of file.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -7985,7 +8218,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).MessageToPattern" ><strong>AIRBOSS:MessageToPattern(message, sender, receiver, duration, clear, delay, soundoff)</strong></a></h2>
+<h2><a id="#(AIRBOSS).MessageToPattern" ><strong>AIRBOSS:MessageToPattern(message, sender, receiver, duration, clear, delay)</strong></a></h2>
 </div>
     
 <p>Send text message to all players in the pattern queue.</p>
@@ -8075,19 +8308,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
           <div class="w3-half">
               
 <p>Delay in seconds, before the message is displayed.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>soundoff</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If true, do not play boad number message.</p>
 
           </div>
         </div>
@@ -8672,7 +8892,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
 <h2><a id="#(AIRBOSS).RadioTransmission" ><strong>AIRBOSS:RadioTransmission(radio, call, loud, delay)</strong></a></h2>
 </div>
     
-<p>Add Radio transmission to radio queue</p>
+<p>Add Radio transmission to radio queue.</p>
 
 <div id= "#Functions##RadioTransmission" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -8684,85 +8904,13 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+                <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
             <strong><strong>radio</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>sending transmission.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
-            <strong><strong>call</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Radio sound files and subtitles.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>loud</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If true, play loud sound file version.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Delay in seconds, before the message is broadcasted.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).RadioTransmit" ><strong>AIRBOSS:RadioTransmit(radio, call, loud, delay)</strong></a></h2>
-</div>
-    
-<p>Transmission radio message.</p>
-
-<div id= "#Functions##RadioTransmit" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AIRBOSS</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
-            <strong><strong>radio</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>sending transmission.</p>
+<p>Radio sending the transmission.</p>
 
           </div>
         </div>
@@ -10187,6 +10335,50 @@ Marshal stacks for Case II/III are unlimited.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetRadioUnitName" ><strong>AIRBOSS:SetRadioUnitName(unitname)</strong></a></h2>
+</div>
+    
+<p>Set unit name for sending radio messages.</p>
+
+<div id= "#Functions##SetRadioUnitName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).SetRecoveryCase" ><strong>AIRBOSS:SetRecoveryCase(case)</strong></a></h2>
 </div>
     
@@ -10532,6 +10724,91 @@ Marshal stacks for Case II/III are unlimited.</p>
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).Sound2Player" ><strong>AIRBOSS:Sound2Player(playerData, radio, call, loud, delay)</strong></a></h2>
+</div>
+    
+<p>Player user sound to player if he is inside the CCA.</p>
+
+<div id= "#Functions##Sound2Player" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.PlayerData)">#AIRBOSS.PlayerData</a>
+            <strong><strong>playerData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player data.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
+            <strong><strong>radio</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radio used for transmission.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+            <strong><strong>call</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio sound files and subtitles.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>loud</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, play loud sound file version.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds, before the message is broadcasted.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -14004,6 +14281,39 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetRadioSender" ><strong>AIRBOSS:_GetRadioSender()</strong></a></h2>
+</div>
+    
+<p>Get unit from which we want to transmit a radio message.</p>
+
+    
+<p>This has to be an aircraft for subtitles to work.</p>
+
+<div id= "#Functions##_GetRadioSender" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Sending aircraft unit or nil if was not setup, is not an aircraft or is not alive.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetRelativeHeading" ><strong>AIRBOSS:_GetRelativeHeading(unit, runway)</strong></a></h2>
 </div>
     
@@ -15728,6 +16038,50 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._NeedsSubtitle" ><strong>AIRBOSS:_NeedsSubtitle(call)</strong></a></h2>
+</div>
+    
+<p>Check if a call needs a subtitle because the complete voice overs are not available.</p>
+
+<div id= "#Functions##_NeedsSubtitle" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+            <strong><strong>call</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio sound files and subtitles.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, call needs a subtitle.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._NewPlayer" ><strong>AIRBOSS:_NewPlayer(unitname)</strong></a></h2>
 </div>
     
@@ -15764,6 +16118,107 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._NewRadioCall" ><strong>AIRBOSS:_NewRadioCall(call, sender, subtitle, subduration, modexreceiver, modexsender)</strong></a></h2>
+</div>
+    
+<p>Generate a new radio call (deepcopy) from an existing default call.</p>
+
+    
+<p>P</p>
+
+<div id= "#Functions##_NewRadioCall" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+            <strong><strong>call</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio call to be enhanced.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>sender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Sender of the message. Default is the radio alias.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>subtitle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Subtitle of the message. Default from original radio call. Use "" for no subtitle.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>subduration</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Time in seconds the subtitle is displayed. Default 10 seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>modexreceiver</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Onboard number of the receiver or nil.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>modexsender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Onboard number of the sender or nil.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -15823,7 +16278,7 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+                <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
             <strong><strong>radio</strong></strong>
             </p>
           </div>
@@ -15859,6 +16314,17 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Duration of the call in seconds.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -15934,6 +16400,17 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Duration of the call in seconds.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -16151,6 +16628,133 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._RadioFilename" ><strong>AIRBOSS:_RadioFilename(call, loud)</strong></a></h2>
+</div>
+    
+<p>Get full file name for radio call.</p>
+
+<div id= "#Functions##_RadioFilename" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+            <strong><strong>call</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio sound files and subtitles.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>loud</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Use loud version of file if available.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The file name of the radio sound.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._RadioSubtitle" ><strong>AIRBOSS:_RadioSubtitle(radio, call, loud)</strong></a></h2>
+</div>
+    
+<p>Create radio subtitle from radio call.</p>
+
+<div id= "#Functions##_RadioSubtitle" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
+            <strong><strong>radio</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radio used for transmission.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+            <strong><strong>call</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radio sound files and subtitles.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>loud</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, append "!" else ".".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Subtitle to be displayed.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -19040,7 +19644,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS).LSORadio" ><strong>AIRBOSS.LSORadio</strong></a>
     
 <p>Radio for LSO calls.</p>
@@ -19095,7 +19699,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS).MarshalRadio" ><strong>AIRBOSS.MarshalRadio</strong></a>
     
 <p>Radio for carrier calls.</p>
@@ -19718,6 +20322,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).recoverywindow" ><strong>AIRBOSS.recoverywindow</strong></a>
     
 <p>Current or next recovery window opened.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).senderac" ><strong>AIRBOSS.senderac</strong></a>
+    
+<p>Name of the aircraft acting as sender for broadcasting radio messages from the carrier. DCS shortcoming workaround.</p>
 
 </div>
 
@@ -21283,7 +21898,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS).LSORadio" ><strong>AIRBOSS.LSORadio</strong></a>
     
 <p>Radio for LSO calls.</p>
@@ -21338,7 +21953,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Radio.html##(RADIO)">Core.Radio#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS).MarshalRadio" ><strong>AIRBOSS.MarshalRadio</strong></a>
     
 <p>Radio for carrier calls.</p>
@@ -21961,6 +22576,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).recoverywindow" ><strong>AIRBOSS.recoverywindow</strong></a>
     
 <p>Current or next recovery window opened.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).senderac" ><strong>AIRBOSS.senderac</strong></a>
+    
+<p>Name of the aircraft acting as sender for broadcasting radio messages from the carrier. DCS shortcoming workaround.</p>
 
 </div>
 
@@ -25835,6 +26461,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).CLICK" ><strong>AIRBOSS.LSOCall.CLICK</strong></a>
+    
+<p>Radio end transmission click sound.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
 <a id="#(AIRBOSS.LSOCall).COMELEFT" ><strong>AIRBOSS.LSOCall.COMELEFT</strong></a>
     
 <p>"Come left" call.</p>
@@ -26014,6 +26651,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.LSOCall).N9" ><strong>AIRBOSS.LSOCall.N9</strong></a>
     
 <p>"Nine" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).NOISE" ><strong>AIRBOSS.LSOCall.NOISE</strong></a>
+    
+<p>Static noise sound.</p>
 
 </div>
 
@@ -26217,6 +26865,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.MarshalCall).CLICK" ><strong>AIRBOSS.MarshalCall.CLICK</strong></a>
+    
+<p>Radio end transmission click sound.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
 <a id="#(AIRBOSS.MarshalCall).FLYNEEDLES" ><strong>AIRBOSS.MarshalCall.FLYNEEDLES</strong></a>
     
 <p>"Fly your needles" call.</p>
@@ -26330,6 +26989,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.MarshalCall).N9" ><strong>AIRBOSS.MarshalCall.N9</strong></a>
     
 <p>"Nine" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.MarshalCall).NOISE" ><strong>AIRBOSS.MarshalCall.NOISE</strong></a>
+    
+<p>Static noise sound.</p>
 
 </div>
 
@@ -26736,7 +27406,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set current case.</p>
+<p> Set case of f</p>
 
 </div>
 
@@ -26892,6 +27562,9 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
+    
+<p> Set section lead of player flight.</p>
+
 </div>
 
 </div>   
@@ -26926,7 +27599,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set time stamp.</p>
+<p> Set new time stamp.</p>
 
 </div>
 
@@ -26992,6 +27665,54 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 
         </div>
+      <div onclick="myFunction('#Types##AIRBOSS.Radio')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AIRBOSS.Radio)">Type <strong>AIRBOSS.Radio</strong></a></h2></div>
+        <div id= "#Types##AIRBOSS.Radio" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Radio.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.Radio).alias" ><strong>AIRBOSS.Radio.alias</strong></a>
+    
+<p>Radio alias.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.Radio).frequency" ><strong>AIRBOSS.Radio.frequency</strong></a>
+    
+<p>Frequency in Hz.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.Radio).modulation" ><strong>AIRBOSS.Radio.modulation</strong></a>
+    
+<p>Band modulation.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
       <div onclick="myFunction('#Types##AIRBOSS.RadioCall')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AIRBOSS.RadioCall)">Type <strong>AIRBOSS.RadioCall</strong></a></h2></div>
         <div id= "#Types##AIRBOSS.RadioCall" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
@@ -27030,6 +27751,50 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.RadioCall).loud" ><strong>AIRBOSS.RadioCall.loud</strong></a>
     
 <p>Loud version of sound file available.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.RadioCall).modexreceiver" ><strong>AIRBOSS.RadioCall.modexreceiver</strong></a>
+    
+<p>Onboard number of the receiver (optional).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.RadioCall).modexsender" ><strong>AIRBOSS.RadioCall.modexsender</strong></a>
+    
+<p>Onboard number of the sender (optional).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.RadioCall).sender" ><strong>AIRBOSS.RadioCall.sender</strong></a>
+    
+<p>Sender of the message (optional). Default radia alias.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.RadioCall).subduration" ><strong>AIRBOSS.RadioCall.subduration</strong></a>
+    
+<p>Duration in seconds the subtitle is displayed.</p>
 
 </div>
 
@@ -27140,7 +27905,7 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Beacon.html##(RADIO)">Core.Beacon#RADIO</a>
+    <a href="##(AIRBOSS.Radio)">#AIRBOSS.Radio</a>
 <a id="#(AIRBOSS.Radioitem).radio" ><strong>AIRBOSS.Radioitem.radio</strong></a>
     
 <p>Radio object.</p>
