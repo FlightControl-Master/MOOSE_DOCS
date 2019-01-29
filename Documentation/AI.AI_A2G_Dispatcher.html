@@ -1552,7 +1552,7 @@ The most effective reconnaissance for the A2G dispatcher would be to use the <a 
 
 <p>An reconnaissance network, is used to detect enemy ground targets, potentially group them into areas, and to understand the position, level of threat of the enemy.</p>
 
-<p><img src="..\Presentations\AI_A2A_DISPATCHER\Dia5.JPG" alt="Banner Image"/></p>
+<p><img src="..\Presentations\AI_A2G_DISPATCHER\Dia5.JPG" alt="Banner Image"/></p>
 
 <p>As explained in the introduction, depending on the type of mission you want to achieve, different types of units can be applied to detect ground enemy targets.
 Ground based units are very useful to act as a reconnaissance, but they lack sometimes the visibility to detect targets at greater range.
@@ -1755,9 +1755,9 @@ The provided parameters are the squadron name, airbase name and a list of templa
 
 <p>You need to configure each squadron which task types you want it to perform. Read on ...</p>
 
-<h3>3.2. Squadrons enemy ground target <strong>Engagement</strong>.</h3>
+<h3>3.2. Squadrons enemy ground target <strong>engagement types</strong>.</h3>
 
-<p>There are two ways how targets can be engaged: directly upon call from the airfield, farp or carrier, or through a patrol.</p>
+<p>There are two ways how targets can be engaged: directly <strong>on call</strong> from the airfield, farp or carrier, or through a <strong>patrol</strong>.</p>
 
 <p>Patrols are extremely handy, as these will airborne your helicopters or airplanes in advance. They will patrol in defined zones outlined, 
 and will engage with the targets once commanded. If the patrol zone is close enough to the enemy ground targets, then the time required
@@ -1767,7 +1767,7 @@ to engage is heavily minimized!</p>
 
 <p>The mission designer needs to carefully balance the need for patrols or the need for engagement on call from the airfields.</p>
 
-<h3>3.3. Squadron <strong>on call engagement</strong>.</h3>
+<h3>3.3. Squadron <strong>on call</strong> engagement.</h3>
 
 <p>So to make squadrons engage targets from the airfields, use the following methods:</p>
 
@@ -1827,6 +1827,357 @@ When needed, the A2G defense units will be close to the battle area, and can eng
    A2GDispatcher:SetSquadronBaiPatrol( "Maykop BAI", PatrolZone, 800, 900, 50, 80, 250, 300 )
    A2GDispatcher:SetSquadronPatrolInterval( "Maykop BAI", 2, 30, 60, 1, "BAI" )
 </code></pre>
+
+
+<h3>3.5. Set squadron take-off methods</h3>
+
+<p>Use the various SetSquadronTakeoff... methods to control how squadrons are taking-off from the home airfield, FARP or ship.</p>
+
+<ul>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoff">AI_A2G_DISPATCHER.SetSquadronTakeoff</a>() is the generic configuration method to control takeoff from the air, hot, cold or from the runway. See the method for further details.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffInAir">AI_A2G_DISPATCHER.SetSquadronTakeoffInAir</a>() will spawn new aircraft from the squadron directly in the air.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffFromParkingCold">AI_A2G_DISPATCHER.SetSquadronTakeoffFromParkingCold</a>() will spawn new aircraft in without running engines at a parking spot at the airfield.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffFromParkingHot">AI_A2G_DISPATCHER.SetSquadronTakeoffFromParkingHot</a>() will spawn new aircraft in with running engines at a parking spot at the airfield.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffFromRunway">AI_A2G_DISPATCHER.SetSquadronTakeoffFromRunway</a>() will spawn new aircraft at the runway at the airfield.</li>
+</ul>
+
+<p><strong>The default landing method is to spawn new aircraft directly in the air.</strong></p>
+
+<p>Use these methods to fine-tune for specific airfields that are known to create bottlenecks, or have reduced airbase efficiency.
+The more and the longer aircraft need to taxi at an airfield, the more risk there is that:</p>
+
+<ul>
+    <li>aircraft will stop waiting for each other or for a landing aircraft before takeoff.</li>
+    <li>aircraft may get into a "dead-lock" situation, where two aircraft are blocking each other.</li>
+    <li>aircraft may collide at the airbase.</li>
+    <li>aircraft may be awaiting the landing of a plane currently in the air, but never lands ...</li>
+</ul>
+
+<p>Currently within the DCS engine, the airfield traffic coordination is erroneous and contains a lot of bugs.
+If you experience while testing problems with aircraft take-off or landing, please use one of the above methods as a solution to workaround these issues!</p>
+
+<p>This example sets the default takeoff method to be from the runway.
+And for a couple of squadrons overrides this default method.</p>
+
+<pre><code> -- Setup the Takeoff methods
+
+ -- The default takeoff
+ A2ADispatcher:SetDefaultTakeOffFromRunway()
+
+ -- The individual takeoff per squadron
+ A2ADispatcher:SetSquadronTakeoff( "Mineralnye", AI_A2G_DISPATCHER.Takeoff.Air )
+ A2ADispatcher:SetSquadronTakeoffInAir( "Sochi" )
+ A2ADispatcher:SetSquadronTakeoffFromRunway( "Mozdok" )
+ A2ADispatcher:SetSquadronTakeoffFromParkingCold( "Maykop" )
+ A2ADispatcher:SetSquadronTakeoffFromParkingHot( "Novo" )  
+</code></pre>
+
+
+<h3>3.5.1. Set Squadron takeoff altitude when spawning new aircraft in the air.</h3>
+
+<p>In the case of the <a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffInAir">AI_A2G_DISPATCHER.SetSquadronTakeoffInAir</a>() there is also an other parameter that can be applied.
+That is modifying or setting the <strong>altitude</strong> from where planes spawn in the air.
+Use the method <a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffInAirAltitude">AI_A2G_DISPATCHER.SetSquadronTakeoffInAirAltitude</a>() to set the altitude for a specific squadron.
+The default takeoff altitude can be modified or set using the method <a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffInAirAltitude">AI_A2G_DISPATCHER.SetSquadronTakeoffInAirAltitude</a>().
+As part of the method <a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffInAir">AI_A2G_DISPATCHER.SetSquadronTakeoffInAir</a>() a parameter can be specified to set the takeoff altitude.
+If this parameter is not specified, then the default altitude will be used for the squadron.</p>
+
+<h3>3.5.2. Set Squadron takeoff interval.</h3>
+
+<p>The different types of available airfields have different amounts of available launching platforms:</p>
+
+<ul>
+    <li>Airbases typically have a lot of platforms.</li>
+    <li>FARPs have 4 platforms.</li>
+    <li>Ships have 2 to 4 platforms.</li>
+</ul>
+
+<p>Depending on the demand of requested takeoffs by the A2G dispatcher, an airfield can become overloaded. Too many aircraft need to be taken
+off at the same time, which will result in clutter as described above. In order to better control this behaviour, a takeoff scheduler is implemented,
+which can be used to control how many aircraft are ordered for takeoff between specific time intervals.
+The takeff intervals can be specified per squadron, which make sense, as each squadron have a "home" airfield.</p>
+
+<p>For this purpose, the method <a href="##(AI_A2G_DISPATCHER).SetSquadronTakeOffInterval">AI_A2G_DISPATCHER.SetSquadronTakeOffInterval</a>() can be used to specify the takeoff intervals of 
+aircraft groups per squadron to avoid cluttering of aircraft at airbases.
+This is especially useful for FARPs and ships. Each takeoff dispatch is queued by the dispatcher and when the interval time
+has been reached, a new group will be spawned or activated for takeoff.</p>
+
+<p>The interval needs to be estimated, and depends on the time needed for the aircraft group to actually depart from the launch platform, and
+the way how the aircraft are starting up. Cold starts take the longest duration, hot starts a few seconds, and runway takeoff also a few seconds for FARPs and ships.</p>
+
+<p>See the underlying example:</p>
+
+<pre><code> -- Imagine a squadron launched from a FARP, with a grouping of 4.
+ -- Aircraft will cold start from the FARP, and thus, a maximum of 4 aircraft can be launched at the same time.
+ -- Additionally, depending on the group composition of the aircraft, defending units will be ordered for takeoff together.
+ -- It takes about 3 to 4 minutes to takeoff helicopters from FARPs in cold start.
+ A2ADispatcher:SetSquadronTakeOffInterval( "Mineralnye", 60 * 4 )
+</code></pre>
+
+
+<h3>3.6. Set squadron landing methods</h3>
+
+<p>In analogy with takeoff, the landing methods are to control how squadrons land at the airfield:</p>
+
+<ul>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronLanding">AI_A2G_DISPATCHER.SetSquadronLanding</a>() is the generic configuration method to control landing, namely despawn the aircraft near the airfield in the air, right after landing, or at engine shutdown.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronLandingNearAirbase">AI_A2G_DISPATCHER.SetSquadronLandingNearAirbase</a>() will despawn the returning aircraft in the air when near the airfield.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronLandingAtRunway">AI_A2G_DISPATCHER.SetSquadronLandingAtRunway</a>() will despawn the returning aircraft directly after landing at the runway.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetSquadronLandingAtEngineShutdown">AI_A2G_DISPATCHER.SetSquadronLandingAtEngineShutdown</a>() will despawn the returning aircraft when the aircraft has returned to its parking spot and has turned off its engines.</li>
+</ul>
+
+<p>You can use these methods to minimize the airbase coodination overhead and to increase the airbase efficiency.
+When there are lots of aircraft returning for landing, at the same airbase, the takeoff process will be halted, which can cause a complete failure of the
+A2A defense system, as no new CAP or GCI planes can takeoff.
+Note that the method <a href="##(AI_A2G_DISPATCHER).SetSquadronLandingNearAirbase">AI_A2G_DISPATCHER.SetSquadronLandingNearAirbase</a>() will only work for returning aircraft, not for damaged or out of fuel aircraft.
+Damaged or out-of-fuel aircraft are returning to the nearest friendly airbase and will land, and are out of control from ground control.</p>
+
+<p>This example defines the default landing method to be at the runway.
+And for a couple of squadrons overrides this default method.</p>
+
+<pre><code> -- Setup the Landing methods
+
+ -- The default landing method
+ A2ADispatcher:SetDefaultLandingAtRunway()
+
+ -- The individual landing per squadron
+ A2ADispatcher:SetSquadronLandingAtRunway( "Mineralnye" )
+ A2ADispatcher:SetSquadronLandingNearAirbase( "Sochi" )
+ A2ADispatcher:SetSquadronLandingAtEngineShutdown( "Mozdok" )
+ A2ADispatcher:SetSquadronLandingNearAirbase( "Maykop" )
+ A2ADispatcher:SetSquadronLanding( "Novo", AI_A2G_DISPATCHER.Landing.AtRunway )
+</code></pre>
+
+
+<h3>3.7. Set squadron <strong>grouping</strong>.</h3>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetSquadronGrouping">AI_A2G_DISPATCHER.SetSquadronGrouping</a>() to set the grouping of aircraft when spawned in.</p>
+
+<p><img src="..\Presentations\AI_A2G_DISPATCHER\Dia12.JPG" alt="Banner Image"/></p>
+
+<p>In the case of <strong>on call</strong> engagement, the <a href="##(AI_A2G_DISPATCHER).SetSquadronGrouping">AI_A2G_DISPATCHER.SetSquadronGrouping</a>() method has additional behaviour. 
+When there aren't enough patrol flights airborne, a on call will be initiated for the remaining
+targets to be engaged. Depending on the grouping parameter, the spawned flights for on call aircraft are grouped into this setting. <br/>
+For example with a group setting of 2, if 3 targets are detected and cannot be engaged by the available patrols or any airborne flight, 
+an additional on call flight needs to be started.</p>
+
+<p>The <strong>grouping value is set for a Squadron</strong>, and can be <strong>dynamically adjusted</strong> during mission execution, so to adjust the defense flights grouping when the tactical situation changes.</p>
+
+<h3>3.8. Set the squadron <strong>overhead</strong> to balance the effectiveness of the A2G defenses.</h3>
+
+<p>The effectiveness can be set with the <strong>overhead parameter</strong>. This is a number that is used to calculate the amount of Units that dispatching command will allocate to GCI in surplus of detected amount of units.
+The <strong>default value</strong> of the overhead parameter is 1.0, which means <strong>equal balance</strong>.</p>
+
+<p><img src="..\Presentations\AI_A2G_DISPATCHER\Dia11.JPG" alt="Banner Image"/></p>
+
+<p>However, depending on the (type of) aircraft (strength and payload) in the squadron and the amount of resources available, this parameter can be changed.</p>
+
+<p>The <a href="##(AI_A2G_DISPATCHER).SetSquadronOverhead">AI_A2G_DISPATCHER.SetSquadronOverhead</a>() method can be used to tweak the defense strength,
+taking into account the plane types of the squadron. </p>
+
+<p>For example, a A-10C with full long-distance A2G missiles payload, may still be less effective than a Su-23 with short range A2G missiles...
+So in this case, one may want to use the <a href="##(AI_A2G_DISPATCHER).SetOverhead">AI_A2G_DISPATCHER.SetOverhead</a>() method to allocate more defending planes as the amount of detected attacking ground units.
+The overhead must be given as a decimal value with 1 as the neutral value, which means that overhead values: </p>
+
+<ul>
+    <li>Higher than 1.0, for example 1.5, will increase the defense unit amounts. For 4 attacking ground units detected, 6 aircraft will be spawned.</li>
+    <li>Lower than 1, for example 0.75, will decrease the defense unit amounts. For 4 attacking ground units detected, only 3 aircraft will be spawned.</li>
+</ul>
+
+<p>The amount of defending units is calculated by multiplying the amount of detected attacking ground units as part of the detected group 
+multiplied by the overhead parameter, and rounded up to the smallest integer. </p>
+
+<p>Typically, for A2G defenses, values small than 1 will be used. Here are some good values for a couple of aircraft to support CAS operations:</p>
+
+<ul>
+    <li>A-10C: 0.15</li>
+    <li>Su-34: 0.15</li>
+    <li>A-10A: 0.25</li>
+    <li>SU-25T: 0.10</li>
+</ul>
+
+<p>So generically, the amount of missiles that an aircraft can take will determine its attacking effectiveness. The longer the range of the missiles, 
+the less risk that the defender may be destroyed by the enemy, thus, the less aircraft needs to be activated in a defense.</p>
+
+<p>The <strong>overhead value is set for a Squadron</strong>, and can be <strong>dynamically adjusted</strong> during mission execution, so to adjust the defense overhead when the tactical situation changes.</p>
+
+<h3>3.8. Set the squadron <strong>engage limit</strong>.</h3>
+
+<p>To limit the amount of aircraft to defend against a large group of intruders, an <strong>engage limit</strong> can be defined per squadron.
+This limit will avoid an extensive amount of aircraft to engage with the enemy if the attacking ground forces are enormous.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetSquadronEngageLimit">AI_A2G_DISPATCHER.SetSquadronEngageLimit</a>() to limit the amount of aircraft that will engage with the enemy, per squadron.</p>
+
+<h2>4. Set the <strong>fuel treshold</strong>.</h2>
+
+<p>When aircraft get <strong>out of fuel</strong> to a certain %-tage, which is by default <strong>15% (0.15)</strong>, there are two possible actions that can be taken:
+ - The aircraft will go RTB, and will be replaced with a new aircraft if possible.
+ - The aircraft will refuel at a tanker, if a tanker has been specified for the squadron.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetSquadronFuelThreshold">AI_A2G_DISPATCHER.SetSquadronFuelThreshold</a>() to set the <strong>squadron fuel treshold</strong> of the aircraft for all squadrons.</p>
+
+<h2>6. Other configuration options</h2>
+
+<h3>6.1. Set a tactical display panel.</h3>
+
+<p>Every 30 seconds, a tactical display panel can be shown that illustrates what the status is of the different groups controlled by AI_A2G_DISPATCHER.
+Use the method <a href="##(AI_A2G_DISPATCHER).SetTacticalDisplay">AI_A2G_DISPATCHER.SetTacticalDisplay</a>() to switch on the tactical display panel. The default will not show this panel.
+Note that there may be some performance impact if this panel is shown.</p>
+
+<h2>10. Default settings.</h2>
+
+<p>Default settings configure the standard behaviour of the squadrons. 
+This section a good overview of the different parameters that setup the behaviour of <strong>ALL</strong> the squadrons by default.
+Note that default behaviour can be tweaked, and thus, this will change the behaviour of all the squadrons.
+Unless there is a specific behaviour set for a specific squadron, the default configured behaviour will be followed.</p>
+
+<h2>10.1. Default <strong>takeoff</strong> behaviour.</h2>
+
+<p>The default takeoff behaviour is set to <strong>in the air</strong>, which means that new spawned aircraft will be spawned directly in the air above the airbase by default.</p>
+
+<p><strong>The default takeoff method can be set for ALL squadrons that don't have an individual takeoff method configured.</strong></p>
+
+<ul>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultTakeoff">AI_A2G_DISPATCHER.SetDefaultTakeoff</a>() is the generic configuration method to control takeoff by default from the air, hot, cold or from the runway. See the method for further details.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultTakeoffInAir">AI_A2G_DISPATCHER.SetDefaultTakeoffInAir</a>() will spawn by default new aircraft from the squadron directly in the air.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultTakeoffFromParkingCold">AI_A2G_DISPATCHER.SetDefaultTakeoffFromParkingCold</a>() will spawn by default new aircraft in without running engines at a parking spot at the airfield.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultTakeoffFromParkingHot">AI_A2G_DISPATCHER.SetDefaultTakeoffFromParkingHot</a>() will spawn by default new aircraft in with running engines at a parking spot at the airfield.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultTakeoffFromRunway">AI_A2G_DISPATCHER.SetDefaultTakeoffFromRunway</a>() will spawn by default new aircraft at the runway at the airfield.</li>
+</ul>
+
+<h2>10.2. Default landing behaviour.</h2>
+
+<p>The default landing behaviour is set to <strong>near the airbase</strong>, which means that returning airplanes will be despawned directly in the air by default.</p>
+
+<p>The default landing method can be set for ALL squadrons that don't have an individual landing method configured.</p>
+
+<ul>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultLanding">AI_A2G_DISPATCHER.SetDefaultLanding</a>() is the generic configuration method to control by default landing, namely despawn the aircraft near the airfield in the air, right after landing, or at engine shutdown.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultLandingNearAirbase">AI_A2G_DISPATCHER.SetDefaultLandingNearAirbase</a>() will despawn by default the returning aircraft in the air when near the airfield.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultLandingAtRunway">AI_A2G_DISPATCHER.SetDefaultLandingAtRunway</a>() will despawn by default the returning aircraft directly after landing at the runway.</li>
+    <li><a href="##(AI_A2G_DISPATCHER).SetDefaultLandingAtEngineShutdown">AI_A2G_DISPATCHER.SetDefaultLandingAtEngineShutdown</a>() will despawn by default the returning aircraft when the aircraft has returned to its parking spot and has turned off its engines.</li>
+</ul>
+
+<h2>10.3. Default <strong>overhead</strong>.</h2>
+
+<p>The default overhead is set to <strong>0.25</strong>. That essentially means that for each 4 ground enemies there will be 1 aircraft dispatched.</p>
+
+<p>The default overhead value can be set for ALL squadrons that don't have an individual overhead value configured.</p>
+
+<p>Use the <a href="##(AI_A2G_DISPATCHER).SetDefaultOverhead">AI_A2G_DISPATCHER.SetDefaultOverhead</a>() method can be used to set the default overhead or defense strength for ALL squadrons.</p>
+
+<h2>10.4. Default <strong>grouping</strong>.</h2>
+
+<p>The default grouping is set to <strong>one airplane</strong>. That essentially means that there won't be any grouping applied by default.</p>
+
+<p>The default grouping value can be set for ALL squadrons that don't have an individual grouping value configured.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultGrouping">AI_A2G_DISPATCHER.SetDefaultGrouping</a>() to set the <strong>default grouping</strong> of spawned airplanes for all squadrons.</p>
+
+<h2>10.5. Default RTB fuel treshold.</h2>
+
+<p>When an airplane gets <strong>out of fuel</strong> to a certain %-tage, which is <strong>15% (0.15)</strong>, it will go RTB, and will be replaced with a new airplane when applicable.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultFuelThreshold">AI_A2G_DISPATCHER.SetDefaultFuelThreshold</a>() to set the <strong>default fuel treshold</strong> of spawned airplanes for all squadrons.</p>
+
+<h2>10.6. Default RTB damage treshold.</h2>
+
+<p>When an airplane is <strong>damaged</strong> to a certain %-tage, which is <strong>40% (0.40)</strong>, it will go RTB, and will be replaced with a new airplane when applicable.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultDamageThreshold">AI_A2G_DISPATCHER.SetDefaultDamageThreshold</a>() to set the <strong>default damage treshold</strong> of spawned airplanes for all squadrons.</p>
+
+<h2>10.7. Default settings for <strong>patrol</strong>.</h2>
+
+<h3>10.7.1. Default <strong>patrol time Interval</strong>.</h3>
+
+<p>Patrol dispatching is time event driven, and will evaluate in random time intervals if a new patrol needs to be dispatched.</p>
+
+<p>The default patrol time interval is between <strong>180</strong> and <strong>600</strong> seconds.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultPatrolTimeInterval">AI_A2G_DISPATCHER.SetDefaultPatrolTimeInterval</a>() to set the <strong>default patrol time interval</strong> of dispatched aircraft for ALL squadrons.</p>
+
+<p>Note that you can still change the patrol limit and patrol time intervals for each patrol individually using 
+the <a href="##(AI_A2G_DISPATCHER).SetSquadronPatrolTimeInterval">AI_A2G_DISPATCHER.SetSquadronPatrolTimeInterval</a>() method.</p>
+
+<h3>10.7.2. Default <strong>patrol limit</strong>.</h3>
+
+<p>Multiple patrol can be airborne at the same time for one squadron, which is controlled by the <strong>patrol limit</strong>.
+The <strong>default patrol limit</strong> is 1 patrol per squadron to be airborne at the same time.
+Note that the default patrol limit is used when a squadron patrol is defined, and cannot be changed afterwards.
+So, ensure that you set the default patrol limit <strong>before</strong> you define or setup the squadron patrol.</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultPatrolTimeInterval">AI_A2G_DISPATCHER.SetDefaultPatrolTimeInterval</a>() to set the <strong>default patrol time interval</strong> of dispatched aircraft patrols for all squadrons. <br/>
+Note that you can still change the patrol limit and patrol time intervals for each patrol individually using 
+the <a href="##(AI_A2G_DISPATCHER).SetSquadronPatrolTimeInterval">AI_A2G_DISPATCHER.SetSquadronPatrolTimeInterval</a>() method.</p>
+
+<h2>10.7.3. Default tanker for refuelling when executing CAP.</h2>
+
+<p>Instead of sending CAP to RTB when out of fuel, you can let CAP refuel in mid air using a tanker.
+This greatly increases the efficiency of your CAP operations.</p>
+
+<p>In the mission editor, setup a group with task Refuelling. A tanker unit of the correct coalition will be automatically selected.
+Then, use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultTanker">AI_A2G_DISPATCHER.SetDefaultTanker</a>() to set the tanker for the dispatcher.
+Use the method <a href="##(AI_A2G_DISPATCHER).SetDefaultFuelThreshold">AI_A2G_DISPATCHER.SetDefaultFuelThreshold</a>() to set the %-tage left in the defender airplane tanks when a refuel action is needed.</p>
+
+<p>When the tanker specified is alive and in the air, the tanker will be used for refuelling.</p>
+
+<p>For example, the following setup will set the default refuel tanker to "Tanker":</p>
+
+<p><img src="..\Presentations\AI_A2G_DISPATCHER\AI_A2G_DISPATCHER-ME_11.JPG" alt="Banner Image"/></p>
+
+<pre><code> -- Define the CAP
+ A2ADispatcher:SetSquadron( "Sochi", AIRBASE.Caucasus.Sochi_Adler, { "SQ CCCP SU-34" }, 20 )
+ A2ADispatcher:SetSquadronCap( "Sochi", ZONE:New( "PatrolZone" ), 4000, 8000, 600, 800, 1000, 1300 )
+ A2ADispatcher:SetSquadronCapInterval("Sochi", 2, 30, 600, 1 ) 
+ A2ADispatcher:SetSquadronGci( "Sochi", 900, 1200 )
+
+ -- Set the default tanker for refuelling to "Tanker", when the default fuel treshold has reached 90% fuel left.
+ A2ADispatcher:SetDefaultFuelThreshold( 0.9 )
+ A2ADispatcher:SetDefaultTanker( "Tanker" )
+</code></pre>
+
+<h2>10.8. Default settings for GCI.</h2>
+
+<h2>10.8.1. Optimal intercept point calculation.</h2>
+
+<p>When intruders are detected, the intrusion path of the attackers can be monitored by the EWR. <br/>
+Although defender planes might be on standby at the airbase, it can still take some time to get the defenses up in the air if there aren't any defenses airborne.
+This time can easily take 2 to 3 minutes, and even then the defenders still need to fly towards the target, which takes also time.</p>
+
+<p>Therefore, an optimal <strong>intercept point</strong> is calculated which takes a couple of parameters:</p>
+
+<ul>
+    <li>The average bearing of the intruders for an amount of seconds.</li>
+    <li>The average speed of the intruders for an amount of seconds.</li>
+    <li>An assumed time it takes to get planes operational at the airbase.</li>
+</ul>
+
+<p>The <strong>intercept point</strong> will determine:</p>
+
+<ul>
+    <li>If there are any friendlies close to engage the target. These can be defenders performing CAP or defenders in RTB.</li>
+    <li>The optimal airbase from where defenders will takeoff for GCI.</li>
+</ul>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetIntercept">AI_A2G_DISPATCHER.SetIntercept</a>() to modify the assumed intercept delay time to calculate a valid interception.</p>
+
+<h2>10.8.2. Default Disengage Radius.</h2>
+
+<p>The radius to <strong>disengage any target</strong> when the <strong>distance</strong> of the defender to the <strong>home base</strong> is larger than the specified meters.
+The default Disengage Radius is <strong>300km</strong> (300000 meters). Note that the Disengage Radius is applicable to ALL squadrons!</p>
+
+<p>Use the method <a href="##(AI_A2G_DISPATCHER).SetDisengageRadius">AI_A2G_DISPATCHER.SetDisengageRadius</a>() to modify the default Disengage Radius to another distance setting.</p>
+
+<h2>11. Airbase capture:</h2>
+
+<p>Different squadrons can be located at one airbase.
+If the airbase gets captured, that is, when there is an enemy unit near the airbase, and there aren't anymore friendlies at the airbase, the airbase will change coalition ownership.
+As a result, the GCI and CAP will stop!
+However, the squadron will still stay alive. Any airplane that is airborne will continue its operations until all airborne airplanes
+of the squadron will be destroyed. This to keep consistency of air operations not to confuse the players.</p>
+
+
+
 
 
 </div>
@@ -2241,6 +2592,12 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).DefenseQueue">AI_A2G_DISPATCHER.DefenseQueue</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).DefenseRadius">AI_A2G_DISPATCHER.DefenseRadius</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2469,12 +2826,6 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ParkDefender">AI_A2G_DISPATCHER:ParkDefender(DefenderSquadron)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).Patrol">AI_A2G_DISPATCHER:Patrol()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Patrol Trigger for AI_A2G_DISPATCHER</p>
@@ -2494,6 +2845,36 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ResourceActivate">AI_A2G_DISPATCHER:ResourceActivate(DefenderSquadron, DefendersNeeded)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ResourceEngage">AI_A2G_DISPATCHER:ResourceEngage(DefenderSquadron, DefendersNeeded, Defense, DefenseTaskType, AttackerDetection, SquadronName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ResourcePark">AI_A2G_DISPATCHER:ResourcePark(DefenderSquadron)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ResourcePatrol">AI_A2G_DISPATCHER:ResourcePatrol(DefenderSquadron, DefendersNeeded, Patrol, DefenseTaskType, AttackerDetection, SquadronName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ResourceQueue">AI_A2G_DISPATCHER:ResourceQueue(Patrol, DefenderSquadron, DefendersNeeded, Defense, DefenseTaskType, AttackerDetection, SquadronName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ResourceTakeoff">AI_A2G_DISPATCHER:ResourceTakeoff()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2841,6 +3222,12 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).SetSquadronTakeoffInterval">AI_A2G_DISPATCHER:SetSquadronTakeoffInterval(SquadronName, TakeoffInterval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).SetSquadronTanker">AI_A2G_DISPATCHER:SetSquadronTanker(SquadronName, TankerName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the squadron tanker where defenders will Refuel in the air.</p>
@@ -2872,6 +3259,12 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).Takeoff">AI_A2G_DISPATCHER.Takeoff</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).TakeoffScheduleID">AI_A2G_DISPATCHER.TakeoffScheduleID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2927,6 +3320,12 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).CC">AI_A2G_DISPATCHER.CC</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The command center that is used to communicate with the players.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).Detection">AI_A2G_DISPATCHER.Detection</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The DETECTION_BASE object that is used to report the detected objects.</p>
@@ -2936,6 +3335,12 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).GetReportDisplayTime">AI_A2G_DISPATCHER:GetReportDisplayTime()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the reporting message display time.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).MessageToPlayers">AI_A2G_DISPATCHER:MessageToPlayers(Message)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Send an information message to the players reporting to the command center.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2996,6 +3401,12 @@ The following parameters were given to the :New method of AI_A2G_GCICAP, and mea
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).ProcessDetected">AI_A2G_DISPATCHER:ProcessDetected(Detection)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Reports the detected items to the <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER).SetCommandCenter">AI_A2G_DISPATCHER:SetCommandCenter(CommandCenter)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a command center to communicate actions to the players reporting to the command center.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3766,6 +4177,183 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_DISPATCHER.DefenderQueueItem)">Type <strong>AI_A2G_DISPATCHER.DefenderQueueItem</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem)">AI_A2G_DISPATCHER.DefenderQueueItem</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AI_A2G_DISPATCHER.DefenderQueueItem</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).AttackerDetection">AI_A2G_DISPATCHER.DefenderQueueItem.AttackerDetection</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).DefenderSquadron">AI_A2G_DISPATCHER.DefenderQueueItem.DefenderSquadron</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).DefendersNeeded">AI_A2G_DISPATCHER.DefenderQueueItem.DefendersNeeded</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).Defense">AI_A2G_DISPATCHER.DefenderQueueItem.Defense</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).DefenseTaskType">AI_A2G_DISPATCHER.DefenderQueueItem.DefenseTaskType</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).Patrol">AI_A2G_DISPATCHER.DefenderQueueItem.Patrol</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenderQueueItem).SquadronName">AI_A2G_DISPATCHER.DefenderQueueItem.SquadronName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_DISPATCHER.DefenseQueueItem)">Type <strong>AI_A2G_DISPATCHER.DefenseQueueItem</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem)">AI_A2G_DISPATCHER.DefenseQueueItem</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AI_A2G_DISPATCHER.DefenseQueueItem</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).AttackerDetection">AI_A2G_DISPATCHER.DefenseQueueItem.AttackerDetection</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).DefenderGrouping">AI_A2G_DISPATCHER.DefenseQueueItem.DefenderGrouping</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).DefenderSquadron">AI_A2G_DISPATCHER.DefenseQueueItem.DefenderSquadron</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The squadron in the queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).DefendersNeeded">AI_A2G_DISPATCHER.DefenseQueueItem.DefendersNeeded</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).Defense">AI_A2G_DISPATCHER.DefenseQueueItem.Defense</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).DefenseTaskType">AI_A2G_DISPATCHER.DefenseQueueItem.DefenseTaskType</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).Squadron">AI_A2G_DISPATCHER.DefenseQueueItem.Squadron</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.DefenseQueueItem).SquadronName">AI_A2G_DISPATCHER.DefenseQueueItem.SquadronName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The name of the squadron.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_DISPATCHER.Squadron)">Type <strong>AI_A2G_DISPATCHER.Squadron</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(AI_A2G_DISPATCHER.Squadron)">AI_A2G_DISPATCHER.Squadron</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AI_A2G_DISPATCHER.Squadron</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).Airbase">AI_A2G_DISPATCHER.Squadron.Airbase</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The home airbase.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).AirbaseName">AI_A2G_DISPATCHER.Squadron.AirbaseName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The name of the home airbase.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).Captured">AI_A2G_DISPATCHER.Squadron.Captured</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>true if the squadron is captured. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).Name">AI_A2G_DISPATCHER.Squadron.Name</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The Squadron name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).Overhead">AI_A2G_DISPATCHER.Squadron.Overhead</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The overhead for the squadron. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).ResourceCount">AI_A2G_DISPATCHER.Squadron.ResourceCount</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The number of resources available.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).Spawn">AI_A2G_DISPATCHER.Squadron.Spawn</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The spawning object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2G_DISPATCHER.Squadron).TemplatePrefixes">AI_A2G_DISPATCHER.Squadron.TemplatePrefixes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The list of template prefixes.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_GCICAP)">Type <strong>AI_A2G_GCICAP</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
      <strong><a href="##(AI_A2G_GCICAP)">AI_A2G_GCICAP</a></strong>
@@ -3836,6 +4424,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AI_A2G_DISPATCHER).DefenderPatrolIndex" ><strong>AI_A2G_DISPATCHER.DefenderPatrolIndex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AI_A2G_DISPATCHER).DefenderSpawns" ><strong>AI_A2G_DISPATCHER.DefenderSpawns</strong></a>
     
@@ -3877,6 +4476,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     <a href="##(AI_A2G_DISPATCHER.DefenseCoordinates)">#AI_A2G_DISPATCHER.DefenseCoordinates</a>
 <a id="#(AI_A2G_DISPATCHER).DefenseCoordinates" ><strong>AI_A2G_DISPATCHER.DefenseCoordinates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AI_A2G_DISPATCHER.DefenseQueue)">#AI_A2G_DISPATCHER.DefenseQueue</a>
+<a id="#(AI_A2G_DISPATCHER).DefenseQueue" ><strong>AI_A2G_DISPATCHER.DefenseQueue</strong></a>
     
 
 
@@ -3932,6 +4542,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     <a href="##(AI_A2G_DISPATCHER.Takeoff)">#AI_A2G_DISPATCHER.Takeoff</a>
 <a id="#(AI_A2G_DISPATCHER).Takeoff" ><strong>AI_A2G_DISPATCHER.Takeoff</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER).TakeoffScheduleID" ><strong>AI_A2G_DISPATCHER.TakeoffScheduleID</strong></a>
     
 
 
@@ -5863,36 +6484,6 @@ The Detection object is polymorphic, depending on the type of detection object c
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_A2G_DISPATCHER).ParkDefender" ><strong>AI_A2G_DISPATCHER:ParkDefender(DefenderSquadron)</strong></a></h2>
-</div>
-    
-
-
-<div id= "#Functions##ParkDefender" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_A2G_DISPATCHER</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>DefenderSquadron</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
 <h2><a id="#(AI_A2G_DISPATCHER).Patrol" ><strong>AI_A2G_DISPATCHER:Patrol()</strong></a></h2>
 </div>
     
@@ -6028,6 +6619,305 @@ The Detection object is polymorphic, depending on the type of detection object c
               <p></p>
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).ResourceEngage" ><strong>AI_A2G_DISPATCHER:ResourceEngage(DefenderSquadron, DefendersNeeded, Defense, DefenseTaskType, AttackerDetection, SquadronName)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ResourceEngage" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2G_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenderSquadron</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefendersNeeded</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Defense</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenseTaskType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>AttackerDetection</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SquadronName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).ResourcePark" ><strong>AI_A2G_DISPATCHER:ResourcePark(DefenderSquadron)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ResourcePark" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2G_DISPATCHER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenderSquadron</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).ResourcePatrol" ><strong>AI_A2G_DISPATCHER:ResourcePatrol(DefenderSquadron, DefendersNeeded, Patrol, DefenseTaskType, AttackerDetection, SquadronName)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ResourcePatrol" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2G_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenderSquadron</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefendersNeeded</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Patrol</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenseTaskType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>AttackerDetection</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SquadronName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).ResourceQueue" ><strong>AI_A2G_DISPATCHER:ResourceQueue(Patrol, DefenderSquadron, DefendersNeeded, Defense, DefenseTaskType, AttackerDetection, SquadronName)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ResourceQueue" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2G_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Patrol</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenderSquadron</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefendersNeeded</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Defense</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DefenseTaskType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>AttackerDetection</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SquadronName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).ResourceTakeoff" ><strong>AI_A2G_DISPATCHER:ResourceTakeoff()</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ResourceTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2G_DISPATCHER</p>
+</div>
 </div>
 
 </div>
@@ -9977,6 +10867,58 @@ multiplied by the Overhead and rounded up to the smallest integer. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).SetSquadronTakeoffInterval" ><strong>AI_A2G_DISPATCHER:SetSquadronTakeoffInterval(SquadronName, TakeoffInterval)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##SetSquadronTakeoffInterval" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2G_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>SquadronName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The squadron name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>TakeoffInterval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p> Only Takeoff new units each specified interval in seconds in 10 seconds steps.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>
+       -- Set the Squadron Takeoff interval every 60 seconds for squadron "SQ50", which is good for a FARP cold start.
+       A2GDispatcher:SetSquadronTakeoffInterval( "SQ50", 60 )
+       </code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AI_A2G_DISPATCHER).SetSquadronTanker" ><strong>AI_A2G_DISPATCHER:SetSquadronTanker(SquadronName, TankerName)</strong></a></h2>
 </div>
     
@@ -10568,6 +11510,17 @@ They will lock the parking spot.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AI_A2G_DISPATCHER).DefenderPatrolIndex" ><strong>AI_A2G_DISPATCHER.DefenderPatrolIndex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AI_A2G_DISPATCHER).DefenderSpawns" ><strong>AI_A2G_DISPATCHER.DefenderSpawns</strong></a>
     
@@ -10609,6 +11562,17 @@ They will lock the parking spot.</p>
 
     <a href="##(AI_A2G_DISPATCHER.DefenseCoordinates)">#AI_A2G_DISPATCHER.DefenseCoordinates</a>
 <a id="#(AI_A2G_DISPATCHER).DefenseCoordinates" ><strong>AI_A2G_DISPATCHER.DefenseCoordinates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AI_A2G_DISPATCHER.DefenseQueue)">#AI_A2G_DISPATCHER.DefenseQueue</a>
+<a id="#(AI_A2G_DISPATCHER).DefenseQueue" ><strong>AI_A2G_DISPATCHER.DefenseQueue</strong></a>
     
 
 
@@ -10670,6 +11634,17 @@ They will lock the parking spot.</p>
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER).TakeoffScheduleID" ><strong>AI_A2G_DISPATCHER.TakeoffScheduleID</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
@@ -10695,6 +11670,50 @@ They will lock the parking spot.</p>
       <div class="w3-half">
         
 <p>ReportDisplayTime The display time in seconds when a report needs to be done.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).MessageToPlayers" ><strong>AI_A2G_DISPATCHER:MessageToPlayers(Message)</strong></a></h2>
+</div>
+    
+<p>Send an information message to the players reporting to the command center.</p>
+
+<div id= "#Functions##MessageToPlayers" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.DetectionManager.html##(DETECTION_MANAGER)">Tasking.DetectionManager#DETECTION_MANAGER</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The message to be sent.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(DETECTION_MANGER)">#DETECTION_MANGER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
@@ -11291,6 +12310,50 @@ They will lock the parking spot.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AI_A2G_DISPATCHER).SetCommandCenter" ><strong>AI_A2G_DISPATCHER:SetCommandCenter(CommandCenter)</strong></a></h2>
+</div>
+    
+<p>Set a command center to communicate actions to the players reporting to the command center.</p>
+
+<div id= "#Functions##SetCommandCenter" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.DetectionManager.html##(DETECTION_MANAGER)">Tasking.DetectionManager#DETECTION_MANAGER</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.CommandCenter.html##(COMMANDCENTER)">Tasking.CommandCenter#COMMANDCENTER</a>
+            <strong><strong>CommandCenter</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The command center.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(DETECTION_MANGER)">#DETECTION_MANGER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AI_A2G_DISPATCHER).SetRefreshTimeInterval" ><strong>AI_A2G_DISPATCHER:SetRefreshTimeInterval(RefreshTimeInterval)</strong></a></h2>
 </div>
     
@@ -11596,6 +12659,17 @@ They will lock the parking spot.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AI_A2G_DISPATCHER).DefenderPatrolIndex" ><strong>AI_A2G_DISPATCHER.DefenderPatrolIndex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AI_A2G_DISPATCHER).DefenderSpawns" ><strong>AI_A2G_DISPATCHER.DefenderSpawns</strong></a>
     
@@ -11637,6 +12711,17 @@ They will lock the parking spot.</p>
 
     <a href="##(AI_A2G_DISPATCHER.DefenseCoordinates)">#AI_A2G_DISPATCHER.DefenseCoordinates</a>
 <a id="#(AI_A2G_DISPATCHER).DefenseCoordinates" ><strong>AI_A2G_DISPATCHER.DefenseCoordinates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AI_A2G_DISPATCHER.DefenseQueue)">#AI_A2G_DISPATCHER.DefenseQueue</a>
+<a id="#(AI_A2G_DISPATCHER).DefenseQueue" ><strong>AI_A2G_DISPATCHER.DefenseQueue</strong></a>
     
 
 
@@ -11692,6 +12777,17 @@ They will lock the parking spot.</p>
 
     <a href="##(AI_A2G_DISPATCHER.Takeoff)">#AI_A2G_DISPATCHER.Takeoff</a>
 <a id="#(AI_A2G_DISPATCHER).Takeoff" ><strong>AI_A2G_DISPATCHER.Takeoff</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER).TakeoffScheduleID" ><strong>AI_A2G_DISPATCHER.TakeoffScheduleID</strong></a>
     
 
 
@@ -12910,6 +14006,17 @@ They will lock the parking spot.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AI_A2G_DISPATCHER).DefenderPatrolIndex" ><strong>AI_A2G_DISPATCHER.DefenderPatrolIndex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AI_A2G_DISPATCHER).DefenderSpawns" ><strong>AI_A2G_DISPATCHER.DefenderSpawns</strong></a>
     
@@ -12951,6 +14058,17 @@ They will lock the parking spot.</p>
 
     <a href="##(AI_A2G_DISPATCHER.DefenseCoordinates)">#AI_A2G_DISPATCHER.DefenseCoordinates</a>
 <a id="#(AI_A2G_DISPATCHER).DefenseCoordinates" ><strong>AI_A2G_DISPATCHER.DefenseCoordinates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AI_A2G_DISPATCHER.DefenseQueue)">#AI_A2G_DISPATCHER.DefenseQueue</a>
+<a id="#(AI_A2G_DISPATCHER).DefenseQueue" ><strong>AI_A2G_DISPATCHER.DefenseQueue</strong></a>
     
 
 
@@ -13006,6 +14124,17 @@ They will lock the parking spot.</p>
 
     <a href="##(AI_A2G_DISPATCHER.Takeoff)">#AI_A2G_DISPATCHER.Takeoff</a>
 <a id="#(AI_A2G_DISPATCHER).Takeoff" ><strong>AI_A2G_DISPATCHER.Takeoff</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER).TakeoffScheduleID" ><strong>AI_A2G_DISPATCHER.TakeoffScheduleID</strong></a>
     
 
 
@@ -15642,6 +16771,246 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##AI_A2G_DISPATCHER.DefenderQueueItem')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_DISPATCHER.DefenderQueueItem)">Type <strong>AI_A2G_DISPATCHER.DefenderQueueItem</strong></a></h2></div>
+        <div id= "#Types##AI_A2G_DISPATCHER.DefenderQueueItem" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).AttackerDetection" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.AttackerDetection</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).DefenderSquadron" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.DefenderSquadron</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).DefendersNeeded" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.DefendersNeeded</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).Defense" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.Defense</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).DefenseTaskType" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.DefenseTaskType</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).Patrol" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.Patrol</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AI_A2G_DISPATCHER.DefenderQueueItem).SquadronName" ><strong>AI_A2G_DISPATCHER.DefenderQueueItem.SquadronName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##AI_A2G_DISPATCHER.DefenseQueueItem')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_DISPATCHER.DefenseQueueItem)">Type <strong>AI_A2G_DISPATCHER.DefenseQueueItem</strong></a></h2></div>
+        <div id= "#Types##AI_A2G_DISPATCHER.DefenseQueueItem" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>A defense queue item description</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Functional.Detection.html##(DETECTION_BASE)">Functional.Detection#DETECTION_BASE</a>
+<a id="#(AI_A2G_DISPATCHER.DefenseQueueItem).AttackerDetection" ><strong>AI_A2G_DISPATCHER.DefenseQueueItem.AttackerDetection</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AI_A2G_DISPATCHER.Squadron)">#AI_A2G_DISPATCHER.Squadron</a>
+<a id="#(AI_A2G_DISPATCHER.DefenseQueueItem).DefenderSquadron" ><strong>AI_A2G_DISPATCHER.DefenseQueueItem.DefenderSquadron</strong></a>
+    
+<p>The squadron in the queue.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AI_A2G_DISPATCHER.DefenseQueueItem).SquadronName" ><strong>AI_A2G_DISPATCHER.DefenseQueueItem.SquadronName</strong></a>
+    
+<p>The name of the squadron.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##AI_A2G_DISPATCHER.Squadron')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2G_DISPATCHER.Squadron)">Type <strong>AI_A2G_DISPATCHER.Squadron</strong></a></h2></div>
+        <div id= "#Types##AI_A2G_DISPATCHER.Squadron" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Definition of a Squadron.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Airbase.html##(AIRBASE)">Wrapper.Airbase#AIRBASE</a>
+<a id="#(AI_A2G_DISPATCHER.Squadron).Airbase" ><strong>AI_A2G_DISPATCHER.Squadron.Airbase</strong></a>
+    
+<p>The home airbase.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AI_A2G_DISPATCHER.Squadron).AirbaseName" ><strong>AI_A2G_DISPATCHER.Squadron.AirbaseName</strong></a>
+    
+<p>The name of the home airbase.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AI_A2G_DISPATCHER.Squadron).Captured" ><strong>AI_A2G_DISPATCHER.Squadron.Captured</strong></a>
+    
+<p>true if the squadron is captured. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AI_A2G_DISPATCHER.Squadron).Name" ><strong>AI_A2G_DISPATCHER.Squadron.Name</strong></a>
+    
+<p>The Squadron name.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2G_DISPATCHER.Squadron).Overhead" ><strong>AI_A2G_DISPATCHER.Squadron.Overhead</strong></a>
+    
+<p>The overhead for the squadron. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2G_DISPATCHER.Squadron).ResourceCount" ><strong>AI_A2G_DISPATCHER.Squadron.ResourceCount</strong></a>
+    
+<p>The number of resources available.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Spawn.html##(SPAWN)">Core.Spawn#SPAWN</a>
+<a id="#(AI_A2G_DISPATCHER.Squadron).Spawn" ><strong>AI_A2G_DISPATCHER.Squadron.Spawn</strong></a>
+    
+<p>The spawning object.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #list&lt;#string&gt;
+<a id="#(AI_A2G_DISPATCHER.Squadron).TemplatePrefixes" ><strong>AI_A2G_DISPATCHER.Squadron.TemplatePrefixes</strong></a>
+    
+<p>The list of template prefixes.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
