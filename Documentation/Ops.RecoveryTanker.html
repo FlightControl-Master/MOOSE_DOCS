@@ -32,7 +32,7 @@
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/AI_Air_To_Air_Dispatching.JPG" alt="Image">
+           <img src= "../Images/MOOSE.JPG" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="AI.AI_A2A.html">AI.AI_A2A</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
@@ -881,7 +881,7 @@ for further explanation and examples.</p>
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/MOOSE.JPG" alt="Image">
+           <img src= "../Images/Ops_Airboss.png" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.Airboss.html">Ops.Airboss</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
@@ -892,7 +892,7 @@ for further explanation and examples.</p>
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/MOOSE.JPG" alt="Image">
+           <img src= "../Images/Ops_RecoveryTanker.png" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.RecoveryTanker.html">Ops.RecoveryTanker</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
@@ -903,7 +903,7 @@ for further explanation and examples.</p>
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
-           <img src= "../Images/MOOSE.JPG" alt="Image">
+           <img src= "../Images/Ops_RescueHelo.png" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.RescueHelo.html">Ops.RescueHelo</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
@@ -1212,7 +1212,7 @@ which are excellent tools to be reused in an OO environment!.</p>
    </div>
   </nav>
   
-<img src="..\Images\MOOSE.JPG" alt="Banner Image"/>   
+<img src="..\Images\Ops_RecoveryTanker.png" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
     <h1>Module <strong>Ops.RecoveryTanker</strong></h1>
@@ -1233,7 +1233,8 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Automatic respawning when tanker runs out of fuel for 24/7 operations.</li>
     <li>Tanker can be spawned cold or hot on the carrier or at any other airbase or directly in air.</li>
     <li>Automatic AA TACAN beacon setting.</li>
-    <li>Multiple tankers at different carriers due to object oriented approach.</li>
+    <li>Multiple tankers at the same carrier.</li>
+    <li>Multiple carriers due to object oriented approach.</li>
     <li>Finite State Machine (FSM) implementation, which allows the mission designer to hook into certain events.</li>
 </ul>
 
@@ -1399,6 +1400,39 @@ need to be set as DCS task. This is the reason why the pattern is not constantly
 
 <p>The maximum update frequency is set to 10 minutes. You can adjust this by <a href="##(RECOVERYTANKER).SetPatternUpdateInterval">RECOVERYTANKER.SetPatternUpdateInterval</a>.
 Also the pattern will not be updated whilst the carrier is turning or the tanker is currently refueling another unit.</p>
+
+<h2>Callsign</h2>
+
+<p>The callsign of the tanker can be set via the <a href="##(RECOVERYTANKER).SetCallsign">RECOVERYTANKER.SetCallsign</a>(<em>callsignname</em>, <em>callsignnumber</em>) function. Both parameters are <em>numbers</em>.
+The first parameter <em>callsignname</em> defines the name (1=Texaco, 2=Arco, 3=Shell). The second (optional) parameter specifies the first number and has to be between 1-9.
+Also see <a href="https://wiki.hoggitworld.com/view/DCS_enum_callsigns">DCS_enum_callsigns</a> and <a href="https://wiki.hoggitworld.com/view/DCS_command_setCallsign">DCS_command_setCallsign</a>.</p>
+
+<pre><code>TexacoStennis:SetCAllsign(CALLSIGN.Tanker.Arco)
+</code></pre>
+
+<p>For convenience, MOOSE has a CALLSIGN enumerator introduced.</p>
+
+<h2>AWACS</h2>
+
+<p>You can use the class also to have an AWACS orbiting overhead the carrier. This requires to add the <a href="##(RECOVERYTANKER).SetAWACS">RECOVERYTANKER.SetAWACS</a>() function to the script, which sets the enroute tasks AWACS 
+as soon as the aircraft enters its pattern.</p>
+
+<p>A simple script could look like this:</p>
+
+<pre><code>-- E-2D at USS Stennis spawning in air.
+local awacsStennis=RECOVERYTANKER:New("USS Stennis", "E2D Group")
+
+-- Custom settings:
+awacsStennis:SetAWACS()
+awacsStennis:SetCallsign(CALLSIGN.AWACS.Wizard, 1)
+awacsStennis:SetTakeoffAir()
+awacsStennis:SetAltitude(20000)
+awacsStennis:SetRadio(262)
+awacsStennis:SetTACAN(2, "WIZ")
+
+-- Start AWACS.
+awacsStennis:Start()
+</code></pre>
 
 <h1>Finite State Machine</h1>
 
@@ -1595,9 +1629,21 @@ If enabled, text messages about the tanker status will be displayed on screen an
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).SetAWACS">RECOVERYTANKER:SetAWACS(switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set that the group takes the roll of an AWACS instead of a refueling tanker.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).SetAltitude">RECOVERYTANKER:SetAltitude(altitude)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set orbit pattern altitude of the tanker.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).SetCallsign">RECOVERYTANKER:SetCallsign(callsignname, callsignnumber)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set callsign of the tanker group.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1775,6 +1821,12 @@ If enabled, text messages about the tanker status will be displayed on screen an
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).UID">RECOVERYTANKER.UID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Unique ID (global).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER)._ActivateTACAN">RECOVERYTANKER:_ActivateTACAN(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Activate TACAN of tanker.</p>
@@ -1871,9 +1923,27 @@ If enabled, text messages about the tanker status will be displayed on screen an
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).awacs">RECOVERYTANKER.awacs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, the groups gets the enroute task AWACS instead of tanker.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).beacon">RECOVERYTANKER.beacon</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Tanker TACAN beacon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).callsignname">RECOVERYTANKER.callsignname</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Number for the callsign name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).callsignnumber">RECOVERYTANKER.callsignnumber</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Number of the callsign name.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2005,7 +2075,7 @@ If enabled, text messages about the tanker status will be displayed on screen an
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RECOVERYTANKER).uid">RECOVERYTANKER.uid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Unique ID (global).</p>
+<p>Unique ID of this tanker.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2861,6 +2931,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(RECOVERYTANKER).UID" ><strong>RECOVERYTANKER.UID</strong></a>
+    
+<p>Unique ID (global).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Wrapper.Airbase.html##(AIRBASE)">Wrapper.Airbase#AIRBASE</a>
 <a id="#(RECOVERYTANKER).airbase" ><strong>RECOVERYTANKER.airbase</strong></a>
     
@@ -2894,10 +2975,43 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(RECOVERYTANKER).awacs" ><strong>RECOVERYTANKER.awacs</strong></a>
+    
+<p>If true, the groups gets the enroute task AWACS instead of tanker.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Radio.html##(BEACON)">Core.Radio#BEACON</a>
 <a id="#(RECOVERYTANKER).beacon" ><strong>RECOVERYTANKER.beacon</strong></a>
     
 <p>Tanker TACAN beacon.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RECOVERYTANKER).callsignname" ><strong>RECOVERYTANKER.callsignname</strong></a>
+    
+<p>Number for the callsign name.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RECOVERYTANKER).callsignnumber" ><strong>RECOVERYTANKER.callsignnumber</strong></a>
+    
+<p>Number of the callsign name.</p>
 
 </div>
 
@@ -3084,7 +3198,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RECOVERYTANKER).uid" ><strong>RECOVERYTANKER.uid</strong></a>
     
-<p>Unique ID (global).</p>
+<p>Unique ID of this tanker.</p>
 
 </div>
 
@@ -3817,6 +3931,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(RECOVERYTANKER).SetAWACS" ><strong>RECOVERYTANKER:SetAWACS(switch)</strong></a></h2>
+</div>
+    
+<p>Set that the group takes the roll of an AWACS instead of a refueling tanker.</p>
+
+<div id= "#Functions##SetAWACS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RECOVERYTANKER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true or nil, set roll AWACS.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RECOVERYTANKER)">#RECOVERYTANKER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(RECOVERYTANKER).SetAltitude" ><strong>RECOVERYTANKER:SetAltitude(altitude)</strong></a></h2>
 </div>
     
@@ -3839,6 +3997,63 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Tanker altitude in feet. Default 6000 ft.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RECOVERYTANKER)">#RECOVERYTANKER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RECOVERYTANKER).SetCallsign" ><strong>RECOVERYTANKER:SetCallsign(callsignname, callsignnumber)</strong></a></h2>
+</div>
+    
+<p>Set callsign of the tanker group.</p>
+
+<div id= "#Functions##SetCallsign" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RECOVERYTANKER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>callsignname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>callsignnumber</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number</p>
 
           </div>
         </div>
@@ -5693,6 +5908,17 @@ The group name is the one specified in the <a href="##(RECOVERYTANKER).New">RECO
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(RECOVERYTANKER).UID" ><strong>RECOVERYTANKER.UID</strong></a>
+    
+<p>Unique ID (global).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Wrapper.Airbase.html##(AIRBASE)">Wrapper.Airbase#AIRBASE</a>
 <a id="#(RECOVERYTANKER).airbase" ><strong>RECOVERYTANKER.airbase</strong></a>
     
@@ -5726,10 +5952,43 @@ The group name is the one specified in the <a href="##(RECOVERYTANKER).New">RECO
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(RECOVERYTANKER).awacs" ><strong>RECOVERYTANKER.awacs</strong></a>
+    
+<p>If true, the groups gets the enroute task AWACS instead of tanker.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Radio.html##(BEACON)">Core.Radio#BEACON</a>
 <a id="#(RECOVERYTANKER).beacon" ><strong>RECOVERYTANKER.beacon</strong></a>
     
 <p>Tanker TACAN beacon.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RECOVERYTANKER).callsignname" ><strong>RECOVERYTANKER.callsignname</strong></a>
+    
+<p>Number for the callsign name.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RECOVERYTANKER).callsignnumber" ><strong>RECOVERYTANKER.callsignnumber</strong></a>
+    
+<p>Number of the callsign name.</p>
 
 </div>
 
@@ -5916,7 +6175,7 @@ The group name is the one specified in the <a href="##(RECOVERYTANKER).New">RECO
     #number
 <a id="#(RECOVERYTANKER).uid" ><strong>RECOVERYTANKER.uid</strong></a>
     
-<p>Unique ID (global).</p>
+<p>Unique ID of this tanker.</p>
 
 </div>
 
@@ -7262,6 +7521,17 @@ The group name is the one specified in the <a href="##(RECOVERYTANKER).New">RECO
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(RECOVERYTANKER).UID" ><strong>RECOVERYTANKER.UID</strong></a>
+    
+<p>Unique ID (global).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Wrapper.Airbase.html##(AIRBASE)">Wrapper.Airbase#AIRBASE</a>
 <a id="#(RECOVERYTANKER).airbase" ><strong>RECOVERYTANKER.airbase</strong></a>
     
@@ -7295,10 +7565,43 @@ The group name is the one specified in the <a href="##(RECOVERYTANKER).New">RECO
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(RECOVERYTANKER).awacs" ><strong>RECOVERYTANKER.awacs</strong></a>
+    
+<p>If true, the groups gets the enroute task AWACS instead of tanker.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Radio.html##(BEACON)">Core.Radio#BEACON</a>
 <a id="#(RECOVERYTANKER).beacon" ><strong>RECOVERYTANKER.beacon</strong></a>
     
 <p>Tanker TACAN beacon.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RECOVERYTANKER).callsignname" ><strong>RECOVERYTANKER.callsignname</strong></a>
+    
+<p>Number for the callsign name.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RECOVERYTANKER).callsignnumber" ><strong>RECOVERYTANKER.callsignnumber</strong></a>
+    
+<p>Number of the callsign name.</p>
 
 </div>
 
@@ -7485,7 +7788,7 @@ The group name is the one specified in the <a href="##(RECOVERYTANKER).New">RECO
     #number
 <a id="#(RECOVERYTANKER).uid" ><strong>RECOVERYTANKER.uid</strong></a>
     
-<p>Unique ID (global).</p>
+<p>Unique ID of this tanker.</p>
 
 </div>
 
@@ -10148,7 +10451,7 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/MOOSE.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Ops_RecoveryTanker.png')";
 }
 </script>
 
