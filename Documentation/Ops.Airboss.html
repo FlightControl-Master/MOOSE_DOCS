@@ -1240,7 +1240,7 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>F10 radio menu including carrier info (weather, radio frequencies, TACAN/ICLS channels), player LSO grades, help function (aircraft attitude, marking of zones etc).</li>
     <li>Recovery tanker and refueling option via integration of <a href="Ops.RecoveryTanker.html">Ops.RecoveryTanker</a> class.</li>
     <li>Rescue helicopter option via <a href="Ops.RescueHelo.html">Ops.RescueHelo</a> class.</li>
-    <li>Combine multiple human player to sections.</li>
+    <li>Combine multiple human player to sections (WIP).</li>
     <li>Many parameters customizable by convenient user API functions.</li>
     <li>Multiple carrier support due to object oriented approach.</li>
     <li>Unlimited number of players.</li>
@@ -1252,6 +1252,7 @@ which are excellent tools to be reused in an OO environment!.</p>
 
 <ul>
     <li><a href="https://en.wikipedia.org/wiki/USS_John_C._Stennis">USS John C. Stennis</a> (CVN-74)</li>
+    <li><a href="https://en.wikipedia.org/wiki/USS_Tarawa_(LHA-1">USS Tarawa</a> (LHA-1) [<strong>WIP</strong>]</li>
 </ul>
 
 <p><strong>Supported Aircraft:</strong></p>
@@ -1259,6 +1260,7 @@ which are excellent tools to be reused in an OO environment!.</p>
 <ul>
     <li><a href="https://forums.eagle.ru/forumdisplay.php?f=557">F/A-18C Hornet Lot 20</a> (Player &amp; AI)</li>
     <li><a href="https://forums.eagle.ru/showthread.php?t=224989">A-4E Skyhawk Community Mod</a> (Player &amp; AI)</li>
+    <li><a href="https://forums.eagle.ru/forumdisplay.php?f=555">AV-8B N/A Harrier</a> (Player &amp; AI) [<strong>WIP</strong>]</li>
     <li>F/A-18C Hornet (AI)</li>
     <li>F-14A Tomcat (AI)</li>
     <li>E-2D Hawkeye (AI)</li>
@@ -1268,10 +1270,14 @@ which are excellent tools to be reused in an OO environment!.</p>
 <p>At the moment, optimized parameters are available for the F/A-18C Hornet (Lot 20) as aircraft and the USS John C. Stennis as carrier.
 The A-4E community mod is also supported in principle but may need further tweaking of parameters. Also the A-4E-C mod needs <em>easy comms</em> activated to interact with the F10 radio menu.</p>
 
-<p>The implementation is kept general. So other aircraft and carriers possible in future. <a href="https://forums.eagle.ru/forumdisplay.php?f=395"><em>Winter is coming!</em></a>
+<p>The AV-8B Harrier and the USS Tarawa are very much WIP. Those two can only be used together, i.e. the Tarawa is the only carrier the harrier is supposed to land on and
+the no other fixed wing aircraft (human or AI controlled) are supposed to land on the Tarawa. Currently only Case I is supported. Case II/III take slightly steps from the CVN carrier.
+However, the two Case II/III pattern are very similar so this is not a big drawback.</p>
+
+<p>The implementation is kept general. Therefore, other aircraft and carriers can be added in future. <a href="https://forums.eagle.ru/forumdisplay.php?f=395"><em>Winter is coming!</em></a>
 But each aircraft or carrier needs a different set of optimized individual parameters. </p>
 
-<p><strong>PLEASE NOTE</strong> that his class is work in progress and in an early <strong>alpha</strong> stage. Many/most things work already very nicely but there a lot of cases I did not run into yet.
+<p><strong>PLEASE NOTE</strong> that his class is work in progress. Many/most things work already very nicely but there a lot of cases I did not run into yet.
  Therefore, your <em>constructive</em> feedback is both necessary and appreciated!</p>
 
 <h2>Discussion</h2>
@@ -1290,11 +1296,27 @@ There you also find an example mission and the necessary voice over sound files.
 
 <h2>Youtube Videos</h2>
 
+<p>Early AIRBOSS Groove Testing:</p>
+
 <ul>
     <li><a href="https://www.youtube.com/watch?v=94KHQxxX3UI">[MOOSE] Airboss - Groove Testing (WIP)</a></li>
     <li><a href="https://www.youtube.com/watch?v=ZbjD7FHiaHo">[MOOSE] Airboss - Groove Test A-4E Community Mod</a></li>
 </ul>
 
+<p>Lex explaining Boat Ops:</p>
+
+<ul>
+    <li><a href="https://www.youtube.com/watch?v=LvGQS-3AzMc">( DCS HORNET ) Some boat ops basics VID 1</a></li>
+    <li><a href="https://www.youtube.com/watch?v=bN44wvtRsw0">( DCS HORNET ) Some boat ops basics VID 1</a></li>
+</ul>
+
+<p>Jabbers Case I and III Recovery Tutorials:</p>
+
+<ul>
+    <li><a href="https://www.youtube.com/watch?v=lm-M3VUy-_I">DCS World - F/A-18 - Case I Carrier Recovery Tutorial</a></li>
+    <li><a href="https://www.youtube.com/watch?v=cW5R32Q6xC8">DCS World - Case I Recovery Tutorial - Followup</a></li>
+    <li><a href="https://www.youtube.com/watch?v=Lnfug5CVAvo">DCS World - CASE III Recovery Tutorial</a></li>
+</ul>
 
 <h3>Open Questions?</h3>
 
@@ -1366,7 +1388,7 @@ Bankler was kind enough to allow me to add this to the class - thanks again!</p>
 <ul>
     <li><strong>CASE I</strong> during daytime and good weather, </li>
     <li><strong>CASE II</strong> during daytime but poor visibility conditions,</li>
-    <li><strong>CASE III</strong> during nighttime recoveries.</li>
+    <li><strong>CASE III</strong> when below Case II conditions, e.g. during nighttime.</li>
 </ul>
 
 <p>That being said, this script allows you to use any of the three cases to be used at any time. Or, in other words, <em>you</em> need to specify when which case is safe and appropriate.</p>
@@ -1804,7 +1826,7 @@ next window opens or adjust the recovery planning accordingly.</p>
 <p>The following example shows how you set up a recovery window for the next week:</p>
 
 <pre><code>for i=0,7 do
-  AddRecoveryWindow(string.format("08:05:00+%d", i), string.format("08:50:00+%d", i))
+   airbossStennis:AddRecoveryWindow(string.format("08:05:00+%d", i), string.format("08:50:00+%d", i))
 end
 </code></pre>
 
@@ -1815,8 +1837,10 @@ end
 <pre><code>airbossStennis:AddRecoveryWindow("8:30", "9:30", 1, nil, true, 20)
 </code></pre>
 
-<p>Setting the fifth parameter to <em>true</em> enables the automatic turning into the wind. The sixth parameter (here 20) specifies the speed in knots the carrier will go.
-The carrier will steam into the wind for as long as the recovery window is open. The distance up to which possible collisions are detected can be set by the <a href="##(AIRBOSS).SetCollisionDistance">AIRBOSS.SetCollisionDistance</a> function.</p>
+<p>Setting the fifth parameter to <em>true</em> enables the automatic turning into the wind. The sixth parameter (here 20) specifies the speed in knots the carrier will go so that to total wind above the deck.
+For example, if the is blowing with 5 knots, the carrier will go 15 knots so that it adds up to the specified 20 knots. </p>
+
+<p>The carrier will steam into the wind for as long as the recovery window is open. The distance up to which possible collisions are detected can be set by the <a href="##(AIRBOSS).SetCollisionDistance">AIRBOSS.SetCollisionDistance</a> function.</p>
 
 <p>However, the airboss scans the type of the surface up to 5 NM in the direction of movement of the carrier. If he detects anything but deep water, he will stop the current course and head back to
 the point where he initially turned into the wind.</p>
@@ -2065,12 +2089,6 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).AircraftPlayer">AIRBOSS.AircraftPlayer</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).BreakEarly">AIRBOSS.BreakEarly</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Early break checkpoint.</p>
@@ -2113,7 +2131,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierTurnIntoWind">AIRBOSS:CarrierTurnIntoWind(distance, speed)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierTurnIntoWind">AIRBOSS:CarrierTurnIntoWind(time, vdeck)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Let the carrier turn into the wind.</p>
 </td>
@@ -3283,6 +3301,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetLandingSpotCoordinate">AIRBOSS:_GetLandingSpotCoordinate()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get landing spot on Tarawa.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetMarshalAltitude">AIRBOSS:_GetMarshalAltitude(stack, case)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get marshal altitude and two positions of a counter-clockwise race track pattern.</p>
@@ -3379,6 +3403,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneAbeamLandingSpot">AIRBOSS:_GetZoneAbeamLandingSpot()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get zone of primary abeam landing position of USS Tarawa.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneArcIn">AIRBOSS:_GetZoneArcIn(case)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get arc in zone with radius 1 NM and DME 14 NM from the carrier.</p>
@@ -3434,6 +3464,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneLandingSpot">AIRBOSS:_GetZoneLandingSpot()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get zone of the primary landing spot of the USS Tarawa.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZonePlatform">AIRBOSS:_GetZonePlatform(case)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get platform zone with radius 1 NM and DME 19 NM from the carrier.</p>
@@ -3442,7 +3478,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneRunwayBox">AIRBOSS:_GetZoneRunwayBox()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get zone of landing runway</p>
+<p>Get zone of landing runway.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3482,6 +3518,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._InitTarawa">AIRBOSS:_InitTarawa()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Init parameters for USS Stennis carrier.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._Initial">AIRBOSS:_Initial(playerData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Start pattern when player enters the initial zone in case I/II recoveries.</p>
@@ -3490,7 +3532,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._IsCarrierAircraft">AIRBOSS:_IsCarrierAircraft(unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if aircraft is capable of landing on an aircraft carrier.</p>
+<p>Check if aircraft is capable of landing on this aircraft carrier.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5031,7 +5073,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.AircraftCarrier).AV8B">AIRBOSS.AircraftCarrier.AV8B</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>AV-8B Night Harrier (not yet supported).</p>
+<p>AV-8B Night Harrier. Works only with the USS Tarawa.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5080,37 +5122,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.AircraftCarrier).S3BTANKER">AIRBOSS.AircraftCarrier.S3BTANKER</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Lockheed S-3B Viking tanker.</p>
-</td>
-          </tr>
-        </table>
-        </div>
-
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AIRBOSS.AircraftPlayer)">Type <strong>AIRBOSS.AircraftPlayer</strong></a></h2></div>
-         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(AIRBOSS.AircraftPlayer)">AIRBOSS.AircraftPlayer</a></strong>
-   </div>
-        <div class="w3-card w3-margin">
-        <table class="w3-table w3-border-bottom w3-border-theme-l2">
-          <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AIRBOSS.AircraftPlayer</th>
-            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.AircraftPlayer).A4EC">AIRBOSS.AircraftPlayer.A4EC</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>A-4E Community mod.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.AircraftPlayer).AV8B">AIRBOSS.AircraftPlayer.AV8B</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>AV-8B Night Harrier (not yet supported).</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.AircraftPlayer).HORNET">AIRBOSS.AircraftPlayer.HORNET</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>F/A-18C Lot 20 Hornet.</p>
 </td>
           </tr>
         </table>
@@ -5572,6 +5583,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).AL">AIRBOSS.GroovePos.AL</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"AL": Abeam landing position (Tarawa).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).AR">AIRBOSS.GroovePos.AR</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"AR": At the ramp.</p>
@@ -5593,6 +5610,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).IW">AIRBOSS.GroovePos.IW</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"IW": In the wires.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GroovePos).LC">AIRBOSS.GroovePos.LC</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"LC": Level crossing (Tarawa).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5633,6 +5656,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).CHECK">AIRBOSS.LSOCall.CHECK</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"CHECK" call. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).CLEAREDTOLAND">AIRBOSS.LSOCall.CLEAREDTOLAND</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Cleared to land" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).CLICK">AIRBOSS.LSOCall.CLICK</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Radio end transmission click sound.</p>
@@ -5651,6 +5686,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).EXPECTHEAVYWAVEOFF">AIRBOSS.LSOCall.EXPECTHEAVYWAVEOFF</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Expect heavy wavoff" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).EXPECTSPOT75">AIRBOSS.LSOCall.EXPECTSPOT75</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Expect spot 7.5" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).FAST">AIRBOSS.LSOCall.FAST</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"You're fast" call.</p>
@@ -5666,6 +5713,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).HIGH">AIRBOSS.LSOCall.HIGH</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"You're high" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).IDLE">AIRBOSS.LSOCall.IDLE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Idle" call.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5780,6 +5833,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).SLOW">AIRBOSS.LSOCall.SLOW</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"You're slow" call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOCall).STABILIZED">AIRBOSS.LSOCall.STABILIZED</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Stabilized" call.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6032,6 +6091,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PatternStep).GROOVE_AL">AIRBOSS.PatternStep.GROOVE_AL</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Groove Abeam Landing Spot".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PatternStep).GROOVE_AR">AIRBOSS.PatternStep.GROOVE_AR</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Groove At the Ramp".</p>
@@ -6053,6 +6118,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PatternStep).GROOVE_IW">AIRBOSS.PatternStep.GROOVE_IW</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>"Groove In the Wires".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PatternStep).GROOVE_LC">AIRBOSS.PatternStep.GROOVE_LC</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>"Groove Level Cross".</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6386,7 +6457,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.RadioCall).sender">AIRBOSS.RadioCall.sender</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Sender of the message (optional). Default radia alias.</p>
+<p>Sender of the message (optional). Default radio alias.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6563,17 +6634,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     <a href="##(AIRBOSS.AircraftCarrier)">#AIRBOSS.AircraftCarrier</a>
 <a id="#(AIRBOSS).AircraftCarrier" ><strong>AIRBOSS.AircraftCarrier</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="##(AIRBOSS.AircraftPlayer)">#AIRBOSS.AircraftPlayer</a>
-<a id="#(AIRBOSS).AircraftPlayer" ><strong>AIRBOSS.AircraftPlayer</strong></a>
     
 
 
@@ -8018,7 +8078,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).CarrierTurnIntoWind" ><strong>AIRBOSS:CarrierTurnIntoWind(distance, speed)</strong></a></h2>
+<h2><a id="#(AIRBOSS).CarrierTurnIntoWind" ><strong>AIRBOSS:CarrierTurnIntoWind(time, vdeck)</strong></a></h2>
 </div>
     
 <p>Let the carrier turn into the wind.</p>
@@ -8034,12 +8094,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>distance</strong></strong>
+            <strong><strong>time</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Distance in NM from current position.</p>
+<p>Time in seconds.</p>
 
           </div>
         </div>
@@ -8047,12 +8107,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>speed</strong></strong>
+            <strong><strong>vdeck</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Speed in knots. Default 15 knots.</p>
+<p>Speed on deck m/s. Carrier will</p>
 
           </div>
         </div>
@@ -14876,6 +14936,36 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetLandingSpotCoordinate" ><strong>AIRBOSS:_GetLandingSpotCoordinate()</strong></a></h2>
+</div>
+    
+<p>Get landing spot on Tarawa.</p>
+
+<div id= "#Functions##_GetLandingSpotCoordinate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Primary landing spot coordinate.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetMarshalAltitude" ><strong>AIRBOSS:_GetMarshalAltitude(stack, case)</strong></a></h2>
 </div>
     
@@ -15086,7 +15176,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
 <p>Get optimal landing position of the aircraft.</p>
 
     
-<p>Usually between second and third wire.</p>
+<p>Usually between second and third wire. In case of Tarawa we take the abeam landing spot 120 ft abeam the 7.5 position.</p>
 
 <div id= "#Functions##_GetOptLandingCoordinate" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -15664,6 +15754,39 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetZoneAbeamLandingSpot" ><strong>AIRBOSS:_GetZoneAbeamLandingSpot()</strong></a></h2>
+</div>
+    
+<p>Get zone of primary abeam landing position of USS Tarawa.</p>
+
+    
+<p>Box length and width 30 meters.</p>
+
+<div id= "#Functions##_GetZoneAbeamLandingSpot" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Zone.html##(ZONE_POLYGON)">Core.Zone#ZONE_POLYGON</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Zone surrounding landing runway.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetZoneArcIn" ><strong>AIRBOSS:_GetZoneArcIn(case)</strong></a></h2>
 </div>
     
@@ -16078,6 +16201,36 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetZoneLandingSpot" ><strong>AIRBOSS:_GetZoneLandingSpot()</strong></a></h2>
+</div>
+    
+<p>Get zone of the primary landing spot of the USS Tarawa.</p>
+
+<div id= "#Functions##_GetZoneLandingSpot" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Zone.html##(ZONE_POLYGON)">Core.Zone#ZONE_POLYGON</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Zone surrounding landing runway.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetZonePlatform" ><strong>AIRBOSS:_GetZonePlatform(case)</strong></a></h2>
 </div>
     
@@ -16128,7 +16281,7 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
 <h2><a id="#(AIRBOSS)._GetZoneRunwayBox" ><strong>AIRBOSS:_GetZoneRunwayBox()</strong></a></h2>
 </div>
     
-<p>Get zone of landing runway</p>
+<p>Get zone of landing runway.</p>
 
 <div id= "#Functions##_GetZoneRunwayBox" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -16411,6 +16564,25 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._InitTarawa" ><strong>AIRBOSS:_InitTarawa()</strong></a></h2>
+</div>
+    
+<p>Init parameters for USS Stennis carrier.</p>
+
+<div id= "#Functions##_InitTarawa" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._Initial" ><strong>AIRBOSS:_Initial(playerData)</strong></a></h2>
 </div>
     
@@ -16458,7 +16630,7 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
 <h2><a id="#(AIRBOSS)._IsCarrierAircraft" ><strong>AIRBOSS:_IsCarrierAircraft(unit)</strong></a></h2>
 </div>
     
-<p>Check if aircraft is capable of landing on an aircraft carrier.</p>
+<p>Check if aircraft is capable of landing on this aircraft carrier.</p>
 
 <div id= "#Functions##_IsCarrierAircraft" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -20073,7 +20245,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <p>On after Start event.</p>
 
     
-<p>Starts the warehouse. Addes event handlers and schedules status updates of reqests and queue.</p>
+<p>Starts the AIRBOSS. Addes event handlers and schedules status updates of reqests and queue.</p>
 
 <div id= "#Functions##onafterStart" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -20533,17 +20705,6 @@ Also set player step to undefined if applicable or remove human flight if option
 
     <a href="##(AIRBOSS.AircraftCarrier)">#AIRBOSS.AircraftCarrier</a>
 <a id="#(AIRBOSS).AircraftCarrier" ><strong>AIRBOSS.AircraftCarrier</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="##(AIRBOSS.AircraftPlayer)">#AIRBOSS.AircraftPlayer</a>
-<a id="#(AIRBOSS).AircraftPlayer" ><strong>AIRBOSS.AircraftPlayer</strong></a>
     
 
 
@@ -22908,17 +23069,6 @@ Also set player step to undefined if applicable or remove human flight if option
 
     <a href="##(AIRBOSS.AircraftCarrier)">#AIRBOSS.AircraftCarrier</a>
 <a id="#(AIRBOSS).AircraftCarrier" ><strong>AIRBOSS.AircraftCarrier</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="##(AIRBOSS.AircraftPlayer)">#AIRBOSS.AircraftPlayer</a>
-<a id="#(AIRBOSS).AircraftPlayer" ><strong>AIRBOSS.AircraftPlayer</strong></a>
     
 
 
@@ -26823,7 +26973,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.AircraftCarrier).AV8B" ><strong>AIRBOSS.AircraftCarrier.AV8B</strong></a>
     
-<p>AV-8B Night Harrier (not yet supported).</p>
+<p>AV-8B Night Harrier. Works only with the USS Tarawa.</p>
 
 </div>
 
@@ -26912,54 +27062,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.AircraftCarrier).S3BTANKER" ><strong>AIRBOSS.AircraftCarrier.S3BTANKER</strong></a>
     
 <p>Lockheed S-3B Viking tanker.</p>
-
-</div>
-
-</div>   
-<div class="functions  w3-container w3-theme-l2">
-  <h2>Function(s)</h2>
-</div>  
-</div>
-
-        </div>
-      <div onclick="myFunction('#Types##AIRBOSS.AircraftPlayer')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AIRBOSS.AircraftPlayer)">Type <strong>AIRBOSS.AircraftPlayer</strong></a></h2></div>
-        <div id= "#Types##AIRBOSS.AircraftPlayer" class="w3-container w3-white w3-padding-16" id="module_other_types">
-          <div class="w3-white" id="record_type">
-  
-<p>Player aircraft types capable of landing on carriers.</p>
-
-<div class="fields w3-container w3-theme-l2">
-  <h2>Field(s)</h2>
-</div>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(AIRBOSS.AircraftPlayer).A4EC" ><strong>AIRBOSS.AircraftPlayer.A4EC</strong></a>
-    
-<p>A-4E Community mod.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(AIRBOSS.AircraftPlayer).AV8B" ><strong>AIRBOSS.AircraftPlayer.AV8B</strong></a>
-    
-<p>AV-8B Night Harrier (not yet supported).</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(AIRBOSS.AircraftPlayer).HORNET" ><strong>AIRBOSS.AircraftPlayer.HORNET</strong></a>
-    
-<p>F/A-18C Lot 20 Hornet.</p>
 
 </div>
 
@@ -27740,6 +27842,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
+<a id="#(AIRBOSS.GroovePos).AL" ><strong>AIRBOSS.GroovePos.AL</strong></a>
+    
+<p>"AL": Abeam landing position (Tarawa).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
 <a id="#(AIRBOSS.GroovePos).AR" ><strong>AIRBOSS.GroovePos.AR</strong></a>
     
 <p>"AR": At the ramp.</p>
@@ -27776,6 +27889,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.GroovePos).IW" ><strong>AIRBOSS.GroovePos.IW</strong></a>
     
 <p>"IW": In the wires.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.GroovePos).LC" ><strong>AIRBOSS.GroovePos.LC</strong></a>
+    
+<p>"LC": Level crossing (Tarawa).</p>
 
 </div>
 
@@ -27843,6 +27967,28 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).CHECK" ><strong>AIRBOSS.LSOCall.CHECK</strong></a>
+    
+<p>"CHECK" call. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).CLEAREDTOLAND" ><strong>AIRBOSS.LSOCall.CLEAREDTOLAND</strong></a>
+    
+<p>"Cleared to land" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
 <a id="#(AIRBOSS.LSOCall).CLICK" ><strong>AIRBOSS.LSOCall.CLICK</strong></a>
     
 <p>Radio end transmission click sound.</p>
@@ -27876,6 +28022,28 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).EXPECTHEAVYWAVEOFF" ><strong>AIRBOSS.LSOCall.EXPECTHEAVYWAVEOFF</strong></a>
+    
+<p>"Expect heavy wavoff" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).EXPECTSPOT75" ><strong>AIRBOSS.LSOCall.EXPECTSPOT75</strong></a>
+    
+<p>"Expect spot 7.5" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
 <a id="#(AIRBOSS.LSOCall).FAST" ><strong>AIRBOSS.LSOCall.FAST</strong></a>
     
 <p>"You're fast" call.</p>
@@ -27901,6 +28069,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.LSOCall).HIGH" ><strong>AIRBOSS.LSOCall.HIGH</strong></a>
     
 <p>"You're high" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).IDLE" ><strong>AIRBOSS.LSOCall.IDLE</strong></a>
+    
+<p>"Idle" call.</p>
 
 </div>
 
@@ -28110,6 +28289,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.LSOCall).SLOW" ><strong>AIRBOSS.LSOCall.SLOW</strong></a>
     
 <p>"You're slow" call.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(AIRBOSS.RadioCall)">#AIRBOSS.RadioCall</a>
+<a id="#(AIRBOSS.LSOCall).STABILIZED" ><strong>AIRBOSS.LSOCall.STABILIZED</strong></a>
+    
+<p>"Stabilized" call.</p>
 
 </div>
 
@@ -28548,6 +28738,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
+<a id="#(AIRBOSS.PatternStep).GROOVE_AL" ><strong>AIRBOSS.PatternStep.GROOVE_AL</strong></a>
+    
+<p>"Groove Abeam Landing Spot".</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
 <a id="#(AIRBOSS.PatternStep).GROOVE_AR" ><strong>AIRBOSS.PatternStep.GROOVE_AR</strong></a>
     
 <p>"Groove At the Ramp".</p>
@@ -28584,6 +28785,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PatternStep).GROOVE_IW" ><strong>AIRBOSS.PatternStep.GROOVE_IW</strong></a>
     
 <p>"Groove In the Wires".</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.PatternStep).GROOVE_LC" ><strong>AIRBOSS.PatternStep.GROOVE_LC</strong></a>
+    
+<p>"Groove Level Cross".</p>
 
 </div>
 
@@ -28860,17 +29072,6 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
 <a id="#(AIRBOSS.PlayerData).landed" ><strong>AIRBOSS.PlayerData.landed</strong></a>
     
 <p>If true, player landed or attempted to land.</p>
@@ -28986,7 +29187,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set time stamp.</p>
+<p> Set new time stamp.</p>
 
 </div>
 
@@ -29170,7 +29371,7 @@ BASE:TraceOnOff( false )</code></pre>
     #string
 <a id="#(AIRBOSS.RadioCall).sender" ><strong>AIRBOSS.RadioCall.sender</strong></a>
     
-<p>Sender of the message (optional). Default radia alias.</p>
+<p>Sender of the message (optional). Default radio alias.</p>
 
 </div>
 
