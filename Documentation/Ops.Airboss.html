@@ -1240,7 +1240,7 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>F10 radio menu including carrier info (weather, radio frequencies, TACAN/ICLS channels), player LSO grades, help function (aircraft attitude, marking of zones etc).</li>
     <li>Recovery tanker and refueling option via integration of <a href="Ops.RecoveryTanker.html">Ops.RecoveryTanker</a> class.</li>
     <li>Rescue helicopter option via <a href="Ops.RescueHelo.html">Ops.RescueHelo</a> class.</li>
-    <li>Combine multiple human player to sections (WIP).</li>
+    <li>Combine multiple human players to sections (WIP).</li>
     <li>Many parameters customizable by convenient user API functions.</li>
     <li>Multiple carrier support due to object oriented approach.</li>
     <li>Unlimited number of players.</li>
@@ -1267,10 +1267,9 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>S-3B Viking &amp; tanker version (AI)</li>
 </ul>
 
-<p>At the moment, optimized parameters are available for the F/A-18C Hornet (Lot 20) as aircraft and the USS John C. Stennis as carrier.
-The A-4E community mod is also supported in principle but may need further tweaking of parameters. Also the A-4E-C mod needs <em>easy comms</em> activated to interact with the F10 radio menu.</p>
+<p>At the moment, optimized parameters are available for the F/A-18C Hornet (Lot 20) and A-4E community mod as aircraft and the USS John C. Stennis as carrier.</p>
 
-<p>The AV-8B Harrier and the USS Tarawa are very much WIP. Those two can only be used together, i.e. the Tarawa is the only carrier the harrier is supposed to land on and
+<p>The AV-8B Harrier and the USS Tarawa are WIP. Those two can only be used together, i.e. the Tarawa is the only carrier the harrier is supposed to land on and
 the no other fixed wing aircraft (human or AI controlled) are supposed to land on the Tarawa. Currently only Case I is supported. Case II/III take slightly steps from the CVN carrier.
 However, the two Case II/III pattern are very similar so this is not a big drawback.</p>
 
@@ -1287,11 +1286,13 @@ There you also find an example mission and the necessary voice over sound files.
 
 <h2>IMPORTANT</h2>
 
-<p>Due to technical restrictions of DCS make sure you have:</p>
+<p>Some important restrictions (of DCS) you should be aware of:</p>
 
 <ul>
-    <li>Each player slot in a separate group. DCS does only allow to send messages to groups and not to individual units.</li>
-    <li>Players are identified by their player name. Ensure that no two player have the same name, e.g. "New Callsign", as this will lead to unexpected results.</li>
+    <li>Each player slot (client) should be in a separate group as DCS does only allow for sending messages to groups and not individual units.</li>
+    <li>Players are identified by their player name. Hence, ensure that no two player have the same name, e.g. "New Callsign", as this will lead to unexpected results.</li>
+    <li>The modex (tail number) of an aircraft should <strong>not</strong> be changed dynamically in the mission by a player. Unfortunately, there is no way to get this information via scripting API functions.</li>
+    <li>The A-4E-C mod needs <em>easy comms</em> activated to interact with the F10 radio menu. </li>
 </ul>
 
 <h2>Youtube Videos</h2>
@@ -1301,13 +1302,14 @@ There you also find an example mission and the necessary voice over sound files.
 <ul>
     <li><a href="https://www.youtube.com/watch?v=94KHQxxX3UI">[MOOSE] Airboss - Groove Testing (WIP)</a></li>
     <li><a href="https://www.youtube.com/watch?v=ZbjD7FHiaHo">[MOOSE] Airboss - Groove Test A-4E Community Mod</a></li>
+    <li><a href="https://www.youtube.com/watch?v=Xgs1hwDcPyM">[MOOSE] Airboss - Groove Test: On-the-fly LSO Grading</a></li>
 </ul>
 
 <p>Lex explaining Boat Ops:</p>
 
 <ul>
     <li><a href="https://www.youtube.com/watch?v=LvGQS-3AzMc">( DCS HORNET ) Some boat ops basics VID 1</a></li>
-    <li><a href="https://www.youtube.com/watch?v=bN44wvtRsw0">( DCS HORNET ) Some boat ops basics VID 1</a></li>
+    <li><a href="https://www.youtube.com/watch?v=bN44wvtRsw0">( DCS HORNET ) Some boat ops basics VID 2</a></li>
 </ul>
 
 <p>Jabbers Case I and III Recovery Tutorials:</p>
@@ -1321,11 +1323,9 @@ There you also find an example mission and the necessary voice over sound files.
 <h3>Open Questions?</h3>
 
 <ul>
-    <li>Currently the script does not support spin patterns. Marshal releases flights only when there is a free slot in the landing pattern. How is this handled in real life?</li>
-    <li>What is the next step after a pattern wave off during Case II or III recovery?</li>
+    <li>What is the next step after a pattern wave off during Case II or III recovery? A: Go back to start!</li>
     <li>What are the conditions for waving off flights when they get too close to a flight ahead in the pattern? At which pattern steps are flights waved off because of this?</li>
     <li>Some more LSO gradings could be added. What is missing and what are the conditions?</li>
-    <li>For the A-4E-C, what are the AoA thresholds for being on speed, (a little) slow, (a little) fast in <strong>degrees</strong>? In know the numbers in units of the indexer but need a proper conversion to degrees.</li>
 </ul>
 
 <p>If you know the answer to any of this, please get in touch with me! The necessary infrastructure to implement it is most likely already there.</p>
@@ -1472,7 +1472,8 @@ in the "Airboss" submenu. (Needless to say, that if you enable this and define m
     <li><strong>F3 Request Marshal</strong></li>
     <li><strong>F4 Request Commence</strong></li>
     <li><strong>F5 Request Refueling</strong></li>
-    <li><strong>F6 [Reset My Status]</strong></li>
+    <li><strong>F6 Spinning</strong></li>
+    <li><strong>F7 [Reset My Status]</strong></li>
 </ul>
 
 <h3>Request Marshal</h3>
@@ -1502,6 +1503,18 @@ However, this is only possible when the Airboss has a nice day - see <a href="##
 
 <p>If a recovery taker has been set up via the <a href="##(AIRBOSS).SetRecoveryTanker">AIRBOSS.SetRecoveryTanker</a>, the player can request refueling at any time. If currently in the marshal stack, the stack above will collapse.
 The player will be informed if the tanker is currently busy or going RTB to refuel itself at its home base. Once the re-fueling is complete, the player has to re-register to the marshal stack.</p>
+
+<h3>Spinning</h3>
+
+<p>If the pattern is full, players can go into the spinning pattern. This step is only allowed, if the player is in the pattern and his next step
+is initial, break entry, early/late break. At this point, the player should climb to 1200 ft a fly on the port side of the boat to go back to the initial again.</p>
+
+<p>If a player is in the spin pattern, flights in the Marshal queue should hold their altitude and are not allowed into the pattern until the spinning aircraft
+proceeds.</p>
+
+<p>Once the player reaches a point 100 meters behind the boat and at least 1 NM port, his step is set to "Initial" and he can resume the normal pattern approach.</p>
+
+<p>If necessary, the player can call "Spinning" again when in the above mentioned steps.</p>
 
 <h3>[Reset My Status]</h3>
 
@@ -1561,7 +1574,7 @@ It provides information about current pitch, roll, yaw, orientation of the plane
 
 <h3>LSO Radio Check</h3>
 
-<p>LSO will transmit a short message on his radio frequency. See <a href="##(AIRBOSS).SetLSORadio">AIRBOSS.SetLSORadio</a>.</p>
+<p>LSO will transmit a short message on his radio frequency. See <a href="##(AIRBOSS).SetLSORadio">AIRBOSS.SetLSORadio</a>. Note that in the A-4E you will not hear the message unless you are in the pattern.</p>
 
 <h3>Marshal Radio Check</h3>
 
@@ -1603,11 +1616,11 @@ Note that subtitles for radio messages which do not have a complete voice over a
 <p>Displays information about the current weather at the carrier such as QFE, wind and temperature.</p>
 
 <p>For missions using static weather, more information such as cloud base, thickness, precipitation, visibility distance, fog and dust are displayed.
-If you mission uses dynamic weather, you can disable this output via the <a href="##(AIRBOSS).SetStaticWeather">AIRBOSS.SetStaticWeather</a>(<strong>false</strong>) function.</p>
+If your mission uses dynamic weather, you can disable this output via the <a href="##(AIRBOSS).SetStaticWeather">AIRBOSS.SetStaticWeather</a>(<strong>false</strong>) function.</p>
 
 <h3>Set Section</h3>
 
-<p>With this command, you can define a section of human flights. The player how issues the command becomes the section lead and all other human players
+<p>With this command, you can define a section of human flights. The player who issues the command becomes the section lead and all other human players
 within a radius of 100 meters become members of the section.</p>
 
 <p>The responsibilities of the section leader are:</p>
@@ -1630,7 +1643,7 @@ is four.</p>
 
 <p><img src="..\Presentations\AIRBOSS\Airboss_MenuMarshalQueue.png" alt="Banner Image"/></p>
 
-<p>Lists all flights currently in the Marshal queue including their assigned stack, recovery case and Charie time estimate.
+<p>Lists all flights currently in the Marshal queue including their assigned stack, recovery case and Charlie time estimate.
 By default, the number of available Case I stacks is three, i.e. at angels 2, 3 and 4. Usually, the recovery thanker orbits at angels 6.
 The number of available stacks can be set by the <a href="##(AIRBOSS).SetMaxMarshalStack">AIRBOSS.SetMaxMarshalStack</a> function.</p>
 
@@ -1746,7 +1759,7 @@ issue a pattern wave off. Currently, this is only implemented for Case I recover
     <li>2.5 Points <strong>B</strong>: "Bolder", when the player landed but did not catch a wire.</li>
     <li>1.0 Points <strong>WO</strong>: "Wave-Off": Player got waved off in the final parts of the groove.</li>
     <li>1.0 Points <strong>PWO</strong>: "Pattern Wave-Off", when pilot was far away from where he should be in the pattern. For example, being long in the groove gives a "LIG PWO".</li>
-    <li>0.0 Point <strong>CUT</strong>: "Cut pass", when player was waved off but landed anyway.</li>
+    <li>0.0 Points <strong>CUT</strong>: "Cut pass", when player was waved off but landed anyway.</li>
 </ul>
 
 <h2>Foul Deck Waveoff</h2>
@@ -1837,15 +1850,17 @@ end
 <pre><code>airbossStennis:AddRecoveryWindow("8:30", "9:30", 1, nil, true, 20)
 </code></pre>
 
-<p>Setting the fifth parameter to <em>true</em> enables the automatic turning into the wind. The sixth parameter (here 20) specifies the speed in knots the carrier will go so that to total wind above the deck.
-For example, if the is blowing with 5 knots, the carrier will go 15 knots so that it adds up to the specified 20 knots. </p>
+<p>Setting the fifth parameter to <em>true</em> enables the automatic turning into the wind. The sixth parameter (here 20) specifies the speed in knots the carrier will go so that to total wind above the deck
+corresponds to this wind speed. For example, if the is blowing with 5 knots, the carrier will go 15 knots so that the total velocity adds up to the specified 20 knots for the pilot. </p>
 
 <p>The carrier will steam into the wind for as long as the recovery window is open. The distance up to which possible collisions are detected can be set by the <a href="##(AIRBOSS).SetCollisionDistance">AIRBOSS.SetCollisionDistance</a> function.</p>
 
-<p>However, the airboss scans the type of the surface up to 5 NM in the direction of movement of the carrier. If he detects anything but deep water, he will stop the current course and head back to
+<p>However, the AIRBOSS scans the type of the surface up to 5 NM in the direction of movement of the carrier. If he detects anything but deep water, he will stop the current course and head back to
 the point where he initially turned into the wind.</p>
 
 <p>The same holds true after the recovery window closes. The carrier will head back to the place where he left its assigned route and resume the path to the next waypoint defined in the mission editor.</p>
+
+<p>Note that the carrier will only head into the wind, if the wind direction is different by more than 5° from the current heading of the carrier (the angled runway, if any, fis taken into account here). </p>
 
 <hr/>
 
@@ -1925,6 +1940,15 @@ In the simplest case, you desanitize the <strong>lfs</strong> module and just ad
     <li><em>Wire</em>: Trapped wire, if any.</li>
     <li><em>Tgroove</em>: Time in the groove in seconds (not applicable during Case III).</li>
     <li><em>Case</em>: The recovery case operations in progress during the pass.</li>
+    <li><em>Wind</em>: Wind on deck in knots during approach.</li>
+    <li><em>Modex</em>: Tail number of the player.</li>
+    <li><em>Airframe</em>: Aircraft type used in the recovery.</li>
+    <li><em>Carrier Type</em>: Type name of the carrier.</li>
+    <li><em>Carrier Name</em>: Name/alias of the carrier.</li>
+    <li><em>Theatre</em>: DCS map.</li>
+    <li><em>Mission Time</em>: Mission time at the end of the approach.</li>
+    <li><em>Mission Date</em>: Mission date in yyyy/mm/dd format.</li>
+    <li><em>OS Date</em>: Real life date from os.date(). Needs <strong>os</strong> to be desanitized.</li>
 </ul>
 
 <h2>Load Results</h2>
@@ -1971,6 +1995,45 @@ via the <a href="##(AIRBOSS).SetSoundfilesFolder">AIRBOSS.SetSoundfilesFolder</a
 <pre><code>airbossStennis:SetSoundfilesFolder("Airboss Soundfiles/")
 </code></pre>
 
+<h2>Remarks</h2>
+
+<p>DCS offers two (actually three) ways to send radio messages. Each one has its advantages and disadvantages and it is important to understand the differences.</p>
+
+<h3>Transmission via Command</h3>
+
+<p><em>In principle</em>, the best way to transmit messages is via the <a href="https://wiki.hoggitworld.com/view/DCS_command_transmitMessage">TransmitMessage</a> command.
+This method has the advantage that subtitles can be used and these subtitles are only displayed to the players who dialed in the same radio frequency as
+used for the transmission.
+However, this method unfortunately only works if the sending unit is an <strong>aircraft</strong>. There it is not usable by the AIRBOSS per se as the transmission comes from
+a naval unit (the carrier).</p>
+
+<p>As a workaround, you can put an aircraft, e.g. a Helicopter on the deck of the carrier or another ship of the strike group. The aircraft should be set to
+uncontrolled and maybe even to immortal. With the <a href="##(AIRBOSS).SetRadioUnit">AIRBOSS.SetRadioUnit</a>(<em>unitname</em>) function you can use this unit as "radio repeater".
+Of course you can also use any other aircraft in the vicinity of the carrier, e.g. a rescue helo or a recovery tanker. It is just important that this
+unit is and stays close the the boat as the distance from the sender to the receiver is modeled in DCS. So messages from too far away might not reach the players.</p>
+
+<p><strong>Note</strong> that not all radio messages the airboss sends have voice overs. Therefore, if you use a radio relay unit, users should <em>not</em> disable the
+subtitles in the DCS game menu. </p>
+
+<h3>Transmission via Trigger</h3>
+
+<p>Another way to broadcast messages is via the <a href="https://wiki.hoggitworld.com/view/DCS_func_radioTransmission">radio transmission trigger</a>. This method can be used for all 
+units (land, air, naval). However, messages cannot be subtitled. Therefore, subtitles are displayed to the players via normal textout messages.
+The disadvantage is that is is impossible to know which players have the right radio frequencies dialed in. There subtitles of the Marshal radio are displayed to all players
+inside the CCA. Subtitles on the LSO radio frequency are displayed to all players in the pattern.</p>
+
+<h3>Sound to User</h3>
+
+<p>The third way to play sounds to the user via the <a href="https://wiki.hoggitworld.com/view/DCS_func_outSound">outsound trigger</a>.
+These sounds are not coming from a radio station and therefore can be heard by players independent of their actual radio frequency setting.
+The AIRBOSS class uses this method to play sounds to players which are of a more "private" nature - for example when a player has left his assigned altitude
+in the Marshal stack. Often this is the modex of the player in combination with a textout messaged displayed on screen.</p>
+
+<p>If you want to use this method for all radio messages you can enable it via the <a href="##(AIRBOSS).SetUserSoundRadio">AIRBOSS.SetUserSoundRadio</a>() function. This is the analogue of activating easy comms in DCS.</p>
+
+<p>Note that this method is used for all players who are in the A-4E community mod as this mod does not have the ability to use radios due to current DCS restrictions.
+Therefore, A-4E drivers will hear all radio transmissions from the Marshal/Airboss and all LSO messages as soon as their commence the pattern.</p>
+
 <hr/>
 
 <h1>AI Handling</h1>
@@ -2012,11 +2075,11 @@ always go for a Case I in the final pattern part. Maybe this will improve in fut
 local AirbossStennis=AIRBOSS:New("USS Stennis")
 
 -- Add recovery windows:
--- Case I from 9 to 12 am.
-local window1=AirbossStennis:AddRecoveryWindow("8:55",  "12:00", 1)
--- Case II with +15 degrees holding offset from 1500 for 90 min.
-local window2=AirbossStennis:AddRecoveryWindow("14:55", "16:30", 2, 15)
--- Case III with +30 degrees holding offset from 2100 to 2330.
+-- Case I from 9 to 10 am. Carrier will turn into the wind 5 min before window opens and go at a speed so that wind over the deck is 25 knots.
+local window1=AirbossStennis:AddRecoveryWindow("9:00",  "10:00", 1, nil, true, 25)
+-- Case II with +15 degrees holding offset from 15:00 for 60 min.
+local window2=AirbossStennis:AddRecoveryWindow("15:00", "16:00", 2, 15)
+-- Case III with +30 degrees holding offset from 21:00 to 23:30.
 local window3=AirbossStennis:AddRecoveryWindow("21:00", "23:30", 3, 30)
 
 -- Load all saved player grades from your "Saved Games\DCS" folder (if lfs was desanitized).
@@ -2119,7 +2182,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierDetour">AIRBOSS:CarrierDetour(coord, speed, uturn)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierDetour">AIRBOSS:CarrierDetour(coord, speed, uturn, uspeed)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Let the carrier make a detour to a given point.</p>
 </td>
@@ -2131,7 +2194,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierTurnIntoWind">AIRBOSS:CarrierTurnIntoWind(time, vdeck)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierTurnIntoWind">AIRBOSS:CarrierTurnIntoWind(time, vdeck, uturn)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Let the carrier turn into the wind.</p>
 </td>
@@ -2266,6 +2329,18 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetRecoveryWindowByID">AIRBOSS:GetRecoveryWindowByID(id)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Return the recovery window of the given ID.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetWind">AIRBOSS:GetWind(alt)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get wind direction and speed at carrier position.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetWindOnDeck">AIRBOSS:GetWindOnDeck(alt)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get wind direction and speed on carrier deck.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2485,9 +2560,27 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnEventEngineShutdown">AIRBOSS:OnEventEngineShutdown(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Airboss event handler for event that a unit shuts down its engines.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnEventLand">AIRBOSS:OnEventLand(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Airboss event handler for event land.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnEventMissionEnd">AIRBOSS:OnEventMissionEnd(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Airboss event function handling the mission end event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnEventTakeoff">AIRBOSS:OnEventTakeoff(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Airboss event handler for event that a unit takes off.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2512,6 +2605,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Qpattern">AIRBOSS.Qpattern</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Queue of aircraft groups in the landing pattern.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Qspinning">AIRBOSS.Qspinning</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Queue of aircraft currently spinning.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2599,6 +2698,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetBeaconRefresh">AIRBOSS:SetBeaconRefresh(interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set beacon (TACAN/ICLS) time refresh interfal in case the beacons die.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetCarrierControlledArea">AIRBOSS:SetCarrierControlledArea(radius)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set carrier controlled area (CCA).</p>
@@ -2638,6 +2743,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetDefaultPlayerSkill">AIRBOSS:SetDefaultPlayerSkill(skill)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set default player skill.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetDespawnOnEngineShutdown">AIRBOSS:SetDespawnOnEngineShutdown(switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Despawn AI groups after they they shut down their engines </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2869,6 +2980,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Tbeacon">AIRBOSS.Tbeacon</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Last time the beacons were refeshed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).Tcollapse">AIRBOSS.Tcollapse</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Last time timer.gettime() the stack collapsed.</p>
@@ -2917,9 +3034,21 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._ActivateBeacons">AIRBOSS:_ActivateBeacons()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Activate TACAN and ICLS beacons.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._AddF10Commands">AIRBOSS:_AddF10Commands(_unitName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add menu commands for player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._AddFlightToPatternQueue">AIRBOSS:_AddFlightToPatternQueue(Flight, flight)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add flight to pattern queue and set recoverd to false for all elements of the flight and its section members.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3091,6 +3220,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._CheckSectionRecovered">AIRBOSS:_CheckSectionRecovered(flight)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if all elements of a flight were recovered.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._CheckWaveOff">AIRBOSS:_CheckWaveOff(glideslopeError, lineupError, AoA, playerData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>LSO check if player needs to wave off.</p>
@@ -3247,6 +3382,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetDeltaHeading">AIRBOSS:_GetDeltaHeading(hdg1, hdg2)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get difference between to headings in degrees taking into accound the [0,360) periodocity. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetDistances">AIRBOSS:_GetDistances(unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Calculate distances between carrier and aircraft unit.</p>
@@ -3259,7 +3400,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetFlightElement">AIRBOSS:_GetFlightElement(unitname, flight)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetFlightElement">AIRBOSS:_GetFlightElement(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get element in flight. </p>
 </td>
@@ -3267,7 +3408,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetFlightFromGroupInQueue">AIRBOSS:_GetFlightFromGroupInQueue(group, queue)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get flight from group. </p>
+<p>Get flight from group in a queue. </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3307,6 +3448,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetLeadFlight">AIRBOSS:_GetLeadFlight(flight)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the lead flight group of a flight group.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetMarshalAltitude">AIRBOSS:_GetMarshalAltitude(stack, case)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get marshal altitude and two positions of a counter-clockwise race track pattern.</p>
@@ -3316,6 +3463,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetNextMarshalFight">AIRBOSS:_GetNextMarshalFight()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get next marshal flight which is ready to enter the landing pattern.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetNextWaypoint">AIRBOSS:_GetNextWaypoint()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get next waypoint of the carrier.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3382,6 +3535,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetSternCoord">AIRBOSS:_GetSternCoord()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get "stern" coordinate.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetTimeInGroove">AIRBOSS:_GetTimeInGroove(playerData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get time in the groove of player.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3704,6 +3863,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RecoveredElement">AIRBOSS:_RecoveredElement(unit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets flag recovered=true for a flight element, which was successfully recovered (landed).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RemoveDeadFlightGroups">AIRBOSS:_RemoveDeadFlightGroups(group)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Remove dead flight groups from all queues.</p>
@@ -3716,7 +3881,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RemoveFlightElement">AIRBOSS:_RemoveFlightElement(unitname, flight)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RemoveFlightElement">AIRBOSS:_RemoveFlightElement(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get element in flight. </p>
 </td>
@@ -3734,6 +3899,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RemoveFlightFromSection">AIRBOSS:_RemoveFlightFromSection(flight)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove a flight, which is a member of a section, from this section.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RemoveSectionMember">AIRBOSS:_RemoveSectionMember(playerData, sectionmember)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Remove a member from the player's section.</p>
@@ -3742,7 +3913,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RemoveUnitFromFlight">AIRBOSS:_RemoveUnitFromFlight(unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Remove a unit from a flight group (e.g.</p>
+<p>Remove a unit and its element from a flight group (e.g.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3761,6 +3932,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RequestRefueling">AIRBOSS:_RequestRefueling(_unitName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Player requests refueling. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._RequestSpinning">AIRBOSS:_RequestSpinning(_unitName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Request spinning.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3800,9 +3977,21 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._SetTimeInGroove">AIRBOSS:_SetTimeInGroove(playerData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set time in the groove for player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._SpeedCheck">AIRBOSS:_SpeedCheck(playerData, speedopt)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Evaluate player's speed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._Spinning">AIRBOSS:_Spinning(playerData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Spinning</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3827,6 +4016,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._Trapped">AIRBOSS:_Trapped(playerData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trapped?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._UpdateFlightSection">AIRBOSS:_UpdateFlightSection(flight)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update section if a flight is removed.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4004,6 +4199,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).dTbeacon">AIRBOSS.dTbeacon</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Time interval to refresh the beacons. Default 5 minutes.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).dTqueue">AIRBOSS.dTqueue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Time interval in seconds for updating the queues etc.</p>
@@ -4031,6 +4232,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).defaultskill">AIRBOSS.defaultskill</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Default player skill <a href="##(AIRBOSS).Difficulty">AIRBOSS.Difficulty</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).despawnshutdown">AIRBOSS.despawnshutdown</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Despawn group after engine shutdown.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4247,6 +4454,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).tanker">AIRBOSS.tanker</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Recovery tanker flying overhead of carrier.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).theatre">AIRBOSS.theatre</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The DCS map used in the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5360,7 +5573,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightElement).ai">AIRBOSS.FlightElement.ai</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, element is AI.</p>
+<p>If true, AI sits inside. If false, human player is flying.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5376,9 +5589,21 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightElement).recovered">AIRBOSS.FlightElement.recovered</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, element was successfully recovered.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightElement).unit">AIRBOSS.FlightElement.unit</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Aircraft unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightElement).unitname">AIRBOSS.FlightElement.unitname</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the unit.</p>
 </td>
           </tr>
         </table>
@@ -5439,7 +5664,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightGroup).flag">AIRBOSS.FlightGroup.flag</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>User flag for triggering events for the flight.</p>
+<p>Flag value describing the current stack.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5463,7 +5688,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightGroup).name">AIRBOSS.FlightGroup.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Player name or name of first AI unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5482,6 +5707,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightGroup).onboardnumbers">AIRBOSS.FlightGroup.onboardnumbers</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Onboard numbers of aircraft in the group.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.FlightGroup).recovered">AIRBOSS.FlightGroup.recovered</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5873,6 +6104,24 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).airframe">AIRBOSS.LSOgrade.airframe</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Aircraft type name of player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).carriername">AIRBOSS.LSOgrade.carriername</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Carrier name/alias.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).carriertype">AIRBOSS.LSOgrade.carriertype</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Carrier type name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).case">AIRBOSS.LSOgrade.case</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Recovery case.</p>
@@ -5897,9 +6146,45 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).midate">AIRBOSS.LSOgrade.midate</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Mission date in yyyy/mm/dd format.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).mitime">AIRBOSS.LSOgrade.mitime</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Mission time in hh:mm:ss+d format</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).modex">AIRBOSS.LSOgrade.modex</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Onboard number.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).osdate">AIRBOSS.LSOgrade.osdate</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Real live date. Needs <strong>os</strong> to be desanitized. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).points">AIRBOSS.LSOgrade.points</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Points received.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).theatre">AIRBOSS.LSOgrade.theatre</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>DCS map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.LSOgrade).wind">AIRBOSS.LSOgrade.wind</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Wind speed on deck in knots.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6219,6 +6504,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).airframe">AIRBOSS.PlayerData.airframe</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).attitudemonitor">AIRBOSS.PlayerData.attitudemonitor</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, display aircraft attitude and other parameters constantly.</p>
@@ -6267,6 +6558,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).flag">AIRBOSS.PlayerData.flag</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).fouldeckwo">AIRBOSS.PlayerData.fouldeckwo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, player was waved off because of a foul deck.</p>
@@ -6303,9 +6600,15 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).modex">AIRBOSS.PlayerData.modex</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).name">AIRBOSS.PlayerData.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Player name. </p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -6353,7 +6656,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).unit">AIRBOSS.PlayerData.unit</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Aircraft of the player.</p>
+<p>Aircraft of the player. </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -7073,6 +7376,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(AIRBOSS).Qspinning" ><strong>AIRBOSS.Qspinning</strong></a>
+    
+<p>Queue of aircraft currently spinning.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(AIRBOSS).Qwaiting" ><strong>AIRBOSS.Qwaiting</strong></a>
     
 <p>Queue of aircraft groups waiting outside 10 NM zone for the next free Marshal stack.</p>
@@ -7167,6 +7481,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AIRBOSS).TACANon" ><strong>AIRBOSS.TACANon</strong></a>
     
 <p>Automatic TACAN is activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS).Tbeacon" ><strong>AIRBOSS.Tbeacon</strong></a>
+    
+<p>Last time the beacons were refeshed.</p>
 
 </div>
 
@@ -7406,6 +7731,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(AIRBOSS).dTbeacon" ><strong>AIRBOSS.dTbeacon</strong></a>
+    
+<p>Time interval to refresh the beacons. Default 5 minutes.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(AIRBOSS).dTqueue" ><strong>AIRBOSS.dTqueue</strong></a>
     
 <p>Time interval in seconds for updating the queues etc.</p>
@@ -7453,6 +7789,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AIRBOSS).defaultskill" ><strong>AIRBOSS.defaultskill</strong></a>
     
 <p>Default player skill <a href="##(AIRBOSS).Difficulty">AIRBOSS.Difficulty</a>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).despawnshutdown" ><strong>AIRBOSS.despawnshutdown</strong></a>
+    
+<p>Despawn group after engine shutdown.</p>
 
 </div>
 
@@ -7695,6 +8042,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AIRBOSS).tanker" ><strong>AIRBOSS.tanker</strong></a>
     
 <p>Recovery tanker flying overhead of carrier.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).theatre" ><strong>AIRBOSS.theatre</strong></a>
+    
+<p>The DCS map used in the mission.</p>
 
 </div>
 
@@ -7961,7 +8319,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).CarrierDetour" ><strong>AIRBOSS:CarrierDetour(coord, speed, uturn)</strong></a></h2>
+<h2><a id="#(AIRBOSS).CarrierDetour" ><strong>AIRBOSS:CarrierDetour(coord, speed, uturn, uspeed)</strong></a></h2>
 </div>
     
 <p>Let the carrier make a detour to a given point.</p>
@@ -8012,6 +8370,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>(Optional) If true, carrier will go back to where it came from before it resumes its route to the next waypoint.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>uspeed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Speed in knots after U-turn. Default is same as before.</p>
 
           </div>
         </div>
@@ -8078,7 +8449,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).CarrierTurnIntoWind" ><strong>AIRBOSS:CarrierTurnIntoWind(time, vdeck)</strong></a></h2>
+<h2><a id="#(AIRBOSS).CarrierTurnIntoWind" ><strong>AIRBOSS:CarrierTurnIntoWind(time, vdeck, uturn)</strong></a></h2>
 </div>
     
 <p>Let the carrier turn into the wind.</p>
@@ -8113,6 +8484,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Speed on deck m/s. Carrier will</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>uturn</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Make U-turn and go back to initial after downwind leg.</p>
 
           </div>
         </div>
@@ -8656,6 +9040,110 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
 <p>Recovery window with the right ID or nil if no such window exists.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).GetWind" ><strong>AIRBOSS:GetWind(alt)</strong></a></h2>
+</div>
+    
+<p>Get wind direction and speed at carrier position.</p>
+
+<div id= "#Functions##GetWind" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>alt</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Altitude ASL in meters. Default 50 m.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Direction the wind is blowing <strong>from</strong> in degrees.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Wind speed in m/s.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).GetWindOnDeck" ><strong>AIRBOSS:GetWindOnDeck(alt)</strong></a></h2>
+</div>
+    
+<p>Get wind direction and speed on carrier deck.</p>
+
+<div id= "#Functions##GetWindOnDeck" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>alt</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Altitude in meters. Default 50 m.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Direction the wind is blowing <strong>from</strong> in degrees.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Wind speed in m/s.</p>
+
+        </div>
     </div>
 </div>
 
@@ -9567,6 +10055,39 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnEventEngineShutdown" ><strong>AIRBOSS:OnEventEngineShutdown(EventData)</strong></a></h2>
+</div>
+    
+<p>Airboss event handler for event that a unit shuts down its engines.</p>
+
+<div id= "#Functions##OnEventEngineShutdown" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>function AIRBOSS:OnEventPlayerLeaveUnit(EventData)</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).OnEventLand" ><strong>AIRBOSS:OnEventLand(EventData)</strong></a></h2>
 </div>
     
@@ -9588,6 +10109,75 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
           </div>
           <div class="w3-half">
               <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnEventMissionEnd" ><strong>AIRBOSS:OnEventMissionEnd(EventData)</strong></a></h2>
+</div>
+    
+<p>Airboss event function handling the mission end event.</p>
+
+    
+<p>Handles the case when the mission is ended.</p>
+
+<div id= "#Functions##OnEventMissionEnd" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event data.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnEventTakeoff" ><strong>AIRBOSS:OnEventTakeoff(EventData)</strong></a></h2>
+</div>
+    
+<p>Airboss event handler for event that a unit takes off.</p>
+
+<div id= "#Functions##OnEventTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>function AIRBOSS:OnEventPlayerLeaveUnit(EventData)</p>
+
           </div>
         </div>
 </div>
@@ -9989,6 +10579,50 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetBeaconRefresh" ><strong>AIRBOSS:SetBeaconRefresh(interval)</strong></a></h2>
+</div>
+    
+<p>Set beacon (TACAN/ICLS) time refresh interfal in case the beacons die.</p>
+
+<div id= "#Functions##SetBeaconRefresh" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Time interval in seconds. Default 300 sec = 5 min.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).SetCarrierControlledArea" ><strong>AIRBOSS:SetCarrierControlledArea(radius)</strong></a></h2>
 </div>
     
@@ -10278,6 +10912,50 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
           <div class="w3-half">
               
 <p>Player skill. Default "Naval Aviator".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetDespawnOnEngineShutdown" ><strong>AIRBOSS:SetDespawnOnEngineShutdown(switch)</strong></a></h2>
+</div>
+    
+<p>Despawn AI groups after they they shut down their engines </p>
+
+<div id= "#Functions##SetDespawnOnEngineShutdown" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true or nil, AI groups are despawned.</p>
 
           </div>
         </div>
@@ -11973,6 +12651,25 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._ActivateBeacons" ><strong>AIRBOSS:_ActivateBeacons()</strong></a></h2>
+</div>
+    
+<p>Activate TACAN and ICLS beacons.</p>
+
+<div id= "#Functions##_ActivateBeacons" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._AddF10Commands" ><strong>AIRBOSS:_AddF10Commands(_unitName)</strong></a></h2>
 </div>
     
@@ -11996,6 +12693,49 @@ However, if you create a new folder inside the miz file, which contains the soun
               
 <p>Name of player unit.</p>
 
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._AddFlightToPatternQueue" ><strong>AIRBOSS:_AddFlightToPatternQueue(Flight, flight)</strong></a></h2>
+</div>
+    
+<p>Add flight to pattern queue and set recoverd to false for all elements of the flight and its section members.</p>
+
+<div id= "#Functions##_AddFlightToPatternQueue" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
+            <strong><strong>Flight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>group of element.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>flight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>
@@ -13176,6 +13916,54 @@ However, if you create a new folder inside the miz file, which contains the soun
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._CheckSectionRecovered" ><strong>AIRBOSS:_CheckSectionRecovered(flight)</strong></a></h2>
+</div>
+    
+<p>Check if all elements of a flight were recovered.</p>
+
+    
+<p>This also checks potential section members.
+If so, flight is removed from the queue.</p>
+
+<div id= "#Functions##_CheckSectionRecovered" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
+            <strong><strong>flight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Flight group to check.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, all elements landed.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -14402,6 +15190,63 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetDeltaHeading" ><strong>AIRBOSS:_GetDeltaHeading(hdg1, hdg2)</strong></a></h2>
+</div>
+    
+<p>Get difference between to headings in degrees taking into accound the [0,360) periodocity. </p>
+
+<div id= "#Functions##_GetDeltaHeading" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>hdg1</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Heading one.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>hdg2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Heading two.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Difference between the two headings in degrees.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetDistances" ><strong>AIRBOSS:_GetDistances(unit)</strong></a></h2>
 </div>
     
@@ -14500,7 +15345,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._GetFlightElement" ><strong>AIRBOSS:_GetFlightElement(unitname, flight)</strong></a></h2>
+<h2><a id="#(AIRBOSS)._GetFlightElement" ><strong>AIRBOSS:_GetFlightElement(unitname)</strong></a></h2>
 </div>
     
 <p>Get element in flight. </p>
@@ -14511,7 +15356,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
-    <h2><strong>Parameters:</strong></h2>
+    <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -14525,19 +15370,6 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
 
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
-            <strong><strong>flight</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Flight group.</p>
-
-          </div>
-        </div>
     <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
         <div class="w3-half">
@@ -14545,7 +15377,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         </div>
         <div class="w3-half">
           
-<p>Flight element.</p>
+<p>Element of the flight or nil.</p>
 
         </div>
         <div class="w3-half">
@@ -14553,7 +15385,15 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         </div>
         <div class="w3-half">
           
-<p>Element index.</p>
+<p>Element index or nil.</p>
+
+        </div>
+        <div class="w3-half">
+          <p><a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>The Flight group or nil</p>
 
         </div>
     </div>
@@ -14568,7 +15408,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
 <h2><a id="#(AIRBOSS)._GetFlightFromGroupInQueue" ><strong>AIRBOSS:_GetFlightFromGroupInQueue(group, queue)</strong></a></h2>
 </div>
     
-<p>Get flight from group. </p>
+<p>Get flight from group in a queue. </p>
 
 <div id= "#Functions##_GetFlightFromGroupInQueue" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -14610,7 +15450,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         </div>
         <div class="w3-half">
           
-<p>Flight group.</p>
+<p>Flight group or nil.</p>
 
         </div>
         <div class="w3-half">
@@ -14618,7 +15458,7 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         </div>
         <div class="w3-half">
           
-<p>Queue index.</p>
+<p>Queue index or nil.</p>
 
         </div>
     </div>
@@ -14953,6 +15793,50 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetLeadFlight" ><strong>AIRBOSS:_GetLeadFlight(flight)</strong></a></h2>
+</div>
+    
+<p>Get the lead flight group of a flight group.</p>
+
+<div id= "#Functions##_GetLeadFlight" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
+            <strong><strong>flight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Flight group to check.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Flight group of the leader or flight itself if no other leader.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetMarshalAltitude" ><strong>AIRBOSS:_GetMarshalAltitude(stack, case)</strong></a></h2>
 </div>
     
@@ -15047,6 +15931,44 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
 <p>Marshal flight next in line and ready to enter the pattern. Or nil if no flight is ready.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetNextWaypoint" ><strong>AIRBOSS:_GetNextWaypoint()</strong></a></h2>
+</div>
+    
+<p>Get next waypoint of the carrier.</p>
+
+<div id= "#Functions##_GetNextWaypoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Coordinate of the next waypoint.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Number of waypoint</p>
+
+        </div>
     </div>
 </div>
 
@@ -15586,6 +16508,50 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
       <div class="w3-half">
         
 <p>Coordinate at the rundown of the carrier.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetTimeInGroove" ><strong>AIRBOSS:_GetTimeInGroove(playerData)</strong></a></h2>
+</div>
+    
+<p>Get time in the groove of player.</p>
+
+<div id= "#Functions##_GetTimeInGroove" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.PlayerData)">#AIRBOSS.PlayerData</a>
+            <strong><strong>playerData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player data.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Player's time in groove in seconds.</p>
 
       </div>
     </div>
@@ -18062,6 +19028,50 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._RecoveredElement" ><strong>AIRBOSS:_RecoveredElement(unit)</strong></a></h2>
+</div>
+    
+<p>Sets flag recovered=true for a flight element, which was successfully recovered (landed).</p>
+
+<div id= "#Functions##_RecoveredElement" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit that was recovered.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Flight group of element.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._RemoveDeadFlightGroups" ><strong>AIRBOSS:_RemoveDeadFlightGroups(group)</strong></a></h2>
 </div>
     
@@ -18156,7 +19166,7 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._RemoveFlightElement" ><strong>AIRBOSS:_RemoveFlightElement(unitname, flight)</strong></a></h2>
+<h2><a id="#(AIRBOSS)._RemoveFlightElement" ><strong>AIRBOSS:_RemoveFlightElement(unitname)</strong></a></h2>
 </div>
     
 <p>Get element in flight. </p>
@@ -18167,7 +19177,7 @@ Also set player step to undefined if applicable or remove human flight if option
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
-    <h2><strong>Parameters:</strong></h2>
+    <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -18178,19 +19188,6 @@ Also set player step to undefined if applicable or remove human flight if option
           <div class="w3-half">
               
 <p>Name of the unit.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
-            <strong><strong>flight</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Flight group.</p>
 
           </div>
         </div>
@@ -18254,16 +19251,24 @@ Also set player step to undefined if applicable or remove human flight if option
 
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
+    <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>If true, flight was removed. </p>
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>True, flight was removed or false otherwise.</p>
 
-      </div>
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Table index of the flight in the Marshal queue.</p>
+
+        </div>
     </div>
 </div>
 
@@ -18311,17 +19316,58 @@ Also set player step to undefined if applicable or remove human flight if option
 
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
+    <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>If true, flight was in Queue and removed.</p>
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>True, flight was in Queue and removed. False otherwise.</p>
 
-      </div>
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Table index of removed queue element or nil.</p>
+
+        </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._RemoveFlightFromSection" ><strong>AIRBOSS:_RemoveFlightFromSection(flight)</strong></a></h2>
+</div>
+    
+<p>Remove a flight, which is a member of a section, from this section.</p>
+
+<div id= "#Functions##_RemoveFlightFromSection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
+            <strong><strong>flight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The flight to be removed from the section</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -18390,7 +19436,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <h2><a id="#(AIRBOSS)._RemoveUnitFromFlight" ><strong>AIRBOSS:_RemoveUnitFromFlight(unit)</strong></a></h2>
 </div>
     
-<p>Remove a unit from a flight group (e.g.</p>
+<p>Remove a unit and its element from a flight group (e.g.</p>
 
     
 <p>when landed) and update all queues if the whole flight group is gone.</p>
@@ -18511,6 +19557,39 @@ Also set player step to undefined if applicable or remove human flight if option
           <div class="w3-half">
               
 <p>Name of the player unit.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._RequestSpinning" ><strong>AIRBOSS:_RequestSpinning(_unitName)</strong></a></h2>
+</div>
+    
+<p>Request spinning.</p>
+
+<div id= "#Functions##_RequestSpinning" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name fo the player unit.</p>
 
           </div>
         </div>
@@ -18777,6 +19856,39 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._SetTimeInGroove" ><strong>AIRBOSS:_SetTimeInGroove(playerData)</strong></a></h2>
+</div>
+    
+<p>Set time in the groove for player.</p>
+
+<div id= "#Functions##_SetTimeInGroove" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.PlayerData)">#AIRBOSS.PlayerData</a>
+            <strong><strong>playerData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player data.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._SpeedCheck" ><strong>AIRBOSS:_SpeedCheck(playerData, speedopt)</strong></a></h2>
 </div>
     
@@ -18834,6 +19946,39 @@ Also set player step to undefined if applicable or remove human flight if option
 
         </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._Spinning" ><strong>AIRBOSS:_Spinning(playerData)</strong></a></h2>
+</div>
+    
+<p>Spinning</p>
+
+<div id= "#Functions##_Spinning" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.PlayerData)">#AIRBOSS.PlayerData</a>
+            <strong><strong>playerData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player data.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -19008,6 +20153,43 @@ Also set player step to undefined if applicable or remove human flight if option
           <div class="w3-half">
               
 <p>Player data table.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._UpdateFlightSection" ><strong>AIRBOSS:_UpdateFlightSection(flight)</strong></a></h2>
+</div>
+    
+<p>Update section if a flight is removed.</p>
+
+    
+<p>If removed flight is member of a section, he is removed for the leaders section.
+If removed flight is the section lead, we try to find a new leader.</p>
+
+<div id= "#Functions##_UpdateFlightSection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.FlightGroup)">#AIRBOSS.FlightGroup</a>
+            <strong><strong>flight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The flight to be removed.</p>
 
           </div>
         </div>
@@ -21131,6 +22313,17 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(AIRBOSS).Qspinning" ><strong>AIRBOSS.Qspinning</strong></a>
+    
+<p>Queue of aircraft currently spinning.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(AIRBOSS).Qwaiting" ><strong>AIRBOSS.Qwaiting</strong></a>
     
 <p>Queue of aircraft groups waiting outside 10 NM zone for the next free Marshal stack.</p>
@@ -21225,6 +22418,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).TACANon" ><strong>AIRBOSS.TACANon</strong></a>
     
 <p>Automatic TACAN is activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS).Tbeacon" ><strong>AIRBOSS.Tbeacon</strong></a>
+    
+<p>Last time the beacons were refeshed.</p>
 
 </div>
 
@@ -21464,6 +22668,17 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(AIRBOSS).dTbeacon" ><strong>AIRBOSS.dTbeacon</strong></a>
+    
+<p>Time interval to refresh the beacons. Default 5 minutes.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(AIRBOSS).dTqueue" ><strong>AIRBOSS.dTqueue</strong></a>
     
 <p>Time interval in seconds for updating the queues etc.</p>
@@ -21511,6 +22726,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).defaultskill" ><strong>AIRBOSS.defaultskill</strong></a>
     
 <p>Default player skill <a href="##(AIRBOSS).Difficulty">AIRBOSS.Difficulty</a>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).despawnshutdown" ><strong>AIRBOSS.despawnshutdown</strong></a>
+    
+<p>Despawn group after engine shutdown.</p>
 
 </div>
 
@@ -21753,6 +22979,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).tanker" ><strong>AIRBOSS.tanker</strong></a>
     
 <p>Recovery tanker flying overhead of carrier.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).theatre" ><strong>AIRBOSS.theatre</strong></a>
+    
+<p>The DCS map used in the mission.</p>
 
 </div>
 
@@ -23495,6 +24732,17 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(AIRBOSS).Qspinning" ><strong>AIRBOSS.Qspinning</strong></a>
+    
+<p>Queue of aircraft currently spinning.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(AIRBOSS).Qwaiting" ><strong>AIRBOSS.Qwaiting</strong></a>
     
 <p>Queue of aircraft groups waiting outside 10 NM zone for the next free Marshal stack.</p>
@@ -23589,6 +24837,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).TACANon" ><strong>AIRBOSS.TACANon</strong></a>
     
 <p>Automatic TACAN is activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS).Tbeacon" ><strong>AIRBOSS.Tbeacon</strong></a>
+    
+<p>Last time the beacons were refeshed.</p>
 
 </div>
 
@@ -23828,6 +25087,17 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(AIRBOSS).dTbeacon" ><strong>AIRBOSS.dTbeacon</strong></a>
+    
+<p>Time interval to refresh the beacons. Default 5 minutes.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(AIRBOSS).dTqueue" ><strong>AIRBOSS.dTqueue</strong></a>
     
 <p>Time interval in seconds for updating the queues etc.</p>
@@ -23875,6 +25145,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).defaultskill" ><strong>AIRBOSS.defaultskill</strong></a>
     
 <p>Default player skill <a href="##(AIRBOSS).Difficulty">AIRBOSS.Difficulty</a>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).despawnshutdown" ><strong>AIRBOSS.despawnshutdown</strong></a>
+    
+<p>Despawn group after engine shutdown.</p>
 
 </div>
 
@@ -24117,6 +25398,17 @@ Also set player step to undefined if applicable or remove human flight if option
 <a id="#(AIRBOSS).tanker" ><strong>AIRBOSS.tanker</strong></a>
     
 <p>Recovery tanker flying overhead of carrier.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).theatre" ><strong>AIRBOSS.theatre</strong></a>
+    
+<p>The DCS map used in the mission.</p>
 
 </div>
 
@@ -27442,7 +28734,7 @@ BASE:TraceOnOff( false )</code></pre>
     #boolean
 <a id="#(AIRBOSS.FlightElement).ai" ><strong>AIRBOSS.FlightElement.ai</strong></a>
     
-<p>If true, element is AI.</p>
+<p>If true, AI sits inside. If false, human player is flying.</p>
 
 </div>
 
@@ -27472,10 +28764,32 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS.FlightElement).recovered" ><strong>AIRBOSS.FlightElement.recovered</strong></a>
+    
+<p>If true, element was successfully recovered.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
 <a id="#(AIRBOSS.FlightElement).unit" ><strong>AIRBOSS.FlightElement.unit</strong></a>
     
 <p>Aircraft unit.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.FlightElement).unitname" ><strong>AIRBOSS.FlightElement.unitname</strong></a>
+    
+<p>Name of the unit.</p>
 
 </div>
 
@@ -27575,10 +28889,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.UserFlag.html##(USERFLAG)">Core.UserFlag#USERFLAG</a>
+    #number
 <a id="#(AIRBOSS.FlightGroup).flag" ><strong>AIRBOSS.FlightGroup.flag</strong></a>
     
-<p>User flag for triggering events for the flight.</p>
+<p>Flag value describing the current stack.</p>
 
 </div>
 
@@ -27619,13 +28933,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(AIRBOSS.FlightGroup).name" ><strong>AIRBOSS.FlightGroup.name</strong></a>
     
-
-
-    
-<p> TODO Name should also be set for AI as it is used to get the section lead. Switch this from PlayerData to FlightGroup enumerator.</p>
+<p>Player name or name of first AI unit.</p>
 
 </div>
 
@@ -27659,6 +28970,20 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.FlightGroup).onboardnumbers" ><strong>AIRBOSS.FlightGroup.onboardnumbers</strong></a>
     
 <p>Onboard numbers of aircraft in the group.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.FlightGroup).recovered" ><strong>AIRBOSS.FlightGroup.recovered</strong></a>
+    
+
+
+    
+<p> Init recovered switch.</p>
 
 </div>
 
@@ -28323,7 +29648,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div id= "#Types##AIRBOSS.LSOgrade" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
   
-<p>LSO grade</p>
+<p>LSO grade data.</p>
 
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
@@ -28335,6 +29660,39 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.LSOgrade).Tgroove" ><strong>AIRBOSS.LSOgrade.Tgroove</strong></a>
     
 <p>Time in the groove in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).airframe" ><strong>AIRBOSS.LSOgrade.airframe</strong></a>
+    
+<p>Aircraft type name of player.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).carriername" ><strong>AIRBOSS.LSOgrade.carriername</strong></a>
+    
+<p>Carrier name/alias.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).carriertype" ><strong>AIRBOSS.LSOgrade.carriertype</strong></a>
+    
+<p>Carrier type name.</p>
 
 </div>
 
@@ -28386,10 +29744,76 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(AIRBOSS.LSOgrade).midate" ><strong>AIRBOSS.LSOgrade.midate</strong></a>
+    
+<p>Mission date in yyyy/mm/dd format.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).mitime" ><strong>AIRBOSS.LSOgrade.mitime</strong></a>
+    
+<p>Mission time in hh:mm:ss+d format</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).modex" ><strong>AIRBOSS.LSOgrade.modex</strong></a>
+    
+<p>Onboard number.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).osdate" ><strong>AIRBOSS.LSOgrade.osdate</strong></a>
+    
+<p>Real live date. Needs <strong>os</strong> to be desanitized. </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(AIRBOSS.LSOgrade).points" ><strong>AIRBOSS.LSOgrade.points</strong></a>
     
 <p>Points received.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).theatre" ><strong>AIRBOSS.LSOgrade.theatre</strong></a>
+    
+<p>DCS map.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.LSOgrade).wind" ><strong>AIRBOSS.LSOgrade.wind</strong></a>
+    
+<p>Wind speed on deck in knots.</p>
 
 </div>
 
@@ -28948,6 +30372,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(AIRBOSS.PlayerData).airframe" ><strong>AIRBOSS.PlayerData.airframe</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AIRBOSS.PlayerData).attitudemonitor" ><strong>AIRBOSS.PlayerData.attitudemonitor</strong></a>
     
@@ -29039,6 +30474,20 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(AIRBOSS.PlayerData).flag" ><strong>AIRBOSS.PlayerData.flag</strong></a>
+    
+
+
+    
+<p> Decrease stack/flag. Human player needs to take care himself.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AIRBOSS.PlayerData).fouldeckwo" ><strong>AIRBOSS.PlayerData.fouldeckwo</strong></a>
     
@@ -29105,10 +30554,21 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #string
+    
+<a id="#(AIRBOSS.PlayerData).modex" ><strong>AIRBOSS.PlayerData.modex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(AIRBOSS.PlayerData).name" ><strong>AIRBOSS.PlayerData.name</strong></a>
     
-<p>Player name. </p>
+
 
 </div>
 
@@ -29154,6 +30614,9 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
+    
+<p> Set section lead of player flight.</p>
+
 </div>
 
 </div>   
@@ -29188,7 +30651,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set new time stamp.</p>
+<p> Set time stamp.</p>
 
 </div>
 
@@ -29199,7 +30662,7 @@ BASE:TraceOnOff( false )</code></pre>
     <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
 <a id="#(AIRBOSS.PlayerData).unit" ><strong>AIRBOSS.PlayerData.unit</strong></a>
     
-<p>Aircraft of the player.</p>
+<p>Aircraft of the player. </p>
 
 </div>
 
