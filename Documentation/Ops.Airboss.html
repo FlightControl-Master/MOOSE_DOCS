@@ -885,7 +885,7 @@ for further explanation and examples.</p>
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.Airboss.html">Ops.Airboss</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Ops</strong> - (R2.5) - Manages aircraft recoveries for carrier operations.</p>
+<p><strong>Ops</strong> - (R2.5) - Manages aircraft CASE X recoveries for carrier operations (X=I, II, III).</p>
 </p></div>
        </div>         
      </div>
@@ -1219,7 +1219,7 @@ which are excellent tools to be reused in an OO environment!.</p>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Ops</strong> - (R2.5) - Manages aircraft recoveries for carrier operations.</p>
+<p><strong>Ops</strong> - (R2.5) - Manages aircraft CASE X recoveries for carrier operations (X=I, II, III).</p>
 
     
 
@@ -1237,7 +1237,7 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Automatic TACAN and ICLS channel setting of carrier.</li>
     <li>Separate radio channels for LSO and Marshal transmissions.</li>
     <li>Voice over support for LSO and Marshal radio transmissions.</li>
-    <li>F10 radio menu including carrier info (weather, radio frequencies, TACAN/ICLS channels), player LSO grades, help function (aircraft attitude, marking of zones etc).</li>
+    <li>Advanced F10 radio menu including carrier info, weather, radio frequencies, TACAN/ICLS channels, player LSO grades, marking of zones etc.</li>
     <li>Recovery tanker and refueling option via integration of <a href="Ops.RecoveryTanker.html">Ops.RecoveryTanker</a> class.</li>
     <li>Rescue helicopter option via <a href="Ops.RescueHelo.html">Ops.RescueHelo</a> class.</li>
     <li>Combine multiple human players to sections (WIP).</li>
@@ -1245,6 +1245,7 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Multiple carrier support due to object oriented approach.</li>
     <li>Unlimited number of players.</li>
     <li>Persistence of player results (optional). LSO grading data is saved to csv file.</li>
+    <li>Trap sheet (optional).</li>
     <li>Finite State Machine (FSM) implementation.</li>
 </ul>
 
@@ -1297,7 +1298,7 @@ There you also find an example mission and the necessary voice over sound files.
 
 <h2>Youtube Videos</h2>
 
-<p>Early AIRBOSS Groove Testing:</p>
+<h3>Early AIRBOSS Groove Testing:</h3>
 
 <ul>
     <li><a href="https://www.youtube.com/watch?v=94KHQxxX3UI">[MOOSE] Airboss - Groove Testing (WIP)</a></li>
@@ -1305,14 +1306,14 @@ There you also find an example mission and the necessary voice over sound files.
     <li><a href="https://www.youtube.com/watch?v=Xgs1hwDcPyM">[MOOSE] Airboss - Groove Test: On-the-fly LSO Grading</a></li>
 </ul>
 
-<p>Lex explaining Boat Ops:</p>
+<h3>Lex explaining Boat Ops:</h3>
 
 <ul>
     <li><a href="https://www.youtube.com/watch?v=LvGQS-3AzMc">( DCS HORNET ) Some boat ops basics VID 1</a></li>
     <li><a href="https://www.youtube.com/watch?v=bN44wvtRsw0">( DCS HORNET ) Some boat ops basics VID 2</a></li>
 </ul>
 
-<p>Jabbers Case I and III Recovery Tutorials:</p>
+<h3>Jabbers Case I and III Recovery Tutorials:</h3>
 
 <ul>
     <li><a href="https://www.youtube.com/watch?v=lm-M3VUy-_I">DCS World - F/A-18 - Case I Carrier Recovery Tutorial</a></li>
@@ -1320,7 +1321,7 @@ There you also find an example mission and the necessary voice over sound files.
     <li><a href="https://www.youtube.com/watch?v=Lnfug5CVAvo">DCS World - CASE III Recovery Tutorial</a></li>
 </ul>
 
-<p>Wags DCS Hornet Videos:</p>
+<h3>Wags DCS Hornet Videos:</h3>
 
 <ul>
     <li><a href="https://www.youtube.com/watch?v=TuigBLhtAH8">DCS: F/A-18C Hornet - Episode 9: CASE I Carrier Landing</a></li>
@@ -1328,15 +1329,11 @@ There you also find an example mission and the necessary voice over sound files.
     <li><a href="https://www.youtube.com/watch?v=D33uM9q4xgA">DCS: F/A-18C Hornet Case I Carrier Landing Training Lesson Recording</a></li>
 </ul>
 
-<h3>Open Questions?</h3>
+<h3>AV-8B Harrier at USS Tarawa</h3>
 
 <ul>
-    <li>What is the next step after a pattern wave off during Case II or III recovery? A: Go back to start!</li>
-    <li>What are the conditions for waving off flights when they get too close to a flight ahead in the pattern? At which pattern steps are flights waved off because of this?</li>
-    <li>Some more LSO gradings could be added. What is missing and what are the conditions?</li>
+    <li><a href="https://www.youtube.com/watch?v=lqmVvpunk2c">Harrier Ship Landing Mission with Auto LSO!</a></li>
 </ul>
-
-<p>If you know the answer to any of this, please get in touch with me! The necessary infrastructure to implement it is most likely already there.</p>
 
 <hr/>
 
@@ -1775,8 +1772,10 @@ issue a pattern wave off. Currently, this is only implemented for Case I recover
 
 <ul>
     <li>2.5 Points <strong>B</strong>: "Bolder", when the player landed but did not catch a wire.</li>
-    <li>1.0 Points <strong>WO</strong>: "Wave-Off": Player got waved off in the final parts of the groove.</li>
-    <li>2.0 Points <strong>PWO</strong>: "Pattern Wave-Off", when pilot was far away from where he should be in the pattern. For example, being long in the groove gives a "LIG PWO".</li>
+    <li>2.0 Points <strong>PWO</strong>: "Pattern Wave-Off", when pilot was far away from where he should be in the pattern.</li>
+    <li>2.0 Points <strong>OWO</strong>: "Own Wave-Off**, when pilot flies past the deck without touching it.</li>
+    <li>1.0 Points <strong>WO</strong>: "Technique Wave-Off": Player got waved off in the final parts of the groove.</li>
+    <li>1.0 Points <strong>LIG</strong>: "Long In the Groove", when pilot extents the downwind leg too far and screws up the timing for the following aircraft.</li>
     <li>0.0 Points <strong>CUT</strong>: "Cut pass", when player was waved off but landed anyway.</li>
 </ul>
 
@@ -1931,7 +1930,6 @@ your "Saved Games\DCS" folder in case you did desanitize the <strong>lfs</strong
 <p>The player grades can be saved automatically after each graded player pass via the <a href="AIRBOSS.SetAutoSave.html">AIRBOSS.SetAutoSave</a>(<em>path</em>, <em>filename</em>) function. Again the parameters <em>path</em> and <em>filename</em> are optional.
 In the simplest case, you desanitize the <strong>lfs</strong> module and just add</p>
 
-
 <pre><code>airbossStennis:SetAutoSave()
 </code></pre>
 
@@ -1990,6 +1988,46 @@ airbossStennis:Start()
 
 <p>This sequence loads all available player grades from the default file and automatically saved them when a player received a (final) grade. Again, if <strong>lfs</strong> was desanitized, the files are save to and loaded
 from the "Saved Games\DCS" directory. If <strong>lfs</strong> was <em>not</em> desanitized, the DCS root installation folder is the default path.</p>
+
+<h1>Trap Sheet</h1>
+
+<p>Important aircraft attitude parameters during the Groove can be saved to file for later analysis. This also requires the <strong>io</strong> and optionally <strong>lfs</strong> modules to be desanitized.</p>
+
+<p>In the script you have to add the <a href="##(AIRBOSS).SetTrapSheet">AIRBOSS.SetTrapSheet</a>(<em>path</em>) function to activate this feature.</p>
+
+<p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetTable.png" alt="Banner Image"/></p>
+
+<p>Data the is written to a file in csv format and contains the following information:</p>
+
+<ul>
+    <li><em>Time</em>: time in seconds since start.</li>
+    <li><em>Rho</em>: distance from rundown to player aircraft in NM.</li>
+    <li><em>X</em> : distance parallel to the carrier in meters.</li>
+    <li><em>Z</em> : distance perpendicular to the carrier in meters.</li>
+    <li><em>Alt</em>: altitude of player aircraft in feet.</li>
+    <li><em>AoA</em>: angle of attack in degrees.</li>
+    <li><em>GSE</em>: glideslope error in degrees.</li>
+    <li><em>LUE</em>: lineup error in degrees.</li>
+    <li><em>Vtot</em>: total velocity of player aircraft in knots.</li>
+    <li><em>Vy</em>: vertical (descent) velocity in ft/min.</li>
+    <li><em>Gamma</em>: angle between vector of aircraft nose and vector point in the direction of the carrier runway in degrees.</li>
+    <li><em>Pitch</em>: pitch angle of player aircraft in degrees.</li>
+    <li><em>Roll</em>: roll angle of player aircraft in degrees.</li>
+    <li><em>Yaw</em>: yaw angle of player aircraft in degrees.</li>
+    <li><em>Step</em>: Step in the groove.</li>
+</ul>
+
+<h2>Lineup Error</h2>
+
+<p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetLUE.png" alt="Banner Image"/></p>
+
+<p>The graph displayes the lineup error as a function of the distance to the carrier.</p>
+
+<h2>Glideslope Error</h2>
+
+<p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetGSE.png" alt="Banner Image"/></p>
+
+<p>-- The graph displayes the glideslope error as a function of the distance to the carrier.</p>
 
 <hr/>
 
@@ -2112,7 +2150,7 @@ by the AIRBOSS.</p>
 
 <h2>Refueling</h2>
 
-<p>AI groups in the marshal pattern can be send to refuel at the recovery tanker or if none is defined to the nearest divert airfield. This can be enabled by the <a href="AIRBOSS.SetRefuelAI.html">AIRBOSS.SetRefuelAI</a>(<em>lowfuelthreshold</em>).
+<p>AI groups in the marshal pattern can be send to refuel at the recovery tanker or if none is defined to the nearest divert airfield. This can be enabled by the <a href="##(AIRBOSS).SetRefuelAI">AIRBOSS.SetRefuelAI</a>(<em>lowfuelthreshold</em>).
 The parameter <em>lowfuelthreshold</em> is the threshold of fuel in percent. If the fuel drops below this value, the group will go for refueling. If refueling is performed at the recovery tanker,
 the group will return to the marshal stack when done. The aircraft will not return from the divert airfield however.</p>
 
@@ -3046,6 +3084,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetTrapSheet">AIRBOSS:SetTrapSheet(path)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enable saving of player's trap sheets and specify an optional directory path.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetUserSoundRadio">AIRBOSS:SetUserSoundRadio()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Use user sound output instead of radio transmission for messages.</p>
@@ -3289,6 +3333,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._CheckAbort">AIRBOSS:_CheckAbort(X, Z, pos)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if a player is within the right area.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._CheckCarrierTurning">AIRBOSS:_CheckCarrierTurning()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if carrier is turning.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3592,6 +3642,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetGrooveData">AIRBOSS:_GetGrooveData(playerData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get groove data.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetLandingSpotCoordinate">AIRBOSS:_GetLandingSpotCoordinate()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get landing spot on Tarawa.</p>
@@ -3676,6 +3732,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetRelativeVelocity">AIRBOSS:_GetRelativeVelocity(unit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get relative velocity of player unit wrt to carrier</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetStaticWeather">AIRBOSS:_GetStaticWeather(Clouds, Visibility, Fog, Dust)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get static weather of this mission from env.mission.weather.</p>
@@ -3748,7 +3810,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneCorridor">AIRBOSS:_GetZoneCorridor(case)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneCorridor">AIRBOSS:_GetZoneCorridor(case, l)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get approach corridor zone.</p>
 </td>
@@ -4072,7 +4134,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._PlayerHint">AIRBOSS:_PlayerHint(playerData, delay)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._PlayerHint">AIRBOSS:_PlayerHint(playerData, delay, soundoff)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Display hint to player.</p>
 </td>
@@ -4210,6 +4272,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._SaveTrapSheet">AIRBOSS:_SaveTrapSheet(playerData, grade)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Save trapsheet data.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._ScanCarrierZone">AIRBOSS:_ScanCarrierZone()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Scan carrier zone for (new) units.</p>
@@ -4266,7 +4334,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._SubtitlesOnOff">AIRBOSS:_SubtitlesOnOff(_unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Turn radio subtitles of player on or off</p>
+<p>Turn radio subtitles of player on or off.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4285,6 +4353,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._Trapped">AIRBOSS:_Trapped(playerData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trapped?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._TrapsheetOnOff">AIRBOSS:_TrapsheetOnOff(_unitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Turn radio subtitles of player on or off.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4606,6 +4680,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onEvent">AIRBOSS:onEvent(Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>General DCS event handler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterIdle">AIRBOSS:onafterIdle(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "Idle" event.</p>
@@ -4771,6 +4851,18 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).theatre">AIRBOSS.theatre</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The DCS map used in the mission.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).trappath">AIRBOSS.trappath</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Path where to save the trap sheets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).trapsheet">AIRBOSS.trapsheet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, players can save their trap sheets.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6143,27 +6235,75 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Gamma">AIRBOSS.GrooveData.Gamma</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Relative heading player to carrier's runway. 0=parallel, +-90=perpendicular.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).LUE">AIRBOSS.GrooveData.LUE</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Lineup error in degrees.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Rhdg">AIRBOSS.GrooveData.Rhdg</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Pitch">AIRBOSS.GrooveData.Pitch</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Relative heading player to carrier. 0=parallel, +-90=perpendicular.</p>
+<p>Pitch angle in degrees.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Rho">AIRBOSS.GrooveData.Rho</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Distance in meters.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Roll">AIRBOSS.GrooveData.Roll</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Roll angle.</p>
+<p>Roll angle in degrees.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Step">AIRBOSS.GrooveData.Step</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Current step.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Time">AIRBOSS.GrooveData.Time</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Time in seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Vel">AIRBOSS.GrooveData.Vel</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Total velocity in m/s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Vy">AIRBOSS.GrooveData.Vy</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Vertical velocity in m/s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).X">AIRBOSS.GrooveData.X</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Distance in meters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Yaw">AIRBOSS.GrooveData.Yaw</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Yaw angle in degrees.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Z">AIRBOSS.GrooveData.Z</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Distance in meters.</p>
 </td>
           </tr>
         </table>
@@ -7213,12 +7353,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).fouldeckwo">AIRBOSS.PlayerData.fouldeckwo</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, player was waved off because of a foul deck.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).groove">AIRBOSS.PlayerData.groove</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
@@ -7267,15 +7401,15 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).passes">AIRBOSS.PlayerData.passes</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).owo">AIRBOSS.PlayerData.owo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Number of passes.</p>
+<p>If true, own waveoff by player.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).patternwo">AIRBOSS.PlayerData.patternwo</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).passes">AIRBOSS.PlayerData.passes</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, player was waved off during the pattern.</p>
+<p>Number of passes.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -7321,6 +7455,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).trapon">AIRBOSS.PlayerData.trapon</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, save trap sheets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).trapsheet">AIRBOSS.PlayerData.trapsheet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Groove data table recorded every 0.5 seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).unit">AIRBOSS.PlayerData.unit</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Aircraft of the player. </p>
@@ -7348,6 +7494,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).wire">AIRBOSS.PlayerData.wire</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Wire caught by player when trapped.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).wofd">AIRBOSS.PlayerData.wofd</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, player was waved off because of a foul deck.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).wop">AIRBOSS.PlayerData.wop</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, player was waved off during the pattern.</p>
 </td>
           </tr>
         </table>
@@ -8819,6 +8977,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AIRBOSS).theatre" ><strong>AIRBOSS.theatre</strong></a>
     
 <p>The DCS map used in the mission.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).trappath" ><strong>AIRBOSS.trappath</strong></a>
+    
+<p>Path where to save the trap sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).trapsheet" ><strong>AIRBOSS.trapsheet</strong></a>
+    
+<p>If true, players can save their trap sheets.</p>
 
 </div>
 
@@ -13550,6 +13730,50 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetTrapSheet" ><strong>AIRBOSS:SetTrapSheet(path)</strong></a></h2>
+</div>
+    
+<p>Enable saving of player's trap sheets and specify an optional directory path.</p>
+
+<div id= "#Functions##SetTrapSheet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where to save the trap sheets.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).SetUserSoundRadio" ><strong>AIRBOSS:SetUserSoundRadio()</strong></a></h2>
 </div>
     
@@ -14865,6 +15089,28 @@ However, if you create a new folder inside the miz file, which contains the soun
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._CheckCarrierTurning" ><strong>AIRBOSS:_CheckCarrierTurning()</strong></a></h2>
+</div>
+    
+<p>Check if carrier is turning.</p>
+
+    
+<p>If turning started or stopped, we inform the players via radio message.</p>
+
+<div id= "#Functions##_CheckCarrierTurning" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
 </div>
 
 </div>
@@ -17209,6 +17455,50 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetGrooveData" ><strong>AIRBOSS:_GetGrooveData(playerData)</strong></a></h2>
+</div>
+    
+<p>Get groove data.</p>
+
+<div id= "#Functions##_GetGrooveData" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.PlayerData)">#AIRBOSS.PlayerData</a>
+            <strong><strong>playerData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player data table.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS.GrooveData)">#AIRBOSS.GrooveData</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Groove data table.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetLandingSpotCoordinate" ><strong>AIRBOSS:_GetLandingSpotCoordinate()</strong></a></h2>
 </div>
     
@@ -17877,6 +18167,50 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetRelativeVelocity" ><strong>AIRBOSS:_GetRelativeVelocity(unit)</strong></a></h2>
+</div>
+    
+<p>Get relative velocity of player unit wrt to carrier</p>
+
+<div id= "#Functions##_GetRelativeVelocity" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Relative velocity in m/s. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._GetStaticWeather" ><strong>AIRBOSS:_GetStaticWeather(Clouds, Visibility, Fog, Dust)</strong></a></h2>
 </div>
     
@@ -18418,7 +18752,7 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._GetZoneCorridor" ><strong>AIRBOSS:_GetZoneCorridor(case)</strong></a></h2>
+<h2><a id="#(AIRBOSS)._GetZoneCorridor" ><strong>AIRBOSS:_GetZoneCorridor(case, l)</strong></a></h2>
 </div>
     
 <p>Get approach corridor zone.</p>
@@ -18432,7 +18766,7 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -18443,6 +18777,19 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
           <div class="w3-half">
               
 <p>Recovery case.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>l</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Length of the zone in NM. Default 31 (=21+10) NM.</p>
 
           </div>
         </div>
@@ -20394,9 +20741,6 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
     
 <p>Generate a new radio call (deepcopy) from an existing default call.</p>
 
-    
-<p>P</p>
-
 <div id= "#Functions##_NewRadioCall" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -20852,7 +21196,7 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._PlayerHint" ><strong>AIRBOSS:_PlayerHint(playerData, delay)</strong></a></h2>
+<h2><a id="#(AIRBOSS)._PlayerHint" ><strong>AIRBOSS:_PlayerHint(playerData, delay, soundoff)</strong></a></h2>
 </div>
     
 <p>Display hint to player.</p>
@@ -20887,6 +21231,19 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
           <div class="w3-half">
               
 <p>Delay before playing sound messages. Default 0 sec.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>soundoff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, don't play and sound hint.</p>
 
           </div>
         </div>
@@ -21900,6 +22257,52 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._SaveTrapSheet" ><strong>AIRBOSS:_SaveTrapSheet(playerData, grade)</strong></a></h2>
+</div>
+    
+<p>Save trapsheet data.</p>
+
+<div id= "#Functions##_SaveTrapSheet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.PlayerData)">#AIRBOSS.PlayerData</a>
+            <strong><strong>playerData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Player data table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(AIRBOSS.LSOgrade)">#AIRBOSS.LSOgrade</a>
+            <strong><strong>grade</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>LSO grad data.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._ScanCarrierZone" ><strong>AIRBOSS:_ScanCarrierZone()</strong></a></h2>
 </div>
     
@@ -22284,7 +22687,7 @@ Also set player step to undefined if applicable or remove human flight if option
 <h2><a id="#(AIRBOSS)._SubtitlesOnOff" ><strong>AIRBOSS:_SubtitlesOnOff(_unitname)</strong></a></h2>
 </div>
     
-<p>Turn radio subtitles of player on or off</p>
+<p>Turn radio subtitles of player on or off.</p>
 
 <div id= "#Functions##_SubtitlesOnOff" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -22460,6 +22863,39 @@ Also set player step to undefined if applicable or remove human flight if option
           <div class="w3-half">
               
 <p>Player data table.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._TrapsheetOnOff" ><strong>AIRBOSS:_TrapsheetOnOff(_unitname)</strong></a></h2>
+</div>
+    
+<p>Turn radio subtitles of player on or off.</p>
+
+<div id= "#Functions##_TrapsheetOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the player unit.</p>
 
           </div>
         </div>
@@ -23104,6 +23540,39 @@ If removed flight is the section lead, we try to find a new leader.</p>
           <div class="w3-half">
               
 <p>Delay in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).onEvent" ><strong>AIRBOSS:onEvent(Event)</strong></a></h2>
+</div>
+    
+<p>General DCS event handler.</p>
+
+<div id= "#Functions##onEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>DCS event table.</p>
 
           </div>
         </div>
@@ -25409,6 +25878,28 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <a id="#(AIRBOSS).theatre" ><strong>AIRBOSS.theatre</strong></a>
     
 <p>The DCS map used in the mission.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).trappath" ><strong>AIRBOSS.trappath</strong></a>
+    
+<p>Path where to save the trap sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).trapsheet" ><strong>AIRBOSS.trapsheet</strong></a>
+    
+<p>If true, players can save their trap sheets.</p>
 
 </div>
 
@@ -27938,6 +28429,28 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <a id="#(AIRBOSS).theatre" ><strong>AIRBOSS.theatre</strong></a>
     
 <p>The DCS map used in the mission.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).trappath" ><strong>AIRBOSS.trappath</strong></a>
+    
+<p>Path where to save the trap sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).trapsheet" ><strong>AIRBOSS.trapsheet</strong></a>
+    
+<p>If true, players can save their trap sheets.</p>
 
 </div>
 
@@ -31716,6 +32229,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(AIRBOSS.GrooveData).Gamma" ><strong>AIRBOSS.GrooveData.Gamma</strong></a>
+    
+<p>Relative heading player to carrier's runway. 0=parallel, +-90=perpendicular.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(AIRBOSS.GrooveData).LUE" ><strong>AIRBOSS.GrooveData.LUE</strong></a>
     
 <p>Lineup error in degrees.</p>
@@ -31727,9 +32251,20 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(AIRBOSS.GrooveData).Rhdg" ><strong>AIRBOSS.GrooveData.Rhdg</strong></a>
+<a id="#(AIRBOSS.GrooveData).Pitch" ><strong>AIRBOSS.GrooveData.Pitch</strong></a>
     
-<p>Relative heading player to carrier. 0=parallel, +-90=perpendicular.</p>
+<p>Pitch angle in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).Rho" ><strong>AIRBOSS.GrooveData.Rho</strong></a>
+    
+<p>Distance in meters.</p>
 
 </div>
 
@@ -31740,7 +32275,7 @@ BASE:TraceOnOff( false )</code></pre>
     #number
 <a id="#(AIRBOSS.GrooveData).Roll" ><strong>AIRBOSS.GrooveData.Roll</strong></a>
     
-<p>Roll angle.</p>
+<p>Roll angle in degrees.</p>
 
 </div>
 
@@ -31752,6 +32287,72 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.GrooveData).Step" ><strong>AIRBOSS.GrooveData.Step</strong></a>
     
 <p>Current step.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).Time" ><strong>AIRBOSS.GrooveData.Time</strong></a>
+    
+<p>Time in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).Vel" ><strong>AIRBOSS.GrooveData.Vel</strong></a>
+    
+<p>Total velocity in m/s.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).Vy" ><strong>AIRBOSS.GrooveData.Vy</strong></a>
+    
+<p>Vertical velocity in m/s.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).X" ><strong>AIRBOSS.GrooveData.X</strong></a>
+    
+<p>Distance in meters.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).Yaw" ><strong>AIRBOSS.GrooveData.Yaw</strong></a>
+    
+<p>Yaw angle in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(nubmer)">#nubmer</a>
+<a id="#(AIRBOSS.GrooveData).Z" ><strong>AIRBOSS.GrooveData.Z</strong></a>
+    
+<p>Distance in meters.</p>
 
 </div>
 
@@ -33605,17 +34206,6 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(AIRBOSS.PlayerData).fouldeckwo" ><strong>AIRBOSS.PlayerData.fouldeckwo</strong></a>
-    
-<p>If true, player was waved off because of a foul deck.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(AIRBOSS.GroovePos)">#AIRBOSS.GroovePos</a>
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
@@ -33696,10 +34286,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(AIRBOSS.PlayerData).passes" ><strong>AIRBOSS.PlayerData.passes</strong></a>
+    #boolean
+<a id="#(AIRBOSS.PlayerData).owo" ><strong>AIRBOSS.PlayerData.owo</strong></a>
     
-<p>Number of passes.</p>
+<p>If true, own waveoff by player.</p>
 
 </div>
 
@@ -33707,10 +34297,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(AIRBOSS.PlayerData).patternwo" ><strong>AIRBOSS.PlayerData.patternwo</strong></a>
+    #number
+<a id="#(AIRBOSS.PlayerData).passes" ><strong>AIRBOSS.PlayerData.passes</strong></a>
     
-<p>If true, player was waved off during the pattern.</p>
+<p>Number of passes.</p>
 
 </div>
 
@@ -33789,6 +34379,31 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
+    
+<p> Set time stamp.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.PlayerData).trapon" ><strong>AIRBOSS.PlayerData.trapon</strong></a>
+    
+<p>If true, save trap sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(AIRBOSS.PlayerData).trapsheet" ><strong>AIRBOSS.PlayerData.trapsheet</strong></a>
+    
+<p>Groove data table recorded every 0.5 seconds.</p>
+
 </div>
 
 </div>   
@@ -33843,6 +34458,28 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).wire" ><strong>AIRBOSS.PlayerData.wire</strong></a>
     
 <p>Wire caught by player when trapped.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.PlayerData).wofd" ><strong>AIRBOSS.PlayerData.wofd</strong></a>
+    
+<p>If true, player was waved off because of a foul deck.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.PlayerData).wop" ><strong>AIRBOSS.PlayerData.wop</strong></a>
+    
+<p>If true, player was waved off during the pattern.</p>
 
 </div>
 
