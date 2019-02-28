@@ -1600,6 +1600,11 @@ It provides information about current pitch, roll, yaw, orientation of the plane
 <p>This command toggles the display of radio message subtitles if no radio relay unit is used. By default subtitles are on.
 Note that subtitles for radio messages which do not have a complete voice over are always displayed.</p>
 
+<h3>Trapsheet On/Off</h3>
+
+<p>Each player can activated or deactivate the recording of his flight data (AoA, glideslope, lineup, etc.) during his landing approaches.
+Note that this feature also has to be enabled by the mission designer. </p>
+
 <h2>Kneeboard Menu</h2>
 
 <p><img src="..\Presentations\AIRBOSS\Airboss_MenuKneeboard.png" alt="Banner Image"/></p>
@@ -1772,7 +1777,7 @@ issue a pattern wave off. Currently, this is only implemented for Case I recover
 
 <ul>
     <li>2.5 Points <strong>B</strong>: "Bolder", when the player landed but did not catch a wire.</li>
-    <li>2.0 Points <strong>PWO</strong>: "Pattern Wave-Off", when pilot was far away from where he should be in the pattern.</li>
+    <li>2.0 Points <strong>WOP</strong>: "Pattern Wave-Off", when pilot was far away from where he should be in the pattern.</li>
     <li>2.0 Points <strong>OWO</strong>: "Own Wave-Off**, when pilot flies past the deck without touching it.</li>
     <li>1.0 Points <strong>WO</strong>: "Technique Wave-Off": Player got waved off in the final parts of the groove.</li>
     <li>1.0 Points <strong>LIG</strong>: "Long In the Groove", when pilot extents the downwind leg too far and screws up the timing for the following aircraft.</li>
@@ -2021,13 +2026,31 @@ from the "Saved Games\DCS" directory. If <strong>lfs</strong> was <em>not</em> d
 
 <p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetLUE.png" alt="Banner Image"/></p>
 
-<p>The graph displayes the lineup error as a function of the distance to the carrier.</p>
+<p>The graph displays the lineup error (LUE) as a function of the distance to the carrier.</p>
+
+<p>The pilot approaches the carrier from the port side, LUE>0°, at a distance of ~1 NM.
+At the beginning of the groove (X), he significantly overshoots to the starboard side (LUE&lt;5°).
+In the middle (IM), he performs good corrections and smoothly reduces the lineup error.
+Finally, at a distance of ~0.3 NM (IC) he has corrected his lineup with the runway to a reasonable level, |LUE|&lt;0.5°. </p>
 
 <h2>Glideslope Error</h2>
 
-<p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetGSE.png" alt="Banner Image"/></p>
+<p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetGLE.png" alt="Banner Image"/></p>
 
-<p>-- The graph displayes the glideslope error as a function of the distance to the carrier.</p>
+<p>The graph displays the glideslope error (GSE) as a function of the distance to the carrier.</p>
+
+<p>In this case the pilot already enters the groove (X) below the optimal glideslope. He is not able to correct his height in the IM part and
+stays significantly too low. In close, he performs a harsh correction to gain altitude and ends up even slightly too high (GSE>0.5°).
+At his point further corrections are necessary.</p>
+
+<h2>Angle of Attack</h2>
+
+<p><img src="..\Presentations\AIRBOSS\Airboss_TrapSheetAoA.png" alt="Banner Image"/></p>
+
+<p>The graph displays the angle of attack (AoA) as a function of the distance to the carrier.</p>
+
+<p>The pilot starts off being on speed after the ball call. Then he get way to fast troughout the most part of the groove. He manages to correct
+this somewhat short before touchdown.</p>
 
 <hr/>
 
@@ -2298,7 +2321,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierDetour">AIRBOSS:CarrierDetour(coord, speed, uturn, uspeed)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).CarrierDetour">AIRBOSS:CarrierDetour(coord, speed, uturn, uspeed, tcoord)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Let the carrier make a detour to a given point.</p>
 </td>
@@ -2430,7 +2453,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind">AIRBOSS:GetHeadingIntoWind(magnetic)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind">AIRBOSS:GetHeadingIntoWind(magnetic, coord)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
 </td>
@@ -2448,7 +2471,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetWind">AIRBOSS:GetWind(alt, magnetic)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetWind">AIRBOSS:GetWind(alt, magnetic, coord)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get wind direction and speed at carrier position.</p>
 </td>
@@ -2456,7 +2479,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetWindOnDeck">AIRBOSS:GetWindOnDeck(alt)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get wind direction and speed on carrier deck.</p>
+<p>Get wind speed on carrier deck parallel and perpendicular to runway.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6241,6 +6264,24 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).Grade">AIRBOSS.GrooveData.Grade</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>LSO grade.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).GradeDetail">AIRBOSS.GrooveData.GradeDetail</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>LSO grade details.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).GradePoints">AIRBOSS.GrooveData.GradePoints</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>LSO grade points</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.GrooveData).LUE">AIRBOSS.GrooveData.LUE</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Lineup error in degrees.</p>
@@ -9276,7 +9317,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).CarrierDetour" ><strong>AIRBOSS:CarrierDetour(coord, speed, uturn, uspeed)</strong></a></h2>
+<h2><a id="#(AIRBOSS).CarrierDetour" ><strong>AIRBOSS:CarrierDetour(coord, speed, uturn, uspeed, tcoord)</strong></a></h2>
 </div>
     
 <p>Let the carrier make a detour to a given point.</p>
@@ -9340,6 +9381,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Speed in knots after U-turn. Default is same as before.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>tcoord</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Additional coordinate to make turn smoother.</p>
 
           </div>
         </div>
@@ -9823,7 +9877,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).GetHeadingIntoWind" ><strong>AIRBOSS:GetHeadingIntoWind(magnetic)</strong></a></h2>
+<h2><a id="#(AIRBOSS).GetHeadingIntoWind" ><strong>AIRBOSS:GetHeadingIntoWind(magnetic, coord)</strong></a></h2>
 </div>
     
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
@@ -9837,7 +9891,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -9848,6 +9902,19 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
           <div class="w3-half">
               
 <p>If true, calculate magnetic heading. By default true heading is returned.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>coord</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Coodinate from which heading is calculated. Default is current carrier position.</p>
 
           </div>
         </div>
@@ -10006,7 +10073,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).GetWind" ><strong>AIRBOSS:GetWind(alt, magnetic)</strong></a></h2>
+<h2><a id="#(AIRBOSS).GetWind" ><strong>AIRBOSS:GetWind(alt, magnetic, coord)</strong></a></h2>
 </div>
     
 <p>Get wind direction and speed at carrier position.</p>
@@ -10044,6 +10111,19 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>coord</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Coordinate at which to get the wind. Default is current carrier position.</p>
+
+          </div>
+        </div>
     <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
         <div class="w3-half">
@@ -10074,7 +10154,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
 <h2><a id="#(AIRBOSS).GetWindOnDeck" ><strong>AIRBOSS:GetWindOnDeck(alt)</strong></a></h2>
 </div>
     
-<p>Get wind direction and speed on carrier deck.</p>
+<p>Get wind speed on carrier deck parallel and perpendicular to runway.</p>
 
 <div id= "#Functions##GetWindOnDeck" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -10103,7 +10183,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         </div>
         <div class="w3-half">
           
-<p>Direction the wind is blowing <strong>from</strong> in degrees.</p>
+<p>Wind component parallel to runway im m/s.</p>
 
         </div>
         <div class="w3-half">
@@ -10111,7 +10191,15 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         </div>
         <div class="w3-half">
           
-<p>Wind speed in m/s.</p>
+<p>Wind component perpendicular to runway in m/s.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Total wind strength in m/s.</p>
 
         </div>
     </div>
@@ -32239,6 +32327,39 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(AIRBOSS.GrooveData).Grade" ><strong>AIRBOSS.GrooveData.Grade</strong></a>
+    
+<p>LSO grade.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.GrooveData).GradeDetail" ><strong>AIRBOSS.GrooveData.GradeDetail</strong></a>
+    
+<p>LSO grade details.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AIRBOSS.GrooveData).GradePoints" ><strong>AIRBOSS.GrooveData.GradePoints</strong></a>
+    
+<p>LSO grade points</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(AIRBOSS.GrooveData).LUE" ><strong>AIRBOSS.GrooveData.LUE</strong></a>
     
@@ -34153,9 +34274,6 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
-    
-<p> Set case to that of lead.</p>
-
 </div>
 
 </div>   
@@ -34206,10 +34324,35 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(AIRBOSS.PlayerData).flag" ><strong>AIRBOSS.PlayerData.flag</strong></a>
+    
+
+
+    
+<p> Decrease stack/flag. Human player needs to take care himself.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(AIRBOSS.GroovePos)">#AIRBOSS.GroovePos</a>
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
 <p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
+    
+
 
 </div>
 
@@ -34378,6 +34521,9 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).time" ><strong>AIRBOSS.PlayerData.time</strong></a>
     
 
+
+    
+<p> Set time stamp.</p>
 
 </div>
 
