@@ -1391,9 +1391,9 @@ Bankler was kind enough to allow me to add this to the class - thanks again!</p>
     
 
 <ul>
-    <li><strong>CASE I</strong> during daytime and good weather, </li>
-    <li><strong>CASE II</strong> during daytime but poor visibility conditions,</li>
-    <li><strong>CASE III</strong> when below Case II conditions, e.g. during nighttime.</li>
+    <li><strong>CASE I</strong> during daytime and good weather (ceiling > 3000 ft, visibility > 5 NM), </li>
+    <li><strong>CASE II</strong> during daytime but poor visibility conditions (ceiling > 1000 ft, visibility > 5NM),</li>
+    <li><strong>CASE III</strong> when below Case II conditions and during nighttime (ceiling &lt; 1000 ft, visibility &lt; 5 NM).</li>
 </ul>
 
 <p>That being said, this script allows you to use any of the three cases to be used at any time. Or, in other words, <em>you</em> need to specify when which case is safe and appropriate.</p>
@@ -2020,6 +2020,9 @@ from the "Saved Games\DCS" directory. If <strong>lfs</strong> was <em>not</em> d
     <li><em>Roll</em>: roll angle of player aircraft in degrees.</li>
     <li><em>Yaw</em>: yaw angle of player aircraft in degrees.</li>
     <li><em>Step</em>: Step in the groove.</li>
+    <li><em>Grade</em>: Current LSO grade.</li>
+    <li><em>Points</em>: Current points for the pass.</li>
+    <li><em>Details</em>: Detailed grading analysis.</li>
 </ul>
 
 <h2>Lineup Error</h2>
@@ -2204,6 +2207,39 @@ always go for a Case I in the final pattern part. Maybe this will improve in fut
 
 <hr/>
 
+<h1>Finite State Machine (FSM)</h1>
+
+<p>The AIRBOSS class has a Finite State Machine (FSM) implementation for the carrier. This allows mission designers to hook into certain events and helps
+simulate complex behaviour easier.</p>
+
+<p>FSM events are:</p>
+
+<ul>
+    <li><a href="##(AIRBOSS).Start">AIRBOSS.Start</a>: Starts the AIRBOSS FSM.</li>
+    <li><a href="##(AIRBOSS).Stop">AIRBOSS.Stop</a>: Stops the AIRBOSS FSM.</li>
+    <li><a href="##(AIRBOSS).Idle">AIRBOSS.Idle</a>: Carrier is set to idle and not recovering.</li>
+    <li><a href="##(AIRBOSS).RecoveryStart">AIRBOSS.RecoveryStart</a>: Starts the recovery ops.</li>
+    <li><a href="##(AIRBOSS).RecoveryStop">AIRBOSS.RecoveryStop</a>: Stops the recovery ops.</li>
+    <li><a href="##(AIRBOSS).RecoveryPause">AIRBOSS.RecoveryPause</a>: Pauses the recovery ops.</li>
+    <li><a href="##(AIRBOSS).RecoveryUnpause">AIRBOSS.RecoveryUnpause</a>: Unpauses the recovery ops.</li>
+    <li><a href="##(AIRBOSS).RecoveryCase">AIRBOSS.RecoveryCase</a>: Sets/switches the recovery case.</li>
+    <li><a href="##(AIRBOSS).PassingWaypoint">AIRBOSS.PassingWaypoint</a>: Carrier passes a waypoint defined in the mission editor.</li>
+</ul>
+
+<p>These events can be used in the user script. When the event is triggered, it is automatically a function OnAfter<em>Eventname</em> called. For example</p>
+
+<pre><code>--- Carrier just passed waypoint *n*.
+function AirbossStennis:OnAfterPassingWaypoint(From, Event, To, n)
+ -- Launch green flare.
+ self.carrier:FlareGreen()
+end
+</code></pre>
+
+<p>In this example, we only launch a green flare every time the carrier passes a waypoint defined in the mission editor. But, of course, you can also use it to add new
+recovery windows each time a carrier passes a waypoint. Therefore, you can create an "infinite" number of windows easily.</p>
+
+<hr/>
+
 <h1>Examples</h1>
 
 <p>In this section a few simple examples are given to illustrate the scripting part.</p>
@@ -2279,7 +2315,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).AddRecoveryWindow">AIRBOSS:AddRecoveryWindow(starttime, stoptime, case, holdingoffset, turnintowind, speed)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).AddRecoveryWindow">AIRBOSS:AddRecoveryWindow(starttime, stoptime, case, holdingoffset, turnintowind, speed, uturn)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add aircraft recovery time window and recovery case.</p>
 </td>
@@ -2669,6 +2705,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnAfterPassingWaypoint">AIRBOSS:OnAfterPassingWaypoint(From, Event, To, waypoint)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "PassingWaypoint" user function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnAfterRecoveryStart">AIRBOSS:OnAfterRecoveryStart(From, Event, To, Case, Offset)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "RecoveryStart" user function.</p>
@@ -2678,6 +2720,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnAfterSave">AIRBOSS:OnAfterSave(From, Event, To, path, filename)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "Save" event user function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnAfterStart">AIRBOSS:OnAfterStart(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Start" user function.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2720,6 +2768,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).OnEventTakeoff">AIRBOSS:OnEventTakeoff(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Airboss event handler for event that a unit takes off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).PassingWaypoint">AIRBOSS:PassingWaypoint(waypoint)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "PassingWaypoint".</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3961,7 +4015,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._LSOCallAircraftBall">AIRBOSS:_LSOCallAircraftBall(modex, nickname, fuelstate)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Inform everyone that recovery ops are stopped and deck is closed.</p>
+<p>AI aircraft calls the ball.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4145,7 +4199,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._PatrolRoute">AIRBOSS:_PatrolRoute()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._PatrolRoute">AIRBOSS:_PatrolRoute(n)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Patrol carrier.</p>
 </td>
@@ -4424,6 +4478,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).__Load">AIRBOSS:__Load(delay, path, filename)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM delayed event "Load" that loads the player scores from a file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).__PassingWaypoint">AIRBOSS:__PassingWaypoint(delay, Case, Offset)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM delayed event "PassingWaypoint".</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4718,6 +4778,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterLoad">AIRBOSS:onafterLoad(From, Event, To, path, filename)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "Load" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).onafterPassingWaypoint">AIRBOSS:onafterPassingWaypoint(From, Event, To, n)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "PassingWaypoint" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -7764,6 +7830,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.Recovery).UTURN">AIRBOSS.Recovery.UTURN</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, carrier makes a U-turn to the point it came from before resuming its route to the next waypoint.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.Recovery).WIND">AIRBOSS.Recovery.WIND</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Carrier will turn into the wind.</p>
@@ -9149,7 +9221,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).AddRecoveryWindow" ><strong>AIRBOSS:AddRecoveryWindow(starttime, stoptime, case, holdingoffset, turnintowind, speed)</strong></a></h2>
+<h2><a id="#(AIRBOSS).AddRecoveryWindow" ><strong>AIRBOSS:AddRecoveryWindow(starttime, stoptime, case, holdingoffset, turnintowind, speed, uturn)</strong></a></h2>
 </div>
     
 <p>Add aircraft recovery time window and recovery case.</p>
@@ -9236,6 +9308,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Speed in knots during turn into wind leg.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>uturn</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true (or nil), carrier wil perform a U-turn and go back to where it came from before resuming its route to the next waypoint. If false, it will go directly to the next waypoint.</p>
 
           </div>
         </div>
@@ -10831,6 +10916,81 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnAfterPassingWaypoint" ><strong>AIRBOSS:OnAfterPassingWaypoint(From, Event, To, waypoint)</strong></a></h2>
+</div>
+    
+<p>On after "PassingWaypoint" user function.</p>
+
+    
+<p>Called when the carrier passes a waypoint of its route.</p>
+
+<div id= "#Functions##OnAfterPassingWaypoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>waypoint</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of waypoint.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).OnAfterRecoveryStart" ><strong>AIRBOSS:OnAfterRecoveryStart(From, Event, To, Case, Offset)</strong></a></h2>
 </div>
     
@@ -10996,6 +11156,68 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
           <div class="w3-half">
               
 <p>(Optional) File name. Default is AIRBOSS-<em>ALIAS</em>_LSOgrades.csv.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).OnAfterStart" ><strong>AIRBOSS:OnAfterStart(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "Start" user function.</p>
+
+    
+<p>Called when the AIRBOSS FSM is started.</p>
+
+<div id= "#Functions##OnAfterStart" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
 
           </div>
         </div>
@@ -11222,6 +11444,42 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
           <div class="w3-half">
               
 <p>function AIRBOSS:OnEventPlayerLeaveUnit(EventData)</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).PassingWaypoint" ><strong>AIRBOSS:PassingWaypoint(waypoint)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "PassingWaypoint".</p>
+
+    
+<p>Called when the carrier passes a waypoint.</p>
+
+<div id= "#Functions##PassingWaypoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>waypoint</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of waypoint.</p>
 
           </div>
         </div>
@@ -19729,7 +19987,7 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
 <h2><a id="#(AIRBOSS)._LSOCallAircraftBall" ><strong>AIRBOSS:_LSOCallAircraftBall(modex, nickname, fuelstate)</strong></a></h2>
 </div>
     
-<p>Inform everyone that recovery ops are stopped and deck is closed.</p>
+<p>AI aircraft calls the ball.</p>
 
 <div id= "#Functions##_LSOCallAircraftBall" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -21218,7 +21476,7 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS)._PatrolRoute" ><strong>AIRBOSS:_PatrolRoute()</strong></a></h2>
+<h2><a id="#(AIRBOSS)._PatrolRoute" ><strong>AIRBOSS:_PatrolRoute(n)</strong></a></h2>
 </div>
     
 <p>Patrol carrier.</p>
@@ -21229,6 +21487,20 @@ If the flight is not already holding in the Marshal stack, it is guided there fi
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>n</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Current waypoint.</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -23275,6 +23547,68 @@ If removed flight is the section lead, we try to find a new leader.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).__PassingWaypoint" ><strong>AIRBOSS:__PassingWaypoint(delay, Case, Offset)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM delayed event "PassingWaypoint".</p>
+
+    
+<p>Called when the carrier passes a waypoint.</p>
+
+<div id= "#Functions##__PassingWaypoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Case</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Recovery case (1, 2 or 3) that is started.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Offset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Holding pattern offset angle in degrees for CASE II/III recoveries.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).__RecoveryCase" ><strong>AIRBOSS:__RecoveryCase(delay, Case, Offset)</strong></a></h2>
 </div>
     
@@ -23822,6 +24156,81 @@ If removed flight is the section lead, we try to find a new leader.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).onafterPassingWaypoint" ><strong>AIRBOSS:onafterPassingWaypoint(From, Event, To, n)</strong></a></h2>
+</div>
+    
+<p>On after "PassingWaypoint" event.</p>
+
+    
+<p>Carrier has just passed a waypoint</p>
+
+<div id= "#Functions##onafterPassingWaypoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>n</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of waypoint that was passed.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS).onafterRecoveryCase" ><strong>AIRBOSS:onafterRecoveryCase(From, Event, To, Case, Offset)</strong></a></h2>
 </div>
     
@@ -24291,7 +24700,7 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <p>On after Start event.</p>
 
     
-<p>Starts the AIRBOSS. Addes event handlers and schedules status updates of reqests and queue.</p>
+<p>Starts the AIRBOSS. Adds event handlers and schedules status updates of requests and queue.</p>
 
 <div id= "#Functions##onafterStart" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -34275,7 +34684,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set current case.</p>
+<p> Set case of f</p>
 
 </div>
 
@@ -34345,17 +34754,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
 <p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
-    
-
 
 </div>
 
@@ -34481,9 +34879,6 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
-    
-<p> Make player section lead if he was not before.</p>
-
 </div>
 
 </div>   
@@ -34527,9 +34922,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).time" ><strong>AIRBOSS.PlayerData.time</strong></a>
     
 
-
-    
-<p> Set time stamp.</p>
 
 </div>
 
@@ -34986,6 +35378,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.Recovery).STOP" ><strong>AIRBOSS.Recovery.STOP</strong></a>
     
 <p>End of recovery in seconds of abs mission time.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.Recovery).UTURN" ><strong>AIRBOSS.Recovery.UTURN</strong></a>
+    
+<p>If true, carrier makes a U-turn to the point it came from before resuming its route to the next waypoint.</p>
 
 </div>
 
