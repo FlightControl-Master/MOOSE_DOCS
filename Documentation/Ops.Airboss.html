@@ -1843,8 +1843,8 @@ to the <em>carriername</em> of the first parameter.</p>
 
 <p>The <strong>second line</strong> starts the AIRBOSS class. If you set options this should happen after the <a href="##(AIRBOSS).New">AIRBOSS.New</a> and before <a href="##(AIRBOSS).Start">AIRBOSS.Start</a> command.</p>
 
-<p>If no recovery window is set like in the basic example, a window will automatically open 15 minutes after mission start and close again after three hours.
-The next section explains how to set your own recovery times.</p>
+<p>However, good mission planning involves also planning when aircraft are supposed to be launched or recovered. The definition of <em>case specific</em> recovery ops within the same mission is described in
+the next section.</p>
 
 <h2>Recovery Windows</h2>
 
@@ -3184,7 +3184,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetTrapSheet">AIRBOSS:SetTrapSheet(path)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetTrapSheet">AIRBOSS:SetTrapSheet(path, prefix)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enable saving of player's trap sheets and specify an optional directory path.</p>
 </td>
@@ -3805,6 +3805,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetPlayerDataUnit">AIRBOSS:_GetPlayerDataUnit(unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get player data from unit object</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetPlayerUnit">AIRBOSS:_GetPlayerUnit(_unitName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the unit of a player and the player name from the self.players table if it exists. </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4969,6 +4975,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).trappath">AIRBOSS.trappath</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Path where to save the trap sheets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).trapprefix">AIRBOSS.trapprefix</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>File prefix for trap sheet files.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -7599,7 +7611,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).unit">AIRBOSS.PlayerData.unit</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Aircraft of the player. </p>
+<p>Aircraft of the player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS.PlayerData).unitname">AIRBOSS.PlayerData.unitname</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -9124,6 +9142,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AIRBOSS).trappath" ><strong>AIRBOSS.trappath</strong></a>
     
 <p>Path where to save the trap sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).trapprefix" ><strong>AIRBOSS.trapprefix</strong></a>
+    
+<p>File prefix for trap sheet files.</p>
 
 </div>
 
@@ -11365,9 +11394,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
             </p>
           </div>
           <div class="w3-half">
-              
-<p>function AIRBOSS:OnEventPlayerLeaveUnit(EventData)</p>
-
+              <p></p>
           </div>
         </div>
 </div>
@@ -14099,7 +14126,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).SetTrapSheet" ><strong>AIRBOSS:SetTrapSheet(path)</strong></a></h2>
+<h2><a id="#(AIRBOSS).SetTrapSheet" ><strong>AIRBOSS:SetTrapSheet(path, prefix)</strong></a></h2>
 </div>
     
 <p>Enable saving of player's trap sheets and specify an optional directory path.</p>
@@ -14110,7 +14137,7 @@ However, if you create a new folder inside the miz file, which contains the soun
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -14121,6 +14148,19 @@ However, if you create a new folder inside the miz file, which contains the soun
           <div class="w3-half">
               
 <p>(Optional) Path where to save the trap sheets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>prefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Prefix for trap sheet files. File name will be saved as *prefix_aircrafttype-0001.csv*, *prefix_aircrafttype-0002.csv*, etc.</p>
 
           </div>
         </div>
@@ -18296,6 +18336,58 @@ If next in line is an AI flight, this is done. If human player is next, we wait 
 <p>Player data or nil if not player with this name or unit exists.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._GetPlayerUnit" ><strong>AIRBOSS:_GetPlayerUnit(_unitName)</strong></a></h2>
+</div>
+    
+<p>Returns the unit of a player and the player name from the self.players table if it exists. </p>
+
+<div id= "#Functions##_GetPlayerUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the player unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Unit of player or nil.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Name of player or nil.</p>
+
+        </div>
     </div>
 </div>
 
@@ -26416,6 +26508,17 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(AIRBOSS).trapprefix" ><strong>AIRBOSS.trapprefix</strong></a>
+    
+<p>File prefix for trap sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AIRBOSS).trapsheet" ><strong>AIRBOSS.trapsheet</strong></a>
     
@@ -28960,6 +29063,17 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <a id="#(AIRBOSS).trappath" ><strong>AIRBOSS.trappath</strong></a>
     
 <p>Path where to save the trap sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS).trapprefix" ><strong>AIRBOSS.trapprefix</strong></a>
+    
+<p>File prefix for trap sheet files.</p>
 
 </div>
 
@@ -34707,7 +34821,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set current case.</p>
+<p> Set case of f</p>
 
 </div>
 
@@ -34763,6 +34877,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
 <p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
+    
+
 
 </div>
 
@@ -34888,6 +35013,9 @@ BASE:TraceOnOff( false )</code></pre>
     
 
 
+    
+<p> Make player section lead if he was not before.</p>
+
 </div>
 
 </div>   
@@ -34933,7 +35061,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p> Set new time stamp.</p>
+<p> Set time stamp.</p>
 
 </div>
 
@@ -34966,7 +35094,18 @@ BASE:TraceOnOff( false )</code></pre>
     <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
 <a id="#(AIRBOSS.PlayerData).unit" ><strong>AIRBOSS.PlayerData.unit</strong></a>
     
-<p>Aircraft of the player. </p>
+<p>Aircraft of the player.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AIRBOSS.PlayerData).unitname" ><strong>AIRBOSS.PlayerData.unitname</strong></a>
+    
+<p>Name of the unit.</p>
 
 </div>
 
