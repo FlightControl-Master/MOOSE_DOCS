@@ -1981,6 +1981,26 @@ You can also specify a specific tanker for refuelling for a squadron  by using t
  A2ADispatcher:SetSquadronTanker( "Gelend", "TankerGelend" )
 </code></pre>
 
+<h2>7.4 Set up race track pattern</h2>
+
+<p>By default, flights patrol randomly within the CAP zone. It is also possible to let them fly a race track pattern using the
+<a href="##(AI_A2A_DISPATCHER).SetDefaultCapRacetrack">AI_A2A_DISPATCHER.SetDefaultCapRacetrack</a>(<em>LeglengthMin</em>, <em>LeglengthMax</em>, <em>HeadingMin</em>, <em>HeadingMax</em>, <em>DurationMin</em>, <em>DurationMax</em>) or 
+<a href="##(AI_A2A_DISPATCHER).SetSquadronCapRacetrack">AI_A2A_DISPATCHER.SetSquadronCapRacetrack</a>(<em>SquadronName</em>, <em>LeglengthMin</em>, <em>LeglengthMax</em>, <em>HeadingMin</em>, <em>HeadingMax</em>, <em>DurationMin</em>, <em>DurationMax</em>) functions.
+The first function enables this for all squadrons, the latter only for specific squadrons. For example,</p>
+
+<pre><code> -- Enable race track pattern for CAP squadron "Mineralnye".
+ A2ADispatcher:SetSquadronCapRacetrack("Mineralnye", 10000, 20000, 90, 180, 10*60, 20*60)
+</code></pre>
+
+<p>In this case the squadron "Mineralnye" will a race track pattern at a random point in the CAP zone. The leg length will be randomly selected between 10,000 and 20,000 meters. The heading
+of the race track will randomly selected between 90 (West to East) and 180 (North to South) degrees.
+After a random duration between 10 and 20 minutes, the flight will get a new random orbit location.</p>
+
+<p>Note that all parameters except the squadron name are optional. If not specified, default values are taken. Speed and altitude are taken from the </p>
+
+<p>Also note that the center of the race track pattern is chosen randomly within the patrol zone and can be close the the boarder of the zone. Hence, it cannot be guaranteed that the
+whole pattern lies within the patrol zone.</p>
+
 <h2>8. Setup a squadron for GCI:</h2>
 
 <p>The method <a href="##(AI_A2A_DISPATCHER).SetSquadronGci">AI_A2A_DISPATCHER.SetSquadronGci</a>() defines a GCI execution for a squadron.</p>
@@ -2841,6 +2861,12 @@ The following parameters were given to the :New method of AI_A2A_GCICAP, and mea
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER).SetDefaultCapRacetrack">AI_A2A_DISPATCHER:SetDefaultCapRacetrack(LeglengthMin, HeadingMin, HeadingMax, DurationMin, DurationMax, LeglengthMax)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set race track pattern as default when any squadron is performing CAP.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER).SetDefaultCapTimeInterval">AI_A2A_DISPATCHER:SetDefaultCapTimeInterval(CapMinSeconds, CapMaxSeconds)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the default CAP time interval for squadrons, which will be used to determine a random CAP timing.</p>
@@ -2988,6 +3014,12 @@ The following parameters were given to the :New method of AI_A2A_GCICAP, and mea
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER).SetSquadronCapInterval">AI_A2A_DISPATCHER:SetSquadronCapInterval(SquadronName, CapLimit, LowInterval, HighInterval, Probability)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the squadron CAP parameters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER).SetSquadronCapRacetrack">AI_A2A_DISPATCHER:SetSquadronCapRacetrack(SquadronName, LeglengthMin, HeadingMin, HeadingMax, DurationMin, DurationMax, LeglengthMax)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set race track pattern when squadron is performing CAP.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4101,6 +4133,48 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).Racetrack">AI_A2A_DISPATCHER.Squadron.Racetrack</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, CAP flights will perform a racetrack pattern rather than randomly patrolling the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).RacetrackDurationMax">AI_A2A_DISPATCHER.Squadron.RacetrackDurationMax</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Max duration in seconds before the CAP flight changes its orbit position. Default never.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).RacetrackDurationMin">AI_A2A_DISPATCHER.Squadron.RacetrackDurationMin</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Min duration in seconds before the CAP flight changes its orbit position. Default never.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).RacetrackHeadingMax">AI_A2A_DISPATCHER.Squadron.RacetrackHeadingMax</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Max heading of race track in degrees. Default 180 deg, i.e. from North to South.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).RacetrackHeadingMin">AI_A2A_DISPATCHER.Squadron.RacetrackHeadingMin</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Min heading of race track in degrees. Default 0 deg, i.e. from South to North.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).RacetrackLengthMax">AI_A2A_DISPATCHER.Squadron.RacetrackLengthMax</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Max Length of race track in meters. Default 15,000 m.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).RacetrackLengthMin">AI_A2A_DISPATCHER.Squadron.RacetrackLengthMin</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Min Length of race track in meters. Default 10,000 m.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_DISPATCHER.Squadron).ResourceCount">AI_A2A_DISPATCHER.Squadron.ResourceCount</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Number of resources.</p>
@@ -4433,7 +4507,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p>#table:</p>
+        <p><a href="##(AI_A2A_DISPATCHER.Squadron)">#AI_A2A_DISPATCHER.Squadron</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -6730,6 +6804,112 @@ or
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AI_A2A_DISPATCHER).SetDefaultCapRacetrack" ><strong>AI_A2A_DISPATCHER:SetDefaultCapRacetrack(LeglengthMin, HeadingMin, HeadingMax, DurationMin, DurationMax, LeglengthMax)</strong></a></h2>
+</div>
+    
+<p>Set race track pattern as default when any squadron is performing CAP.</p>
+
+<div id= "#Functions##SetDefaultCapRacetrack" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2A_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LeglengthMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min length of the race track leg in meters. Default 10,000 m.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>HeadingMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min heading of the race track in degrees. Default 0 deg, i.e. from South to North.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>HeadingMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Max heading of the race track in degrees. Default 180 deg, i.e. from North to South.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>DurationMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Min duration in seconds before switching the orbit position. Default is keep same orbit until RTB or engage.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>DurationMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Max duration in seconds before switching the orbit position. Default is keep same orbit until RTB or engage.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>LeglengthMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AI_A2A_DISPATCHER)">#AI_A2A_DISPATCHER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AI_A2A_DISPATCHER).SetDefaultCapTimeInterval" ><strong>AI_A2A_DISPATCHER:SetDefaultCapTimeInterval(CapMinSeconds, CapMaxSeconds)</strong></a></h2>
 </div>
     
@@ -8366,6 +8546,125 @@ If you have only one prefix name for a squadron, you don't need to use the <code
        A2ADispatcher:SetSquadronCapInterval( "Sochi", 2, 30, 120, 1 )
 </code></pre>
 
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AI_A2A_DISPATCHER).SetSquadronCapRacetrack" ><strong>AI_A2A_DISPATCHER:SetSquadronCapRacetrack(SquadronName, LeglengthMin, HeadingMin, HeadingMax, DurationMin, DurationMax, LeglengthMax)</strong></a></h2>
+</div>
+    
+<p>Set race track pattern when squadron is performing CAP.</p>
+
+<div id= "#Functions##SetSquadronCapRacetrack" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AI_A2A_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>SquadronName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the squadron.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LeglengthMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min length of the race track leg in meters. Default 10,000 m.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>HeadingMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min heading of the race track in degrees. Default 0 deg, i.e. from South to North.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>HeadingMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Max heading of the race track in degrees. Default 180 deg, i.e. from North to South.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>DurationMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Min duration in seconds before switching the orbit position. Default is keep same orbit until RTB or engage.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>DurationMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Max duration in seconds before switching the orbit position. Default is keep same orbit until RTB or engage.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>LeglengthMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AI_A2A_DISPATCHER)">#AI_A2A_DISPATCHER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -15288,6 +15587,83 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(AI_A2A_DISPATCHER.Squadron).Overhead" ><strong>AI_A2A_DISPATCHER.Squadron.Overhead</strong></a>
     
 <p>Squadron overhead.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AI_A2A_DISPATCHER.Squadron).Racetrack" ><strong>AI_A2A_DISPATCHER.Squadron.Racetrack</strong></a>
+    
+<p>If true, CAP flights will perform a racetrack pattern rather than randomly patrolling the zone.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2A_DISPATCHER.Squadron).RacetrackDurationMax" ><strong>AI_A2A_DISPATCHER.Squadron.RacetrackDurationMax</strong></a>
+    
+<p>Max duration in seconds before the CAP flight changes its orbit position. Default never.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2A_DISPATCHER.Squadron).RacetrackDurationMin" ><strong>AI_A2A_DISPATCHER.Squadron.RacetrackDurationMin</strong></a>
+    
+<p>Min duration in seconds before the CAP flight changes its orbit position. Default never.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2A_DISPATCHER.Squadron).RacetrackHeadingMax" ><strong>AI_A2A_DISPATCHER.Squadron.RacetrackHeadingMax</strong></a>
+    
+<p>Max heading of race track in degrees. Default 180 deg, i.e. from North to South.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2A_DISPATCHER.Squadron).RacetrackHeadingMin" ><strong>AI_A2A_DISPATCHER.Squadron.RacetrackHeadingMin</strong></a>
+    
+<p>Min heading of race track in degrees. Default 0 deg, i.e. from South to North.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2A_DISPATCHER.Squadron).RacetrackLengthMax" ><strong>AI_A2A_DISPATCHER.Squadron.RacetrackLengthMax</strong></a>
+    
+<p>Max Length of race track in meters. Default 15,000 m.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AI_A2A_DISPATCHER.Squadron).RacetrackLengthMin" ><strong>AI_A2A_DISPATCHER.Squadron.RacetrackLengthMin</strong></a>
+    
+<p>Min Length of race track in meters. Default 10,000 m.</p>
 
 </div>
 
