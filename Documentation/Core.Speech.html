@@ -1300,14 +1300,14 @@ which are excellent tools to be reused in an OO environment!.</p>
    </div>
   </nav>
   
-<img src="..\Images\Core_Scheduler.JPG" alt="Banner Image"/>   
+<img src="..\Images\Core_Radio.JPG" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Core.Scheduler</strong></h1>
+    <h1>Module <strong>Core.Speech</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Core</strong> - Prepares and handles the execution of functions over scheduled time (intervals).</p>
+<p><strong>Core</strong> - Makes the radio talk.</p>
 
     
 
@@ -1316,294 +1316,279 @@ which are excellent tools to be reused in an OO environment!.</p>
 <h2>Features:</h2>
 
 <ul>
-    <li>Schedule functions over time,</li>
-    <li>optionally in an optional specified time interval, </li>
-    <li>optionally <strong>repeating</strong> with a specified time repeat interval, </li>
-    <li>optionally <strong>randomizing</strong> with a specified time interval randomization factor, </li>
-    <li>optionally <strong>stop</strong> the repeating after a specified time interval. </li>
+    <li>Send text strings using a vocabulary that is converted in spoken language.</li>
+    <li>Possiblity to implement multiple language.</li>
 </ul>
 
 <hr/>
 
-<h1>Demo Missions</h1>
-
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master-release/SCH%20-%20Scheduler">SCHEDULER Demo Missions source code</a></h3>
-
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master/SCH%20-%20Scheduler">SCHEDULER Demo Missions, only for beta testers</a></h3>
-
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases">ALL Demo Missions pack of the last release</a></h3>
-
-<hr/>
-
-<h1>YouTube Channel</h1>
-
-<h3><a href="">SCHEDULER YouTube Channel (none)</a></h3>
-
-<hr/>
-
-<h3>Contributions:</h3>
-
-<ul>
-    <li>FlightControl : Concept &amp; Testing</li>
-</ul>
-
-<h3>Authors:</h3>
-
-<ul>
-    <li>FlightControl : Design &amp; Programming</li>
-</ul>
-
-<hr/>
+<h3>Authors: FlightControl</h3>
 
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SCHEDULER')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##RADIOSPEECH')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>SCHEDULER</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>RADIOSPEECH</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Creates and handles schedules over time, which allow to execute code at specific time intervals with randomization.</p>
+
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##SCHEDULER" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##RADIOSPEECH" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(SCHEDULER)">#SCHEDULER</a>
-<a id="SCHEDULER" ><strong>SCHEDULER</strong></a>
+    <a href="##(RADIOSPEECH)">#RADIOSPEECH</a>
+<a id="RADIOSPEECH" ><strong>RADIOSPEECH</strong></a>
     
-<p>Creates and handles schedules over time, which allow to execute code at specific time intervals with randomization.</p>
-
-    
-
-<p>A SCHEDULER can manage <strong>multiple</strong> (repeating) schedules. Each planned or executing schedule has a unique <strong>ScheduleID</strong>.
-The ScheduleID is returned when the method <a href="##(SCHEDULER).Schedule">SCHEDULER.Schedule</a>() is called.
-It is recommended to store the ScheduleID in a variable, as it is used in the methods <a href="SCHEDULER.Start.html">SCHEDULER.Start</a>() and <a href="SCHEDULER.Stop.html">SCHEDULER.Stop</a>(),
-which can start and stop specific repeating schedules respectively within a SCHEDULER object.</p>
-
-<h2>SCHEDULER constructor</h2>
-
-<p>The SCHEDULER class is quite easy to use, but note that the New constructor has variable parameters:</p>
-
-<p>The <a href="##(SCHEDULER).New">SCHEDULER.New</a>() method returns 2 variables:</p>
-
-<ol>
-    <li>The SCHEDULER object reference.</li>
-    <li>The first schedule planned in the SCHEDULER object.</li>
-</ol>
-
-<p>To clarify the different appliances, lets have a look at the following examples: </p>
-
-<h3>Construct a SCHEDULER object without a persistent schedule.</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil ): Setup a new SCHEDULER object, which is persistently executed after garbage collection.</p>
-    
-    <p>SchedulerObject = SCHEDULER:New()
-    SchedulerID = SchedulerObject:Schedule( nil, ScheduleFunction, {} )</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, but does not schedule anything.
-A separate schedule is created by using the SchedulerObject using the method :Schedule..., which returns a ScheduleID</p>
-
-<h3>Construct a SCHEDULER object without a volatile schedule, but volatile to the Object existence...</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object ): Setup a new SCHEDULER object, which is linked to the Object. When the Object is nillified or destroyed, the SCHEDULER object will also be destroyed and stopped after garbage collection.</p>
-    
-    <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject = SCHEDULER:New( ZoneObject )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
-    ...
-    ZoneObject = nil
-    garbagecollect()</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, but does not schedule anything, and is bound to the existence of ZoneObject, which is a ZONE.
-A separate schedule is created by using the SchedulerObject using the method :Schedule()..., which returns a ScheduleID
-Later in the logic, the ZoneObject is put to nil, and garbage is collected.
-As a result, the ScheduleObject will cancel any planned schedule.</p>
-
-<h3>Construct a SCHEDULER object with a persistent schedule.</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil, Function, FunctionArguments, Start, ... ): Setup a new persistent SCHEDULER object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
-    
-    <p>SchedulerObject, SchedulerID = SCHEDULER:New( nil, ScheduleFunction, {} )</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, and does schedule the first schedule as part of the call.
-Note that 2 variables are returned here: SchedulerObject, ScheduleID...</p>
-
-<h3>Construct a SCHEDULER object without a schedule, but volatile to the Object existence...</h3>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object, Function, FunctionArguments, Start, ... ): Setup a new SCHEDULER object, linked to Object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
-    
-    <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
-    ...
-    ZoneObject = nil
-    garbagecollect()</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, and schedules a method call (ScheduleFunction), 
-and is bound to the existence of ZoneObject, which is a ZONE object (ZoneObject).
-Both a ScheduleObject and a SchedulerID variable are returned.
-Later in the logic, the ZoneObject is put to nil, and garbage is collected.
-As a result, the ScheduleObject will cancel the planned schedule.</p>
-
-<h2>SCHEDULER timer stopping and (re-)starting.</h2>
-
-<p>The SCHEDULER can be stopped and restarted with the following methods:</p>
-
-<ul>
-    <li><p><a href="##(SCHEDULER).Start">SCHEDULER.Start</a>(): (Re-)Start the schedules within the SCHEDULER object. If a CallID is provided to :Start(), only the schedule referenced by CallID will be (re-)started.</p></li>
-    <li><p><a href="##(SCHEDULER).Stop">SCHEDULER.Stop</a>(): Stop the schedules within the SCHEDULER object. If a CallID is provided to :Stop(), then only the schedule referenced by CallID will be stopped.</p>
-    
-    <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 10 )
-    ...
-    SchedulerObject:Stop( SchedulerID )
-    ...
-    SchedulerObject:Start( SchedulerID )</p></li>
-</ul>
-
-<p>The above example creates a new SchedulerObject, and does schedule the first schedule as part of the call.
-Note that 2 variables are returned here: SchedulerObject, ScheduleID... <br/>
-Later in the logic, the repeating schedule with SchedulerID is stopped. <br/>
-A bit later, the repeating schedule with SchedulerId is (re)-started.  </p>
-
-<h2>Create a new schedule</h2>
-
-<p>With the method <a href="##(SCHEDULER).Schedule">SCHEDULER.Schedule</a>() a new time event can be scheduled. 
-This method is used by the :New() constructor when a new schedule is planned.</p>
-
-<p>Consider the following code fragment of the SCHEDULER object creation.</p>
-
-<pre><code>ZoneObject = ZONE:New( "ZoneName" )
-SchedulerObject = SCHEDULER:New( ZoneObject )
-</code></pre>
-
-<p>Several parameters can be specified that influence the behaviour of a Schedule.</p>
-
-<h3>A single schedule, immediately executed</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within milleseconds ...</p>
-
-<h3>A single schedule, planned over time</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds ...</p>
-
-<h3>A schedule with a repeating time interval, planned over time</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
-and repeating 60 every seconds ...</p>
-
-<h3>A schedule with a repeating time interval, planned over time, with time interval randomization</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
-and repeating 60 seconds, with a 50% time interval randomization ...
-So the repeating time interval will be randomized using the <strong>0.5</strong>, <br/>
-and will calculate between <strong>60 - ( 60 * 0.5 )</strong> and <strong>60 + ( 60 * 0.5 )</strong> for each repeat, 
-which is in this example between <strong>30</strong> and <strong>90</strong> seconds.</p>
-
-<h3>A schedule with a repeating time interval, planned over time, with time interval randomization, and stop after a time interval</h3>
-
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5, 300 )
-</code></pre>
-
-<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
-The schedule will repeat every 60 seconds.
-So the repeating time interval will be randomized using the <strong>0.5</strong>, <br/>
-and will calculate between <strong>60 - ( 60 * 0.5 )</strong> and <strong>60 + ( 60 * 0.5 )</strong> for each repeat, 
-which is in this example between <strong>30</strong> and <strong>90</strong> seconds.
-The schedule will stop after <strong>300</strong> seconds.</p>
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SCHEDULER)">Type <strong>SCHEDULER</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RADIOSPEECH)">Type <strong>RADIOSPEECH</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(SCHEDULER)">SCHEDULER</a></strong>
+     <strong><a href="##(RADIOSPEECH)">RADIOSPEECH</a></strong>
+, extends <strong><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></strong>
 , extends <strong><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></strong>
    </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from SCHEDULER</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from RADIOSPEECH</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Clear">SCHEDULER:Clear()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).AddSentenceToSpeech">RADIOSPEECH:AddSentenceToSpeech(RemainingSentence, Speech, Sentence, Data)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Clears all pending schedules.</p>
+<p>Add Sentence to the Speech collection.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).MasterObject">SCHEDULER.MasterObject</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).BuildTree">RADIOSPEECH:BuildTree()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Build the tree structure based on the language words, in order to find the correct sentences and to ignore incomprehensible words.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ClassName">RADIOSPEECH.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).New">SCHEDULER:New(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>SCHEDULER constructor.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Remove">SCHEDULER:Remove(ScheduleID)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Removes a specific schedule if a valid ScheduleID is provided.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Schedule">SCHEDULER:Schedule(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Schedule a new time event.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleID">SCHEDULER.ScheduleID</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>the ID of the scheduler.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).SchedulerObject">SCHEDULER.SchedulerObject</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Language">RADIOSPEECH.Language</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Start">SCHEDULER:Start(ScheduleID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).New">RADIOSPEECH:New(frequency, modulation)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>(Re-)Starts the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+<p>Create a new RADIOSPEECH object for a given radio frequency/modulation.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Stop">SCHEDULER:Stop(ScheduleID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Speak">RADIOSPEECH:Speak(Sentence, Speech)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Stops the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+<p>Speak a sentence.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SpeakDigits">RADIOSPEECH:SpeakDigits(Sentence, Speech)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Speak a sentence.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SpeakSymbols">RADIOSPEECH:SpeakSymbols(Sentence, Speech)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Speak a sentence.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SpeakWords">RADIOSPEECH:SpeakWords(Sentence, Speech)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Speak a sentence.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Speech">RADIOSPEECH.Speech</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Vocabulary">RADIOSPEECH.Vocabulary</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from RADIOQUEUE</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).AddTransmission">RADIOSPEECH:AddTransmission(transmission)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a transmission to the radio queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Broadcast">RADIOSPEECH:Broadcast(transmission)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Broadcast radio message.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ClassName">RADIOSPEECH.ClassName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the class "RADIOQUEUE".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).New">RADIOSPEECH:New(frequency, modulation)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a new RADIOQUEUE object for a given radio frequency/modulation.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).NewTransmission">RADIOSPEECH:NewTransmission(filename, duration, path, tstart, interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a transmission to the radio queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Number2Transmission">RADIOSPEECH:Number2Transmission(number, delay, interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Convert a number (as string) into a radio transmission.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).RQid">RADIOSPEECH.RQid</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The radio queue scheduler ID.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SetDigit">RADIOSPEECH:SetDigit(digit, filename, duration, path)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set parameters of a digit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SetSenderCoordinate">RADIOSPEECH:SetSenderCoordinate(coordinate)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set coordinate from where the transmission is broadcasted.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SetSenderUnitName">RADIOSPEECH:SetSenderUnitName(name)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set name of unit or static from which transmissions are made.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Start">RADIOSPEECH:Start(delay, dt)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Start the radio queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Stop">RADIOSPEECH:Stop()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stop the radio queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Tlast">RADIOSPEECH.Tlast</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Time (abs) when the last transmission finished.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH)._CheckRadioQueue">RADIOSPEECH:_CheckRadioQueue()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check radio queue for transmissions to be broadcasted.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH)._GetRadioSender">RADIOSPEECH:_GetRadioSender()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get unit from which we want to transmit a radio message.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH)._GetRadioSenderCoord">RADIOSPEECH:_GetRadioSenderCoord()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get unit from which we want to transmit a radio message.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).frequency">RADIOSPEECH.frequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The radio frequency in Hz.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).lid">RADIOSPEECH.lid</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>ID for dcs.log.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).modulation">RADIOSPEECH.modulation</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The radio modulation. Either radio.modulation.AM or radio.modulation.FM.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).numbers">RADIOSPEECH.numbers</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table of number transmission parameters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).positionable">RADIOSPEECH.positionable</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The positionable to broadcast the message.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).power">RADIOSPEECH.power</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Power of radio station in Watts. Default 100 W.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).queue">RADIOSPEECH.queue</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The queue of transmissions. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).scheduler">RADIOSPEECH.scheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The scheduler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).sendercoord">RADIOSPEECH.sendercoord</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Coordinate from where transmissions are broadcasted.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).sendername">RADIOSPEECH.sendername</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the sending unit or static.</p>
 </td>
           </tr>
         </table>
@@ -1615,230 +1600,230 @@ The schedule will stop after <strong>300</strong> seconds.</p>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ClassID">SCHEDULER.ClassID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ClassID">RADIOSPEECH.ClassID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ClassName">SCHEDULER.ClassName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ClassName">RADIOSPEECH.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ClassNameAndID">SCHEDULER.ClassNameAndID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ClassNameAndID">RADIOSPEECH.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ClearState">SCHEDULER:ClearState(Object, StateName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ClearState">RADIOSPEECH:ClearState(Object, StateName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Clear the state of an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventBirth">SCHEDULER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).CreateEventBirth">RADIOSPEECH:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Birth Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventCrash">SCHEDULER:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).CreateEventCrash">RADIOSPEECH:CreateEventCrash(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Crash Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventDead">SCHEDULER:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).CreateEventDead">RADIOSPEECH:CreateEventDead(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Dead Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventRemoveUnit">SCHEDULER:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).CreateEventRemoveUnit">RADIOSPEECH:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Remove Unit Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventTakeoff">SCHEDULER:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).CreateEventTakeoff">RADIOSPEECH:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Takeoff Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).E">SCHEDULER:E(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).E">RADIOSPEECH:E(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an exception which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).EventDispatcher">SCHEDULER:EventDispatcher()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).EventDispatcher">RADIOSPEECH:EventDispatcher()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns the event dispatcher</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).EventRemoveAll">SCHEDULER:EventRemoveAll()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).EventRemoveAll">RADIOSPEECH:EventRemoveAll()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Remove all subscribed events</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).F">SCHEDULER:F(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).F">RADIOSPEECH:F(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).F2">SCHEDULER:F2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).F2">RADIOSPEECH:F2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).F3">SCHEDULER:F3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).F3">RADIOSPEECH:F3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetClassID">SCHEDULER:GetClassID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).GetClassID">RADIOSPEECH:GetClassID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetClassName">SCHEDULER:GetClassName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).GetClassName">RADIOSPEECH:GetClassName()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetClassNameAndID">SCHEDULER:GetClassNameAndID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).GetClassNameAndID">RADIOSPEECH:GetClassNameAndID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName + ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetEventPriority">SCHEDULER:GetEventPriority()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).GetEventPriority">RADIOSPEECH:GetEventPriority()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetParent">SCHEDULER:GetParent(Child, FromClass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).GetParent">RADIOSPEECH:GetParent(Child, FromClass)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to retrieve the Parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetState">SCHEDULER:GetState(Object, Key)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).GetState">RADIOSPEECH:GetState(Object, Key)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get a Value given a Key from the Object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).HandleEvent">SCHEDULER:HandleEvent(Event, EventFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).HandleEvent">RADIOSPEECH:HandleEvent(Event, EventFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Subscribe to a DCS Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).I">SCHEDULER:I(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).I">RADIOSPEECH:I(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an information which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Inherit">SCHEDULER:Inherit(Child, Parent)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Inherit">RADIOSPEECH:Inherit(Child, Parent)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to inherit from a parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).IsInstanceOf">SCHEDULER:IsInstanceOf(ClassName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).IsInstanceOf">RADIOSPEECH:IsInstanceOf(ClassName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).IsTrace">SCHEDULER:IsTrace()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).IsTrace">RADIOSPEECH:IsTrace()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enquires if tracing is on (for the class).</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).New">SCHEDULER:New()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).New">RADIOSPEECH:New()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEvent">SCHEDULER:OnEvent(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEvent">RADIOSPEECH:OnEvent(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventBaseCaptured">SCHEDULER:OnEventBaseCaptured(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventBaseCaptured">RADIOSPEECH:OnEventBaseCaptured(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventBirth">SCHEDULER:OnEventBirth(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventBirth">RADIOSPEECH:OnEventBirth(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any object is spawned into the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventCrash">SCHEDULER:OnEventCrash(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventCrash">RADIOSPEECH:OnEventCrash(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventDead">SCHEDULER:OnEventDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventDead">RADIOSPEECH:OnEventDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is dead.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventEjection">SCHEDULER:OnEventEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventEjection">RADIOSPEECH:OnEventEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a pilot ejects from an aircraft
 initiator : The unit that has ejected </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventEngineShutdown">SCHEDULER:OnEventEngineShutdown(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventEngineShutdown">RADIOSPEECH:OnEventEngineShutdown(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft shuts down its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventEngineStartup">SCHEDULER:OnEventEngineStartup(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventEngineStartup">RADIOSPEECH:OnEventEngineStartup(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft starts its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventHit">SCHEDULER:OnEventHit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventHit">RADIOSPEECH:OnEventHit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever an object is hit by a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventHumanFailure">SCHEDULER:OnEventHumanFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventHumanFailure">RADIOSPEECH:OnEventHumanFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any system fails on a human controlled aircraft.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventLand">SCHEDULER:OnEventLand(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventLand">RADIOSPEECH:OnEventLand(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft lands at an airbase, farp or ship
 initiator : The unit that has landed
@@ -1846,181 +1831,181 @@ place: Object that the unit landed on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventMarkAdded">SCHEDULER:OnEventMarkAdded(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventMarkAdded">RADIOSPEECH:OnEventMarkAdded(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a new mark was added.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventMarkChange">SCHEDULER:OnEventMarkChange(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventMarkChange">RADIOSPEECH:OnEventMarkChange(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark text was changed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventMarkRemoved">SCHEDULER:OnEventMarkRemoved(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventMarkRemoved">RADIOSPEECH:OnEventMarkRemoved(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark was removed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventMissionEnd">SCHEDULER:OnEventMissionEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventMissionEnd">RADIOSPEECH:OnEventMissionEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission ends</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventMissionStart">SCHEDULER:OnEventMissionStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventMissionStart">RADIOSPEECH:OnEventMissionStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission starts </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventPilotDead">SCHEDULER:OnEventPilotDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventPilotDead">RADIOSPEECH:OnEventPilotDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the pilot of an aircraft is killed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventPlayerEnterUnit">SCHEDULER:OnEventPlayerEnterUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventPlayerEnterUnit">RADIOSPEECH:OnEventPlayerEnterUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player assumes direct control of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventPlayerLeaveUnit">SCHEDULER:OnEventPlayerLeaveUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventPlayerLeaveUnit">RADIOSPEECH:OnEventPlayerLeaveUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player relieves control of a unit to the AI.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventRefueling">SCHEDULER:OnEventRefueling(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventRefueling">RADIOSPEECH:OnEventRefueling(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventRefuelingStop">SCHEDULER:OnEventRefuelingStop(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventRefuelingStop">RADIOSPEECH:OnEventRefuelingStop(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft is finished taking fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventShootingEnd">SCHEDULER:OnEventShootingEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventShootingEnd">RADIOSPEECH:OnEventShootingEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit stops firing its weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventShootingStart">SCHEDULER:OnEventShootingStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventShootingStart">RADIOSPEECH:OnEventShootingStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventShot">SCHEDULER:OnEventShot(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventShot">RADIOSPEECH:OnEventShot(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).OnEventTakeoff">SCHEDULER:OnEventTakeoff(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).OnEventTakeoff">RADIOSPEECH:OnEventTakeoff(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleOnce">SCHEDULER:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ScheduleOnce">RADIOSPEECH:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleRepeat">SCHEDULER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ScheduleRepeat">RADIOSPEECH:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleStop">SCHEDULER:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).ScheduleStop">RADIOSPEECH:ScheduleStop(SchedulerFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Stops the Schedule.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Scheduler">SCHEDULER.Scheduler</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).Scheduler">RADIOSPEECH.Scheduler</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).SetEventPriority">SCHEDULER:SetEventPriority(EventPriority)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SetEventPriority">RADIOSPEECH:SetEventPriority(EventPriority)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).SetState">SCHEDULER:SetState(Object, Key, Value)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).SetState">RADIOSPEECH:SetState(Object, Key, Value)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set a state or property of the Object given a Key and a Value.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).T">SCHEDULER:T(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).T">RADIOSPEECH:T(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 1.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).T2">SCHEDULER:T2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).T2">RADIOSPEECH:T2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).T3">SCHEDULER:T3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).T3">RADIOSPEECH:T3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceAll">SCHEDULER:TraceAll(TraceAll)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceAll">RADIOSPEECH:TraceAll(TraceAll)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace all methods in MOOSE</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceClass">SCHEDULER:TraceClass(Class)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceClass">RADIOSPEECH:TraceClass(Class)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceClassMethod">SCHEDULER:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceClassMethod">RADIOSPEECH:TraceClassMethod(Class, Method)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a specific method of  class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceLevel">SCHEDULER:TraceLevel(Level)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceLevel">RADIOSPEECH:TraceLevel(Level)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace level</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceOff">SCHEDULER:TraceOff()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceOff">RADIOSPEECH:TraceOff()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace off.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceOn">SCHEDULER:TraceOn()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceOn">RADIOSPEECH:TraceOn()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceOnOff">SCHEDULER:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).TraceOnOff">RADIOSPEECH:TraceOnOff(TraceOnOff)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on or off
 Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
@@ -2028,37 +2013,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).UnHandleEvent">SCHEDULER:UnHandleEvent(Event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).UnHandleEvent">RADIOSPEECH:UnHandleEvent(Event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>UnSubscribe to a DCS event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER)._">SCHEDULER._</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH)._">RADIOSPEECH._</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER)._F">SCHEDULER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH)._F">RADIOSPEECH:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER)._T">SCHEDULER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH)._T">RADIOSPEECH:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).__">SCHEDULER.__</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).__">RADIOSPEECH.__</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).onEvent">SCHEDULER:onEvent(event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RADIOSPEECH).onEvent">RADIOSPEECH:onEvent(event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2066,17 +2051,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Core.Scheduler)" >Type <strong>Core.Scheduler</strong></a></h2></div>
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Core.Speech)" >Type <strong>Core.Speech</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##SCHEDULER')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SCHEDULER)">Type <strong>SCHEDULER</strong></a></h2></div>
-        <div id= "#Types##SCHEDULER" class="w3-container w3-white w3-padding-16" id="module_other_types">
+      <div onclick="myFunction('#Types##RADIOSPEECH')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RADIOSPEECH)">Type <strong>RADIOSPEECH</strong></a></h2></div>
+        <div id= "#Types##RADIOSPEECH" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
   
-<p>The SCHEDULER class</p>
+<p>Makes the radio speak.</p>
+
+  
+
+<h1>RADIOSPEECH usage</h1>
+
+<p>  </p>
 
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
@@ -2084,8 +2075,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(SCHEDULER).MasterObject" ><strong>SCHEDULER.MasterObject</strong></a>
+    #string
+<a id="#(RADIOSPEECH).ClassName" ><strong>RADIOSPEECH.ClassName</strong></a>
     
 
 
@@ -2095,10 +2086,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(SCHEDULER).ScheduleID" ><strong>SCHEDULER.ScheduleID</strong></a>
+    #string
+<a id="#(RADIOSPEECH).Language" ><strong>RADIOSPEECH.Language</strong></a>
     
-<p>the ID of the scheduler.</p>
+
 
 </div>
 
@@ -2106,8 +2097,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(RADIOSPEECH).Speech" ><strong>RADIOSPEECH.Speech</strong></a>
     
-<a id="#(SCHEDULER).SchedulerObject" ><strong>SCHEDULER.SchedulerObject</strong></a>
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(RADIOSPEECH).Vocabulary" ><strong>RADIOSPEECH.Vocabulary</strong></a>
     
 
 
@@ -2120,60 +2122,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Clear" ><strong>SCHEDULER:Clear()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).AddSentenceToSpeech" ><strong>RADIOSPEECH:AddSentenceToSpeech(RemainingSentence, Speech, Sentence, Data)</strong></a></h2>
 </div>
     
-<p>Clears all pending schedules.</p>
+<p>Add Sentence to the Speech collection.</p>
 
-<div id= "#Functions##Clear" class="w3-show w3-white">
+<div id= "#Functions##AddSentenceToSpeech" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>SCHEDULER</p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</strong></a></h2>
-</div>
-    
-<p>SCHEDULER constructor.</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>SCHEDULER</p>
+<p>RADIOSPEECH</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #table
-            <strong><strong>SchedulerObject</strong></strong>
+                #string
+            <strong><strong>RemainingSentence</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specified for which Moose object the timer is setup. If a value of nil is provided, a scheduler will be setup without an object reference.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #function
-            <strong><strong>SchedulerFunction</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+<p>The remaining sentence during recursion.</p>
 
           </div>
         </div>
@@ -2181,85 +2151,51 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #table
-            <strong><strong>SchedulerArguments</strong></strong>
+            <strong><strong>Speech</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+<p>The speech node.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
-            <strong><strong>Start</strong></strong>
+                #string
+            <strong><strong>Sentence</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+<p>The full sentence.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
-            <strong><strong>Repeat</strong></strong>
+                #string
+            <strong><strong>Data</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+<p>The speech data.</p>
 
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>RandomizeFactor</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Stop</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return values:</strong></h2>
+    <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p><a href="##(SCHEDULER)">#SCHEDULER</a>:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>self.</p>
+      <div class="w3-half">
+        <p><a href="##(RADIOSPEECH)">#RADIOSPEECH</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOSPEECH object.</p>
 
-        </div>
-        <div class="w3-half">
-          <p>#number:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>The ScheduleID of the planned schedule.</p>
-
-        </div>
+      </div>
     </div>
 </div>
 
@@ -2269,28 +2205,381 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Remove" ><strong>SCHEDULER:Remove(ScheduleID)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).BuildTree" ><strong>RADIOSPEECH:BuildTree()</strong></a></h2>
 </div>
     
-<p>Removes a specific schedule if a valid ScheduleID is provided.</p>
+<p>Build the tree structure based on the language words, in order to find the correct sentences and to ignore incomprehensible words.</p>
 
-<div id= "#Functions##Remove" class="w3-show w3-white">
+<div id= "#Functions##BuildTree" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>SCHEDULER</p>
+<p>RADIOSPEECH</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOSPEECH)">#RADIOSPEECH</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOSPEECH object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).New" ><strong>RADIOSPEECH:New(frequency, modulation)</strong></a></h2>
+</div>
+    
+<p>Create a new RADIOSPEECH object for a given radio frequency/modulation.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RADIOSPEECH</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radio frequency in MHz.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>modulation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The radio modulation. Default radio.modulation.AM.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOSPEECH)">#RADIOSPEECH</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOSPEECH object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).Speak" ><strong>RADIOSPEECH:Speak(Sentence, Speech)</strong></a></h2>
+</div>
+    
+<p>Speak a sentence.</p>
+
+<div id= "#Functions##Speak" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RADIOSPEECH</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Sentence</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The sentence to be spoken.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Speech</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).SpeakDigits" ><strong>RADIOSPEECH:SpeakDigits(Sentence, Speech)</strong></a></h2>
+</div>
+    
+<p>Speak a sentence.</p>
+
+<div id= "#Functions##SpeakDigits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RADIOSPEECH</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Sentence</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The sentence to be spoken.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Speech</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).SpeakSymbols" ><strong>RADIOSPEECH:SpeakSymbols(Sentence, Speech)</strong></a></h2>
+</div>
+    
+<p>Speak a sentence.</p>
+
+<div id= "#Functions##SpeakSymbols" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RADIOSPEECH</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Sentence</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The sentence to be spoken.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Speech</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).SpeakWords" ><strong>RADIOSPEECH:SpeakWords(Sentence, Speech)</strong></a></h2>
+</div>
+    
+<p>Speak a sentence.</p>
+
+<div id= "#Functions##SpeakWords" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RADIOSPEECH</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Sentence</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The sentence to be spoken.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Speech</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RADIOSPEECH).ClassName" ><strong>RADIOSPEECH.ClassName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RADIOSPEECH).Language" ><strong>RADIOSPEECH.Language</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(RADIOSPEECH).Speech" ><strong>RADIOSPEECH.Speech</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(RADIOSPEECH).Vocabulary" ><strong>RADIOSPEECH.Vocabulary</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).AddTransmission" ><strong>RADIOSPEECH:AddTransmission(transmission)</strong></a></h2>
+</div>
+    
+<p>Add a transmission to the radio queue.</p>
+
+<div id= "#Functions##AddTransmission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
-            <strong><strong>ScheduleID</strong></strong>
+                <a href="##(RADIOQUEUE.Transmission)">#RADIOQUEUE.Transmission</a>
+            <strong><strong>transmission</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+<p>The transmission data table. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).Broadcast" ><strong>RADIOSPEECH:Broadcast(transmission)</strong></a></h2>
+</div>
+    
+<p>Broadcast radio message.</p>
+
+<div id= "#Functions##Broadcast" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RADIOQUEUE.Transmission)">#RADIOQUEUE.Transmission</a>
+            <strong><strong>transmission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The transmission.</p>
 
           </div>
         </div>
@@ -2302,57 +2591,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Schedule" ><strong>SCHEDULER:Schedule(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).New" ><strong>RADIOSPEECH:New(frequency, modulation)</strong></a></h2>
 </div>
     
-<p>Schedule a new time event.</p>
+<p>Create a new RADIOQUEUE object for a given radio frequency/modulation.</p>
 
-    
-<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
-
-<div id= "#Functions##Schedule" class="w3-show w3-white">
+<div id= "#Functions##New" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>SCHEDULER</p>
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #table
-            <strong><strong>SchedulerObject</strong></strong>
+                #number
+            <strong><strong>frequency</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specified for which Moose object the timer is setup. If a value of nil is provided, a scheduler will be setup without an object reference.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #function
-            <strong><strong>SchedulerFunction</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>SchedulerArguments</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+<p>The radio frequency in MHz.</p>
 
           </div>
         </div>
@@ -2360,12 +2620,56 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>Start</strong></strong>
+            <strong><strong>modulation</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+<p>(Optional) The radio modulation. Default radio.modulation.AM.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).NewTransmission" ><strong>RADIOSPEECH:NewTransmission(filename, duration, path, tstart, interval)</strong></a></h2>
+</div>
+    
+<p>Add a transmission to the radio queue.</p>
+
+<div id= "#Functions##NewTransmission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the sound file. Usually an ogg or wav file type.</p>
 
           </div>
         </div>
@@ -2373,12 +2677,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>Repeat</strong></strong>
+            <strong><strong>duration</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+<p>Duration in seconds the file lasts.</p>
 
           </div>
         </div>
@@ -2386,12 +2690,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>RandomizeFactor</strong></strong>
+            <strong><strong>path</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+<p>Directory path inside the miz file where the sound file is located. Default "l10n/DEFAULT/".</p>
 
           </div>
         </div>
@@ -2399,33 +2703,99 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>Stop</strong></strong>
+            <strong><strong>tstart</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+<p>Start time (abs) seconds. Default now.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>TraceLevel</strong></strong>
+                #number
+            <strong><strong>interval</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Interval in seconds after the last transmission finished.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).Number2Transmission" ><strong>RADIOSPEECH:Number2Transmission(number, delay, interval)</strong></a></h2>
+</div>
+    
+<p>Convert a number (as string) into a radio transmission.</p>
+
+    
+<p>E.g. for board number or headings.</p>
+
+<div id= "#Functions##Number2Transmission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number string, e.g. "032" or "183".</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>Fsm</strong></strong>
+                #number
+            <strong><strong>delay</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Delay before transmission in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Interval between the next call.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -2435,7 +2805,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-<p>The ScheduleID of the planned schedule.</p>
+<p>Duration of the call in seconds.</p>
 
       </div>
     </div>
@@ -2447,31 +2817,81 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Start" ><strong>SCHEDULER:Start(ScheduleID)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).SetDigit" ><strong>RADIOSPEECH:SetDigit(digit, filename, duration, path)</strong></a></h2>
 </div>
     
-<p>(Re-)Starts the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+<p>Set parameters of a digit.</p>
 
-<div id= "#Functions##Start" class="w3-show w3-white">
+<div id= "#Functions##SetDigit" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>SCHEDULER</p>
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>ScheduleID</strong></strong>
+            <strong><strong>digit</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+<p>The digit 0-9.</p>
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the sound file.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>duration</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The duration of the sound file in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The directory within the miz file where the sound is located. Default "l10n/DEFAULT/".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2480,31 +2900,261 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Stop" ><strong>SCHEDULER:Stop(ScheduleID)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).SetSenderCoordinate" ><strong>RADIOSPEECH:SetSenderCoordinate(coordinate)</strong></a></h2>
 </div>
     
-<p>Stops the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+<p>Set coordinate from where the transmission is broadcasted.</p>
 
-<div id= "#Functions##Stop" class="w3-show w3-white">
+<div id= "#Functions##SetSenderCoordinate" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>SCHEDULER</p>
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
-            <strong><strong>ScheduleID</strong></strong>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>coordinate</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+<p>Coordinate of the sender.</p>
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).SetSenderUnitName" ><strong>RADIOSPEECH:SetSenderUnitName(name)</strong></a></h2>
+</div>
+    
+<p>Set name of unit or static from which transmissions are made.</p>
+
+<div id= "#Functions##SetSenderUnitName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the unit or static used for transmissions.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).Start" ><strong>RADIOSPEECH:Start(delay, dt)</strong></a></h2>
+</div>
+    
+<p>Start the radio queue.</p>
+
+<div id= "#Functions##Start" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Delay in seconds, before the radio queue is started. Default 1 sec.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>dt</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Time step in seconds for checking the queue. Default 0.01 sec.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH).Stop" ><strong>RADIOSPEECH:Stop()</strong></a></h2>
+</div>
+    
+<p>Stop the radio queue.</p>
+
+    
+<p>Stop scheduler and delete queue.</p>
+
+<div id= "#Functions##Stop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RADIOQUEUE)">#RADIOQUEUE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self The RADIOQUEUE object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH)._CheckRadioQueue" ><strong>RADIOSPEECH:_CheckRadioQueue()</strong></a></h2>
+</div>
+    
+<p>Check radio queue for transmissions to be broadcasted.</p>
+
+<div id= "#Functions##_CheckRadioQueue" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH)._GetRadioSender" ><strong>RADIOSPEECH:_GetRadioSender()</strong></a></h2>
+</div>
+    
+<p>Get unit from which we want to transmit a radio message.</p>
+
+    
+<p>This has to be an aircraft for subtitles to work.</p>
+
+<div id= "#Functions##_GetRadioSender" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Sending aircraft unit or nil if was not setup, is not an aircraft or is not alive.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RADIOSPEECH)._GetRadioSenderCoord" ><strong>RADIOSPEECH:_GetRadioSenderCoord()</strong></a></h2>
+</div>
+    
+<p>Get unit from which we want to transmit a radio message.</p>
+
+    
+<p>This has to be an aircraft for subtitles to work.</p>
+
+<div id= "#Functions##_GetRadioSenderCoord" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Coordinate of the sender unit.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2516,8 +3166,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(SCHEDULER).MasterObject" ><strong>SCHEDULER.MasterObject</strong></a>
+    #string
+<a id="#(RADIOSPEECH).ClassName" ><strong>RADIOSPEECH.ClassName</strong></a>
     
 
 
@@ -2527,10 +3177,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(SCHEDULER).ScheduleID" ><strong>SCHEDULER.ScheduleID</strong></a>
+    #string
+<a id="#(RADIOSPEECH).Language" ><strong>RADIOSPEECH.Language</strong></a>
     
-<p>the ID of the scheduler.</p>
+
 
 </div>
 
@@ -2538,8 +3188,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(RADIOSPEECH).Speech" ><strong>RADIOSPEECH.Speech</strong></a>
     
-<a id="#(SCHEDULER).SchedulerObject" ><strong>SCHEDULER.SchedulerObject</strong></a>
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(RADIOSPEECH).Vocabulary" ><strong>RADIOSPEECH.Vocabulary</strong></a>
     
 
 
@@ -2552,7 +3213,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).ClearState" ><strong>SCHEDULER:ClearState(Object, StateName)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).ClearState" ><strong>RADIOSPEECH:ClearState(Object, StateName)</strong></a></h2>
 </div>
     
 <p>Clear the state of an object.</p>
@@ -2596,7 +3257,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).CreateEventBirth" ><strong>SCHEDULER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).CreateEventBirth" ><strong>RADIOSPEECH:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
 </div>
     
 <p>Creation of a Birth Event.</p>
@@ -2675,7 +3336,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).CreateEventCrash" ><strong>SCHEDULER:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).CreateEventCrash" ><strong>RADIOSPEECH:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Crash Event.</p>
@@ -2721,7 +3382,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).CreateEventDead" ><strong>SCHEDULER:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).CreateEventDead" ><strong>RADIOSPEECH:CreateEventDead(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Dead Event.</p>
@@ -2767,7 +3428,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).CreateEventRemoveUnit" ><strong>SCHEDULER:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).CreateEventRemoveUnit" ><strong>RADIOSPEECH:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Remove Unit Event.</p>
@@ -2813,7 +3474,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).CreateEventTakeoff" ><strong>SCHEDULER:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).CreateEventTakeoff" ><strong>RADIOSPEECH:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Takeoff Event.</p>
@@ -2859,7 +3520,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).E" ><strong>SCHEDULER:E(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).E" ><strong>RADIOSPEECH:E(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an exception which will be traced always.</p>
@@ -2894,7 +3555,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).EventDispatcher" ><strong>SCHEDULER:EventDispatcher()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).EventDispatcher" ><strong>RADIOSPEECH:EventDispatcher()</strong></a></h2>
 </div>
     
 <p>Returns the event dispatcher</p>
@@ -2924,7 +3585,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).EventRemoveAll" ><strong>SCHEDULER:EventRemoveAll()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).EventRemoveAll" ><strong>RADIOSPEECH:EventRemoveAll()</strong></a></h2>
 </div>
     
 <p>Remove all subscribed events</p>
@@ -2954,7 +3615,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).F" ><strong>SCHEDULER:F(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).F" ><strong>RADIOSPEECH:F(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -2989,7 +3650,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).F2" ><strong>SCHEDULER:F2(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).F2" ><strong>RADIOSPEECH:F2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 2.</p>
@@ -3024,7 +3685,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).F3" ><strong>SCHEDULER:F3(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).F3" ><strong>RADIOSPEECH:F3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 3.</p>
@@ -3059,7 +3720,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).GetClassID" ><strong>SCHEDULER:GetClassID()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).GetClassID" ><strong>RADIOSPEECH:GetClassID()</strong></a></h2>
 </div>
     
 <p>Get the ClassID of the class instance.</p>
@@ -3089,7 +3750,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).GetClassName" ><strong>SCHEDULER:GetClassName()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).GetClassName" ><strong>RADIOSPEECH:GetClassName()</strong></a></h2>
 </div>
     
 <p>Get the ClassName of the class instance.</p>
@@ -3119,7 +3780,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).GetClassNameAndID" ><strong>SCHEDULER:GetClassNameAndID()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).GetClassNameAndID" ><strong>RADIOSPEECH:GetClassNameAndID()</strong></a></h2>
 </div>
     
 <p>Get the ClassName + ClassID of the class instance.</p>
@@ -3152,7 +3813,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).GetEventPriority" ><strong>SCHEDULER:GetEventPriority()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).GetEventPriority" ><strong>RADIOSPEECH:GetEventPriority()</strong></a></h2>
 </div>
     
 <p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
@@ -3186,7 +3847,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).GetParent" ><strong>SCHEDULER:GetParent(Child, FromClass)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).GetParent" ><strong>RADIOSPEECH:GetParent(Child, FromClass)</strong></a></h2>
 </div>
     
 <p>This is the worker method to retrieve the Parent class.</p>
@@ -3248,7 +3909,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).GetState" ><strong>SCHEDULER:GetState(Object, Key)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).GetState" ><strong>RADIOSPEECH:GetState(Object, Key)</strong></a></h2>
 </div>
     
 <p>Get a Value given a Key from the Object.</p>
@@ -3305,7 +3966,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).HandleEvent" ><strong>SCHEDULER:HandleEvent(Event, EventFunction)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).HandleEvent" ><strong>RADIOSPEECH:HandleEvent(Event, EventFunction)</strong></a></h2>
 </div>
     
 <p>Subscribe to a DCS Event.</p>
@@ -3360,7 +4021,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).I" ><strong>SCHEDULER:I(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).I" ><strong>RADIOSPEECH:I(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an information which will be traced always.</p>
@@ -3395,7 +4056,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Inherit" ><strong>SCHEDULER:Inherit(Child, Parent)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).Inherit" ><strong>RADIOSPEECH:Inherit(Child, Parent)</strong></a></h2>
 </div>
     
 <p>This is the worker method to inherit from a parent class.</p>
@@ -3451,7 +4112,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).IsInstanceOf" ><strong>SCHEDULER:IsInstanceOf(ClassName)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).IsInstanceOf" ><strong>RADIOSPEECH:IsInstanceOf(ClassName)</strong></a></h2>
 </div>
     
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
@@ -3507,7 +4168,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).IsTrace" ><strong>SCHEDULER:IsTrace()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).IsTrace" ><strong>RADIOSPEECH:IsTrace()</strong></a></h2>
 </div>
     
 <p>Enquires if tracing is on (for the class).</p>
@@ -3537,7 +4198,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).New" ><strong>RADIOSPEECH:New()</strong></a></h2>
 </div>
     
 <p>BASE constructor.</p>
@@ -3578,7 +4239,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEvent" ><strong>SCHEDULER:OnEvent(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEvent" ><strong>RADIOSPEECH:OnEvent(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is completely destroyed.</p>
@@ -3614,7 +4275,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventBaseCaptured" ><strong>SCHEDULER:OnEventBaseCaptured(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventBaseCaptured" ><strong>RADIOSPEECH:OnEventBaseCaptured(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
@@ -3651,7 +4312,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventBirth" ><strong>SCHEDULER:OnEventBirth(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventBirth" ><strong>RADIOSPEECH:OnEventBirth(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any object is spawned into the mission.</p>
@@ -3687,7 +4348,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventCrash" ><strong>SCHEDULER:OnEventCrash(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventCrash" ><strong>RADIOSPEECH:OnEventCrash(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
@@ -3723,7 +4384,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventDead" ><strong>SCHEDULER:OnEventDead(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventDead" ><strong>RADIOSPEECH:OnEventDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is dead.</p>
@@ -3759,7 +4420,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventEjection" ><strong>SCHEDULER:OnEventEjection(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventEjection" ><strong>RADIOSPEECH:OnEventEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a pilot ejects from an aircraft
@@ -3793,7 +4454,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventEngineShutdown" ><strong>SCHEDULER:OnEventEngineShutdown(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventEngineShutdown" ><strong>RADIOSPEECH:OnEventEngineShutdown(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft shuts down its engines.</p>
@@ -3829,7 +4490,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventEngineStartup" ><strong>SCHEDULER:OnEventEngineStartup(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventEngineStartup" ><strong>RADIOSPEECH:OnEventEngineStartup(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft starts its engines.</p>
@@ -3865,7 +4526,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventHit" ><strong>SCHEDULER:OnEventHit(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventHit" ><strong>RADIOSPEECH:OnEventHit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever an object is hit by a weapon.</p>
@@ -3903,7 +4564,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventHumanFailure" ><strong>SCHEDULER:OnEventHumanFailure(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventHumanFailure" ><strong>RADIOSPEECH:OnEventHumanFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any system fails on a human controlled aircraft.</p>
@@ -3939,7 +4600,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventLand" ><strong>SCHEDULER:OnEventLand(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventLand" ><strong>RADIOSPEECH:OnEventLand(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft lands at an airbase, farp or ship
@@ -3977,7 +4638,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventMarkAdded" ><strong>SCHEDULER:OnEventMarkAdded(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventMarkAdded" ><strong>RADIOSPEECH:OnEventMarkAdded(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a new mark was added.</p>
@@ -4013,7 +4674,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventMarkChange" ><strong>SCHEDULER:OnEventMarkChange(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventMarkChange" ><strong>RADIOSPEECH:OnEventMarkChange(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark text was changed.</p>
@@ -4049,7 +4710,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventMarkRemoved" ><strong>SCHEDULER:OnEventMarkRemoved(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventMarkRemoved" ><strong>RADIOSPEECH:OnEventMarkRemoved(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark was removed.</p>
@@ -4085,7 +4746,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventMissionEnd" ><strong>SCHEDULER:OnEventMissionEnd(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventMissionEnd" ><strong>RADIOSPEECH:OnEventMissionEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission ends</p>
@@ -4118,7 +4779,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventMissionStart" ><strong>SCHEDULER:OnEventMissionStart(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventMissionStart" ><strong>RADIOSPEECH:OnEventMissionStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission starts </p>
@@ -4151,7 +4812,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventPilotDead" ><strong>SCHEDULER:OnEventPilotDead(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventPilotDead" ><strong>RADIOSPEECH:OnEventPilotDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the pilot of an aircraft is killed.</p>
@@ -4188,7 +4849,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventPlayerEnterUnit" ><strong>SCHEDULER:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventPlayerEnterUnit" ><strong>RADIOSPEECH:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player assumes direct control of a unit.</p>
@@ -4224,7 +4885,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventPlayerLeaveUnit" ><strong>SCHEDULER:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventPlayerLeaveUnit" ><strong>RADIOSPEECH:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player relieves control of a unit to the AI.</p>
@@ -4260,7 +4921,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventRefueling" ><strong>SCHEDULER:OnEventRefueling(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventRefueling" ><strong>RADIOSPEECH:OnEventRefueling(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
@@ -4296,7 +4957,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventRefuelingStop" ><strong>SCHEDULER:OnEventRefuelingStop(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventRefuelingStop" ><strong>RADIOSPEECH:OnEventRefuelingStop(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft is finished taking fuel.</p>
@@ -4332,7 +4993,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventShootingEnd" ><strong>SCHEDULER:OnEventShootingEnd(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventShootingEnd" ><strong>RADIOSPEECH:OnEventShootingEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit stops firing its weapon.</p>
@@ -4369,7 +5030,7 @@ initiator : The unit that was doing the shooting. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventShootingStart" ><strong>SCHEDULER:OnEventShootingStart(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventShootingStart" ><strong>RADIOSPEECH:OnEventShootingStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
@@ -4407,7 +5068,7 @@ target: The unit that is being targeted. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventShot" ><strong>SCHEDULER:OnEventShot(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventShot" ><strong>RADIOSPEECH:OnEventShot(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
@@ -4443,7 +5104,7 @@ target: The unit that is being targeted. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).OnEventTakeoff" ><strong>SCHEDULER:OnEventTakeoff(EventData)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).OnEventTakeoff" ><strong>RADIOSPEECH:OnEventTakeoff(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
@@ -4480,7 +5141,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).ScheduleOnce" ><strong>SCHEDULER:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).ScheduleOnce" ><strong>RADIOSPEECH:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -4553,7 +5214,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).ScheduleRepeat" ><strong>SCHEDULER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).ScheduleRepeat" ><strong>RADIOSPEECH:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -4665,7 +5326,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).ScheduleStop" ><strong>SCHEDULER:ScheduleStop(SchedulerFunction)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).ScheduleStop" ><strong>RADIOSPEECH:ScheduleStop(SchedulerFunction)</strong></a></h2>
 </div>
     
 <p>Stops the Schedule.</p>
@@ -4698,7 +5359,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).SetEventPriority" ><strong>SCHEDULER:SetEventPriority(EventPriority)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).SetEventPriority" ><strong>RADIOSPEECH:SetEventPriority(EventPriority)</strong></a></h2>
 </div>
     
 <p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
@@ -4745,7 +5406,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).SetState" ><strong>SCHEDULER:SetState(Object, Key, Value)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).SetState" ><strong>RADIOSPEECH:SetState(Object, Key, Value)</strong></a></h2>
 </div>
     
 <p>Set a state or property of the Object given a Key and a Value.</p>
@@ -4814,7 +5475,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).T" ><strong>SCHEDULER:T(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).T" ><strong>RADIOSPEECH:T(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 1.</p>
@@ -4849,7 +5510,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).T2" ><strong>SCHEDULER:T2(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).T2" ><strong>RADIOSPEECH:T2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 2.</p>
@@ -4884,7 +5545,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).T3" ><strong>SCHEDULER:T3(Arguments)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).T3" ><strong>RADIOSPEECH:T3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 3.</p>
@@ -4919,7 +5580,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceAll" ><strong>SCHEDULER:TraceAll(TraceAll)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceAll" ><strong>RADIOSPEECH:TraceAll(TraceAll)</strong></a></h2>
 </div>
     
 <p>Trace all methods in MOOSE</p>
@@ -4952,7 +5613,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceClass" ><strong>SCHEDULER:TraceClass(Class)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceClass" ><strong>RADIOSPEECH:TraceClass(Class)</strong></a></h2>
 </div>
     
 <p>Set tracing for a class</p>
@@ -4983,7 +5644,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceClassMethod" ><strong>SCHEDULER:TraceClassMethod(Class, Method)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceClassMethod" ><strong>RADIOSPEECH:TraceClassMethod(Class, Method)</strong></a></h2>
 </div>
     
 <p>Set tracing for a specific method of  class</p>
@@ -5025,7 +5686,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceLevel" ><strong>SCHEDULER:TraceLevel(Level)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceLevel" ><strong>RADIOSPEECH:TraceLevel(Level)</strong></a></h2>
 </div>
     
 <p>Set trace level</p>
@@ -5056,7 +5717,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceOff" ><strong>SCHEDULER:TraceOff()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceOff" ><strong>RADIOSPEECH:TraceOff()</strong></a></h2>
 </div>
     
 <p>Set trace off.</p>
@@ -5079,7 +5740,7 @@ BASE:TraceOff()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceOn" ><strong>SCHEDULER:TraceOn()</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceOn" ><strong>RADIOSPEECH:TraceOn()</strong></a></h2>
 </div>
     
 <p>Set trace on.</p>
@@ -5102,7 +5763,7 @@ BASE:TraceOn()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).TraceOnOff" ><strong>SCHEDULER:TraceOnOff(TraceOnOff)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).TraceOnOff" ><strong>RADIOSPEECH:TraceOnOff(TraceOnOff)</strong></a></h2>
 </div>
     
 <p>Set trace on or off
@@ -5148,7 +5809,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).UnHandleEvent" ><strong>SCHEDULER:UnHandleEvent(Event)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).UnHandleEvent" ><strong>RADIOSPEECH:UnHandleEvent(Event)</strong></a></h2>
 </div>
     
 <p>UnSubscribe to a DCS event.</p>
@@ -5190,7 +5851,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER)._F" ><strong>SCHEDULER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH)._F" ><strong>RADIOSPEECH:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -5245,7 +5906,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER)._T" ><strong>SCHEDULER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH)._T" ><strong>RADIOSPEECH:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function logic.</p>
@@ -5297,7 +5958,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).onEvent" ><strong>SCHEDULER:onEvent(event)</strong></a></h2>
+<h2><a id="#(RADIOSPEECH).onEvent" ><strong>RADIOSPEECH:onEvent(event)</strong></a></h2>
 </div>
     
 
@@ -5336,7 +5997,7 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Core_Scheduler.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Core_Radio.JPG')";
 }
 </script>
 
