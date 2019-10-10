@@ -1326,7 +1326,8 @@ which are excellent tools to be reused in an OO environment!.</p>
     <li>Tower frequencies,</li>
     <li>More than 180 voice overs,</li>
     <li>Airbase names pronounced in locale accent (russian, US, french, arabic),</li>
-    <li>Option to present information in imperial or metric units.</li>
+    <li>Option to present information in imperial or metric units,</li>
+    <li>Frequencies/channels of nav aids (ILS, VOR, NDB, TACAN, PRMG, RSBN).</li>
 </ul>
 
 <hr/>
@@ -1335,14 +1336,14 @@ which are excellent tools to be reused in an OO environment!.</p>
 
 <ul>
     <li><a href="https://youtu.be/MdH9FmbNabo">ATIS v0.1 Caucasus - Batumi (WIP)</a></li>
-    <li><a href="https://youtu.be/qIE_OUQNAc0">ATIS Airport Names Sound Check</a></li>
     <li><a href="https://youtu.be/8CT_9AoPrTk">ATIS v0.2 Nevada - Nellis AFB (WIP)</a></li>
     <li><a href="https://youtu.be/NjkKvPz6ovM">ATIS v0.3 Persion Gulf - Abu Dhabi/Dubai International</a></li>
+    <li><a href="https://youtu.be/qIE_OUQNAc0">ATIS Airport Names Sound Check</a></li>
 </ul>
 
 <hr/>
 
-<h2>Missions: Example missions will be added later.</h2>
+<h2>Missions: Example missions can be found <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/OPS%20-%20ATIS">here</a></h2>
 
 <hr/>
 
@@ -1429,6 +1430,8 @@ player has tuned in the correct ATIS frequency.</p>
 
 <p>With a unit set in the mission editor with name "Radio Relay Batumi".</p>
 
+<p><strong>Note</strong> that you should use a different relay unit for each ATIS!</p>
+
 <p>By default, subtitles are displayed for 10 seconds. This can be changed using <a href="##(ATIS).SetSubtitleDuration">ATIS.SetSubtitleDuration</a>(<em>duration</em>) with <em>duration</em> being the duration in seconds.</p>
 
 <h2>Active Runway</h2>
@@ -1454,12 +1457,79 @@ The parameter <em>runway</em> is a string which can be used to specify the runwa
 </code></pre>
 
 <p>The first two digits of the runway are determined by converting the <em>true</em> runway heading into its magnetic heading. The magnetic declination (or variation) is assumed to be constant on the given map.
-The magnatic declinatin can also be specified for the specific airport using the <a href="##(ATIS).SetMagneticDeclination">ATIS.SetMagneticDeclination</a>(<em>magvar</em>).</p>
+An explicit correction factor can be set via <a href="##(ATIS).SetRunwayCorrectionMagnetic2True">ATIS.SetRunwayCorrectionMagnetic2True</a>.</p>
 
 <h2>Tower Frequencies</h2>
 
 <p>The tower frequency (or frequencies) can also be included in the ATIS information. However, there is no way to get these automatically. Therefore, it is necessary to manually specify them in the script via the
 <a href="##(ATIS).SetTowerFrequencies">ATIS.SetTowerFrequencies</a>(<em>frequencies</em>) function. The parameter <em>frequencies</em> can be a plain number if only one frequency is necessary or it can be a table of frequencies.</p>
+
+<h2>Nav Aids</h2>
+
+<p>Frequencies or channels of navigation aids can be specified by the user and are then provided as additional information. Unfortunately, it is <strong>not possible</strong> to aquire this information via the DCS API
+we have access to.</p>
+
+<p>As they say, all road lead to Rome but (for me) the easiest way to obtain the available nav aids data of an airport, is to start a mission and click on an airport symbol.</p>
+
+<p>For example, the <em>AIRDROME DATA</em> for <strong>Batumi</strong> reads:</p>
+
+<ul>
+    <li><strong>TACAN</strong> <em>16X</em> - set via <a href="##(ATIS).SetTACAN">ATIS.SetTACAN</a></li>
+    <li><strong>VOR</strong> <em>N/A</em> - set via <a href="##(ATIS).SetVOR">ATIS.SetVOR</a></li>
+    <li><strong>RSBN</strong> <em>N/A</em> - set via <a href="##(ATIS).SetRSBN">ATIS.SetRSBN</a></li>
+    <li><strong>ATC</strong> <em>260.000</em>, <em>131.000</em>, <em>40.400</em>, <em>4.250</em> - set via <a href="##(ATIS).SetTowerFrequencies">ATIS.SetTowerFrequencies</a></li>
+    <li><strong>Runways</strong> <em>31</em> and <em>13</em> - automatic but can be set manually via <a href="##(ATIS).SetRunwayHeadingsMagnetic">ATIS.SetRunwayHeadingsMagnetic</a></li>
+    <li><strong>ILS</strong> <em>110.30</em> for runway <em>13</em> - set via <a href="##(ATIS).AddILS">ATIS.AddILS</a></li>
+    <li><strong>PRMG</strong> <em>N/A</em> - set via <a href="##(ATIS).AddPRMG">ATIS.AddPRMG</a></li>
+    <li><strong>OUTER NDB</strong> <em>N/A</em> - set via <a href="##(ATIS).AddNDBinner">ATIS.AddNDBinner</a></li>
+    <li><strong>INNER NDB</strong> <em>N/A</em> - set via <a href="##(ATIS).AddNDBinner">ATIS.AddNDBinner</a></li>
+</ul>
+
+<p><img src="..\Presentations\ATIS\NavAid_Batumi.png" alt="Banner Image"/></p>
+
+<p>And the <em>AIRDROME DATA</em> for <strong>Kobuleti</strong> reads:</p>
+
+<ul>
+    <li><strong>TACAN</strong> <em>67X</em> - set via <a href="##(ATIS).SetTACAN">ATIS.SetTACAN</a></li>
+    <li><strong>VOR</strong> <em>N/A</em> - set via <a href="##(ATIS).SetVOR">ATIS.SetVOR</a></li>
+    <li><strong>RSBN</strong> <em>N/A</em> - set via <a href="##(ATIS).SetRSBN">ATIS.SetRSBN</a></li>
+    <li><strong>ATC</strong> <em>262.000</em>, <em>133.000</em>, <em>40.800</em>, <em>4.350</em> - set via <a href="##(ATIS).SetTowerFrequencies">ATIS.SetTowerFrequencies</a></li>
+    <li><strong>Runways</strong> <em>25</em> and <em>07</em> - automatic but can be set manually via <a href="##(ATIS).SetRunwayHeadingsMagnetic">ATIS.SetRunwayHeadingsMagnetic</a></li>
+    <li><strong>ILS</strong> <em>111.50</em> for runway <em>07</em> - set via <a href="##(ATIS).AddILS">ATIS.AddILS</a></li>
+    <li><strong>PRMG</strong> <em>N/A</em> - set via <a href="##(ATIS).AddPRMG">ATIS.AddPRMG</a></li>
+    <li><strong>OUTER NDB</strong> <em>870.00</em> - set via <a href="##(ATIS).AddNDBinner">ATIS.AddNDBinner</a></li>
+    <li><strong>INNER NDB</strong> <em>490.00</em> - set via <a href="##(ATIS).AddNDBinner">ATIS.AddNDBinner</a></li>
+</ul>
+
+<p><img src="..\Presentations\ATIS\NavAid_Kobuleti.png" alt="Banner Image"/></p>
+
+<h3>TACAN</h3>
+
+<p>The TACtical Air Navigation system <a href="https://en.wikipedia.org/wiki/Tactical_air_navigation_system">(TACAN)</a> channel can be set via the <a href="##(ATIS).SetTACAN">ATIS.SetTACAN</a>(<em>channel</em>) function, where <em>channel</em> is the TACAN channel. Band is always assumed to be X-ray.</p>
+
+<h3>VOR</h3>
+
+<p>The Very high frequency Omni-directional Range <a href="https://en.wikipedia.org/wiki/VHF_omnidirectional_range">(VOR)</a> frequency can be set via the <a href="##(ATIS).SetVOR">ATIS.SetVOR</a>(<em>frequency</em>) function, where <em>frequency</em> is the VOR frequency.</p>
+
+<h3>ILS</h3>
+
+<p>The Instrument Landing System <a href="https://en.wikipedia.org/wiki/Instrument_landing_system">(ILS)</a> frequency can be set via the <a href="##(ATIS).AddILS">ATIS.AddILS</a>(<em>frequency</em>, <em>runway</em>) function, where <em>frequency</em> is the ILS frequency and <em>runway</em> the two letter string of the corresponding runway, e.g. "31".
+If the parameter <em>runway</em> is omitted (nil) then the frequency is supposed to be valid for all runways of the airport.</p>
+
+<h3>NDB</h3>
+
+<p>Inner and outer Non-Directional (radio) Beacons <a href="https://en.wikipedia.org/wiki/Non-directional_beacon">NDBs</a> can be set via the <a href="##(ATIS).AddNDBinner">ATIS.AddNDBinner</a>(<em>frequency</em>, <em>runway</em>) and <a href="##(ATIS).AddNDBouter">ATIS.AddNDBouter</a>(<em>frequency</em>, <em>runway</em>) functions, respectively.</p>
+
+<p>In both cases, the parameter <em>frequency</em> is the NDB frequency and <em>runway</em> the two letter string of the corresponding runway, e.g. "31".
+If the parameter <em>runway</em> is omitted (nil) then the frequency is supposed to be valid for all runways of the airport.</p>
+
+<h2>RSBN</h2>
+
+<p>The RSBN channel can be set via the <a href="##(ATIS).SetRSBN">ATIS.SetRSBN</a>(<em>channel</em>) function.</p>
+
+<h2>PRMG</h2>
+
+<p>The PRMG channel can be set via the <a href="##(ATIS).AddPRMG">ATIS.AddPRMG</a>(<em>channel</em>, <em>runway</em>) function for each <em>runway</em>.</p>
 
 <h2>Unit System</h2>
 
@@ -1496,20 +1566,25 @@ atisBatumi:Start()
 
 <h2>Nevada: Nellis AFB</h2>
 
-<pre><code>-- ATIS Nellis AFB on 270.100 MHz AM.
-atisNellis=ATIS:New(AIRBASE.Nevada.Nellis_AFB, 270.100)
+<pre><code>-- ATIS Nellis AFB on 270.10 MHz AM.
+atisNellis=ATIS:New(AIRBASE.Nevada.Nellis_AFB, 270.1)
 atisNellis:SetRadioRelayUnitName("Radio Relay Nellis")
 atisNellis:SetActiveRunway("21L")
 atisNellis:SetTowerFrequencies({327.000, 132.550})
+atisNellis:SetTACAN(12)
+atisNellis:AddILS(109.1, "21")
 atisNellis:Start()
 </code></pre>
 
 <h2>Persian Gulf: Abu Dhabi International Airport</h2>
 
-<pre><code>atisAbuDhabi=ATIS:New(AIRBASE.PersianGulf.Abu_Dhabi_International_Airport, 125.1)
+<pre><code>-- ATIS Abu Dhabi International on 125.1 MHz AM.
+atisAbuDhabi=ATIS:New(AIRBASE.PersianGulf.Abu_Dhabi_International_Airport, 125.1)
 atisAbuDhabi:SetRadioRelayUnitName("Radio Relay Abu Dhabi International Airport")
 atisAbuDhabi:SetMetricUnits()
 atisAbuDhabi:SetActiveRunway("L")
+atisAbuDhabi:SetTowerFrequencies({250.5, 119.2})
+atisAbuDhabi:SetVOR(114.25)
 atisAbuDhabi:Start()
 </code></pre>
 
@@ -1532,6 +1607,30 @@ atisAbuDhabi:Start()
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).AddILS">ATIS:AddILS(frequency, runway)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add ILS station.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).AddNDBinner">ATIS:AddNDBinner(frequency, runway)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add inner NDB.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).AddNDBouter">ATIS:AddNDBouter(frequency, runway)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add outer NDB.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).AddPRMG">ATIS:AddPRMG(channel, runway)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add PRMG channel.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).Alphabet">ATIS.Alphabet</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -1550,9 +1649,27 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).GetMagneticRunway">ATIS:GetMagneticRunway(windfrom)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get runway from user supplied magnetic heading.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).GetMissionWeather">ATIS:GetMissionWeather()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get weather of this mission from env.mission.weather variable.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).GetNavPoint">ATIS:GetNavPoint(navpoints, runway)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get Nav point data.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).MarkRunways">ATIS:MarkRunways(markall)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Place marks with runway data on the F10 map.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1565,6 +1682,12 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).PmmHg">ATIS.PmmHg</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, give pressure in millimeters of Mercury. Default is inHg for imperial and hecto Pascal (=mili Bars) for metric units.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).RunwayM2T">ATIS.RunwayM2T</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -1598,9 +1721,39 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetRSBN">ATIS:SetRSBN(channel)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set RSBN channel.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetRadioRelayUnitName">ATIS:SetRadioRelayUnitName(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set airborne unit (airplane or helicopter), used to transmit radio messages including subtitles.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetReportWindTrue">ATIS:SetReportWindTrue()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set wind direction (from) to be reported as <em>true</em> heading.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetRunwayCorrectionMagnetic2True">ATIS:SetRunwayCorrectionMagnetic2True(correction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Explicitly set correction of magnetic to true heading for runways.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetRunwayHeadingsMagnetic">ATIS:SetRunwayHeadingsMagnetic(headings)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set magnetic runway headings as depicted on the runway, e.g.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetRunwayLength">ATIS:SetRunwayLength()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Give information on runway length.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1616,6 +1769,12 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetTACAN">ATIS:SetTACAN(channel)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set TACAN channel.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetTemperatureFahrenheit">ATIS:SetTemperatureFahrenheit()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set temperature to be given in degrees Fahrenheit.</p>
@@ -1628,9 +1787,27 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetVOR">ATIS:SetVOR(frequency)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set VOR station.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetZuluTimeDifference">ATIS:SetZuluTimeDifference(delta)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set time local difference with respect to Zulu time.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).Sound">ATIS.Sound</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SoundCheck">ATIS:SoundCheck()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Play all audio files.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1643,6 +1820,12 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).TDegF">ATIS.TDegF</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, give temperature in degrees Fahrenheit. Default is in degrees Celsius independent of chosen unit system. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).Transmission">ATIS:Transmission(sound, interval, subtitle, path)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Transmission via RADIOQUEUE.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1688,6 +1871,12 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).ils">ATIS.ils</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table of ILS frequencies (can be runway specific).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).lid">ATIS.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Class id string for output to DCS log file.</p>
@@ -1709,6 +1898,18 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).modulation">ATIS.modulation</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Radio modulation 0=AM or 1=FM.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).ndbinner">ATIS.ndbinner</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table of inner NDB frequencies (can be runway specific).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).ndbouter">ATIS.ndbouter</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table of outer NDB frequencies (can be runway specific).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1736,6 +1937,12 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).prmg">ATIS.prmg</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>PRMG channels (can be runway specific).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).radioqueue">ATIS.radioqueue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Radio queue for broadcasing messages.</p>
@@ -1748,6 +1955,30 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).rsbn">ATIS.rsbn</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>RSBN channel.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).runwaym2t">ATIS.runwaym2t</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Optional correction for magnetic to true runway heading conversion (and vice versa) in degrees.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).runwaymag">ATIS.runwaymag</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table of magnetic runway headings.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).rwylength">ATIS.rwylength</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, give info on runway length.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).soundpath">ATIS.soundpath</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Path to sound files.</p>
@@ -1757,6 +1988,12 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).subduration">ATIS.subduration</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Duration how long subtitles are displayed in seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).tacan">ATIS.tacan</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>TACAN channel.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1775,6 +2012,18 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).version">ATIS.version</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>ATIS class version.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).vor">ATIS.vor</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>VOR frequency.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).windtrue">ATIS.windtrue</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report true (from) heading of wind. Default is magnetic.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2515,6 +2764,508 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.NavPoint)">Type <strong>ATIS.NavPoint</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(ATIS.NavPoint)">ATIS.NavPoint</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from ATIS.NavPoint</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.NavPoint).frequency">ATIS.NavPoint.frequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Nav point frequency.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.NavPoint).runway">ATIS.NavPoint.runway</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Runway, e.g. "21".</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.RunwayM2T)">Type <strong>ATIS.RunwayM2T</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(ATIS.RunwayM2T)">ATIS.RunwayM2T</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from ATIS.RunwayM2T</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).Caucasus">ATIS.RunwayM2T.Caucasus</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>0° (East).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).Nevada">ATIS.RunwayM2T.Nevada</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>+12° (East).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).Normandy">ATIS.RunwayM2T.Normandy</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>-10° (West).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).Normany">ATIS.RunwayM2T.Normany</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).PersianGulf">ATIS.RunwayM2T.PersianGulf</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>+2° (East).</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.Sound)">Type <strong>ATIS.Sound</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(ATIS.Sound)">ATIS.Sound</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from ATIS.Sound</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).ActiveRunway">ATIS.Sound.ActiveRunway</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Airport">ATIS.Sound.Airport</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Altimeter">ATIS.Sound.Altimeter</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).At">ATIS.Sound.At</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudBase">ATIS.Sound.CloudBase</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudCeiling">ATIS.Sound.CloudCeiling</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudsBroken">ATIS.Sound.CloudsBroken</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudsFew">ATIS.Sound.CloudsFew</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudsNo">ATIS.Sound.CloudsNo</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudsNotAvailable">ATIS.Sound.CloudsNotAvailable</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudsOvercast">ATIS.Sound.CloudsOvercast</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).CloudsScattered">ATIS.Sound.CloudsScattered</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Decimal">ATIS.Sound.Decimal</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).DegreesCelsius">ATIS.Sound.DegreesCelsius</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).DegreesFahrenheit">ATIS.Sound.DegreesFahrenheit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Dust">ATIS.Sound.Dust</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Feet">ATIS.Sound.Feet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Fog">ATIS.Sound.Fog</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Gusting">ATIS.Sound.Gusting</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).HectoPascal">ATIS.Sound.HectoPascal</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Hundred">ATIS.Sound.Hundred</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).ILSFrequency">ATIS.Sound.ILSFrequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).InchesOfMercury">ATIS.Sound.InchesOfMercury</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Information">ATIS.Sound.Information</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).InnerNDBFrequency">ATIS.Sound.InnerNDBFrequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Kilometers">ATIS.Sound.Kilometers</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Knots">ATIS.Sound.Knots</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Left">ATIS.Sound.Left</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).MegaHertz">ATIS.Sound.MegaHertz</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Meters">ATIS.Sound.Meters</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).MetersPerSecond">ATIS.Sound.MetersPerSecond</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).MillimetersOfMercury">ATIS.Sound.MillimetersOfMercury</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Minus">ATIS.Sound.Minus</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N0">ATIS.Sound.N0</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N1">ATIS.Sound.N1</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N2">ATIS.Sound.N2</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N3">ATIS.Sound.N3</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N4">ATIS.Sound.N4</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N5">ATIS.Sound.N5</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N6">ATIS.Sound.N6</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N7">ATIS.Sound.N7</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N8">ATIS.Sound.N8</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).N9">ATIS.Sound.N9</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).NauticalMiles">ATIS.Sound.NauticalMiles</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).None">ATIS.Sound.None</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).OuterNDBFrequency">ATIS.Sound.OuterNDBFrequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).PRMGChannel">ATIS.Sound.PRMGChannel</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).QFE">ATIS.Sound.QFE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).QNH">ATIS.Sound.QNH</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).RSBNChannel">ATIS.Sound.RSBNChannel</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Rain">ATIS.Sound.Rain</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Right">ATIS.Sound.Right</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).RunwayLength">ATIS.Sound.RunwayLength</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Snow">ATIS.Sound.Snow</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).SnowStorm">ATIS.Sound.SnowStorm</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).TACANChannel">ATIS.Sound.TACANChannel</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Temperature">ATIS.Sound.Temperature</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Thousand">ATIS.Sound.Thousand</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).ThunderStorm">ATIS.Sound.ThunderStorm</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).TimeLocal">ATIS.Sound.TimeLocal</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).TimeZulu">ATIS.Sound.TimeZulu</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).TowerFrequency">ATIS.Sound.TowerFrequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).VORFrequency">ATIS.Sound.VORFrequency</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).Visibilty">ATIS.Sound.Visibilty</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).WeatherPhenomena">ATIS.Sound.WeatherPhenomena</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Sound).WindFrom">ATIS.Sound.WindFrom</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.Soundfile)">Type <strong>ATIS.Soundfile</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(ATIS.Soundfile)">ATIS.Soundfile</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from ATIS.Soundfile</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Soundfile).duration">ATIS.Soundfile.duration</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Duration in seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.Soundfile).filename">ATIS.Soundfile.filename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the file</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
     <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Ops.Atis)" >Type <strong>Ops.Atis</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
@@ -2577,6 +3328,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(ATIS.RunwayM2T)">#ATIS.RunwayM2T</a>
+<a id="#(ATIS).RunwayM2T" ><strong>ATIS.RunwayM2T</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Sound)">#ATIS.Sound</a>
+<a id="#(ATIS).Sound" ><strong>ATIS.Sound</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).TDegF" ><strong>ATIS.TDegF</strong></a>
     
@@ -2632,6 +3405,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).ils" ><strong>ATIS.ils</strong></a>
+    
+<p>Table of ILS frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ATIS).lid" ><strong>ATIS.lid</strong></a>
     
@@ -2676,6 +3460,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).ndbinner" ><strong>ATIS.ndbinner</strong></a>
+    
+<p>Table of inner NDB frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).ndbouter" ><strong>ATIS.ndbouter</strong></a>
+    
+<p>Table of outer NDB frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).prmg" ><strong>ATIS.prmg</strong></a>
+    
+<p>PRMG channels (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a>
 <a id="#(ATIS).radioqueue" ><strong>ATIS.radioqueue</strong></a>
     
@@ -2698,6 +3515,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(ATIS).rsbn" ><strong>ATIS.rsbn</strong></a>
+    
+<p>RSBN channel.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).runwaym2t" ><strong>ATIS.runwaym2t</strong></a>
+    
+<p>Optional correction for magnetic to true runway heading conversion (and vice versa) in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).runwaymag" ><strong>ATIS.runwaymag</strong></a>
+    
+<p>Table of magnetic runway headings.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).rwylength" ><strong>ATIS.rwylength</strong></a>
+    
+<p>If true, give info on runway length.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ATIS).soundpath" ><strong>ATIS.soundpath</strong></a>
     
@@ -2713,6 +3574,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(ATIS).subduration" ><strong>ATIS.subduration</strong></a>
     
 <p>Duration how long subtitles are displayed in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).tacan" ><strong>ATIS.tacan</strong></a>
+    
+<p>TACAN channel.</p>
 
 </div>
 
@@ -2754,6 +3626,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(ATIS).vor" ><strong>ATIS.vor</strong></a>
+    
+<p>VOR frequency.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).windtrue" ><strong>ATIS.windtrue</strong></a>
+    
+<p>Report true (from) heading of wind. Default is magnetic.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(ATIS).zuludiff" ><strong>ATIS.zuludiff</strong></a>
     
 <p>Time difference local vs. zulu in hours.</p>
@@ -2764,6 +3658,278 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).AddILS" ><strong>ATIS:AddILS(frequency, runway)</strong></a></h2>
+</div>
+    
+<p>Add ILS station.</p>
+
+<div id= "#Functions##AddILS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>ILS frequency.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>runway</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Runway. Default all (<em>nil</em>).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).AddNDBinner" ><strong>ATIS:AddNDBinner(frequency, runway)</strong></a></h2>
+</div>
+    
+<p>Add inner NDB.</p>
+
+<div id= "#Functions##AddNDBinner" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>NDB frequency.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>runway</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Runway. Default all (<em>nil</em>).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).AddNDBouter" ><strong>ATIS:AddNDBouter(frequency, runway)</strong></a></h2>
+</div>
+    
+<p>Add outer NDB.</p>
+
+<div id= "#Functions##AddNDBouter" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>NDB frequency.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>runway</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Runway. Default all (<em>nil</em>).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).AddPRMG" ><strong>ATIS:AddPRMG(channel, runway)</strong></a></h2>
+</div>
+    
+<p>Add PRMG channel.</p>
+
+<div id= "#Functions##AddPRMG" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>channel</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>PRMG channel.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>runway</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Runway. Default all (<em>nil</em>).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).GetMagneticRunway" ><strong>ATIS:GetMagneticRunway(windfrom)</strong></a></h2>
+</div>
+    
+<p>Get runway from user supplied magnetic heading.</p>
+
+<div id= "#Functions##GetMagneticRunway" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>windfrom</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Wind direction (from) in degrees.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Runway magnetic heading divided by ten (and rounded). Eg, "13" for 130°.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -2829,6 +3995,96 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
         </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).GetNavPoint" ><strong>ATIS:GetNavPoint(navpoints, runway)</strong></a></h2>
+</div>
+    
+<p>Get Nav point data.</p>
+
+<div id= "#Functions##GetNavPoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>navpoints</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Nav points data table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>runway</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Active) runway, e.g. "31"</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS.NavPoint)">#ATIS.NavPoint</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Nav point data table.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).MarkRunways" ><strong>ATIS:MarkRunways(markall)</strong></a></h2>
+</div>
+    
+<p>Place marks with runway data on the F10 map.</p>
+
+<div id= "#Functions##MarkRunways" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>markall</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, mark all runways of the map. By default only the current ATIS runways are marked.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -3001,6 +4257,19 @@ For example, use this if there are two runways with the same directions.</p>
     <li>Persian Gulf +2 (East), year ~ 2011</li>
 </ul>
 
+<p>To get <em>true</em> from <em>magnetic</em> heading one has to add easterly or substract westerly variation, e.g</p>
+
+<p>A magnetic heading of 180° corresponds to a true heading of </p>
+
+<ul>
+    <li>186° on the Caucaus map</li>
+    <li>192° on the Nevada map</li>
+    <li>170° on the Normany map</li>
+    <li>182° on the Persian Gulf map</li>
+</ul>
+
+<p>Likewise, to convert <em>magnetic</em> into <em>true</em> heading, one has to substract easterly and add westerly variation.</p>
+
 
 <div id= "#Functions##SetMagneticDeclination" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -3018,7 +4287,7 @@ For example, use this if there are two runways with the same directions.</p>
           </div>
           <div class="w3-half">
               
-<p>Magnetic variation in degrees.</p>
+<p>Magnetic variation in degrees. Positive for easterly and negative for westerly variation. Default is magnatic declinaton of the used map, c.f. <a href="Utilities.UTils.html##(UTILS).GetMagneticDeclination">Utilities.UTils#UTILS.GetMagneticDeclination</a>.</p>
 
           </div>
         </div>
@@ -3104,6 +4373,50 @@ For example, use this if there are two runways with the same directions.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetRSBN" ><strong>ATIS:SetRSBN(channel)</strong></a></h2>
+</div>
+    
+<p>Set RSBN channel.</p>
+
+<div id= "#Functions##SetRSBN" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>channel</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RSBN channel.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS).SetRadioRelayUnitName" ><strong>ATIS:SetRadioRelayUnitName(unitname)</strong></a></h2>
 </div>
     
@@ -3132,6 +4445,160 @@ For example, use this if there are two runways with the same directions.</p>
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetReportWindTrue" ><strong>ATIS:SetReportWindTrue()</strong></a></h2>
+</div>
+    
+<p>Set wind direction (from) to be reported as <em>true</em> heading.</p>
+
+    
+<p>Default is magnetic.</p>
+
+<div id= "#Functions##SetReportWindTrue" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetRunwayCorrectionMagnetic2True" ><strong>ATIS:SetRunwayCorrectionMagnetic2True(correction)</strong></a></h2>
+</div>
+    
+<p>Explicitly set correction of magnetic to true heading for runways.</p>
+
+<div id= "#Functions##SetRunwayCorrectionMagnetic2True" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>correction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Correction of magnetic to true heading for runways in degrees.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetRunwayHeadingsMagnetic" ><strong>ATIS:SetRunwayHeadingsMagnetic(headings)</strong></a></h2>
+</div>
+    
+<p>Set magnetic runway headings as depicted on the runway, e.g.</p>
+
+    
+<p>13 for 130.</p>
+
+<div id= "#Functions##SetRunwayHeadingsMagnetic" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>headings</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Magnetic headings. Inverse (-180°) headings are added automatically.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetRunwayLength" ><strong>ATIS:SetRunwayLength()</strong></a></h2>
+</div>
+    
+<p>Give information on runway length.</p>
+
+<div id= "#Functions##SetRunwayLength" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -3239,6 +4706,50 @@ For example, use this if there are two runways with the same directions.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetTACAN" ><strong>ATIS:SetTACAN(channel)</strong></a></h2>
+</div>
+    
+<p>Set TACAN channel.</p>
+
+<div id= "#Functions##SetTACAN" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>channel</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>TACAN channel.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS).SetTemperatureFahrenheit" ><strong>ATIS:SetTemperatureFahrenheit()</strong></a></h2>
 </div>
     
@@ -3291,6 +4802,50 @@ For example, use this if there are two runways with the same directions.</p>
           <div class="w3-half">
               
 <p>Table of frequencies in MHz. A single frequency can be given as a plain number (i.e. must not be table).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetVOR" ><strong>ATIS:SetVOR(frequency)</strong></a></h2>
+</div>
+    
+<p>Set VOR station.</p>
+
+<div id= "#Functions##SetVOR" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>VOR frequency.</p>
 
           </div>
         </div>
@@ -3368,6 +4923,25 @@ For example, use this if there are two runways with the same directions.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS).SoundCheck" ><strong>ATIS:SoundCheck()</strong></a></h2>
+</div>
+    
+<p>Play all audio files.</p>
+
+<div id= "#Functions##SoundCheck" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS).Start" ><strong>ATIS:Start()</strong></a></h2>
 </div>
     
@@ -3382,6 +4956,78 @@ For example, use this if there are two runways with the same directions.</p>
    <div class="w3-margin-left">
 <p>ATIS</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ATIS).Transmission" ><strong>ATIS:Transmission(sound, interval, subtitle, path)</strong></a></h2>
+</div>
+    
+<p>Transmission via RADIOQUEUE.</p>
+
+<div id= "#Functions##Transmission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+            <strong><strong>sound</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>ATIS sound object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Interval in seconds after the last transmission finished.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>subtitle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Subtitle of the transmission.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path to sound file. Default self.soundpath.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -3758,6 +5404,28 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(ATIS.RunwayM2T)">#ATIS.RunwayM2T</a>
+<a id="#(ATIS).RunwayM2T" ><strong>ATIS.RunwayM2T</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Sound)">#ATIS.Sound</a>
+<a id="#(ATIS).Sound" ><strong>ATIS.Sound</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).TDegF" ><strong>ATIS.TDegF</strong></a>
     
@@ -3813,6 +5481,17 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).ils" ><strong>ATIS.ils</strong></a>
+    
+<p>Table of ILS frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ATIS).lid" ><strong>ATIS.lid</strong></a>
     
@@ -3857,6 +5536,39 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).ndbinner" ><strong>ATIS.ndbinner</strong></a>
+    
+<p>Table of inner NDB frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).ndbouter" ><strong>ATIS.ndbouter</strong></a>
+    
+<p>Table of outer NDB frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).prmg" ><strong>ATIS.prmg</strong></a>
+    
+<p>PRMG channels (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a>
 <a id="#(ATIS).radioqueue" ><strong>ATIS.radioqueue</strong></a>
     
@@ -3879,6 +5591,50 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(ATIS).rsbn" ><strong>ATIS.rsbn</strong></a>
+    
+<p>RSBN channel.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).runwaym2t" ><strong>ATIS.runwaym2t</strong></a>
+    
+<p>Optional correction for magnetic to true runway heading conversion (and vice versa) in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).runwaymag" ><strong>ATIS.runwaymag</strong></a>
+    
+<p>Table of magnetic runway headings.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).rwylength" ><strong>ATIS.rwylength</strong></a>
+    
+<p>If true, give info on runway length.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ATIS).soundpath" ><strong>ATIS.soundpath</strong></a>
     
@@ -3894,6 +5650,17 @@ For example, use this if there are two runways with the same directions.</p>
 <a id="#(ATIS).subduration" ><strong>ATIS.subduration</strong></a>
     
 <p>Duration how long subtitles are displayed in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).tacan" ><strong>ATIS.tacan</strong></a>
+    
+<p>TACAN channel.</p>
 
 </div>
 
@@ -3927,6 +5694,28 @@ For example, use this if there are two runways with the same directions.</p>
 <a id="#(ATIS).version" ><strong>ATIS.version</strong></a>
     
 <p>ATIS class version.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).vor" ><strong>ATIS.vor</strong></a>
+    
+<p>VOR frequency.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).windtrue" ><strong>ATIS.windtrue</strong></a>
+    
+<p>Report true (from) heading of wind. Default is magnetic.</p>
 
 </div>
 
@@ -5184,6 +6973,28 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(ATIS.RunwayM2T)">#ATIS.RunwayM2T</a>
+<a id="#(ATIS).RunwayM2T" ><strong>ATIS.RunwayM2T</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Sound)">#ATIS.Sound</a>
+<a id="#(ATIS).Sound" ><strong>ATIS.Sound</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).TDegF" ><strong>ATIS.TDegF</strong></a>
     
@@ -5239,6 +7050,17 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).ils" ><strong>ATIS.ils</strong></a>
+    
+<p>Table of ILS frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ATIS).lid" ><strong>ATIS.lid</strong></a>
     
@@ -5283,6 +7105,39 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).ndbinner" ><strong>ATIS.ndbinner</strong></a>
+    
+<p>Table of inner NDB frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).ndbouter" ><strong>ATIS.ndbouter</strong></a>
+    
+<p>Table of outer NDB frequencies (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).prmg" ><strong>ATIS.prmg</strong></a>
+    
+<p>PRMG channels (can be runway specific).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.RadioQueue.html##(RADIOQUEUE)">Core.RadioQueue#RADIOQUEUE</a>
 <a id="#(ATIS).radioqueue" ><strong>ATIS.radioqueue</strong></a>
     
@@ -5305,6 +7160,50 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(ATIS).rsbn" ><strong>ATIS.rsbn</strong></a>
+    
+<p>RSBN channel.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).runwaym2t" ><strong>ATIS.runwaym2t</strong></a>
+    
+<p>Optional correction for magnetic to true runway heading conversion (and vice versa) in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS).runwaymag" ><strong>ATIS.runwaymag</strong></a>
+    
+<p>Table of magnetic runway headings.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).rwylength" ><strong>ATIS.rwylength</strong></a>
+    
+<p>If true, give info on runway length.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ATIS).soundpath" ><strong>ATIS.soundpath</strong></a>
     
@@ -5320,6 +7219,17 @@ For example, use this if there are two runways with the same directions.</p>
 <a id="#(ATIS).subduration" ><strong>ATIS.subduration</strong></a>
     
 <p>Duration how long subtitles are displayed in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).tacan" ><strong>ATIS.tacan</strong></a>
+    
+<p>TACAN channel.</p>
 
 </div>
 
@@ -5353,6 +7263,28 @@ For example, use this if there are two runways with the same directions.</p>
 <a id="#(ATIS).version" ><strong>ATIS.version</strong></a>
     
 <p>ATIS class version.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS).vor" ><strong>ATIS.vor</strong></a>
+    
+<p>VOR frequency.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).windtrue" ><strong>ATIS.windtrue</strong></a>
+    
+<p>Report true (from) heading of wind. Default is magnetic.</p>
 
 </div>
 
@@ -8152,6 +10084,880 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##ATIS.NavPoint')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.NavPoint)">Type <strong>ATIS.NavPoint</strong></a></h2></div>
+        <div id= "#Types##ATIS.NavPoint" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Nav point data.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.NavPoint).frequency" ><strong>ATIS.NavPoint.frequency</strong></a>
+    
+<p>Nav point frequency.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ATIS.NavPoint).runway" ><strong>ATIS.NavPoint.runway</strong></a>
+    
+<p>Runway, e.g. "21".</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##ATIS.RunwayM2T')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.RunwayM2T)">Type <strong>ATIS.RunwayM2T</strong></a></h2></div>
+        <div id= "#Types##ATIS.RunwayM2T" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Runway correction for converting true to magnetic heading.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.RunwayM2T).Caucasus" ><strong>ATIS.RunwayM2T.Caucasus</strong></a>
+    
+<p>0° (East).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.RunwayM2T).Nevada" ><strong>ATIS.RunwayM2T.Nevada</strong></a>
+    
+<p>+12° (East).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.RunwayM2T).Normandy" ><strong>ATIS.RunwayM2T.Normandy</strong></a>
+    
+<p>-10° (West).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.RunwayM2T).PersianGulf" ><strong>ATIS.RunwayM2T.PersianGulf</strong></a>
+    
+<p>+2° (East).</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##ATIS.Sound')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.Sound)">Type <strong>ATIS.Sound</strong></a></h2></div>
+        <div id= "#Types##ATIS.Sound" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Sound files.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).ActiveRunway" ><strong>ATIS.Sound.ActiveRunway</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Airport" ><strong>ATIS.Sound.Airport</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Altimeter" ><strong>ATIS.Sound.Altimeter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).At" ><strong>ATIS.Sound.At</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudBase" ><strong>ATIS.Sound.CloudBase</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudCeiling" ><strong>ATIS.Sound.CloudCeiling</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudsBroken" ><strong>ATIS.Sound.CloudsBroken</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudsFew" ><strong>ATIS.Sound.CloudsFew</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudsNo" ><strong>ATIS.Sound.CloudsNo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudsNotAvailable" ><strong>ATIS.Sound.CloudsNotAvailable</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudsOvercast" ><strong>ATIS.Sound.CloudsOvercast</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).CloudsScattered" ><strong>ATIS.Sound.CloudsScattered</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Decimal" ><strong>ATIS.Sound.Decimal</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).DegreesCelsius" ><strong>ATIS.Sound.DegreesCelsius</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).DegreesFahrenheit" ><strong>ATIS.Sound.DegreesFahrenheit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Dust" ><strong>ATIS.Sound.Dust</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Feet" ><strong>ATIS.Sound.Feet</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Fog" ><strong>ATIS.Sound.Fog</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Gusting" ><strong>ATIS.Sound.Gusting</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).HectoPascal" ><strong>ATIS.Sound.HectoPascal</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Hundred" ><strong>ATIS.Sound.Hundred</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).ILSFrequency" ><strong>ATIS.Sound.ILSFrequency</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).InchesOfMercury" ><strong>ATIS.Sound.InchesOfMercury</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Information" ><strong>ATIS.Sound.Information</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).InnerNDBFrequency" ><strong>ATIS.Sound.InnerNDBFrequency</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Kilometers" ><strong>ATIS.Sound.Kilometers</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Knots" ><strong>ATIS.Sound.Knots</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Left" ><strong>ATIS.Sound.Left</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).MegaHertz" ><strong>ATIS.Sound.MegaHertz</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Meters" ><strong>ATIS.Sound.Meters</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).MetersPerSecond" ><strong>ATIS.Sound.MetersPerSecond</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).MillimetersOfMercury" ><strong>ATIS.Sound.MillimetersOfMercury</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ATIS.Sound).Minus" ><strong>ATIS.Sound.Minus</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N0" ><strong>ATIS.Sound.N0</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N1" ><strong>ATIS.Sound.N1</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N2" ><strong>ATIS.Sound.N2</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N3" ><strong>ATIS.Sound.N3</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N4" ><strong>ATIS.Sound.N4</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N5" ><strong>ATIS.Sound.N5</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N6" ><strong>ATIS.Sound.N6</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N7" ><strong>ATIS.Sound.N7</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N8" ><strong>ATIS.Sound.N8</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).N9" ><strong>ATIS.Sound.N9</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).NauticalMiles" ><strong>ATIS.Sound.NauticalMiles</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).None" ><strong>ATIS.Sound.None</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).OuterNDBFrequency" ><strong>ATIS.Sound.OuterNDBFrequency</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).PRMGChannel" ><strong>ATIS.Sound.PRMGChannel</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).QFE" ><strong>ATIS.Sound.QFE</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).QNH" ><strong>ATIS.Sound.QNH</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).RSBNChannel" ><strong>ATIS.Sound.RSBNChannel</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Rain" ><strong>ATIS.Sound.Rain</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Right" ><strong>ATIS.Sound.Right</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).RunwayLength" ><strong>ATIS.Sound.RunwayLength</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Snow" ><strong>ATIS.Sound.Snow</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).SnowStorm" ><strong>ATIS.Sound.SnowStorm</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).TACANChannel" ><strong>ATIS.Sound.TACANChannel</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Temperature" ><strong>ATIS.Sound.Temperature</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Thousand" ><strong>ATIS.Sound.Thousand</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).ThunderStorm" ><strong>ATIS.Sound.ThunderStorm</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).TimeLocal" ><strong>ATIS.Sound.TimeLocal</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).TimeZulu" ><strong>ATIS.Sound.TimeZulu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).TowerFrequency" ><strong>ATIS.Sound.TowerFrequency</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).VORFrequency" ><strong>ATIS.Sound.VORFrequency</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).Visibilty" ><strong>ATIS.Sound.Visibilty</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).WeatherPhenomena" ><strong>ATIS.Sound.WeatherPhenomena</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ATIS.Soundfile)">#ATIS.Soundfile</a>
+<a id="#(ATIS.Sound).WindFrom" ><strong>ATIS.Sound.WindFrom</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##ATIS.Soundfile')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATIS.Soundfile)">Type <strong>ATIS.Soundfile</strong></a></h2></div>
+        <div id= "#Types##ATIS.Soundfile" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Sound file data.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.Soundfile).duration" ><strong>ATIS.Soundfile.duration</strong></a>
+    
+<p>Duration in seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ATIS.Soundfile).filename" ><strong>ATIS.Soundfile.filename</strong></a>
+    
+<p>Name of the file</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
