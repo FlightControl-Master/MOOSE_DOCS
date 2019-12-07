@@ -1401,12 +1401,12 @@ which can start and stop specific repeating schedules respectively within a SCHE
 <ul>
     <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil ): Setup a new SCHEDULER object, which is persistently executed after garbage collection.</p>
     
-    <p>SchedulerObject = SCHEDULER:New()
-    SchedulerID = SchedulerObject:Schedule( nil, ScheduleFunction, {} )</p></li>
+    <p>MasterObject = SCHEDULER:New()
+    SchedulerID = MasterObject:Schedule( nil, ScheduleFunction, {} )</p></li>
 </ul>
 
-<p>The above example creates a new SchedulerObject, but does not schedule anything.
-A separate schedule is created by using the SchedulerObject using the method :Schedule..., which returns a ScheduleID</p>
+<p>The above example creates a new MasterObject, but does not schedule anything.
+A separate schedule is created by using the MasterObject using the method :Schedule..., which returns a ScheduleID</p>
 
 <h3>Construct a SCHEDULER object without a volatile schedule, but volatile to the Object existence...</h3>
 
@@ -1414,28 +1414,28 @@ A separate schedule is created by using the SchedulerObject using the method :Sc
     <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object ): Setup a new SCHEDULER object, which is linked to the Object. When the Object is nillified or destroyed, the SCHEDULER object will also be destroyed and stopped after garbage collection.</p>
     
     <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject = SCHEDULER:New( ZoneObject )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
+    MasterObject = SCHEDULER:New( ZoneObject )
+    SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {} )
     ...
     ZoneObject = nil
     garbagecollect()</p></li>
 </ul>
 
-<p>The above example creates a new SchedulerObject, but does not schedule anything, and is bound to the existence of ZoneObject, which is a ZONE.
-A separate schedule is created by using the SchedulerObject using the method :Schedule()..., which returns a ScheduleID
+<p>The above example creates a new MasterObject, but does not schedule anything, and is bound to the existence of ZoneObject, which is a ZONE.
+A separate schedule is created by using the MasterObject using the method :Schedule()..., which returns a ScheduleID
 Later in the logic, the ZoneObject is put to nil, and garbage is collected.
-As a result, the ScheduleObject will cancel any planned schedule.</p>
+As a result, the MasterObject will cancel any planned schedule.</p>
 
 <h3>Construct a SCHEDULER object with a persistent schedule.</h3>
 
 <ul>
     <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil, Function, FunctionArguments, Start, ... ): Setup a new persistent SCHEDULER object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
     
-    <p>SchedulerObject, SchedulerID = SCHEDULER:New( nil, ScheduleFunction, {} )</p></li>
+    <p>MasterObject, SchedulerID = SCHEDULER:New( nil, ScheduleFunction, {} )</p></li>
 </ul>
 
-<p>The above example creates a new SchedulerObject, and does schedule the first schedule as part of the call.
-Note that 2 variables are returned here: SchedulerObject, ScheduleID...</p>
+<p>The above example creates a new MasterObject, and does schedule the first schedule as part of the call.
+Note that 2 variables are returned here: MasterObject, ScheduleID...</p>
 
 <h3>Construct a SCHEDULER object without a schedule, but volatile to the Object existence...</h3>
 
@@ -1443,18 +1443,18 @@ Note that 2 variables are returned here: SchedulerObject, ScheduleID...</p>
     <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object, Function, FunctionArguments, Start, ... ): Setup a new SCHEDULER object, linked to Object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
     
     <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
+    MasterObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
+    SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {} )
     ...
     ZoneObject = nil
     garbagecollect()</p></li>
 </ul>
 
-<p>The above example creates a new SchedulerObject, and schedules a method call (ScheduleFunction), 
+<p>The above example creates a new MasterObject, and schedules a method call (ScheduleFunction), 
 and is bound to the existence of ZoneObject, which is a ZONE object (ZoneObject).
-Both a ScheduleObject and a SchedulerID variable are returned.
+Both a MasterObject and a SchedulerID variable are returned.
 Later in the logic, the ZoneObject is put to nil, and garbage is collected.
-As a result, the ScheduleObject will cancel the planned schedule.</p>
+As a result, the MasterObject will cancel the planned schedule.</p>
 
 <h2>SCHEDULER timer stopping and (re-)starting.</h2>
 
@@ -1465,16 +1465,16 @@ As a result, the ScheduleObject will cancel the planned schedule.</p>
     <li><p><a href="##(SCHEDULER).Stop">SCHEDULER.Stop</a>(): Stop the schedules within the SCHEDULER object. If a CallID is provided to :Stop(), then only the schedule referenced by CallID will be stopped.</p>
     
     <p>ZoneObject = ZONE:New( "ZoneName" )
-    SchedulerObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
-    SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 10 )
+    MasterObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
+    SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 10 )
     ...
-    SchedulerObject:Stop( SchedulerID )
+    MasterObject:Stop( SchedulerID )
     ...
-    SchedulerObject:Start( SchedulerID )</p></li>
+    MasterObject:Start( SchedulerID )</p></li>
 </ul>
 
-<p>The above example creates a new SchedulerObject, and does schedule the first schedule as part of the call.
-Note that 2 variables are returned here: SchedulerObject, ScheduleID... <br/>
+<p>The above example creates a new MasterObject, and does schedule the first schedule as part of the call.
+Note that 2 variables are returned here: MasterObject, ScheduleID... <br/>
 Later in the logic, the repeating schedule with SchedulerID is stopped. <br/>
 A bit later, the repeating schedule with SchedulerId is (re)-started.  </p>
 
@@ -1486,28 +1486,28 @@ This method is used by the :New() constructor when a new schedule is planned.</p
 <p>Consider the following code fragment of the SCHEDULER object creation.</p>
 
 <pre><code>ZoneObject = ZONE:New( "ZoneName" )
-SchedulerObject = SCHEDULER:New( ZoneObject )
+MasterObject = SCHEDULER:New( ZoneObject )
 </code></pre>
 
 <p>Several parameters can be specified that influence the behaviour of a Schedule.</p>
 
 <h3>A single schedule, immediately executed</h3>
 
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {} )
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {} )
 </code></pre>
 
 <p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within milleseconds ...</p>
 
 <h3>A single schedule, planned over time</h3>
 
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10 )
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10 )
 </code></pre>
 
 <p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds ...</p>
 
 <h3>A schedule with a repeating time interval, planned over time</h3>
 
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60 )
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60 )
 </code></pre>
 
 <p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
@@ -1515,7 +1515,7 @@ and repeating 60 every seconds ...</p>
 
 <h3>A schedule with a repeating time interval, planned over time, with time interval randomization</h3>
 
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5 )
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5 )
 </code></pre>
 
 <p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
@@ -1526,7 +1526,7 @@ which is in this example between <strong>30</strong> and <strong>90</strong> sec
 
 <h3>A schedule with a repeating time interval, planned over time, with time interval randomization, and stop after a time interval</h3>
 
-<pre><code>SchedulerID = SchedulerObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5, 300 )
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5, 300 )
 </code></pre>
 
 <p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
@@ -1561,17 +1561,17 @@ The schedule will stop after <strong>300</strong> seconds.</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).MasterObject">SCHEDULER.MasterObject</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Master object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).New">SCHEDULER:New(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).New">SCHEDULER:New(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>SCHEDULER constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).NoTrace">SCHEDULER:NoTrace(ScheduleID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).NoTrace">SCHEDULER:NoTrace()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>No tracing for this scheduler.</p>
 </td>
@@ -1583,27 +1583,21 @@ The schedule will stop after <strong>300</strong> seconds.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Schedule">SCHEDULER:Schedule(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Schedule">SCHEDULER:Schedule(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleID">SCHEDULER.ScheduleID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Schedules">SCHEDULER.Schedules</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>the ID of the scheduler.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).SchedulerObject">SCHEDULER.SchedulerObject</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Table of schedules.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ShowTrace">SCHEDULER.ShowTrace</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Trace info if true.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2096,21 +2090,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(SCHEDULER).MasterObject" ><strong>SCHEDULER.MasterObject</strong></a>
     
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(SCHEDULER).ScheduleID" ><strong>SCHEDULER.ScheduleID</strong></a>
-    
-<p>the ID of the scheduler.</p>
+<p>Master object.</p>
 
 </div>
 
@@ -2118,10 +2101,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(SCHEDULER).Schedules" ><strong>SCHEDULER.Schedules</strong></a>
     
-<a id="#(SCHEDULER).SchedulerObject" ><strong>SCHEDULER.SchedulerObject</strong></a>
-    
-
+<p>Table of schedules.</p>
 
 </div>
 
@@ -2132,7 +2115,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(SCHEDULER).ShowTrace" ><strong>SCHEDULER.ShowTrace</strong></a>
     
-
+<p>Trace info if true.</p>
 
 </div>
 
@@ -2162,7 +2145,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</strong></a></h2>
+<h2><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</strong></a></h2>
 </div>
     
 <p>SCHEDULER constructor.</p>
@@ -2178,7 +2161,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #table
-            <strong><strong>SchedulerObject</strong></strong>
+            <strong><strong>MasterObject</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -2276,7 +2259,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
         </div>
         <div class="w3-half">
-          <p>#number:</p>
+          <p>#table:</p>
         </div>
         <div class="w3-half">
           
@@ -2292,7 +2275,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).NoTrace" ><strong>SCHEDULER:NoTrace(ScheduleID)</strong></a></h2>
+<h2><a id="#(SCHEDULER).NoTrace" ><strong>SCHEDULER:NoTrace()</strong></a></h2>
 </div>
     
 <p>No tracing for this scheduler.</p>
@@ -2303,20 +2286,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>SCHEDULER</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>ScheduleID</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
-
-          </div>
-        </div>
 </div>
 
 </div>
@@ -2358,7 +2327,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCHEDULER).Schedule" ><strong>SCHEDULER:Schedule(SchedulerObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</strong></a></h2>
+<h2><a id="#(SCHEDULER).Schedule" ><strong>SCHEDULER:Schedule(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -2377,7 +2346,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #table
-            <strong><strong>SchedulerObject</strong></strong>
+            <strong><strong>MasterObject</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -2434,7 +2403,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+<p>Specifies the time interval in seconds when the scheduler will call the event function.</p>
 
           </div>
         </div>
@@ -2460,34 +2429,40 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+<p>Time interval in seconds after which the scheduler will be stoppe.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #number
             <strong><strong>TraceLevel</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Trace level [0,3]. Default 3.</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                <a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a>
             <strong><strong>Fsm</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Finite state model.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p>#number:</p>
+        <p>#table:</p>
       </div>
       <div class="w3-half">
         
@@ -2518,13 +2493,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
+                #table
             <strong><strong>ScheduleID</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+<p>(Optional) The ScheduleID of the planned (repeating) schedule.</p>
 
           </div>
         </div>
@@ -2551,13 +2526,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
+                #table
             <strong><strong>ScheduleID</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+<p>(Optional) The ScheduleID of the planned (repeating) schedule.</p>
 
           </div>
         </div>
@@ -2572,21 +2547,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(SCHEDULER).MasterObject" ><strong>SCHEDULER.MasterObject</strong></a>
     
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(SCHEDULER).ScheduleID" ><strong>SCHEDULER.ScheduleID</strong></a>
-    
-<p>the ID of the scheduler.</p>
+<p>Master object.</p>
 
 </div>
 
@@ -2594,10 +2558,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(SCHEDULER).Schedules" ><strong>SCHEDULER.Schedules</strong></a>
     
-<a id="#(SCHEDULER).SchedulerObject" ><strong>SCHEDULER.SchedulerObject</strong></a>
-    
-
+<p>Table of schedules.</p>
 
 </div>
 
@@ -2608,7 +2572,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(SCHEDULER).ShowTrace" ><strong>SCHEDULER.ShowTrace</strong></a>
     
-
+<p>Trace info if true.</p>
 
 </div>
 
