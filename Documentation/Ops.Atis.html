@@ -1555,6 +1555,10 @@ If the parameter <em>runway</em> is omitted (nil) then the frequency is supposed
 
 <p><strong>Note</strong> that the default folder name is <em>ATIS Soundfiles/</em>. If you want to change it, you can use the <a href="##(ATIS).SetSoundfilesPath">ATIS.SetSoundfilesPath</a>(<em>path</em>), where <em>path</em> is the path of the directory. This must end with a slash "/"!</p>
 
+<h1>Marks on the F10 Map</h1>
+
+<p>You can place marks on the F10 map via the <a href="##(ATIS).SetMapMarks">ATIS.SetMapMarks</a>() function. These will contain info about the ATIS frequency, the currently active runway and some basic info about the weather (wind, pressure and temperature).</p>
+
 <h1>Examples</h1>
 
 <h2>Caucasus: Batumi</h2>
@@ -1761,6 +1765,12 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetMapMarks">ATIS:SetMapMarks(switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use F10 map mark points.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetMetricUnits">ATIS:SetMetricUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set unit system to metric units.</p>
@@ -1887,6 +1897,12 @@ atisAbuDhabi:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).UpdateMarker">ATIS:UpdateMarker(information, runact, wind, altimeter, temperature)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update F10 map marker.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS)._GetThousandsAndHundreds">ATIS:_GetThousandsAndHundreds(n)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get thousands of a number.</p>
@@ -1956,6 +1972,12 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).magvar">ATIS.magvar</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Magnetic declination/variation at the airport in degrees.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).markerid">ATIS.markerid</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Numerical ID of the F10 map mark point.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2082,6 +2104,12 @@ atisAbuDhabi:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).towerfrequency">ATIS.towerfrequency</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table with tower frequencies.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).usemarker">ATIS.usemarker</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use mark on the F10 map.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3554,6 +3582,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(ATIS).markerid" ><strong>ATIS.markerid</strong></a>
+    
+<p>Numerical ID of the F10 map mark point.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).metric" ><strong>ATIS.metric</strong></a>
     
@@ -3734,6 +3773,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(ATIS).towerfrequency" ><strong>ATIS.towerfrequency</strong></a>
     
 <p>Table with tower frequencies.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).usemarker" ><strong>ATIS.usemarker</strong></a>
+    
+<p>Use mark on the F10 map.</p>
 
 </div>
 
@@ -4654,6 +4704,50 @@ For example, use this if there are two runways with the same directions.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetMapMarks" ><strong>ATIS:SetMapMarks(switch)</strong></a></h2>
+</div>
+    
+<p>Use F10 map mark points.</p>
+
+<div id= "#Functions##SetMapMarks" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <em>true</em> or <em>nil</em>, marks are placed on F10 map. If <em>false</em> this feature is set to off (default).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS).SetMetricUnits" ><strong>ATIS:SetMetricUnits()</strong></a></h2>
 </div>
     
@@ -5424,6 +5518,102 @@ For example, use this if there are two runways with the same directions.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS).UpdateMarker" ><strong>ATIS:UpdateMarker(information, runact, wind, altimeter, temperature)</strong></a></h2>
+</div>
+    
+<p>Update F10 map marker.</p>
+
+<div id= "#Functions##UpdateMarker" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>information</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Information tag text.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>runact</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Active runway text.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>wind</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Wind text.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>altimeter</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Altimeter text.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>temperature</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Temperature text.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Marker ID.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS)._GetThousandsAndHundreds" ><strong>ATIS:_GetThousandsAndHundreds(n)</strong></a></h2>
 </div>
     
@@ -5924,6 +6114,17 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(ATIS).markerid" ><strong>ATIS.markerid</strong></a>
+    
+<p>Numerical ID of the F10 map mark point.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).metric" ><strong>ATIS.metric</strong></a>
     
@@ -6104,6 +6305,17 @@ For example, use this if there are two runways with the same directions.</p>
 <a id="#(ATIS).towerfrequency" ><strong>ATIS.towerfrequency</strong></a>
     
 <p>Table with tower frequencies.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).usemarker" ><strong>ATIS.usemarker</strong></a>
+    
+<p>Use mark on the F10 map.</p>
 
 </div>
 
@@ -7526,6 +7738,17 @@ For example, use this if there are two runways with the same directions.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(ATIS).markerid" ><strong>ATIS.markerid</strong></a>
+    
+<p>Numerical ID of the F10 map mark point.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).metric" ><strong>ATIS.metric</strong></a>
     
@@ -7706,6 +7929,17 @@ For example, use this if there are two runways with the same directions.</p>
 <a id="#(ATIS).towerfrequency" ><strong>ATIS.towerfrequency</strong></a>
     
 <p>Table with tower frequencies.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ATIS).usemarker" ><strong>ATIS.usemarker</strong></a>
+    
+<p>Use mark on the F10 map.</p>
 
 </div>
 
