@@ -1735,7 +1735,9 @@ can be used to switch off the initial delay. Because there is no delay by defaul
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWN).InitCleanUp">SPAWN:InitCleanUp(SpawnCleanUpInterval)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>CleanUp groups when they are still alive, but inactive.</p>
+<p>Delete groups that have not moved for X seconds - AIR ONLY!!!
+DO NOT USE ON GROUPS THAT DO NOT MOVE OR YOUR SERVER WILL BURN IN HELL (Pikes - April 2020)
+When groups are still alive and have become inactive due to damage and are unable to contribute anything, then this group will be removed at defined intervals in seconds.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1803,7 +1805,7 @@ and any spaces before and after the resulting name are removed.</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWN).InitLimit">SPAWN:InitLimit(SpawnMaxUnitsAlive, SpawnMaxGroups)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Limits the Maximum amount of Units that can be alive at the same time, and the maximum amount of groups that can be spawned.</p>
+<p>Stops any more repeat spawns from happening once the UNIT count of Alive units, spawned by the same SPAWN object, exceeds the first parameter.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3202,20 +3204,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(SPAWN).SpawnCount" ><strong>SPAWN.SpawnCount</strong></a>
-    
-
-
-    
-<p> The internal counter of the amount of spawning the has happened since SpawnStart.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(SPAWN).SpawnFunctionArguments" ><strong>SPAWN.SpawnFunctionArguments</strong></a>
     
@@ -3276,6 +3264,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #number
 <a id="#(SPAWN).SpawnIndex" ><strong>SPAWN.SpawnIndex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWN).SpawnInitAirbase" ><strong>SPAWN.SpawnInitAirbase</strong></a>
     
 
 
@@ -3374,12 +3373,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(SPAWN).SpawnInitKeepUnitNames" ><strong>SPAWN.SpawnInitKeepUnitNames</strong></a>
+<a id="#(SPAWN).SpawnInitLimit" ><strong>SPAWN.SpawnInitLimit</strong></a>
     
 
-
-    
-<p> Overwrite unit names by default with group name.</p>
 
 </div>
 
@@ -3387,8 +3383,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(SPAWN).SpawnInitLimit" ><strong>SPAWN.SpawnInitLimit</strong></a>
+    
+<a id="#(SPAWN).SpawnInitLivery" ><strong>SPAWN.SpawnInitLivery</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWN).SpawnInitModu" ><strong>SPAWN.SpawnInitModu</strong></a>
     
 
 
@@ -4266,10 +4273,9 @@ Spawn_BE_Ground = SPAWN
 <h2><a id="#(SPAWN).InitCleanUp" ><strong>SPAWN:InitCleanUp(SpawnCleanUpInterval)</strong></a></h2>
 </div>
     
-<p>CleanUp groups when they are still alive, but inactive.</p>
-
-    
-<p>When groups are still alive and have become inactive due to damage and are unable to contribute anything, then this group will be removed at defined intervals in seconds.</p>
+<p>Delete groups that have not moved for X seconds - AIR ONLY!!!
+DO NOT USE ON GROUPS THAT DO NOT MOVE OR YOUR SERVER WILL BURN IN HELL (Pikes - April 2020)
+When groups are still alive and have become inactive due to damage and are unable to contribute anything, then this group will be removed at defined intervals in seconds.</p>
 
 <div id= "#Functions##InitCleanUp" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -4814,10 +4820,12 @@ and any spaces before and after the resulting name are removed.</p>
 <h2><a id="#(SPAWN).InitLimit" ><strong>SPAWN:InitLimit(SpawnMaxUnitsAlive, SpawnMaxGroups)</strong></a></h2>
 </div>
     
-<p>Limits the Maximum amount of Units that can be alive at the same time, and the maximum amount of groups that can be spawned.</p>
+<p>Stops any more repeat spawns from happening once the UNIT count of Alive units, spawned by the same SPAWN object, exceeds the first parameter.</p>
 
     
-<p>Note that this method is exceptionally important to balance the performance of the mission. Depending on the machine etc, a mission can only process a maximum amount of units.
+<p>Also can stop spawns from happening once a total GROUP still alive is met.
+Exceptionally powerful when combined with SpawnSchedule for Respawning.
+Note that this method is exceptionally important to balance the performance of the mission. Depending on the machine etc, a mission can only process a maximum amount of units.
 If the time interval must be short, but there should not be more Units or Groups alive than a maximum amount of units, then this method should be used...
 When a <a href="##(SPAWN).New">SPAWN.New</a> is executed and the limit of the amount of units alive is reached, then no new spawn will happen of the group, until some of these units of the spawn object will be destroyed.</p>
 
@@ -5326,9 +5334,9 @@ In other words, this method randomizes between a defined set of groups the templ
 Spawn_US_Platoon = { 'US Tank Platoon 1', 'US Tank Platoon 2', 'US Tank Platoon 3', 'US Tank Platoon 4', 'US Tank Platoon 5', 
                      'US Tank Platoon 6', 'US Tank Platoon 7', 'US Tank Platoon 8', 'US Tank Platoon 9', 'US Tank Platoon 10', 
                      'US Tank Platoon 11', 'US Tank Platoon 12', 'US Tank Platoon 13' }
-Spawn_US_Platoon_Left = SPAWN:New( 'US Tank Platoon Left' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplate( Spawn_US_Platoon ):InitRandomizeRoute( 3, 3, 2000 )
-Spawn_US_Platoon_Middle = SPAWN:New( 'US Tank Platoon Middle' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplate( Spawn_US_Platoon ):InitRandomizeRoute( 3, 3, 2000 )
-Spawn_US_Platoon_Right = SPAWN:New( 'US Tank Platoon Right' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplate( Spawn_US_Platoon ):InitRandomizeRoute( 3, 3, 2000 )</code></pre>
+Spawn_US_Platoon_Left = SPAWN:New( 'US Tank Platoon Left' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplate( Spawn_US_Platoon ):InitRandomizeRoute( 3, 3, 2000 )
+Spawn_US_Platoon_Middle = SPAWN:New( 'US Tank Platoon Middle' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplate( Spawn_US_Platoon ):InitRandomizeRoute( 3, 3, 2000 )
+Spawn_US_Platoon_Right = SPAWN:New( 'US Tank Platoon Right' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplate( Spawn_US_Platoon ):InitRandomizeRoute( 3, 3, 2000 )</code></pre>
 
 </div>
 
@@ -5388,9 +5396,9 @@ In other words, this method randomizes between a defined set of groups the templ
 -- Each new SPAWN will randomize the route, with a defined time interval of 200 seconds with 40% time variation (randomization) and 
 -- with a limit set of maximum 12 Units alive simulteneously  and 150 Groups to be spawned during the whole mission.
 
-Spawn_US_Platoon_Left = SPAWN:New( 'US Tank Platoon Left' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplatePrefixes( "US Tank Platoon Templates" ):InitRandomizeRoute( 3, 3, 2000 )
-Spawn_US_Platoon_Middle = SPAWN:New( 'US Tank Platoon Middle' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplatePrefixes( "US Tank Platoon Templates" ):InitRandomizeRoute( 3, 3, 2000 )
-Spawn_US_Platoon_Right = SPAWN:New( 'US Tank Platoon Right' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplatePrefixes( "US Tank Platoon Templates" ):InitRandomizeRoute( 3, 3, 2000 )</code></pre>
+Spawn_US_Platoon_Left = SPAWN:New( 'US Tank Platoon Left' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplatePrefixes( "US Tank Platoon Templates" ):InitRandomizeRoute( 3, 3, 2000 )
+Spawn_US_Platoon_Middle = SPAWN:New( 'US Tank Platoon Middle' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplatePrefixes( "US Tank Platoon Templates" ):InitRandomizeRoute( 3, 3, 2000 )
+Spawn_US_Platoon_Right = SPAWN:New( 'US Tank Platoon Right' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplatePrefixes( "US Tank Platoon Templates" ):InitRandomizeRoute( 3, 3, 2000 )</code></pre>
 
 </div>
 
@@ -5453,9 +5461,9 @@ In other words, this method randomizes between a defined set of groups the templ
 Spawn_US_PlatoonSet = SET_GROUP:New():FilterPrefixes( "US Tank Platoon Templates" ):FilterOnce()
 
 --- Now use the Spawn_US_PlatoonSet to define the templates using InitRandomizeTemplateSet.
-Spawn_US_Platoon_Left = SPAWN:New( 'US Tank Platoon Left' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplateSet( Spawn_US_PlatoonSet ):InitRandomizeRoute( 3, 3, 2000 )
-Spawn_US_Platoon_Middle = SPAWN:New( 'US Tank Platoon Middle' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplateSet( Spawn_US_PlatoonSet ):InitRandomizeRoute( 3, 3, 2000 )
-Spawn_US_Platoon_Right = SPAWN:New( 'US Tank Platoon Right' ):InitLimit( 12, 150 ):Schedule( 200, 0.4 ):InitRandomizeTemplateSet( Spawn_US_PlatoonSet ):InitRandomizeRoute( 3, 3, 2000 )</code></pre>
+Spawn_US_Platoon_Left = SPAWN:New( 'US Tank Platoon Left' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplateSet( Spawn_US_PlatoonSet ):InitRandomizeRoute( 3, 3, 2000 )
+Spawn_US_Platoon_Middle = SPAWN:New( 'US Tank Platoon Middle' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplateSet( Spawn_US_PlatoonSet ):InitRandomizeRoute( 3, 3, 2000 )
+Spawn_US_Platoon_Right = SPAWN:New( 'US Tank Platoon Right' ):InitLimit( 12, 150 ):SpawnScheduled( 200, 0.4 ):InitRandomizeTemplateSet( Spawn_US_PlatoonSet ):InitRandomizeRoute( 3, 3, 2000 )</code></pre>
 
 </div>
 
@@ -5671,11 +5679,10 @@ SpawnRU_SU34 = SPAWN
 -- Re-SPAWN the Group(s) after each landing and Engine Shut-Down automatically. 
 SpawnRU_SU34 = SPAWN
   :New( 'Su-34' )
-  :Schedule( 2, 3, 1800, 0.4 )
   :SpawnUncontrolled()
   :InitRandomizeRoute( 1, 1, 3000 )
   :InitRepeatOnEngineShutDown()
-  </code></pre>
+  :Spawn()</code></pre>
 
 </div>
 
@@ -5712,11 +5719,9 @@ SpawnRU_SU34 = SPAWN
 -- Re-SPAWN the Group(s) after each landing and Engine Shut-Down automatically. 
 SpawnRU_SU34 = SPAWN
   :New( 'Su-34' )
-  :Schedule( 2, 3, 1800, 0.4 )
-  :SpawnUncontrolled()
   :InitRandomizeRoute( 1, 1, 3000 )
   :InitRepeatOnLanding()
-  </code></pre>
+  :Spawn()   </code></pre>
 
 </div>
 
@@ -7575,7 +7580,7 @@ The variation is a number between 0 and 1, representing the %-tage of variation 
 --      Low limit:   600 * ( 1 - 0.5 / 2 ) = 450 
 --      High limit:  600 * ( 1 + 0.5 / 2 ) = 750
 -- Between these two values, a random amount of seconds will be choosen for each new spawn of the helicopters.
-Spawn_BE_KA50 = SPAWN:New( 'BE KA-50@RAMP-Ground Defense' ):Schedule( 600, 0.5 )</code></pre>
+Spawn_BE_KA50 = SPAWN:New( 'BE KA-50@RAMP-Ground Defense' ):SpawnScheduled( 600, 0.5 )</code></pre>
 
 </div>
 
@@ -8565,20 +8570,6 @@ This is needed to ensure that Re-SPAWNing only is done for landed AIR Groups.</p
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(SPAWN).SpawnCount" ><strong>SPAWN.SpawnCount</strong></a>
-    
-
-
-    
-<p> The internal counter of the amount of spawning the has happened since SpawnStart.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(SPAWN).SpawnFunctionArguments" ><strong>SPAWN.SpawnFunctionArguments</strong></a>
     
@@ -8639,6 +8630,17 @@ This is needed to ensure that Re-SPAWNing only is done for landed AIR Groups.</p
 
     #number
 <a id="#(SPAWN).SpawnIndex" ><strong>SPAWN.SpawnIndex</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWN).SpawnInitAirbase" ><strong>SPAWN.SpawnInitAirbase</strong></a>
     
 
 
@@ -8737,12 +8739,9 @@ This is needed to ensure that Re-SPAWNing only is done for landed AIR Groups.</p
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(SPAWN).SpawnInitKeepUnitNames" ><strong>SPAWN.SpawnInitKeepUnitNames</strong></a>
+<a id="#(SPAWN).SpawnInitLimit" ><strong>SPAWN.SpawnInitLimit</strong></a>
     
 
-
-    
-<p> Overwrite unit names by default with group name.</p>
 
 </div>
 
@@ -8750,8 +8749,19 @@ This is needed to ensure that Re-SPAWNing only is done for landed AIR Groups.</p
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(SPAWN).SpawnInitLimit" ><strong>SPAWN.SpawnInitLimit</strong></a>
+    
+<a id="#(SPAWN).SpawnInitLivery" ><strong>SPAWN.SpawnInitLivery</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWN).SpawnInitModu" ><strong>SPAWN.SpawnInitModu</strong></a>
     
 
 
