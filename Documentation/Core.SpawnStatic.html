@@ -652,7 +652,7 @@
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Core.SpawnStatic.html">Core.SpawnStatic</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Core</strong> - Spawn new statics in your running missions.</p>
+<p><strong>Core</strong> - Spawn statics.</p>
 </p></div>
        </div>         
      </div>
@@ -1318,7 +1318,7 @@
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Core</strong> - Spawn new statics in your running missions.</p>
+<p><strong>Core</strong> - Spawn statics.</p>
 
     
 <h1> </h1>
@@ -1326,33 +1326,31 @@
 <h2>Features:</h2>
 
 <ul>
-    <li>Spawn new statics from a static already defined using the mission editor.</li>
+    <li>Spawn new statics from a static already defined in the mission editor.</li>
     <li>Spawn new statics from a given template.</li>
     <li>Spawn new statics from a given type.</li>
     <li>Spawn with a custom heading and location.</li>
     <li>Spawn within a zone.</li>
+    <li>Spawn statics linked to units, .e.g on aircraft carriers.</li>
 </ul>
 
 <hr/>
 
 <h1>Demo Missions</h1>
 
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master-release/SPS - Spawning Statics">SPAWNSTATIC Demo Missions source code</a></h3>
+<h2><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master/SPS%20-%20Spawning%20Statics">SPAWNSTATIC Demo Missions</a></h2>
 
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master/SPS%20-%20Spawning%20Statics">SPAWNSTATIC Demo Missions, only for beta testers</a></h3>
-
-<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/releases">ALL Demo Missions pack of the last release</a></h3>
 
 <hr/>
 
 <h1>YouTube Channel</h1>
 
-<h3><a href="">SPAWNSTATIC YouTube Channel</a></h3>
+<h2><a href="">SPAWNSTATIC YouTube Channel</a> [No videos yet!]</h2>
 
 <hr/>
 
 <h3>Author: <strong>FlightControl</strong></h3>
-<h3>Contributions:</h3>
+<h3>Contributions: <strong>funkyfranky</strong></h3>
 
 <hr/>
 
@@ -1364,7 +1362,7 @@
       <tr>
         <td class="style="width:40%;"><p><h2>Global <strong>SPAWNSTATIC</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Allows to spawn dynamically new <a href="Static.html">Static</a>s.</p>
+<p>Allows to spawn dynamically new <a href="Static.html">Static</a>s into your mission.</p>
 </td>
       </tr>
     </table>
@@ -1375,39 +1373,63 @@
     <a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>
 <a id="SPAWNSTATIC" ><strong>SPAWNSTATIC</strong></a>
     
-<p>Allows to spawn dynamically new <a href="Static.html">Static</a>s.</p>
+<p>Allows to spawn dynamically new <a href="Static.html">Static</a>s into your mission.</p>
 
     
-<p>Through creating a copy of an existing static object template as defined in the Mission Editor (ME),
-SPAWNSTATIC can retireve the properties of the defined static object template (like type, category etc), and "copy"
-these properties to create a new static object and place it at the desired coordinate.</p>
 
-<p>New spawned <a href="Static.html">Static</a>s get <strong>the same name</strong> as the name of the template Static, 
-or gets the given name when a new name is provided at the Spawn method. <br/>
+<p>Through creating a copy of an existing static object template as defined in the Mission Editor (ME), SPAWNSTATIC can retireve the properties of the defined static object template (like type, category etc), 
+and "copy" these properties to create a new static object and place it at the desired coordinate.</p>
+
+<p>New spawned <a href="Static.html">Static</a>s get <strong>the same name</strong> as the name of the template Static, or gets the given name when a new name is provided at the Spawn method. <br/>
 By default, spawned <a href="Static.html">Static</a>s will follow a naming convention at run-time:</p>
 
 <ul>
-    <li>Spawned <a href="Static.html">Static</a>s will have the name <em>StaticName</em>#<em>nnn</em>, where <em>StaticName</em> is the name of the <strong>Template Static</strong>, 
-    and <em>nnn</em> is a <strong>counter from 0 to 99999</strong>.</li>
+    <li>Spawned <a href="Static.html">Static</a>s will have the name <em>StaticName</em>#<em>nnn</em>, where <em>StaticName</em> is the name of the <strong>Template Static</strong>, and <em>nnn</em> is a <strong>counter from 0 to 99999</strong>.</li>
 </ul>
 
+<h1>SPAWNSTATIC Constructors</h1>
 
-<h2>SPAWNSTATIC construction methods</h2>
+<p>Firstly, we need to create a SPAWNSTATIC object that will be used to spawn new statics into the mission. There are three ways to do this.</p>
 
-<p>Create a new SPAWNSTATIC object with the <a href="##(SPAWNSTATIC).NewFromStatic">SPAWNSTATIC.NewFromStatic</a>():</p>
+<h2>Use another Static</h2>
+
+<p>A new SPAWNSTATIC object can be created using another static by the <a href="##(SPAWNSTATIC).NewFromStatic">SPAWNSTATIC.NewFromStatic</a>() function. All parameters such as position, heading, country will be initialized
+from the static.</p>
+
+<h2>From a Template</h2>
+
+<p>A SPAWNSTATIC object can also be created from a template table using the <a href="##(SPAWNSTATIC).NewFromTemplate">SPAWNSTATIC.NewFromTemplate</a>(SpawnTemplate, CountryID) function. All parameters are taken from the template.</p>
+
+<h2>From a Type</h2>
+
+<p>A very basic method is to create a SPAWNSTATIC object by just giving the type of the static. All parameters must be initialized from the InitXYZ functions described below. Otherwise default values
+are used. For example, if no spawn coordinate is given, the static will be created at the origin of the map.</p>
+
+<h1>Setting Parameters</h1>
+
+<p>Parameters such as the spawn position, heading, country etc. can be set via :Init<em>XYZ</em> functions. Note that these functions must be given before the actual spawn command!</p>
 
 <ul>
-    <li><a href="##(SPAWNSTATIC).NewFromStatic">SPAWNSTATIC.NewFromStatic</a>(): Creates a new SPAWNSTATIC object given a name that is used as the base of the naming of each spawned Static.</li>
+    <li><a href="##(SPAWNSTATIC).InitCoordinate">SPAWNSTATIC.InitCoordinate</a>(Coordinate) Sets the coordinate where the static is spawned. Statics are always spawnd on the ground.</li>
+    <li><a href="##(SPAWNSTATIC).InitHeading">SPAWNSTATIC.InitHeading</a>(Heading) sets the orientation of the static.</li>
+    <li><a href="##(SPAWNSTATIC).InitLivery">SPAWNSTATIC.InitLivery</a>(LiveryName) sets the livery of the static. Not all statics support this.</li>
+    <li><a href="##(SPAWNSTATIC).InitType">SPAWNSTATIC.InitType</a>(StaticType) sets the type of the static.</li>
+    <li><a href="##(SPAWNSTATIC).InitShape">SPAWNSTATIC.InitShape</a>(StaticType) sets the shape of the static. Not all statics have this parameter.</li>
+    <li><a href="##(SPAWNSTATIC).InitNamePrefix">SPAWNSTATIC.InitNamePrefix</a>(NamePrefix) sets the name prefix of the spawned statics.</li>
+    <li><a href="##(SPAWNSTATIC).InitCountry">SPAWNSTATIC.InitCountry</a>(CountryID) sets the country and therefore the coalition of the spawned statics.</li>
+    <li><a href="##(SPAWNSTATIC).InitLinkToUnit">SPAWNSTATIC.InitLinkToUnit</a>(Unit, OffsetX, OffsetY, OffsetAngle) links the static to a unit, e.g. to an aircraft carrier.</li>
 </ul>
 
-<h2><strong>Spawn</strong> methods</h2>
+<h1>Spawning the Statics</h1>
 
-<p>Groups can be spawned at different times and methods:</p>
+<p>Once the SPAWNSTATIC object is created and parameters are initialized, the spawn command can be given. There are different methods where some can be used to directly set parameters
+such as position and heading.</p>
 
 <ul>
-    <li><a href="##(SPAWNSTATIC).SpawnFromPointVec2">SPAWNSTATIC.SpawnFromPointVec2</a>(): Spawn a new group from a POINT_VEC2 coordinate. 
-    (The group will be spawned at land height ).</li>
-    <li><a href="##(SPAWNSTATIC).SpawnFromZone">SPAWNSTATIC.SpawnFromZone</a>(): Spawn a new group in a <a href="Zone.html">Zone</a>.
+    <li><a href="##(SPAWNSTATIC).Spawn">SPAWNSTATIC.Spawn</a>(Heading, NewName) spawns the static with the set parameters. Optionally, heading and name can be given. The name <strong>must be unique</strong>!</li>
+    <li><a href="##(SPAWNSTATIC).SpawnFromCoordinate">SPAWNSTATIC.SpawnFromCoordinate</a>(Coordinate, Heading, NewName) spawn the static at the given coordinate. Optionally, heading and name can be given. The name <strong>must be unique</strong>!</li>
+    <li><a href="##(SPAWNSTATIC).SpawnFromPointVec2">SPAWNSTATIC.SpawnFromPointVec2</a>(PointVec2, Heading, NewName) spawns the static at a POINT_VEC2 coordinate. Optionally, heading and name can be given. The name <strong>must be unique</strong>!</li>
+    <li><a href="##(SPAWNSTATIC).SpawnFromZone">SPAWNSTATIC.SpawnFromZone</a>(Zone, Heading, NewName) spawns the static at the center of a <a href="Zone.html">Zone</a>. Optionally, heading and name can be given. The name <strong>must be unique</strong>!
     </li>
 </ul>
 
@@ -1429,49 +1451,163 @@ By default, spawned <a href="Static.html">Static</a>s will follow a naming conve
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).CategoryID">SPAWNSTATIC.CategoryID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Category ID.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).CoalitionID">SPAWNSTATIC.CoalitionID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Coalition ID.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).CountryID">SPAWNSTATIC.CountryID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Country ID.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).NewFromStatic">SPAWNSTATIC:NewFromStatic(SpawnTemplatePrefix, SpawnCountryID, SpawnCoalitionID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitCoordinate">SPAWNSTATIC:InitCoordinate(Coordinate)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates the main object to spawn a <a href="Static.html">Static</a> defined in the ME.</p>
+<p>Initialize heading of the spawned static.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).NewFromType">SPAWNSTATIC:NewFromType(SpawnTypeName, SpawnShapeName, SpawnCategory, SpawnCountryID, SpawnCoalitionID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitCountry">SPAWNSTATIC:InitCountry(CountryID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates the main object to spawn a <a href="Static.html">Static</a> based on a type name.</p>
+<p>Initialize country of the spawned static.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).ReSpawn">SPAWNSTATIC:ReSpawn(delay)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitDead">SPAWNSTATIC.InitDead</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Respawns the original <a href="Static.html">Static</a>.</p>
+<p>Set static to be dead if true.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).ReSpawnAt">SPAWNSTATIC:ReSpawnAt(Coordinate, Heading)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitHeading">SPAWNSTATIC:InitHeading(Heading)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates the original <a href="Static.html">Static</a> at a POINT_VEC2.</p>
+<p>Initialize heading of the spawned static.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).Spawn">SPAWNSTATIC:Spawn(Heading, (, NewName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitLinkToUnit">SPAWNSTATIC:InitLinkToUnit(Unit, OffsetX, OffsetY, OffsetAngle)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates a new <a href="Static.html">Static</a> at the original position.</p>
+<p>Init link to a unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitLinkUnit">SPAWNSTATIC.InitLinkUnit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The unit the static is linked to.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitLivery">SPAWNSTATIC:InitLivery(LiveryName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Initialize livery of the spawned static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitNamePrefix">SPAWNSTATIC:InitNamePrefix(NamePrefix)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Initialize name prefix statics get.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitOffsetAngle">SPAWNSTATIC.InitOffsetAngle</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Link offset angle in degrees.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitOffsetX">SPAWNSTATIC.InitOffsetX</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Link offset X coordinate.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitOffsetY">SPAWNSTATIC.InitOffsetY</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Link offset Y coordinate.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitShape">SPAWNSTATIC:InitShape(StaticShape)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Initialize shape of the spawned static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticCategory">SPAWNSTATIC.InitStaticCategory</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Categrory of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticCoordinate">SPAWNSTATIC.InitStaticCoordinate</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Coordinate where to spawn the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticHeading">SPAWNSTATIC.InitStaticHeading</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Heading of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticLivery">SPAWNSTATIC.InitStaticLivery</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Livery for aircraft.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticName">SPAWNSTATIC.InitStaticName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticShape">SPAWNSTATIC.InitStaticShape</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Shape of teh static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitStaticType">SPAWNSTATIC.InitStaticType</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Type of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).InitType">SPAWNSTATIC:InitType(StaticType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Initialize type of the spawned static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).NewFromStatic">SPAWNSTATIC:NewFromStatic(SpawnTemplateName, SpawnCountryID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creates the main object to spawn a <a href="Static.html">Static</a> defined in the mission editor (ME).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).NewFromTemplate">SPAWNSTATIC:NewFromTemplate(SpawnTemplate, CountryID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creates the main object to spawn a <a href="Static.html">Static</a> given a template table.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).NewFromType">SPAWNSTATIC:NewFromType(StaticType, StaticCategory, CountryID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creates the main object to spawn a <a href="Static.html">Static</a> from a given type.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).Spawn">SPAWNSTATIC:Spawn(Heading, NewName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Spawn a new STATIC object.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1481,7 +1617,7 @@ By default, spawned <a href="Static.html">Static</a>s will follow a naming conve
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).SpawnFromPointVec2">SPAWNSTATIC:SpawnFromPointVec2(PointVec2, Heading, (, NewName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).SpawnFromPointVec2">SPAWNSTATIC:SpawnFromPointVec2(PointVec2, Heading, NewName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creates a new <a href="Static.html">Static</a> from a POINT_VEC2.</p>
 </td>
@@ -1495,19 +1631,25 @@ By default, spawned <a href="Static.html">Static</a>s will follow a naming conve
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).SpawnIndex">SPAWNSTATIC.SpawnIndex</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Running number increased with each new Spawn.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).SpawnTemplatePrefix">SPAWNSTATIC.SpawnTemplatePrefix</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the template group.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).TemplateStaticUnit">SPAWNSTATIC.TemplateStaticUnit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC).SpawnTypeName">SPAWNSTATIC.SpawnTypeName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC)._SpawnStatic">SPAWNSTATIC:_SpawnStatic(Template, CountryID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Spawns a new static using a given template.</p>
 </td>
           </tr>
         </table>
@@ -2000,6 +2142,109 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SPAWNSTATIC.TemplateData)">Type <strong>SPAWNSTATIC.TemplateData</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(SPAWNSTATIC.TemplateData)">SPAWNSTATIC.TemplateData</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from SPAWNSTATIC.TemplateData</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).alt">SPAWNSTATIC.TemplateData.alt</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).category">SPAWNSTATIC.TemplateData.category</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Category of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).dead">SPAWNSTATIC.TemplateData.dead</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Static is dead if true.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).groupId">SPAWNSTATIC.TemplateData.groupId</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Group ID.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).heading">SPAWNSTATIC.TemplateData.heading</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Heading in rad.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).linkOffset">SPAWNSTATIC.TemplateData.linkOffset</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).linkUnit">SPAWNSTATIC.TemplateData.linkUnit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).livery_id">SPAWNSTATIC.TemplateData.livery_id</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Livery name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).name">SPAWNSTATIC.TemplateData.name</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).offsets">SPAWNSTATIC.TemplateData.offsets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Offset parameters when linked to a unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).shape_name">SPAWNSTATIC.TemplateData.shape_name</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).type">SPAWNSTATIC.TemplateData.type</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Type of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).unitId">SPAWNSTATIC.TemplateData.unitId</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Unit ID.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).x">SPAWNSTATIC.TemplateData.x</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>X-coordinate of the static.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SPAWNSTATIC.TemplateData).y">SPAWNSTATIC.TemplateData.y</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Y-coordinate of teh static.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
     <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Core.SpawnStatic)" >Type <strong>Core.SpawnStatic</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
@@ -2015,10 +2260,164 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(SPAWNSTATIC).CategoryID" ><strong>SPAWNSTATIC.CategoryID</strong></a>
     
+<p>Category ID.</p>
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).CoalitionID" ><strong>SPAWNSTATIC.CoalitionID</strong></a>
+    
+<p>Coalition ID.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).CountryID" ><strong>SPAWNSTATIC.CountryID</strong></a>
+    
+<p>Country ID.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SPAWNSTATIC).InitDead" ><strong>SPAWNSTATIC.InitDead</strong></a>
+    
+<p>Set static to be dead if true.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+<a id="#(SPAWNSTATIC).InitLinkUnit" ><strong>SPAWNSTATIC.InitLinkUnit</strong></a>
+    
+<p>The unit the static is linked to.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitOffsetAngle" ><strong>SPAWNSTATIC.InitOffsetAngle</strong></a>
+    
+<p>Link offset angle in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitOffsetX" ><strong>SPAWNSTATIC.InitOffsetX</strong></a>
+    
+<p>Link offset X coordinate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitOffsetY" ><strong>SPAWNSTATIC.InitOffsetY</strong></a>
+    
+<p>Link offset Y coordinate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticCategory" ><strong>SPAWNSTATIC.InitStaticCategory</strong></a>
+    
+<p>Categrory of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(SPAWNSTATIC).InitStaticCoordinate" ><strong>SPAWNSTATIC.InitStaticCoordinate</strong></a>
+    
+<p>Coordinate where to spawn the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitStaticHeading" ><strong>SPAWNSTATIC.InitStaticHeading</strong></a>
+    
+<p>Heading of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticLivery" ><strong>SPAWNSTATIC.InitStaticLivery</strong></a>
+    
+<p>Livery for aircraft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticName" ><strong>SPAWNSTATIC.InitStaticName</strong></a>
+    
+<p>Name of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticShape" ><strong>SPAWNSTATIC.InitStaticShape</strong></a>
+    
+<p>Shape of teh static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticType" ><strong>SPAWNSTATIC.InitStaticType</strong></a>
+    
+<p>Type of the static.</p>
 
 </div>
 
@@ -2029,7 +2428,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(SPAWNSTATIC).SpawnIndex" ><strong>SPAWNSTATIC.SpawnIndex</strong></a>
     
-
+<p>Running number increased with each new Spawn.</p>
 
 </div>
 
@@ -2037,10 +2436,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(SPAWNSTATIC).SpawnTemplatePrefix" ><strong>SPAWNSTATIC.SpawnTemplatePrefix</strong></a>
     
-
+<p>Name of the template group.</p>
 
 </div>
 
@@ -2049,7 +2448,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(SPAWNSTATIC).SpawnTypeName" ><strong>SPAWNSTATIC.SpawnTypeName</strong></a>
+<a id="#(SPAWNSTATIC).TemplateStaticUnit" ><strong>SPAWNSTATIC.TemplateStaticUnit</strong></a>
     
 
 
@@ -2062,10 +2461,410 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SPAWNSTATIC).NewFromStatic" ><strong>SPAWNSTATIC:NewFromStatic(SpawnTemplatePrefix, SpawnCountryID, SpawnCoalitionID)</strong></a></h2>
+<h2><a id="#(SPAWNSTATIC).InitCoordinate" ><strong>SPAWNSTATIC:InitCoordinate(Coordinate)</strong></a></h2>
 </div>
     
-<p>Creates the main object to spawn a <a href="Static.html">Static</a> defined in the ME.</p>
+<p>Initialize heading of the spawned static.</p>
+
+<div id= "#Functions##InitCoordinate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Coordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Position where the static is spawned.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitCountry" ><strong>SPAWNSTATIC:InitCountry(CountryID)</strong></a></h2>
+</div>
+    
+<p>Initialize country of the spawned static.</p>
+
+    
+<p>This determines the category.</p>
+
+<div id= "#Functions##InitCountry" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>CountryID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The country ID, e.g. country.id.USA.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitHeading" ><strong>SPAWNSTATIC:InitHeading(Heading)</strong></a></h2>
+</div>
+    
+<p>Initialize heading of the spawned static.</p>
+
+<div id= "#Functions##InitHeading" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Heading</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The heading in degrees.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitLinkToUnit" ><strong>SPAWNSTATIC:InitLinkToUnit(Unit, OffsetX, OffsetY, OffsetAngle)</strong></a></h2>
+</div>
+    
+<p>Init link to a unit.</p>
+
+<div id= "#Functions##InitLinkToUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The unit to which the static is linked.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>OffsetX</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset in X.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>OffsetY</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset in Y.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>OffsetAngle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset angle in degrees.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitLivery" ><strong>SPAWNSTATIC:InitLivery(LiveryName)</strong></a></h2>
+</div>
+    
+<p>Initialize livery of the spawned static.</p>
+
+<div id= "#Functions##InitLivery" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>LiveryName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the livery to use.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitNamePrefix" ><strong>SPAWNSTATIC:InitNamePrefix(NamePrefix)</strong></a></h2>
+</div>
+    
+<p>Initialize name prefix statics get.</p>
+
+    
+<p>This will be appended by "#0001", "#0002" etc. </p>
+
+<div id= "#Functions##InitNamePrefix" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>NamePrefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name prefix of statics spawned. Will append #0001, etc to the name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitShape" ><strong>SPAWNSTATIC:InitShape(StaticShape)</strong></a></h2>
+</div>
+    
+<p>Initialize shape of the spawned static.</p>
+
+    
+<p>Required by some but not all statics.</p>
+
+<div id= "#Functions##InitShape" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>StaticShape</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Shape of the static, e.g. "carrier_tech_USA".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).InitType" ><strong>SPAWNSTATIC:InitType(StaticType)</strong></a></h2>
+</div>
+    
+<p>Initialize type of the spawned static.</p>
+
+<div id= "#Functions##InitType" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>StaticType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of the static, e.g. "FA-18C_hornet".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).NewFromStatic" ><strong>SPAWNSTATIC:NewFromStatic(SpawnTemplateName, SpawnCountryID)</strong></a></h2>
+</div>
+    
+<p>Creates the main object to spawn a <a href="Static.html">Static</a> defined in the mission editor (ME).</p>
 
 <div id= "#Functions##NewFromStatic" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -2078,12 +2877,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #string
-            <strong><strong>SpawnTemplatePrefix</strong></strong>
+            <strong><strong>SpawnTemplateName</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>is the name of the Group in the ME that defines the Template.  Each new group will have the name starting with SpawnTemplatePrefix.</p>
+<p>Name of the static object in the ME. Each new static will have the name starting with this prefix.</p>
 
           </div>
         </div>
@@ -2096,20 +2895,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>The ID of the country.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(coalition.side)">DCS#coalition.side</a>
-            <strong><strong>SpawnCoalitionID</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The ID of the coalition.</p>
+<p>(Optional) The ID of the country.</p>
 
           </div>
         </div>
@@ -2120,7 +2906,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-
+<p>self</p>
 
       </div>
     </div>
@@ -2132,10 +2918,70 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SPAWNSTATIC).NewFromType" ><strong>SPAWNSTATIC:NewFromType(SpawnTypeName, SpawnShapeName, SpawnCategory, SpawnCountryID, SpawnCoalitionID)</strong></a></h2>
+<h2><a id="#(SPAWNSTATIC).NewFromTemplate" ><strong>SPAWNSTATIC:NewFromTemplate(SpawnTemplate, CountryID)</strong></a></h2>
 </div>
     
-<p>Creates the main object to spawn a <a href="Static.html">Static</a> based on a type name.</p>
+<p>Creates the main object to spawn a <a href="Static.html">Static</a> given a template table.</p>
+
+<div id= "#Functions##NewFromTemplate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SpawnTemplate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Template used for spawning.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(country.id)">DCS#country.id</a>
+            <strong><strong>CountryID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The ID of the country. Default <code>country.id.USA</code>.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC).NewFromType" ><strong>SPAWNSTATIC:NewFromType(StaticType, StaticCategory, CountryID)</strong></a></h2>
+</div>
+    
+<p>Creates the main object to spawn a <a href="Static.html">Static</a> from a given type.</p>
+
+    
+<p>NOTE that you have to init many other parameters as spawn coordinate etc.</p>
 
 <div id= "#Functions##NewFromType" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -2148,53 +2994,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #string
-            <strong><strong>SpawnTypeName</strong></strong>
+            <strong><strong>StaticType</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>is the name of the type.</p>
+<p>Type of the static.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>SpawnShapeName</strong></strong>
+                #string
+            <strong><strong>StaticCategory</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Category of the static, e.g. "Planes".</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>SpawnCategory</strong></strong>
+                <a href="DCS.html##(country.id)">DCS#country.id</a>
+            <strong><strong>CountryID</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>SpawnCountryID</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>SpawnCoalitionID</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
+              
+<p>The ID of the country. Default <code>country.id.USA</code>.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -2204,7 +3036,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-
+<p>self</p>
 
       </div>
     </div>
@@ -2216,111 +3048,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SPAWNSTATIC).ReSpawn" ><strong>SPAWNSTATIC:ReSpawn(delay)</strong></a></h2>
+<h2><a id="#(SPAWNSTATIC).Spawn" ><strong>SPAWNSTATIC:Spawn(Heading, NewName)</strong></a></h2>
 </div>
     
-<p>Respawns the original <a href="Static.html">Static</a>.</p>
-
-<div id= "#Functions##ReSpawn" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>SPAWNSTATIC</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Delay before respawn in seconds.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(SPAWNSTATIC).ReSpawnAt" ><strong>SPAWNSTATIC:ReSpawnAt(Coordinate, Heading)</strong></a></h2>
-</div>
-    
-<p>Creates the original <a href="Static.html">Static</a> at a POINT_VEC2.</p>
-
-<div id= "#Functions##ReSpawnAt" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>SPAWNSTATIC</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-            <strong><strong>Coordinate</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The 2D coordinate where to spawn the static.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Heading</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The heading of the static, which is a number in degrees from 0 to 360.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(SPAWNSTATIC).Spawn" ><strong>SPAWNSTATIC:Spawn(Heading, (, NewName)</strong></a></h2>
-</div>
-    
-<p>Creates a new <a href="Static.html">Static</a> at the original position.</p>
+<p>Spawn a new STATIC object.</p>
 
 <div id= "#Functions##Spawn" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -2338,7 +3069,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>The heading of the static, which is a number in degrees from 0 to 360.</p>
+<p>(Optional) The heading of the static, which is a number in degrees from 0 to 360. Default is the heading of the template.</p>
 
           </div>
         </div>
@@ -2346,33 +3077,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #string
-            <strong><strong>(</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>ptional) The name of the new static.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
             <strong><strong>NewName</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>(Optional) The name of the new static.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+        <p><a href="Wrapper.Static.html##(STATIC)">Wrapper.Static#STATIC</a>:</p>
       </div>
       <div class="w3-half">
         
-
+<p>The static spawned.</p>
 
       </div>
     </div>
@@ -2418,7 +3139,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Heading The heading of the static, which is a number in degrees from 0 to 360. Default is 0 degrees.</p>
+<p>(Optional) Heading The heading of the static in degrees. Default is 0 degrees.</p>
 
           </div>
         </div>
@@ -2438,11 +3159,11 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+        <p><a href="Wrapper.Static.html##(STATIC)">Wrapper.Static#STATIC</a>:</p>
       </div>
       <div class="w3-half">
         
-
+<p>The spawned STATIC object.</p>
 
       </div>
     </div>
@@ -2454,7 +3175,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SPAWNSTATIC).SpawnFromPointVec2" ><strong>SPAWNSTATIC:SpawnFromPointVec2(PointVec2, Heading, (, NewName)</strong></a></h2>
+<h2><a id="#(SPAWNSTATIC).SpawnFromPointVec2" ><strong>SPAWNSTATIC:SpawnFromPointVec2(PointVec2, Heading, NewName)</strong></a></h2>
 </div>
     
 <p>Creates a new <a href="Static.html">Static</a> from a POINT_VEC2.</p>
@@ -2496,33 +3217,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #string
-            <strong><strong>(</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>ptional) The name of the new static.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
             <strong><strong>NewName</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>(Optional) The name of the new static.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+        <p><a href="Wrapper.Static.html##(STATIC)">Wrapper.Static#STATIC</a>:</p>
       </div>
       <div class="w3-half">
         
-
+<p>The static spawned.</p>
 
       </div>
     </div>
@@ -2568,7 +3279,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>The heading of the static, which is a number in degrees from 0 to 360.</p>
+<p>(Optional)The heading of the static in degrees. Default is the heading of the template.</p>
 
           </div>
         </div>
@@ -2581,18 +3292,78 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(optional) The name of the new static.</p>
+<p>(Optional) The name of the new static.</p>
 
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(SPAWNSTATIC)">#SPAWNSTATIC</a>:</p>
+        <p><a href="Wrapper.Static.html##(STATIC)">Wrapper.Static#STATIC</a>:</p>
       </div>
       <div class="w3-half">
         
+<p>The static spawned.</p>
 
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SPAWNSTATIC)._SpawnStatic" ><strong>SPAWNSTATIC:_SpawnStatic(Template, CountryID)</strong></a></h2>
+</div>
+    
+<p>Spawns a new static using a given template.</p>
+
+    
+<p>Additionally, the country ID needs to be specified, which also determines the coalition of the spawned static.</p>
+
+<div id= "#Functions##_SpawnStatic" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SPAWNSTATIC</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(SPAWNSTATIC.TemplateData)">#SPAWNSTATIC.TemplateData</a>
+            <strong><strong>Template</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Spawn unit template.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>CountryID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The country ID.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.Static.html##(STATIC)">Wrapper.Static#STATIC</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The static spawned.</p>
 
       </div>
     </div>
@@ -2607,10 +3378,164 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(SPAWNSTATIC).CategoryID" ><strong>SPAWNSTATIC.CategoryID</strong></a>
     
+<p>Category ID.</p>
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).CoalitionID" ><strong>SPAWNSTATIC.CoalitionID</strong></a>
+    
+<p>Coalition ID.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).CountryID" ><strong>SPAWNSTATIC.CountryID</strong></a>
+    
+<p>Country ID.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SPAWNSTATIC).InitDead" ><strong>SPAWNSTATIC.InitDead</strong></a>
+    
+<p>Set static to be dead if true.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+<a id="#(SPAWNSTATIC).InitLinkUnit" ><strong>SPAWNSTATIC.InitLinkUnit</strong></a>
+    
+<p>The unit the static is linked to.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitOffsetAngle" ><strong>SPAWNSTATIC.InitOffsetAngle</strong></a>
+    
+<p>Link offset angle in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitOffsetX" ><strong>SPAWNSTATIC.InitOffsetX</strong></a>
+    
+<p>Link offset X coordinate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitOffsetY" ><strong>SPAWNSTATIC.InitOffsetY</strong></a>
+    
+<p>Link offset Y coordinate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticCategory" ><strong>SPAWNSTATIC.InitStaticCategory</strong></a>
+    
+<p>Categrory of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(SPAWNSTATIC).InitStaticCoordinate" ><strong>SPAWNSTATIC.InitStaticCoordinate</strong></a>
+    
+<p>Coordinate where to spawn the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC).InitStaticHeading" ><strong>SPAWNSTATIC.InitStaticHeading</strong></a>
+    
+<p>Heading of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticLivery" ><strong>SPAWNSTATIC.InitStaticLivery</strong></a>
+    
+<p>Livery for aircraft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticName" ><strong>SPAWNSTATIC.InitStaticName</strong></a>
+    
+<p>Name of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticShape" ><strong>SPAWNSTATIC.InitStaticShape</strong></a>
+    
+<p>Shape of teh static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC).InitStaticType" ><strong>SPAWNSTATIC.InitStaticType</strong></a>
+    
+<p>Type of the static.</p>
 
 </div>
 
@@ -2621,7 +3546,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(SPAWNSTATIC).SpawnIndex" ><strong>SPAWNSTATIC.SpawnIndex</strong></a>
     
-
+<p>Running number increased with each new Spawn.</p>
 
 </div>
 
@@ -2629,10 +3554,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(SPAWNSTATIC).SpawnTemplatePrefix" ><strong>SPAWNSTATIC.SpawnTemplatePrefix</strong></a>
     
-
+<p>Name of the template group.</p>
 
 </div>
 
@@ -2641,7 +3566,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(SPAWNSTATIC).SpawnTypeName" ><strong>SPAWNSTATIC.SpawnTypeName</strong></a>
+<a id="#(SPAWNSTATIC).TemplateStaticUnit" ><strong>SPAWNSTATIC.TemplateStaticUnit</strong></a>
     
 
 
@@ -5038,6 +5963,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -5638,6 +6564,186 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##SPAWNSTATIC.TemplateData')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SPAWNSTATIC.TemplateData)">Type <strong>SPAWNSTATIC.TemplateData</strong></a></h2></div>
+        <div id= "#Types##SPAWNSTATIC.TemplateData" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Static template table data.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWNSTATIC.TemplateData).alt" ><strong>SPAWNSTATIC.TemplateData.alt</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC.TemplateData).category" ><strong>SPAWNSTATIC.TemplateData.category</strong></a>
+    
+<p>Category of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SPAWNSTATIC.TemplateData).dead" ><strong>SPAWNSTATIC.TemplateData.dead</strong></a>
+    
+<p>Static is dead if true.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC.TemplateData).groupId" ><strong>SPAWNSTATIC.TemplateData.groupId</strong></a>
+    
+<p>Group ID.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC.TemplateData).heading" ><strong>SPAWNSTATIC.TemplateData.heading</strong></a>
+    
+<p>Heading in rad.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SPAWNSTATIC.TemplateData).linkOffset" ><strong>SPAWNSTATIC.TemplateData.linkOffset</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWNSTATIC.TemplateData).linkUnit" ><strong>SPAWNSTATIC.TemplateData.linkUnit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC.TemplateData).livery_id" ><strong>SPAWNSTATIC.TemplateData.livery_id</strong></a>
+    
+<p>Livery name.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC.TemplateData).name" ><strong>SPAWNSTATIC.TemplateData.name</strong></a>
+    
+<p>Name of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SPAWNSTATIC.TemplateData).offsets" ><strong>SPAWNSTATIC.TemplateData.offsets</strong></a>
+    
+<p>Offset parameters when linked to a unit.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SPAWNSTATIC.TemplateData).shape_name" ><strong>SPAWNSTATIC.TemplateData.shape_name</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SPAWNSTATIC.TemplateData).type" ><strong>SPAWNSTATIC.TemplateData.type</strong></a>
+    
+<p>Type of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC.TemplateData).unitId" ><strong>SPAWNSTATIC.TemplateData.unitId</strong></a>
+    
+<p>Unit ID.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC.TemplateData).x" ><strong>SPAWNSTATIC.TemplateData.x</strong></a>
+    
+<p>X-coordinate of the static.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SPAWNSTATIC.TemplateData).y" ><strong>SPAWNSTATIC.TemplateData.y</strong></a>
+    
+<p>Y-coordinate of teh static.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
