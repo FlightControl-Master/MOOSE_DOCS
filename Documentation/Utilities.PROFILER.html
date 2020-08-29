@@ -1344,395 +1344,326 @@
    </div>
   </nav>
   
-<img src="..\Images\Cargo_Groups.JPG" alt="Banner Image"/>   
+<img src="..\Images\MOOSE.JPG" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Cargo.CargoGroup</strong></h1>
+    <h1>Module <strong>Utilities.PROFILER</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Cargo</strong> -- Management of grouped cargo logistics, which are based on a <a href="Wrapper.Group.html">Wrapper.Group</a> object.</p>
+<p><strong>Utils</strong> - Lua Profiler.</p>
 
     
 
-<hr/>
-
-<h3><a href="">Demo Missions</a></h3>
-
-<h3><a href="">YouTube Playlist</a></h3>
+<p>Find out how many times functions are called and how much real time it costs.</p>
 
 <hr/>
 
-<h3>Author: <strong>FlightControl</strong></h3>
-<h3>Contributions:</h3>
-
-<hr/>
+<h3>Author: <strong>TAW CougarNL</strong>, <em>funkyfranky</em></h3>
 
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##CARGO_GROUP')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##PROFILER')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>CARGO_GROUP</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>PROFILER</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Defines a cargo that is represented by a <a href="Wrapper.Group.html">Wrapper.Group</a> object within the simulator.</p>
+<p>*The emperor counsels simplicity.</p>
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##CARGO_GROUP" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##PROFILER" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(CARGO_GROUP)">#CARGO_GROUP</a>
-<a id="CARGO_GROUP" ><strong>CARGO_GROUP</strong></a>
+    <a href="##(PROFILER)">#PROFILER</a>
+<a id="PROFILER" ><strong>PROFILER</strong></a>
     
-<p>Defines a cargo that is represented by a <a href="Wrapper.Group.html">Wrapper.Group</a> object within the simulator.</p>
+<p>*The emperor counsels simplicity.</p>
 
     
-<p>The cargo can be Loaded, UnLoaded, Boarded, UnBoarded to and from Carriers.</p>
+<p>First principles. Of each particular thing, ask: What is it in itself, in its own constitution? What is its causal nature? *</p>
 
-<p>The above cargo classes are used by the following AI_CARGO_ classes to allow AI groups to transport cargo:</p>
+<hr/>
 
-<ul>
-    <li>AI Armoured Personnel Carriers to transport cargo and engage in battles, using the <a href="AI.AI_Cargo_APC.html">AI.AI_Cargo_APC</a> module.</li>
-    <li>AI Helicopters to transport cargo, using the <a href="AI.AI_Cargo_Helicopter.html">AI.AI_Cargo_Helicopter</a> module.</li>
-    <li>AI Planes to transport cargo, using the <a href="AI.AI_Cargo_Airplane.html">AI.AI_Cargo_Airplane</a> module.</li>
-    <li>AI Ships is planned.</li>
-</ul>
+<p><img src="..\Presentations\Utilities\PROFILER_Main.jpg" alt="Banner Image"/></p>
 
-<p>The above cargo classes are also used by the TASK_CARGO_ classes to allow human players to transport cargo as part of a tasking:</p>
+<h1>The PROFILER Concept</h1>
 
-<ul>
-    <li><a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo_Transport#TASK_CARGO_TRANSPORT</a> to transport cargo by human players.</li>
-    <li><a href="Tasking.Task_Cargo_Transport.html##(TASK_CARGO_CSAR)">Tasking.Task_Cargo_Transport#TASK_CARGO_CSAR</a> to transport downed pilots by human players.</li>
-</ul>
+<p>Profile your lua code. This tells you, which functions are called very often and which consume most real time.
+With this information you can optimize the perfomance of your code.</p>
+
+<h1>Prerequisites</h1>
+
+<p>The modules <strong>os</strong> and <strong>lfs</strong> need to be desanizied.</p>
+
+
+<h1>Start</h1>
+
+<p>The profiler can simply be started with the <a href="##(PROFILER).Start">PROFILER.Start</a>(<em>Delay, Duration</em>) function</p>
+
+<pre><code>PROFILER.Start()
+</code></pre>
+
+<p>The optional parameter <em>Delay</em> can be used to delay the start by a certain amount of seconds and the optional parameter <em>Duration</em> can be used to
+stop the profiler after a certain amount of seconds.</p>
+
+<h1>Stop</h1>
+
+<p>The profiler automatically stops when the mission ends. But it can be stopped any time with the <a href="##(PROFILER).Stop">PROFILER.Stop</a>(<em>Delay</em>) function</p>
+
+<pre><code>PROFILER.Stop()
+</code></pre>
+
+<p>The optional parameter <em>Delay</em> can be used to specify a delay after which the profiler is stopped.</p>
+
+<p>When the profiler is stopped, the output is written to a file.</p>
+
+<h1>Output</h1>
+
+<p>The profiler output is written to a file in your DCS home folder</p>
+
+<pre><code>X:\User\&lt;Your User Name&gt;\Saved Games\DCS OpenBeta\Logs
+</code></pre>
+
+<p>The default file name is "MooseProfiler.txt". If that file exists, the file name is "MooseProfiler-001.txt" etc.</p>
+
+<h2>Data</h2>
+
+<p>The data in the output file provides information on the functions that were called in the mission.</p>
+
+<p>It will tell you how many times a function was called in total, how many times per second, how much time in total and the percentage of time.</p>
+
+<p>If you only want output for functions that are called more than <em>X</em>  times per second, you can set</p>
+
+<pre><code>PROFILER.ThreshCPS=1.5
+</code></pre>
+
+<p>With this setting, only functions which are called more than 1.5 times per second are displayed. The default setting is PROFILER.ThreshCPS=0.0 (no threshold).</p>
+
+<p>Furthermore, you can limit the output for functions that consumed a certain amount of CPU time in total by</p>
+
+<pre><code>PROFILER.ThreshTtot=0.005
+</code></pre>
+
+<p>With this setting, which is also the default, only functions which in total used more than 5 milliseconds CPU time.</p>
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CARGO_GROUP)">Type <strong>CARGO_GROUP</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PROFILER)">Type <strong>PROFILER</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(CARGO_GROUP)">CARGO_GROUP</a></strong>
-, extends <strong><a href="Cargo.Cargo.html##(CARGO_REPORTABLE)">Cargo.Cargo#CARGO_REPORTABLE</a></strong>
-, extends <strong><a href="##(CARGO)">#CARGO</a></strong>
+     <strong><a href="##(PROFILER)">PROFILER</a></strong>
    </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from CARGO_GROUP</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from PROFILER</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoCarrier">CARGO_GROUP.CargoCarrier</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).ClassName">PROFILER.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoGroup">CARGO_GROUP.CargoGroup</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).Counters">PROFILER.Counters</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Function counters.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoName">CARGO_GROUP.CargoName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).Start">PROFILER.Start(Delay, Duration)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Start profiler.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoObject">CARGO_GROUP.CargoObject</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).Stop">PROFILER.Stop(Delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Stop profiler.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoSet">CARGO_GROUP.CargoSet</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).ThreshCPS">PROFILER.ThreshCPS</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>The collection of derived CARGO objects.</p>
+<p>Low calls per second threshold. Only write output if function has more calls per second than this value.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoTemplate">CARGO_GROUP.CargoTemplate</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).ThreshTtot">PROFILER.ThreshTtot</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Total time threshold. Only write output if total function CPU time is more than this value.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).CargoUnitTemplate">CARGO_GROUP.CargoUnitTemplate</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).TstartGame">PROFILER.TstartGame</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Game start time timer.getTime().</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).Flare">CARGO_GROUP:Flare(FlareColor)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).TstartOS">PROFILER.TstartOS</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Signal a flare at the position of the CargoGroup.</p>
+<p>OS real start time os.clock.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GetCoordinate">CARGO_GROUP:GetCoordinate()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER)._flog">PROFILER._flog(f, txt)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the current Coordinate of the CargoGroup.</p>
+<p>Write text to log file.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GetCount">CARGO_GROUP:GetCount()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).dInfo">PROFILER.dInfo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the amount of cargo units in the group.</p>
+<p>Info.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GetFirstAlive">CARGO_GROUP:GetFirstAlive()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).eventhandler">PROFILER.eventhandler</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the first alive Cargo Unit of the Cargo Group.</p>
+<p>Event handler to get mission end event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GetGroup">CARGO_GROUP:GetGroup(Cargo)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).fTime">PROFILER.fTime</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the amount of cargo units in the group.</p>
+<p>Function time.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GetTransportationMethod">CARGO_GROUP:GetTransportationMethod()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).fTimeTotal">PROFILER.fTimeTotal</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the transportation method of the Cargo.</p>
+<p>Total function time.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GroupName">CARGO_GROUP.GroupName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).fileNamePrefix">PROFILER.fileNamePrefix</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>The name of the CargoGroup.</p>
+<p>Output file name prefix, e.g. "MooseProfiler".</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).GroupTemplate">CARGO_GROUP.GroupTemplate</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).fileNameSuffix">PROFILER.fileNameSuffix</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Output file name prefix, e.g. "txt"</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).Grouped">CARGO_GROUP.Grouped</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).getData">PROFILER.getData(func)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Get data.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).IsAlive">CARGO_GROUP:IsAlive()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).getfilename">PROFILER.getfilename(ext)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if the CargoGroup is alive.</p>
+<p>Write info to output file.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).IsInLoadRadius">CARGO_GROUP:IsInLoadRadius(Coordinate)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).hook">PROFILER.hook(event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if Cargo Group is in the radius for the Cargo to be Boarded.</p>
+<p>Debug hook.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).IsInReportRadius">CARGO_GROUP:IsInReportRadius(Coordinate)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).logUnknown">PROFILER.logUnknown</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if Cargo Group is in the report radius.</p>
+<p>Log unknown functions. Default is off.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).IsInZone">CARGO_GROUP:IsInZone(Zone)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).printCSV">PROFILER.printCSV(data, runTimeGame)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if the first element of the CargoGroup is the given <a href="Zone.html">Zone</a>.</p>
+<p>Print csv file.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).IsNear">CARGO_GROUP:IsNear(CargoCarrier, NearRadius)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).showInfo">PROFILER.showInfo(runTimeGame, runTimeOS)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if Cargo is near to the Carrier.</p>
+<p>Write info to output file.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).NearRadius">CARGO_GROUP.NearRadius</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).showTable">PROFILER.showTable(data, f, runTimeGame)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).New">CARGO_GROUP:New(CargoGroup, Type, Name, LoadRadius, NearRadius)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>CARGO_GROUP constructor.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).OnEventCargoDead">CARGO_GROUP:OnEventCargoDead(EventData)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).Regroup">CARGO_GROUP:Regroup()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Regroup the cargo group into one group with multiple unit.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).Respawn">CARGO_GROUP:Respawn()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Respawn the CargoGroup.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).RouteTo">CARGO_GROUP:RouteTo(Coordinate)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Route Cargo to Coordinate and randomize locations.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).Smoke">CARGO_GROUP:Smoke(SmokeColor, Radius)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Smoke the CargoGroup.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).Ungroup">CARGO_GROUP:Ungroup()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Ungroup the cargo group into individual groups with one unit.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).onafterBoard">CARGO_GROUP:onafterBoard(Event, From, To, CargoCarrier, NearRadius, ...)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>After Board Event.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).onafterBoarding">CARGO_GROUP:onafterBoarding(Event, From, To, CargoCarrier, NearRadius, ...)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Leave Boarding State.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).onafterLoad">CARGO_GROUP:onafterLoad(Event, From, To, CargoCarrier, ...)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Enter Loaded State.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).onafterUnBoard">CARGO_GROUP:onafterUnBoard(Event, From, To, ToPointVec2, NearRadius, ...)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Enter UnBoarding State.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).onafterUnBoarding">CARGO_GROUP:onafterUnBoarding(Event, From, To, ToPointVec2, NearRadius, ...)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Leave UnBoarding State.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).onafterUnLoad">CARGO_GROUP:onafterUnLoad(Event, From, To, Core, ToPointVec2, ...)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Enter UnLoaded State.</p>
+<p>Show table.</p>
 </td>
           </tr>
         </table>
         </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PROFILER.Data)">Type <strong>PROFILER.Data</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(PROFILER.Data)">PROFILER.Data</a></strong>
+   </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from CARGO_REPORTABLE</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from PROFILER.Data</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).ClassName">CARGO_GROUP.ClassName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER.Data).count">PROFILER.Data.count</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Number of function calls.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).MessageToGroup">CARGO_GROUP:MessageToGroup(Message, TaskGroup, Name)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER.Data).func">PROFILER.Data.func</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Send a CC message to a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+<p>The function name.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CARGO_GROUP).New">CARGO_GROUP:New(Type, Name, Weight, LoadRadius, NearRadius)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER.Data).line">PROFILER.Data.line</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>CARGO_REPORTABLE Constructor.</p>
+<p>The line number</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER.Data).src">PROFILER.Data.src</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The source file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER.Data).tm">PROFILER.Data.tm</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Total time in seconds.</p>
 </td>
           </tr>
         </table>
         </div>
 
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Cargo.CargoGroup)" >Type <strong>Cargo.CargoGroup</strong></a></h2></div>
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Utilities.PROFILER)" >Type <strong>Utilities.PROFILER</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##CARGO_GROUP')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CARGO_GROUP)">Type <strong>CARGO_GROUP</strong></a></h2></div>
-        <div id= "#Types##CARGO_GROUP" class="w3-container w3-white w3-padding-16" id="module_other_types">
+      <div onclick="myFunction('#Types##PROFILER')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PROFILER)">Type <strong>PROFILER</strong></a></h2></div>
+        <div id= "#Types##PROFILER" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
+  
+<p>PROFILER class.</p>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(PROFILER).ClassName" ><strong>PROFILER.ClassName</strong></a>
     
-<a id="#(CARGO_GROUP).CargoGroup" ><strong>CARGO_GROUP.CargoGroup</strong></a>
-    
-
-
-    
-<p> Then we register the new group in the database</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).CargoName" ><strong>CARGO_GROUP.CargoName</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).CargoObject" ><strong>CARGO_GROUP.CargoObject</strong></a>
-    
-
-
-    
-<p> Now we spawn the new group based on the template created.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>
-<a id="#(CARGO_GROUP).CargoSet" ><strong>CARGO_GROUP.CargoSet</strong></a>
-    
-<p>The collection of derived CARGO objects.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).CargoTemplate" ><strong>CARGO_GROUP.CargoTemplate</strong></a>
-    
-
+<p>Name of the class.</p>
 
 </div>
 
@@ -1741,9 +1672,97 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
-<a id="#(CARGO_GROUP).CargoUnitTemplate" ><strong>CARGO_GROUP.CargoUnitTemplate</strong></a>
+<a id="#(PROFILER).Counters" ><strong>PROFILER.Counters</strong></a>
     
+<p>Function counters.</p>
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PROFILER).ThreshCPS" ><strong>PROFILER.ThreshCPS</strong></a>
+    
+<p>Low calls per second threshold. Only write output if function has more calls per second than this value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PROFILER).ThreshTtot" ><strong>PROFILER.ThreshTtot</strong></a>
+    
+<p>Total time threshold. Only write output if total function CPU time is more than this value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PROFILER).TstartGame" ><strong>PROFILER.TstartGame</strong></a>
+    
+<p>Game start time timer.getTime().</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PROFILER).TstartOS" ><strong>PROFILER.TstartOS</strong></a>
+    
+<p>OS real start time os.clock.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PROFILER).dInfo" ><strong>PROFILER.dInfo</strong></a>
+    
+<p>Info.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PROFILER).eventhandler" ><strong>PROFILER.eventhandler</strong></a>
+    
+<p>Event handler to get mission end event.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PROFILER).fTime" ><strong>PROFILER.fTime</strong></a>
+    
+<p>Function time.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PROFILER).fTimeTotal" ><strong>PROFILER.fTimeTotal</strong></a>
+    
+<p>Total function time.</p>
 
 </div>
 
@@ -1752,9 +1771,9 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
-<a id="#(CARGO_GROUP).GroupName" ><strong>CARGO_GROUP.GroupName</strong></a>
+<a id="#(PROFILER).fileNamePrefix" ><strong>PROFILER.fileNamePrefix</strong></a>
     
-<p>The name of the CargoGroup.</p>
+<p>Output file name prefix, e.g. "MooseProfiler".</p>
 
 </div>
 
@@ -1762,10 +1781,10 @@
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(PROFILER).fileNameSuffix" ><strong>PROFILER.fileNameSuffix</strong></a>
     
-<a id="#(CARGO_GROUP).GroupTemplate" ><strong>CARGO_GROUP.GroupTemplate</strong></a>
-    
-
+<p>Output file name prefix, e.g. "txt"</p>
 
 </div>
 
@@ -1774,20 +1793,9 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(CARGO_GROUP).Grouped" ><strong>CARGO_GROUP.Grouped</strong></a>
+<a id="#(PROFILER).logUnknown" ><strong>PROFILER.logUnknown</strong></a>
     
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).NearRadius" ><strong>CARGO_GROUP.NearRadius</strong></a>
-    
-
+<p>Log unknown functions. Default is off.</p>
 
 </div>
 
@@ -1798,27 +1806,42 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).Flare" ><strong>CARGO_GROUP:Flare(FlareColor)</strong></a></h2>
+<h2><a id="#(PROFILER).Start" ><strong>PROFILER.Start(Delay, Duration)</strong></a></h2>
 </div>
     
-<p>Signal a flare at the position of the CargoGroup.</p>
+<p>Start profiler.</p>
 
-<div id= "#Functions##Flare" class="w3-show w3-white">
+<div id= "#Functions##Start" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
+<p>PROFILER</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Utilities.Utils.html##(FLARECOLOR)">Utilities.Utils#FLARECOLOR</a>
-            <strong><strong>FlareColor</strong></strong>
+                #number
+            <strong><strong>Delay</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Delay in seconds before profiler is stated. Default is immediately.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Duration</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Duration in (game) seconds before the profiler is stopped. Default is when mission ends.</p>
+
           </div>
         </div>
 </div>
@@ -1829,33 +1852,142 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).GetCoordinate" ><strong>CARGO_GROUP:GetCoordinate()</strong></a></h2>
+<h2><a id="#(PROFILER).Stop" ><strong>PROFILER.Stop(Delay)</strong></a></h2>
 </div>
     
-<p>Get the current Coordinate of the CargoGroup.</p>
+<p>Stop profiler.</p>
 
-<div id= "#Functions##GetCoordinate" class="w3-show w3-white">
+<div id= "#Functions##Stop" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
+<p>PROFILER</p>
 </div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay before stop in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER)._flog" ><strong>PROFILER._flog(f, txt)</strong></a></h2>
+</div>
+    
+<p>Write text to log file.</p>
+
+<div id= "#Functions##_flog" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>f</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The file.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>txt</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The text.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).getData" ><strong>PROFILER.getData(func)</strong></a></h2>
+</div>
+    
+<p>Get data.</p>
+
+<div id= "#Functions##getData" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>func</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Function.</p>
+
+          </div>
+        </div>
     <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
         <div class="w3-half">
-          <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+          <p>#string:</p>
         </div>
         <div class="w3-half">
           
-<p>The current Coordinate of the first Cargo of the CargoGroup.</p>
+<p>Function name.</p>
 
         </div>
         <div class="w3-half">
-          <p>#nil:</p>
+          <p>#string:</p>
         </div>
         <div class="w3-half">
           
-<p>There is no valid Cargo in the CargoGroup.</p>
+<p>Source file name.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Line number.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Function time in seconds.</p>
 
         </div>
     </div>
@@ -1867,118 +1999,31 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).GetCount" ><strong>CARGO_GROUP:GetCount()</strong></a></h2>
+<h2><a id="#(PROFILER).getfilename" ><strong>PROFILER.getfilename(ext)</strong></a></h2>
 </div>
     
-<p>Get the amount of cargo units in the group.</p>
+<p>Write info to output file.</p>
 
-<div id= "#Functions##GetCount" class="w3-show w3-white">
+<div id= "#Functions##getfilename" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(CARGO_GROUP)">#CARGO_GROUP</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).GetFirstAlive" ><strong>CARGO_GROUP:GetFirstAlive()</strong></a></h2>
-</div>
-    
-<p>Get the first alive Cargo Unit of the Cargo Group.</p>
-
-<div id= "#Functions##GetFirstAlive" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(CARGO_GROUP)">#CARGO_GROUP</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).GetGroup" ><strong>CARGO_GROUP:GetGroup(Cargo)</strong></a></h2>
-</div>
-    
-<p>Get the amount of cargo units in the group.</p>
-
-<div id= "#Functions##GetGroup" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
+<p>PROFILER</p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>Cargo</strong></strong>
+                #string
+            <strong><strong>ext</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Extension.</p>
+
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(CARGO_GROUP)">#CARGO_GROUP</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).GetTransportationMethod" ><strong>CARGO_GROUP:GetTransportationMethod()</strong></a></h2>
-</div>
-    
-<p>Get the transportation method of the Cargo.</p>
-
-<div id= "#Functions##GetTransportationMethod" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -1986,7 +2031,7 @@
       </div>
       <div class="w3-half">
         
-<p>The transportation method of the Cargo.</p>
+<p>File name.</p>
 
       </div>
     </div>
@@ -1998,78 +2043,31 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).IsAlive" ><strong>CARGO_GROUP:IsAlive()</strong></a></h2>
+<h2><a id="#(PROFILER).hook" ><strong>PROFILER.hook(event)</strong></a></h2>
 </div>
     
-<p>Check if the CargoGroup is alive.</p>
+<p>Debug hook.</p>
 
-<div id= "#Functions##IsAlive" class="w3-show w3-white">
+<div id= "#Functions##hook" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Return values:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>true if the CargoGroup is alive.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>false if the CargoGroup is dead.</p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).IsInLoadRadius" ><strong>CARGO_GROUP:IsInLoadRadius(Coordinate)</strong></a></h2>
-</div>
-    
-<p>Check if Cargo Group is in the radius for the Cargo to be Boarded.</p>
-
-<div id= "#Functions##IsInLoadRadius" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
+<p>PROFILER</p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-            <strong><strong>Coordinate</strong></strong>
+                #table
+            <strong><strong>event</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Event.</p>
+
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>true if the Cargo Group is within the load radius.</p>
-
-      </div>
-    </div>
 </div>
 
 </div>
@@ -2078,206 +2076,28 @@
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).IsInReportRadius" ><strong>CARGO_GROUP:IsInReportRadius(Coordinate)</strong></a></h2>
+<h2><a id="#(PROFILER).printCSV" ><strong>PROFILER.printCSV(data, runTimeGame)</strong></a></h2>
 </div>
     
-<p>Check if Cargo Group is in the report radius.</p>
+<p>Print csv file.</p>
 
-<div id= "#Functions##IsInReportRadius" class="w3-show w3-white">
+<div id= "#Functions##printCSV" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Point.html##(Coordinate)">Core.Point#Coordinate</a>
-            <strong><strong>Coordinate</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>true if the Cargo Group is within the report radius.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).IsInZone" ><strong>CARGO_GROUP:IsInZone(Zone)</strong></a></h2>
-</div>
-    
-<p>Check if the first element of the CargoGroup is the given <a href="Zone.html">Zone</a>.</p>
-
-<div id= "#Functions##IsInZone" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
-            <strong><strong>Zone</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-    <h2><strong>Return values:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p><strong>true</strong> if the first element of the CargoGroup is in the Zone</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p><strong>false</strong> if there is no element of the CargoGroup in the Zone.</p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).IsNear" ><strong>CARGO_GROUP:IsNear(CargoCarrier, NearRadius)</strong></a></h2>
-</div>
-    
-<p>Check if Cargo is near to the Carrier.</p>
-
-    
-<p>The Cargo is near to the Carrier if the first unit of the Cargo Group is within NearRadius.</p>
-
-<div id= "#Functions##IsNear" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
+<p>PROFILER</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>CargoCarrier</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NearRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Cargo is near to the Carrier or #nil if the Cargo is not near to the Carrier.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).New" ><strong>CARGO_GROUP:New(CargoGroup, Type, Name, LoadRadius, NearRadius)</strong></a></h2>
-</div>
-    
-<p>CARGO_GROUP constructor.</p>
-
-    
-<p>This make a new CARGO_GROUP from a <a href="Wrapper.Group.html">Wrapper.Group</a> object.
-It will "ungroup" the group object within the sim, and will create a <a href="Set.html">Set</a> of individual Unit objects.</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>CargoGroup</strong></strong>
+                #table
+            <strong><strong>data</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Group to be transported as cargo.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Type</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Cargo type, e.g. "Infantry". This is the type used in SET_CARGO:New():FilterTypes("Infantry") to define the valid cargo groups of the set.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Name</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>A user defined name of the cargo group. This name CAN be the same as the group object but can also have a different name. This name MUST be unique!</p>
+<p>Data table.</p>
 
           </div>
         </div>
@@ -2285,12 +2105,45 @@ It will "ungroup" the group object within the sim, and will create a <a href="Se
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>LoadRadius</strong></strong>
+            <strong><strong>runTimeGame</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) Distance in meters until which a cargo is loaded into the carrier. Cargo outside this radius has to be routed by other means to within the radius to be loaded.</p>
+<p>Game run time in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).showInfo" ><strong>PROFILER.showInfo(runTimeGame, runTimeOS)</strong></a></h2>
+</div>
+    
+<p>Write info to output file.</p>
+
+<div id= "#Functions##showInfo" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>runTimeGame</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Game time in seconds.</p>
 
           </div>
         </div>
@@ -2298,26 +2151,15 @@ It will "ungroup" the group object within the sim, and will create a <a href="Se
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>NearRadius</strong></strong>
+            <strong><strong>runTimeOS</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(optional) Once the units are within this radius of the carrier, they are actually loaded, i.e. disappear from the scene.</p>
+<p>OS time in seconds.</p>
 
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(CARGO_GROUP)">#CARGO_GROUP</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Cargo group object.</p>
-
-      </div>
-    </div>
 </div>
 
 </div>
@@ -2326,133 +2168,41 @@ It will "ungroup" the group object within the sim, and will create a <a href="Se
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).OnEventCargoDead" ><strong>CARGO_GROUP:OnEventCargoDead(EventData)</strong></a></h2>
+<h2><a id="#(PROFILER).showTable" ><strong>PROFILER.showTable(data, f, runTimeGame)</strong></a></h2>
 </div>
     
+<p>Show table.</p>
 
-
-<div id= "#Functions##OnEventCargoDead" class="w3-show w3-white">
+<div id= "#Functions##showTable" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
-            <strong><strong>EventData</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).Regroup" ><strong>CARGO_GROUP:Regroup()</strong></a></h2>
-</div>
-    
-<p>Regroup the cargo group into one group with multiple unit.</p>
-
-    
-<p>This is required because by default a group will move in formation and this is really an issue for group control.
-Therefore this method is made to be able to regroup a group.
-This works for ground only groups.</p>
-
-<div id= "#Functions##Regroup" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).Respawn" ><strong>CARGO_GROUP:Respawn()</strong></a></h2>
-</div>
-    
-<p>Respawn the CargoGroup.</p>
-
-<div id= "#Functions##Respawn" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).RouteTo" ><strong>CARGO_GROUP:RouteTo(Coordinate)</strong></a></h2>
-</div>
-    
-<p>Route Cargo to Coordinate and randomize locations.</p>
-
-<div id= "#Functions##RouteTo" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-            <strong><strong>Coordinate</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).Smoke" ><strong>CARGO_GROUP:Smoke(SmokeColor, Radius)</strong></a></h2>
-</div>
-    
-<p>Smoke the CargoGroup.</p>
-
-<div id= "#Functions##Smoke" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
+<p>PROFILER</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Utilities.Utils.html##(SMOKECOLOR)">Utilities.Utils#SMOKECOLOR</a>
-            <strong><strong>SmokeColor</strong></strong>
+                #table
+            <strong><strong>data</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The color of the smoke.</p>
+<p>Data table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>f</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The file.</p>
 
           </div>
         </div>
@@ -2460,12 +2210,12 @@ This works for ground only groups.</p>
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>Radius</strong></strong>
+            <strong><strong>runTimeGame</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The radius of randomization around the center of the first element of the CargoGroup.</p>
+<p>Game run time in seconds.</p>
 
           </div>
         </div>
@@ -2474,536 +2224,14 @@ This works for ground only groups.</p>
 </div>
 </div>
 
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).Ungroup" ><strong>CARGO_GROUP:Ungroup()</strong></a></h2>
-</div>
-    
-<p>Ungroup the cargo group into individual groups with one unit.</p>
-
-    
-<p>This is required because by default a group will move in formation and this is really an issue for group control.
-Therefore this method is made to be able to ungroup a group.
-This works for ground only groups.</p>
-
-<div id= "#Functions##Ungroup" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
 </div>
 
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).onafterBoard" ><strong>CARGO_GROUP:onafterBoard(Event, From, To, CargoCarrier, NearRadius, ...)</strong></a></h2>
-</div>
-    
-<p>After Board Event.</p>
-
-<div id= "#Functions##onafterBoard" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-            <strong><strong>CargoCarrier</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NearRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If distance is smaller than this number, cargo is loaded into the carrier.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>...</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).onafterBoarding" ><strong>CARGO_GROUP:onafterBoarding(Event, From, To, CargoCarrier, NearRadius, ...)</strong></a></h2>
-</div>
-    
-<p>Leave Boarding State.</p>
-
-<div id= "#Functions##onafterBoarding" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-            <strong><strong>CargoCarrier</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NearRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If distance is smaller than this number, cargo is loaded into the carrier.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>...</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).onafterLoad" ><strong>CARGO_GROUP:onafterLoad(Event, From, To, CargoCarrier, ...)</strong></a></h2>
-</div>
-    
-<p>Enter Loaded State.</p>
-
-<div id= "#Functions##onafterLoad" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-            <strong><strong>CargoCarrier</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>...</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).onafterUnBoard" ><strong>CARGO_GROUP:onafterUnBoard(Event, From, To, ToPointVec2, NearRadius, ...)</strong></a></h2>
-</div>
-    
-<p>Enter UnBoarding State.</p>
-
-<div id= "#Functions##onafterUnBoard" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a>
-            <strong><strong>ToPointVec2</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NearRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If distance is smaller than this number, cargo is loaded into the carrier.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>...</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).onafterUnBoarding" ><strong>CARGO_GROUP:onafterUnBoarding(Event, From, To, ToPointVec2, NearRadius, ...)</strong></a></h2>
-</div>
-    
-<p>Leave UnBoarding State.</p>
-
-<div id= "#Functions##onafterUnBoarding" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a>
-            <strong><strong>ToPointVec2</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NearRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If distance is smaller than this number, cargo is loaded into the carrier.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>...</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).onafterUnLoad" ><strong>CARGO_GROUP:onafterUnLoad(Event, From, To, Core, ToPointVec2, ...)</strong></a></h2>
-</div>
-    
-<p>Enter UnLoaded State.</p>
-
-<div id= "#Functions##onafterUnLoad" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CARGO_GROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>Core</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Point#POINT_VEC2</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>ToPointVec2</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>...</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
+      <div onclick="myFunction('#Types##PROFILER.Data')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PROFILER.Data)">Type <strong>PROFILER.Data</strong></a></h2></div>
+        <div id= "#Types##PROFILER.Data" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Waypoint data.</p>
 
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
@@ -3011,71 +2239,10 @@ This works for ground only groups.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(PROFILER.Data).count" ><strong>PROFILER.Data.count</strong></a>
     
-<a id="#(CARGO_GROUP).CargoGroup" ><strong>CARGO_GROUP.CargoGroup</strong></a>
-    
-
-
-    
-<p> Then we register the new group in the database</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).CargoName" ><strong>CARGO_GROUP.CargoName</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).CargoObject" ><strong>CARGO_GROUP.CargoObject</strong></a>
-    
-
-
-    
-<p> Now we spawn the new group based on the template created.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>
-<a id="#(CARGO_GROUP).CargoSet" ><strong>CARGO_GROUP.CargoSet</strong></a>
-    
-<p>The collection of derived CARGO objects.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CARGO_GROUP).CargoTemplate" ><strong>CARGO_GROUP.CargoTemplate</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CARGO_GROUP).CargoUnitTemplate" ><strong>CARGO_GROUP.CargoUnitTemplate</strong></a>
-    
-
+<p>Number of function calls.</p>
 
 </div>
 
@@ -3084,9 +2251,9 @@ This works for ground only groups.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
-<a id="#(CARGO_GROUP).GroupName" ><strong>CARGO_GROUP.GroupName</strong></a>
+<a id="#(PROFILER.Data).func" ><strong>PROFILER.Data.func</strong></a>
     
-<p>The name of the CargoGroup.</p>
+<p>The function name.</p>
 
 </div>
 
@@ -3094,10 +2261,10 @@ This works for ground only groups.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(PROFILER.Data).line" ><strong>PROFILER.Data.line</strong></a>
     
-<a id="#(CARGO_GROUP).GroupTemplate" ><strong>CARGO_GROUP.GroupTemplate</strong></a>
-    
-
+<p>The line number</p>
 
 </div>
 
@@ -3105,10 +2272,10 @@ This works for ground only groups.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(CARGO_GROUP).Grouped" ><strong>CARGO_GROUP.Grouped</strong></a>
+    #string
+<a id="#(PROFILER.Data).src" ><strong>PROFILER.Data.src</strong></a>
     
-
+<p>The source file.</p>
 
 </div>
 
@@ -3116,10 +2283,10 @@ This works for ground only groups.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(PROFILER.Data).tm" ><strong>PROFILER.Data.tm</strong></a>
     
-<a id="#(CARGO_GROUP).NearRadius" ><strong>CARGO_GROUP.NearRadius</strong></a>
-    
-
+<p>Total time in seconds.</p>
 
 </div>
 
@@ -3127,158 +2294,13 @@ This works for ground only groups.</p>
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).MessageToGroup" ><strong>CARGO_GROUP:MessageToGroup(Message, TaskGroup, Name)</strong></a></h2>
-</div>
-    
-<p>Send a CC message to a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
-
-<div id= "#Functions##MessageToGroup" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="Cargo.Cargo.html##(CARGO_REPORTABLE)">Cargo.Cargo#CARGO_REPORTABLE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Message</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>TaskGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Name</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional) The name of the Group used as a prefix for the message to the Group. If not provided, there will be nothing shown.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(CARGO_GROUP).New" ><strong>CARGO_GROUP:New(Type, Name, Weight, LoadRadius, NearRadius)</strong></a></h2>
-</div>
-    
-<p>CARGO_REPORTABLE Constructor.</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="Cargo.Cargo.html##(CARGO_REPORTABLE)">Cargo.Cargo#CARGO_REPORTABLE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Type</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Name</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Weight</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>LoadRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional)</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NearRadius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional)</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(CARGO_REPORTABLE)">#CARGO_REPORTABLE</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
 </div>
 
         </div>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Cargo_Groups.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/MOOSE.JPG')";
 }
 </script>
 
