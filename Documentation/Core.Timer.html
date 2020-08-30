@@ -1421,304 +1421,245 @@
    </div>
   </nav>
   
-<img src="..\Images\MOOSE.JPG" alt="Banner Image"/>   
+<img src="..\Images\CORE_Timer.png" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>AI.AI_Air_Squadron</strong></h1>
+    <h1>Module <strong>Core.Timer</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>AI</strong> - Models squadrons for airplanes and helicopters.</p>
+<p><strong>Core</strong> - Timer scheduler.</p>
 
     
 
-<p>This is a class used in the <a href="AI_Air_Dispatcher.html">AI_Air_Dispatcher</a> and derived dispatcher classes.</p>
+<p><strong>Main Features:</strong></p>
+
+<ul>
+    <li>Delay function calls</li>
+    <li>Easy set up and little overhead</li>
+    <li>Set start, stop and time interval</li>
+    <li>Define max function calls</li>
+</ul>
 
 <hr/>
 
-<h3>Author: <strong>FlightControl</strong></h3>
-
-<hr/>
-
+<h3>Author: <strong>funkyfranky</strong></h3>
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##AI_AIR_SQUADRON')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TIMER')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>AI_AIR_SQUADRON</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>TIMER</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Implements the core functions modeling squadrons for airplanes and helicopters.</p>
+<p><em>Better three hours too soon than a minute too late.</em> – William Shakespeare</p>
+
+<hr/>
+
+<p><img src="..\Presentations\Timer\TIMER_Main.jpg" alt="Banner Image"/></p>
+
+<h1>The TIMER Concept</h1>
+
+<p>The TIMER class is the little sister of the SCHEDULER class.</p>
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##AI_AIR_SQUADRON" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##TIMER" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>
-<a id="AI_AIR_SQUADRON" ><strong>AI_AIR_SQUADRON</strong></a>
+    <a href="##(TIMER)">#TIMER</a>
+<a id="TIMER" ><strong>TIMER</strong></a>
     
-<p>Implements the core functions modeling squadrons for airplanes and helicopters.</p>
-
-    
+<p><em>Better three hours too soon than a minute too late.</em> – William Shakespeare</p>
 
 <hr/>
+
+<p><img src="..\Presentations\Timer\TIMER_Main.jpg" alt="Banner Image"/></p>
+
+<h1>The TIMER Concept</h1>
+
+<p>The TIMER class is the little sister of the SCHEDULER class.</p>
+
+    
+<p>It does the same thing but is a bit easier to use and has less overhead. It should be sufficient in many cases.</p>
+
+<h1>Construction</h1>
+
+<p>A new TIMER is created by the <a href="##(TIMER).New">TIMER.New</a>(<em>func</em>, <em>...</em>) function</p>
+
+<pre><code>local mytimer=TIMER:New(myfunction, a, b)
+</code></pre>
+
+<p>The first parameter <em>func</em> is the function that is called followed by the necessary comma separeted parameters that are passed to that function.</p>
+
+<h2>Starting the Timer</h2>
+
+<p>The timer is started by the <a href="##(TIMER).Start">TIMER.Start</a>(<em>Tstart</em>, <em>dT</em>, <em>Duration</em>) function</p>
+
+<pre><code>mytimer:Start(5, 1, 20)
+</code></pre>
+
+<p>where</p>
+
+<ul>
+    <li><em>Tstart</em> is the relative start time in seconds. In the example, the first function call happens after 5 sec.</li>
+    <li><em>dT</em> is the time interval between function calls in seconds. Above, the function is called once per second.</li>
+    <li><em>Duration</em> is the duration in seconds after which the timer is stopped. This is relative to the start time. Here, the timer will run for 20 seconds.</li>
+</ul>
+
+<p>Note that</p>
+
+<ul>
+    <li>if <em>Tstart</em> is not specified (<em>nil</em>), the first function call happens immediately.</li>
+    <li>if <em>dT</em> is not specified (<em>nil</em>), the function is called only once.</li>
+    <li>if <em>Duration</em> is not specified (<em>nil</em>), the timer runs forever or until stopped manually or until the max function calls are reached (see below).</li>
+</ul>
+
+<p>For example,</p>
+
+<pre><code>mytimer:Start(3)            -- Will call the function once after 3 seconds.
+mytimer:Start(nil, 0.5)     -- Will call right now and then every 0.5 sec until all eternaty.
+mytimer:Start(nil, 2.0, 20) -- Will call right now and then every 2.0 sec for 20 sec.
+mytimer:Start(1.0, nil, 10) -- Does not make sense as the function is only called once anyway. 
+</code></pre>
+
+<h2>Stopping the Timer</h2>
+
+<p>The timer can be stopped manually by the <a href="##(TIMER).Start">TIMER.Start</a>(<em>Delay</em>) function</p>
+
+<pre><code>mytimer:Stop()
+</code></pre>
+
+<p>If the optional paramter <em>Delay</em> is specified, the timer is stopped after <em>delay</em> seconds.</p>
+
+<h2>Limit Function Calls</h2>
+
+<p>The timer can be stopped after a certain amount of function calles with the <a href="##(TIMER).SetMaxFunctionCalls">TIMER.SetMaxFunctionCalls</a>(<em>Nmax</em>) function</p>
+
+<pre><code>mytimer:SetMaxFunctionCalls(20)
+</code></pre>
+
+<p>where <em>Nmax</em> is the number of calls after which the timer is stopped, here 20.</p>
+
+<p>For example,</p>
+
+<pre><code>mytimer:SetMaxFunctionCalls(66):Start(1.0, 0.1)
+</code></pre>
+
+<p>will start the timer after one second and call the function every 0.1 seconds. Once the function has been called 66 times, the timer is stopped.</p>
+
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_AIR_SQUADRON)">Type <strong>AI_AIR_SQUADRON</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TIMER)">Type <strong>TIMER</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(AI_AIR_SQUADRON)">AI_AIR_SQUADRON</a></strong>
+     <strong><a href="##(TIMER)">TIMER</a></strong>
 , extends <strong><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></strong>
    </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AI_AIR_SQUADRON</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from TIMER</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).AddResources">AI_AIR_SQUADRON:AddResources(Resources)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClassName">TIMER.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Add Resources to the Squadron.</p>
+<p>Name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Airbase">AI_AIR_SQUADRON.Airbase</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).New">TIMER:New(Function, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Create a new TIMER object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).AirbaseName">AI_AIR_SQUADRON.AirbaseName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).SetMaxFunctionCalls">TIMER:SetMaxFunctionCalls(Nmax)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Set max number of function calls.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Captured">AI_AIR_SQUADRON.Captured</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Start">TIMER:Start(Tstart, dT, Duration)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Create a new TIMER object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).EngageProbability">AI_AIR_SQUADRON.EngageProbability</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Stop">TIMER:Stop(Delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Stop the timer by removing the timer function.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).FuelThreshold">AI_AIR_SQUADRON.FuelThreshold</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Tstart">TIMER.Tstart</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Relative start time in seconds.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetEngageProbability">AI_AIR_SQUADRON:GetEngageProbability()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Tstop">TIMER.Tstop</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the EngageProbability of the Squadron.</p>
+<p>Relative stop time in seconds.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetFuelThreshold">AI_AIR_SQUADRON:GetFuelThreshold()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._Function">TIMER:_Function(time)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the FuelThreshold of the Squadron.</p>
+<p>Call timer function.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetGrouping">AI_AIR_SQUADRON:GetGrouping()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).dT">TIMER.dT</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the Grouping of the Squadron.</p>
+<p>Time interval between function calls in seconds.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetLanding">AI_AIR_SQUADRON:GetLanding()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).func">TIMER.func</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the Landing of the Squadron.</p>
+<p>Timer function.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetName">AI_AIR_SQUADRON:GetName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).lid">TIMER.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the Name of the Squadron.</p>
+<p>Class id string for output to DCS log file.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetOverhead">AI_AIR_SQUADRON:GetOverhead()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ncalls">TIMER.ncalls</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the Overhead of the Squadron.</p>
+<p>Counter of function calls.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetResourceCount">AI_AIR_SQUADRON:GetResourceCount()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ncallsMax">TIMER.ncallsMax</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the ResourceCount of the Squadron.</p>
+<p>Max number of function calls. If reached, timer is stopped.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetTakeoff">AI_AIR_SQUADRON:GetTakeoff()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).para">TIMER.para</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the Takeoff of the Squadron.</p>
+<p>Parameters passed to the timer function.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetTankerName">AI_AIR_SQUADRON:GetTankerName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).tid">TIMER.tid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the Tanker Name of the Squadron.</p>
+<p>Timer ID returned by the DCS API function.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Grouping">AI_AIR_SQUADRON.Grouping</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).version">TIMER.version</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Landing">AI_AIR_SQUADRON.Landing</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Name">AI_AIR_SQUADRON.Name</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).New">AI_AIR_SQUADRON:New(SquadronName, AirbaseName, TemplatePrefixes, ResourceCount)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates a new AI_AIR_SQUADRON object</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Overhead">AI_AIR_SQUADRON.Overhead</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).RadioFrequency">AI_AIR_SQUADRON.RadioFrequency</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).RadioModulation">AI_AIR_SQUADRON.RadioModulation</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).RadioPower">AI_AIR_SQUADRON.RadioPower</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).RadioSpeech">AI_AIR_SQUADRON.RadioSpeech</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).RemoveResources">AI_AIR_SQUADRON:RemoveResources(Resources)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Remove Resources to the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ResourceCount">AI_AIR_SQUADRON.ResourceCount</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetEngageProbability">AI_AIR_SQUADRON:SetEngageProbability(EngageProbability)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the EngageProbability of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetFuelThreshold">AI_AIR_SQUADRON:SetFuelThreshold(FuelThreshold)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the FuelThreshold of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetGrouping">AI_AIR_SQUADRON:SetGrouping(Grouping)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the Grouping of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetLanding">AI_AIR_SQUADRON:SetLanding(Landing)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the Landing of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetName">AI_AIR_SQUADRON:SetName(Name)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the Name of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetOverhead">AI_AIR_SQUADRON:SetOverhead(Overhead)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the Overhead of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetRadio">AI_AIR_SQUADRON:SetRadio(RadioFrequency, RadioModulation, RadioPower, Language)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the Radio of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetResourceCount">AI_AIR_SQUADRON:SetResourceCount(ResourceCount)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the ResourceCount of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetTakeoff">AI_AIR_SQUADRON:SetTakeoff(Takeoff)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the Takeoff of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetTankerName">AI_AIR_SQUADRON:SetTankerName(TankerName)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set the TankerName of the Squadron.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Spawn">AI_AIR_SQUADRON.Spawn</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Takeoff">AI_AIR_SQUADRON.Takeoff</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TankerName">AI_AIR_SQUADRON.TankerName</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TemplatePrefixes">AI_AIR_SQUADRON.TemplatePrefixes</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>TIMER class version.</p>
 </td>
           </tr>
         </table>
@@ -1730,242 +1671,242 @@
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ClassID">AI_AIR_SQUADRON.ClassID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClassID">TIMER.ClassID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ClassName">AI_AIR_SQUADRON.ClassName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClassName">TIMER.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ClassNameAndID">AI_AIR_SQUADRON.ClassNameAndID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClassNameAndID">TIMER.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ClearState">AI_AIR_SQUADRON:ClearState(Object, StateName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClearState">TIMER:ClearState(Object, StateName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Clear the state of an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).CreateEventBirth">AI_AIR_SQUADRON:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventBirth">TIMER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Birth Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).CreateEventCrash">AI_AIR_SQUADRON:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventCrash">TIMER:CreateEventCrash(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Crash Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).CreateEventDead">AI_AIR_SQUADRON:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventDead">TIMER:CreateEventDead(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Dead Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).CreateEventRemoveUnit">AI_AIR_SQUADRON:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventRemoveUnit">TIMER:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Remove Unit Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).CreateEventTakeoff">AI_AIR_SQUADRON:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventTakeoff">TIMER:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Takeoff Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).E">AI_AIR_SQUADRON:E(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).E">TIMER:E(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an exception which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).EventDispatcher">AI_AIR_SQUADRON:EventDispatcher()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).EventDispatcher">TIMER:EventDispatcher()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns the event dispatcher</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).EventRemoveAll">AI_AIR_SQUADRON:EventRemoveAll()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).EventRemoveAll">TIMER:EventRemoveAll()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Remove all subscribed events</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).F">AI_AIR_SQUADRON:F(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).F">TIMER:F(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).F2">AI_AIR_SQUADRON:F2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).F2">TIMER:F2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).F3">AI_AIR_SQUADRON:F3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).F3">TIMER:F3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetClassID">AI_AIR_SQUADRON:GetClassID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetClassID">TIMER:GetClassID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetClassName">AI_AIR_SQUADRON:GetClassName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetClassName">TIMER:GetClassName()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetClassNameAndID">AI_AIR_SQUADRON:GetClassNameAndID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetClassNameAndID">TIMER:GetClassNameAndID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName + ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetEventPriority">AI_AIR_SQUADRON:GetEventPriority()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetEventPriority">TIMER:GetEventPriority()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetParent">AI_AIR_SQUADRON:GetParent(Child, FromClass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetParent">TIMER:GetParent(Child, FromClass)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to retrieve the Parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).GetState">AI_AIR_SQUADRON:GetState(Object, Key)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetState">TIMER:GetState(Object, Key)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get a Value given a Key from the Object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).HandleEvent">AI_AIR_SQUADRON:HandleEvent(Event, EventFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).HandleEvent">TIMER:HandleEvent(Event, EventFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Subscribe to a DCS Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).I">AI_AIR_SQUADRON:I(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).I">TIMER:I(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an information which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Inherit">AI_AIR_SQUADRON:Inherit(Child, Parent)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Inherit">TIMER:Inherit(Child, Parent)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to inherit from a parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).IsInstanceOf">AI_AIR_SQUADRON:IsInstanceOf(ClassName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).IsInstanceOf">TIMER:IsInstanceOf(ClassName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).IsTrace">AI_AIR_SQUADRON:IsTrace()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).IsTrace">TIMER:IsTrace()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enquires if tracing is on (for the class).</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).New">AI_AIR_SQUADRON:New()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).New">TIMER:New()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEvent">AI_AIR_SQUADRON:OnEvent(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEvent">TIMER:OnEvent(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventBaseCaptured">AI_AIR_SQUADRON:OnEventBaseCaptured(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventBaseCaptured">TIMER:OnEventBaseCaptured(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventBirth">AI_AIR_SQUADRON:OnEventBirth(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventBirth">TIMER:OnEventBirth(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any object is spawned into the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventCrash">AI_AIR_SQUADRON:OnEventCrash(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventCrash">TIMER:OnEventCrash(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventDead">AI_AIR_SQUADRON:OnEventDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventDead">TIMER:OnEventDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is dead.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventDetailedFailure">AI_AIR_SQUADRON:OnEventDetailedFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventDetailedFailure">TIMER:OnEventDetailedFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Unknown precisely what creates this event, likely tied into newer damage model.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventEjection">AI_AIR_SQUADRON:OnEventEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventEjection">TIMER:OnEventEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a pilot ejects from an aircraft
 initiator : The unit that has ejected </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventEngineShutdown">AI_AIR_SQUADRON:OnEventEngineShutdown(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventEngineShutdown">TIMER:OnEventEngineShutdown(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft shuts down its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventEngineStartup">AI_AIR_SQUADRON:OnEventEngineStartup(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventEngineStartup">TIMER:OnEventEngineStartup(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft starts its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventHit">AI_AIR_SQUADRON:OnEventHit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventHit">TIMER:OnEventHit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever an object is hit by a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventHumanFailure">AI_AIR_SQUADRON:OnEventHumanFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventHumanFailure">TIMER:OnEventHumanFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any system fails on a human controlled aircraft.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventKill">AI_AIR_SQUADRON:OnEventKill(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventKill">TIMER:OnEventKill(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs on the death of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventLand">AI_AIR_SQUADRON:OnEventLand(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventLand">TIMER:OnEventLand(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft lands at an airbase, farp or ship
 initiator : The unit that has landed
@@ -1973,199 +1914,199 @@ place: Object that the unit landed on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventLandingAfterEjection">AI_AIR_SQUADRON:OnEventLandingAfterEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventLandingAfterEjection">TIMER:OnEventLandingAfterEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs shortly after the landing animation of an ejected pilot touching the ground and standing up.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventMarkAdded">AI_AIR_SQUADRON:OnEventMarkAdded(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventMarkAdded">TIMER:OnEventMarkAdded(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a new mark was added.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventMarkChange">AI_AIR_SQUADRON:OnEventMarkChange(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventMarkChange">TIMER:OnEventMarkChange(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark text was changed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventMarkRemoved">AI_AIR_SQUADRON:OnEventMarkRemoved(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventMarkRemoved">TIMER:OnEventMarkRemoved(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark was removed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventMissionEnd">AI_AIR_SQUADRON:OnEventMissionEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventMissionEnd">TIMER:OnEventMissionEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission ends</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventMissionStart">AI_AIR_SQUADRON:OnEventMissionStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventMissionStart">TIMER:OnEventMissionStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission starts </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventPilotDead">AI_AIR_SQUADRON:OnEventPilotDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventPilotDead">TIMER:OnEventPilotDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the pilot of an aircraft is killed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventPlayerEnterUnit">AI_AIR_SQUADRON:OnEventPlayerEnterUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventPlayerEnterUnit">TIMER:OnEventPlayerEnterUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player assumes direct control of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventPlayerLeaveUnit">AI_AIR_SQUADRON:OnEventPlayerLeaveUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventPlayerLeaveUnit">TIMER:OnEventPlayerLeaveUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player relieves control of a unit to the AI.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventRefueling">AI_AIR_SQUADRON:OnEventRefueling(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventRefueling">TIMER:OnEventRefueling(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventRefuelingStop">AI_AIR_SQUADRON:OnEventRefuelingStop(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventRefuelingStop">TIMER:OnEventRefuelingStop(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft is finished taking fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventScore">AI_AIR_SQUADRON:OnEventScore(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventScore">TIMER:OnEventScore(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any modification to the "Score" as seen on the debrief menu would occur.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventShootingEnd">AI_AIR_SQUADRON:OnEventShootingEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventShootingEnd">TIMER:OnEventShootingEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit stops firing its weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventShootingStart">AI_AIR_SQUADRON:OnEventShootingStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventShootingStart">TIMER:OnEventShootingStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventShot">AI_AIR_SQUADRON:OnEventShot(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventShot">TIMER:OnEventShot(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventTakeoff">AI_AIR_SQUADRON:OnEventTakeoff(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventTakeoff">TIMER:OnEventTakeoff(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).OnEventUnitLost">AI_AIR_SQUADRON:OnEventUnitLost(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).OnEventUnitLost">TIMER:OnEventUnitLost(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ScheduleOnce">AI_AIR_SQUADRON:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ScheduleOnce">TIMER:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ScheduleRepeat">AI_AIR_SQUADRON:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ScheduleRepeat">TIMER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).ScheduleStop">AI_AIR_SQUADRON:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ScheduleStop">TIMER:ScheduleStop(SchedulerFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Stops the Schedule.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).Scheduler">AI_AIR_SQUADRON.Scheduler</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Scheduler">TIMER.Scheduler</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetEventPriority">AI_AIR_SQUADRON:SetEventPriority(EventPriority)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).SetEventPriority">TIMER:SetEventPriority(EventPriority)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).SetState">AI_AIR_SQUADRON:SetState(Object, Key, Value)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).SetState">TIMER:SetState(Object, Key, Value)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set a state or property of the Object given a Key and a Value.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).T">AI_AIR_SQUADRON:T(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).T">TIMER:T(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 1.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).T2">AI_AIR_SQUADRON:T2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).T2">TIMER:T2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).T3">AI_AIR_SQUADRON:T3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).T3">TIMER:T3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceAll">AI_AIR_SQUADRON:TraceAll(TraceAll)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceAll">TIMER:TraceAll(TraceAll)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace all methods in MOOSE</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceClass">AI_AIR_SQUADRON:TraceClass(Class)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceClass">TIMER:TraceClass(Class)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceClassMethod">AI_AIR_SQUADRON:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceClassMethod">TIMER:TraceClassMethod(Class, Method)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a specific method of  class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceLevel">AI_AIR_SQUADRON:TraceLevel(Level)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceLevel">TIMER:TraceLevel(Level)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace level</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceOff">AI_AIR_SQUADRON:TraceOff()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceOff">TIMER:TraceOff()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace off.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceOn">AI_AIR_SQUADRON:TraceOn()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceOn">TIMER:TraceOn()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).TraceOnOff">AI_AIR_SQUADRON:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceOnOff">TIMER:TraceOnOff(TraceOnOff)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on or off
 Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
@@ -2173,37 +2114,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).UnHandleEvent">AI_AIR_SQUADRON:UnHandleEvent(Event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).UnHandleEvent">TIMER:UnHandleEvent(Event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>UnSubscribe to a DCS event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON)._">AI_AIR_SQUADRON._</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._">TIMER._</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON)._F">AI_AIR_SQUADRON:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._F">TIMER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON)._T">AI_AIR_SQUADRON:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._T">TIMER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).__">AI_AIR_SQUADRON.__</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).__">TIMER.__</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_AIR_SQUADRON).onEvent">AI_AIR_SQUADRON:onEvent(event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).onEvent">TIMER:onEvent(event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2211,25 +2152,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI.AI_Air_Squadron)" >Type <strong>AI.AI_Air_Squadron</strong></a></h2></div>
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Core.Timer)" >Type <strong>Core.Timer</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##AI_AIR_SQUADRON')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_AIR_SQUADRON)">Type <strong>AI_AIR_SQUADRON</strong></a></h2></div>
-        <div id= "#Types##AI_AIR_SQUADRON" class="w3-container w3-white w3-padding-16" id="module_other_types">
+      <div onclick="myFunction('#Types##TIMER')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TIMER)">Type <strong>TIMER</strong></a></h2></div>
+        <div id= "#Types##TIMER" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
+  
+<p>TIMER class.</p>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(TIMER).ClassName" ><strong>TIMER.ClassName</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Airbase" ><strong>AI_AIR_SQUADRON.Airbase</strong></a>
-    
-
+<p>Name of the class.</p>
 
 </div>
 
@@ -2237,10 +2181,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).Tstart" ><strong>TIMER.Tstart</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).AirbaseName" ><strong>AI_AIR_SQUADRON.AirbaseName</strong></a>
-    
-
+<p>Relative start time in seconds.</p>
 
 </div>
 
@@ -2248,13 +2192,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(AI_AIR_SQUADRON).Captured" ><strong>AI_AIR_SQUADRON.Captured</strong></a>
+    #number
+<a id="#(TIMER).Tstop" ><strong>TIMER.Tstop</strong></a>
     
-
-
-    
-<p> Not captured. This flag will be set to true, when the airbase where the squadron is located, is captured.</p>
+<p>Relative stop time in seconds.</p>
 
 </div>
 
@@ -2262,10 +2203,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).dT" ><strong>TIMER.dT</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).EngageProbability" ><strong>AI_AIR_SQUADRON.EngageProbability</strong></a>
-    
-
+<p>Time interval between function calls in seconds.</p>
 
 </div>
 
@@ -2273,10 +2214,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #function
+<a id="#(TIMER).func" ><strong>TIMER.func</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).FuelThreshold" ><strong>AI_AIR_SQUADRON.FuelThreshold</strong></a>
-    
-
+<p>Timer function.</p>
 
 </div>
 
@@ -2284,10 +2225,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(TIMER).lid" ><strong>TIMER.lid</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Grouping" ><strong>AI_AIR_SQUADRON.Grouping</strong></a>
-    
-
+<p>Class id string for output to DCS log file.</p>
 
 </div>
 
@@ -2295,10 +2236,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).ncalls" ><strong>TIMER.ncalls</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Landing" ><strong>AI_AIR_SQUADRON.Landing</strong></a>
-    
-
+<p>Counter of function calls.</p>
 
 </div>
 
@@ -2306,32 +2247,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).ncallsMax" ><strong>TIMER.ncallsMax</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Name" ><strong>AI_AIR_SQUADRON.Name</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AI_AIR_SQUADRON).Overhead" ><strong>AI_AIR_SQUADRON.Overhead</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AI_AIR_SQUADRON).RadioFrequency" ><strong>AI_AIR_SQUADRON.RadioFrequency</strong></a>
-    
-
+<p>Max number of function calls. If reached, timer is stopped.</p>
 
 </div>
 
@@ -2340,9 +2259,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
-<a id="#(AI_AIR_SQUADRON).Spawn" ><strong>AI_AIR_SQUADRON.Spawn</strong></a>
+<a id="#(TIMER).para" ><strong>TIMER.para</strong></a>
     
-
+<p>Parameters passed to the timer function.</p>
 
 </div>
 
@@ -2350,10 +2269,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).tid" ><strong>TIMER.tid</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Takeoff" ><strong>AI_AIR_SQUADRON.Takeoff</strong></a>
-    
-
+<p>Timer ID returned by the DCS API function.</p>
 
 </div>
 
@@ -2361,21 +2280,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(TIMER).version" ><strong>TIMER.version</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).TankerName" ><strong>AI_AIR_SQUADRON.TankerName</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AI_AIR_SQUADRON).TemplatePrefixes" ><strong>AI_AIR_SQUADRON.TemplatePrefixes</strong></a>
-    
-
+<p>TIMER class version.</p>
 
 </div>
 
@@ -2386,380 +2294,51 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).AddResources" ><strong>AI_AIR_SQUADRON:AddResources(Resources)</strong></a></h2>
+<h2><a id="#(TIMER).New" ><strong>TIMER:New(Function, ...)</strong></a></h2>
 </div>
     
-<p>Add Resources to the Squadron.</p>
-
-<div id= "#Functions##AddResources" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Resources</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Resources to be added.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetEngageProbability" ><strong>AI_AIR_SQUADRON:GetEngageProbability()</strong></a></h2>
-</div>
-    
-<p>Get the EngageProbability of the Squadron.</p>
-
-<div id= "#Functions##GetEngageProbability" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron EngageProbability.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetFuelThreshold" ><strong>AI_AIR_SQUADRON:GetFuelThreshold()</strong></a></h2>
-</div>
-    
-<p>Get the FuelThreshold of the Squadron.</p>
-
-<div id= "#Functions##GetFuelThreshold" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron FuelThreshold.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetGrouping" ><strong>AI_AIR_SQUADRON:GetGrouping()</strong></a></h2>
-</div>
-    
-<p>Get the Grouping of the Squadron.</p>
-
-<div id= "#Functions##GetGrouping" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron Grouping.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetLanding" ><strong>AI_AIR_SQUADRON:GetLanding()</strong></a></h2>
-</div>
-    
-<p>Get the Landing of the Squadron.</p>
-
-<div id= "#Functions##GetLanding" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron Landing.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetName" ><strong>AI_AIR_SQUADRON:GetName()</strong></a></h2>
-</div>
-    
-<p>Get the Name of the Squadron.</p>
-
-<div id= "#Functions##GetName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron Name.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetOverhead" ><strong>AI_AIR_SQUADRON:GetOverhead()</strong></a></h2>
-</div>
-    
-<p>Get the Overhead of the Squadron.</p>
-
-<div id= "#Functions##GetOverhead" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron Overhead.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetResourceCount" ><strong>AI_AIR_SQUADRON:GetResourceCount()</strong></a></h2>
-</div>
-    
-<p>Get the ResourceCount of the Squadron.</p>
-
-<div id= "#Functions##GetResourceCount" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron ResourceCount.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetTakeoff" ><strong>AI_AIR_SQUADRON:GetTakeoff()</strong></a></h2>
-</div>
-    
-<p>Get the Takeoff of the Squadron.</p>
-
-<div id= "#Functions##GetTakeoff" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#number:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron Takeoff.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetTankerName" ><strong>AI_AIR_SQUADRON:GetTankerName()</strong></a></h2>
-</div>
-    
-<p>Get the Tanker Name of the Squadron.</p>
-
-<div id= "#Functions##GetTankerName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron Tanker Name.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).New" ><strong>AI_AIR_SQUADRON:New(SquadronName, AirbaseName, TemplatePrefixes, ResourceCount)</strong></a></h2>
-</div>
-    
-<p>Creates a new AI_AIR_SQUADRON object</p>
+<p>Create a new TIMER object.</p>
 
 <div id= "#Functions##New" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
+<p>TIMER</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>SquadronName</strong></strong>
+                #function
+            <strong><strong>Function</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>The function to call.</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>AirbaseName</strong></strong>
+            <strong><strong>...</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>TemplatePrefixes</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>ResourceCount</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
+              
+<p>Parameters passed to the function if any.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
       </div>
       <div class="w3-half">
         
-
+<p>self</p>
 
       </div>
     </div>
@@ -2771,39 +2350,42 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).RemoveResources" ><strong>AI_AIR_SQUADRON:RemoveResources(Resources)</strong></a></h2>
+<h2><a id="#(TIMER).SetMaxFunctionCalls" ><strong>TIMER:SetMaxFunctionCalls(Nmax)</strong></a></h2>
 </div>
     
-<p>Remove Resources to the Squadron.</p>
+<p>Set max number of function calls.</p>
 
-<div id= "#Functions##RemoveResources" class="w3-show w3-white">
+    
+<p>When the function has been called this many times, the TIMER is stopped.</p>
+
+<div id= "#Functions##SetMaxFunctionCalls" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
+<p>TIMER</p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>Resources</strong></strong>
+            <strong><strong>Nmax</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The Resources to be removed.</p>
+<p>Set number of max function calls.</p>
 
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
       </div>
       <div class="w3-half">
         
-<p>The Squadron.</p>
+<p>self</p>
 
       </div>
     </div>
@@ -2815,292 +2397,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetEngageProbability" ><strong>AI_AIR_SQUADRON:SetEngageProbability(EngageProbability)</strong></a></h2>
+<h2><a id="#(TIMER).Start" ><strong>TIMER:Start(Tstart, dT, Duration)</strong></a></h2>
 </div>
     
-<p>Set the EngageProbability of the Squadron.</p>
+<p>Create a new TIMER object.</p>
 
-<div id= "#Functions##SetEngageProbability" class="w3-show w3-white">
+<div id= "#Functions##Start" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>EngageProbability</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron EngageProbability.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetFuelThreshold" ><strong>AI_AIR_SQUADRON:SetFuelThreshold(FuelThreshold)</strong></a></h2>
-</div>
-    
-<p>Set the FuelThreshold of the Squadron.</p>
-
-<div id= "#Functions##SetFuelThreshold" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>FuelThreshold</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron FuelThreshold.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetGrouping" ><strong>AI_AIR_SQUADRON:SetGrouping(Grouping)</strong></a></h2>
-</div>
-    
-<p>Set the Grouping of the Squadron.</p>
-
-<div id= "#Functions##SetGrouping" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Grouping</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron Grouping.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetLanding" ><strong>AI_AIR_SQUADRON:SetLanding(Landing)</strong></a></h2>
-</div>
-    
-<p>Set the Landing of the Squadron.</p>
-
-<div id= "#Functions##SetLanding" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Landing</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron Landing.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetName" ><strong>AI_AIR_SQUADRON:SetName(Name)</strong></a></h2>
-</div>
-    
-<p>Set the Name of the Squadron.</p>
-
-<div id= "#Functions##SetName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Name</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron Name.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetOverhead" ><strong>AI_AIR_SQUADRON:SetOverhead(Overhead)</strong></a></h2>
-</div>
-    
-<p>Set the Overhead of the Squadron.</p>
-
-<div id= "#Functions##SetOverhead" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Overhead</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron Overhead.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetRadio" ><strong>AI_AIR_SQUADRON:SetRadio(RadioFrequency, RadioModulation, RadioPower, Language)</strong></a></h2>
-</div>
-    
-<p>Set the Radio of the Squadron.</p>
-
-<div id= "#Functions##SetRadio" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
+<p>TIMER</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>RadioFrequency</strong></strong>
+            <strong><strong>Tstart</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The frequency of communication.</p>
+<p>Relative start time in seconds.</p>
 
           </div>
         </div>
@@ -3108,12 +2426,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>RadioModulation</strong></strong>
+            <strong><strong>dT</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The modulation of communication.</p>
+<p>Interval between function calls in seconds. If not specified <code>nil</code>, the function is called only once.</p>
 
           </div>
         </div>
@@ -3121,36 +2439,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>RadioPower</strong></strong>
+            <strong><strong>Duration</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The power in Watts of communication.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Language</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The language of the radio speech.</p>
+<p>Time in seconds for how long the timer is running. If not specified <code>nil</code>, the timer runs forever or until stopped manually by the <code>TIMER:Stop()</code> function.</p>
 
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
       </div>
       <div class="w3-half">
         
-<p>The Squadron.</p>
+<p>self</p>
 
       </div>
     </div>
@@ -3162,39 +2467,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetResourceCount" ><strong>AI_AIR_SQUADRON:SetResourceCount(ResourceCount)</strong></a></h2>
+<h2><a id="#(TIMER).Stop" ><strong>TIMER:Stop(Delay)</strong></a></h2>
 </div>
     
-<p>Set the ResourceCount of the Squadron.</p>
+<p>Stop the timer by removing the timer function.</p>
 
-<div id= "#Functions##SetResourceCount" class="w3-show w3-white">
+<div id= "#Functions##Stop" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
+<p>TIMER</p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>ResourceCount</strong></strong>
+            <strong><strong>Delay</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The Squadron ResourceCount.</p>
+<p>(Optional) Delay in seconds, before the timer is stopped.</p>
 
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
       </div>
       <div class="w3-half">
         
-<p>The Squadron.</p>
+<p>self</p>
 
       </div>
     </div>
@@ -3206,83 +2511,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetTakeoff" ><strong>AI_AIR_SQUADRON:SetTakeoff(Takeoff)</strong></a></h2>
+<h2><a id="#(TIMER)._Function" ><strong>TIMER:_Function(time)</strong></a></h2>
 </div>
     
-<p>Set the Takeoff of the Squadron.</p>
+<p>Call timer function.</p>
 
-<div id= "#Functions##SetTakeoff" class="w3-show w3-white">
+<div id= "#Functions##_Function" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
+<p>TIMER</p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>Takeoff</strong></strong>
+            <strong><strong>time</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The Squadron Takeoff.</p>
+<p>DCS model time in seconds.</p>
 
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
+        <p>#number:</p>
       </div>
       <div class="w3-half">
         
-<p>The Squadron.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetTankerName" ><strong>AI_AIR_SQUADRON:SetTankerName(TankerName)</strong></a></h2>
-</div>
-    
-<p>Set the TankerName of the Squadron.</p>
-
-<div id= "#Functions##SetTankerName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_AIR_SQUADRON</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>TankerName</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Squadron Tanker Name.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_SQUADRON)">#AI_AIR_SQUADRON</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Squadron.</p>
+<p>Time when the function is called again or <code>nil</code> if the timer is stopped.</p>
 
       </div>
     </div>
@@ -3297,10 +2558,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(TIMER).ClassName" ><strong>TIMER.ClassName</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Airbase" ><strong>AI_AIR_SQUADRON.Airbase</strong></a>
-    
-
+<p>Name of the class.</p>
 
 </div>
 
@@ -3308,10 +2569,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).Tstart" ><strong>TIMER.Tstart</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).AirbaseName" ><strong>AI_AIR_SQUADRON.AirbaseName</strong></a>
-    
-
+<p>Relative start time in seconds.</p>
 
 </div>
 
@@ -3319,13 +2580,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(AI_AIR_SQUADRON).Captured" ><strong>AI_AIR_SQUADRON.Captured</strong></a>
+    #number
+<a id="#(TIMER).Tstop" ><strong>TIMER.Tstop</strong></a>
     
-
-
-    
-<p> Not captured. This flag will be set to true, when the airbase where the squadron is located, is captured.</p>
+<p>Relative stop time in seconds.</p>
 
 </div>
 
@@ -3333,10 +2591,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).dT" ><strong>TIMER.dT</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).EngageProbability" ><strong>AI_AIR_SQUADRON.EngageProbability</strong></a>
-    
-
+<p>Time interval between function calls in seconds.</p>
 
 </div>
 
@@ -3344,10 +2602,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #function
+<a id="#(TIMER).func" ><strong>TIMER.func</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).FuelThreshold" ><strong>AI_AIR_SQUADRON.FuelThreshold</strong></a>
-    
-
+<p>Timer function.</p>
 
 </div>
 
@@ -3355,10 +2613,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(TIMER).lid" ><strong>TIMER.lid</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Grouping" ><strong>AI_AIR_SQUADRON.Grouping</strong></a>
-    
-
+<p>Class id string for output to DCS log file.</p>
 
 </div>
 
@@ -3366,10 +2624,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).ncalls" ><strong>TIMER.ncalls</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Landing" ><strong>AI_AIR_SQUADRON.Landing</strong></a>
-    
-
+<p>Counter of function calls.</p>
 
 </div>
 
@@ -3377,32 +2635,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).ncallsMax" ><strong>TIMER.ncallsMax</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Name" ><strong>AI_AIR_SQUADRON.Name</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AI_AIR_SQUADRON).Overhead" ><strong>AI_AIR_SQUADRON.Overhead</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AI_AIR_SQUADRON).RadioFrequency" ><strong>AI_AIR_SQUADRON.RadioFrequency</strong></a>
-    
-
+<p>Max number of function calls. If reached, timer is stopped.</p>
 
 </div>
 
@@ -3411,9 +2647,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
-<a id="#(AI_AIR_SQUADRON).Spawn" ><strong>AI_AIR_SQUADRON.Spawn</strong></a>
+<a id="#(TIMER).para" ><strong>TIMER.para</strong></a>
     
-
+<p>Parameters passed to the timer function.</p>
 
 </div>
 
@@ -3421,10 +2657,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(TIMER).tid" ><strong>TIMER.tid</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).Takeoff" ><strong>AI_AIR_SQUADRON.Takeoff</strong></a>
-    
-
+<p>Timer ID returned by the DCS API function.</p>
 
 </div>
 
@@ -3432,21 +2668,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(TIMER).version" ><strong>TIMER.version</strong></a>
     
-<a id="#(AI_AIR_SQUADRON).TankerName" ><strong>AI_AIR_SQUADRON.TankerName</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AI_AIR_SQUADRON).TemplatePrefixes" ><strong>AI_AIR_SQUADRON.TemplatePrefixes</strong></a>
-    
-
+<p>TIMER class version.</p>
 
 </div>
 
@@ -3457,7 +2682,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).ClearState" ><strong>AI_AIR_SQUADRON:ClearState(Object, StateName)</strong></a></h2>
+<h2><a id="#(TIMER).ClearState" ><strong>TIMER:ClearState(Object, StateName)</strong></a></h2>
 </div>
     
 <p>Clear the state of an object.</p>
@@ -3501,7 +2726,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).CreateEventBirth" ><strong>AI_AIR_SQUADRON:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+<h2><a id="#(TIMER).CreateEventBirth" ><strong>TIMER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
 </div>
     
 <p>Creation of a Birth Event.</p>
@@ -3580,7 +2805,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).CreateEventCrash" ><strong>AI_AIR_SQUADRON:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(TIMER).CreateEventCrash" ><strong>TIMER:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Crash Event.</p>
@@ -3626,7 +2851,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).CreateEventDead" ><strong>AI_AIR_SQUADRON:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(TIMER).CreateEventDead" ><strong>TIMER:CreateEventDead(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Dead Event.</p>
@@ -3672,7 +2897,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).CreateEventRemoveUnit" ><strong>AI_AIR_SQUADRON:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(TIMER).CreateEventRemoveUnit" ><strong>TIMER:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Remove Unit Event.</p>
@@ -3718,7 +2943,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).CreateEventTakeoff" ><strong>AI_AIR_SQUADRON:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(TIMER).CreateEventTakeoff" ><strong>TIMER:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Takeoff Event.</p>
@@ -3764,7 +2989,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).E" ><strong>AI_AIR_SQUADRON:E(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).E" ><strong>TIMER:E(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an exception which will be traced always.</p>
@@ -3799,7 +3024,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).EventDispatcher" ><strong>AI_AIR_SQUADRON:EventDispatcher()</strong></a></h2>
+<h2><a id="#(TIMER).EventDispatcher" ><strong>TIMER:EventDispatcher()</strong></a></h2>
 </div>
     
 <p>Returns the event dispatcher</p>
@@ -3829,7 +3054,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).EventRemoveAll" ><strong>AI_AIR_SQUADRON:EventRemoveAll()</strong></a></h2>
+<h2><a id="#(TIMER).EventRemoveAll" ><strong>TIMER:EventRemoveAll()</strong></a></h2>
 </div>
     
 <p>Remove all subscribed events</p>
@@ -3859,7 +3084,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).F" ><strong>AI_AIR_SQUADRON:F(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).F" ><strong>TIMER:F(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -3894,7 +3119,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).F2" ><strong>AI_AIR_SQUADRON:F2(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).F2" ><strong>TIMER:F2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 2.</p>
@@ -3929,7 +3154,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).F3" ><strong>AI_AIR_SQUADRON:F3(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).F3" ><strong>TIMER:F3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 3.</p>
@@ -3964,7 +3189,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetClassID" ><strong>AI_AIR_SQUADRON:GetClassID()</strong></a></h2>
+<h2><a id="#(TIMER).GetClassID" ><strong>TIMER:GetClassID()</strong></a></h2>
 </div>
     
 <p>Get the ClassID of the class instance.</p>
@@ -3994,7 +3219,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetClassName" ><strong>AI_AIR_SQUADRON:GetClassName()</strong></a></h2>
+<h2><a id="#(TIMER).GetClassName" ><strong>TIMER:GetClassName()</strong></a></h2>
 </div>
     
 <p>Get the ClassName of the class instance.</p>
@@ -4024,7 +3249,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetClassNameAndID" ><strong>AI_AIR_SQUADRON:GetClassNameAndID()</strong></a></h2>
+<h2><a id="#(TIMER).GetClassNameAndID" ><strong>TIMER:GetClassNameAndID()</strong></a></h2>
 </div>
     
 <p>Get the ClassName + ClassID of the class instance.</p>
@@ -4057,7 +3282,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetEventPriority" ><strong>AI_AIR_SQUADRON:GetEventPriority()</strong></a></h2>
+<h2><a id="#(TIMER).GetEventPriority" ><strong>TIMER:GetEventPriority()</strong></a></h2>
 </div>
     
 <p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
@@ -4091,7 +3316,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetParent" ><strong>AI_AIR_SQUADRON:GetParent(Child, FromClass)</strong></a></h2>
+<h2><a id="#(TIMER).GetParent" ><strong>TIMER:GetParent(Child, FromClass)</strong></a></h2>
 </div>
     
 <p>This is the worker method to retrieve the Parent class.</p>
@@ -4156,7 +3381,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).GetState" ><strong>AI_AIR_SQUADRON:GetState(Object, Key)</strong></a></h2>
+<h2><a id="#(TIMER).GetState" ><strong>TIMER:GetState(Object, Key)</strong></a></h2>
 </div>
     
 <p>Get a Value given a Key from the Object.</p>
@@ -4213,7 +3438,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).HandleEvent" ><strong>AI_AIR_SQUADRON:HandleEvent(Event, EventFunction)</strong></a></h2>
+<h2><a id="#(TIMER).HandleEvent" ><strong>TIMER:HandleEvent(Event, EventFunction)</strong></a></h2>
 </div>
     
 <p>Subscribe to a DCS Event.</p>
@@ -4268,7 +3493,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).I" ><strong>AI_AIR_SQUADRON:I(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).I" ><strong>TIMER:I(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an information which will be traced always.</p>
@@ -4303,7 +3528,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).Inherit" ><strong>AI_AIR_SQUADRON:Inherit(Child, Parent)</strong></a></h2>
+<h2><a id="#(TIMER).Inherit" ><strong>TIMER:Inherit(Child, Parent)</strong></a></h2>
 </div>
     
 <p>This is the worker method to inherit from a parent class.</p>
@@ -4359,7 +3584,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).IsInstanceOf" ><strong>AI_AIR_SQUADRON:IsInstanceOf(ClassName)</strong></a></h2>
+<h2><a id="#(TIMER).IsInstanceOf" ><strong>TIMER:IsInstanceOf(ClassName)</strong></a></h2>
 </div>
     
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
@@ -4415,7 +3640,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).IsTrace" ><strong>AI_AIR_SQUADRON:IsTrace()</strong></a></h2>
+<h2><a id="#(TIMER).IsTrace" ><strong>TIMER:IsTrace()</strong></a></h2>
 </div>
     
 <p>Enquires if tracing is on (for the class).</p>
@@ -4445,7 +3670,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).New" ><strong>AI_AIR_SQUADRON:New()</strong></a></h2>
+<h2><a id="#(TIMER).New" ><strong>TIMER:New()</strong></a></h2>
 </div>
     
 <p>BASE constructor.</p>
@@ -4486,7 +3711,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEvent" ><strong>AI_AIR_SQUADRON:OnEvent(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEvent" ><strong>TIMER:OnEvent(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is completely destroyed.</p>
@@ -4522,7 +3747,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventBaseCaptured" ><strong>AI_AIR_SQUADRON:OnEventBaseCaptured(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventBaseCaptured" ><strong>TIMER:OnEventBaseCaptured(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
@@ -4559,7 +3784,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventBirth" ><strong>AI_AIR_SQUADRON:OnEventBirth(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventBirth" ><strong>TIMER:OnEventBirth(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any object is spawned into the mission.</p>
@@ -4595,7 +3820,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventCrash" ><strong>AI_AIR_SQUADRON:OnEventCrash(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventCrash" ><strong>TIMER:OnEventCrash(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
@@ -4631,7 +3856,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventDead" ><strong>AI_AIR_SQUADRON:OnEventDead(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventDead" ><strong>TIMER:OnEventDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is dead.</p>
@@ -4667,7 +3892,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventDetailedFailure" ><strong>AI_AIR_SQUADRON:OnEventDetailedFailure(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventDetailedFailure" ><strong>TIMER:OnEventDetailedFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Unknown precisely what creates this event, likely tied into newer damage model.</p>
@@ -4708,7 +3933,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventEjection" ><strong>AI_AIR_SQUADRON:OnEventEjection(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventEjection" ><strong>TIMER:OnEventEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a pilot ejects from an aircraft
@@ -4742,7 +3967,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventEngineShutdown" ><strong>AI_AIR_SQUADRON:OnEventEngineShutdown(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventEngineShutdown" ><strong>TIMER:OnEventEngineShutdown(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft shuts down its engines.</p>
@@ -4778,7 +4003,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventEngineStartup" ><strong>AI_AIR_SQUADRON:OnEventEngineStartup(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventEngineStartup" ><strong>TIMER:OnEventEngineStartup(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft starts its engines.</p>
@@ -4814,7 +4039,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventHit" ><strong>AI_AIR_SQUADRON:OnEventHit(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventHit" ><strong>TIMER:OnEventHit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever an object is hit by a weapon.</p>
@@ -4852,7 +4077,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventHumanFailure" ><strong>AI_AIR_SQUADRON:OnEventHumanFailure(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventHumanFailure" ><strong>TIMER:OnEventHumanFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any system fails on a human controlled aircraft.</p>
@@ -4888,7 +4113,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventKill" ><strong>AI_AIR_SQUADRON:OnEventKill(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventKill" ><strong>TIMER:OnEventKill(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs on the death of a unit.</p>
@@ -4931,7 +4156,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventLand" ><strong>AI_AIR_SQUADRON:OnEventLand(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventLand" ><strong>TIMER:OnEventLand(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft lands at an airbase, farp or ship
@@ -4969,7 +4194,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventLandingAfterEjection" ><strong>AI_AIR_SQUADRON:OnEventLandingAfterEjection(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventLandingAfterEjection" ><strong>TIMER:OnEventLandingAfterEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs shortly after the landing animation of an ejected pilot touching the ground and standing up.</p>
@@ -5012,7 +4237,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventMarkAdded" ><strong>AI_AIR_SQUADRON:OnEventMarkAdded(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventMarkAdded" ><strong>TIMER:OnEventMarkAdded(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a new mark was added.</p>
@@ -5048,7 +4273,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventMarkChange" ><strong>AI_AIR_SQUADRON:OnEventMarkChange(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventMarkChange" ><strong>TIMER:OnEventMarkChange(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark text was changed.</p>
@@ -5084,7 +4309,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventMarkRemoved" ><strong>AI_AIR_SQUADRON:OnEventMarkRemoved(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventMarkRemoved" ><strong>TIMER:OnEventMarkRemoved(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark was removed.</p>
@@ -5120,7 +4345,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventMissionEnd" ><strong>AI_AIR_SQUADRON:OnEventMissionEnd(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventMissionEnd" ><strong>TIMER:OnEventMissionEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission ends</p>
@@ -5153,7 +4378,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventMissionStart" ><strong>AI_AIR_SQUADRON:OnEventMissionStart(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventMissionStart" ><strong>TIMER:OnEventMissionStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission starts </p>
@@ -5186,7 +4411,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventPilotDead" ><strong>AI_AIR_SQUADRON:OnEventPilotDead(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventPilotDead" ><strong>TIMER:OnEventPilotDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the pilot of an aircraft is killed.</p>
@@ -5223,7 +4448,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventPlayerEnterUnit" ><strong>AI_AIR_SQUADRON:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventPlayerEnterUnit" ><strong>TIMER:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player assumes direct control of a unit.</p>
@@ -5259,7 +4484,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventPlayerLeaveUnit" ><strong>AI_AIR_SQUADRON:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventPlayerLeaveUnit" ><strong>TIMER:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player relieves control of a unit to the AI.</p>
@@ -5295,7 +4520,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventRefueling" ><strong>AI_AIR_SQUADRON:OnEventRefueling(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventRefueling" ><strong>TIMER:OnEventRefueling(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
@@ -5331,7 +4556,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventRefuelingStop" ><strong>AI_AIR_SQUADRON:OnEventRefuelingStop(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventRefuelingStop" ><strong>TIMER:OnEventRefuelingStop(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft is finished taking fuel.</p>
@@ -5367,7 +4592,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventScore" ><strong>AI_AIR_SQUADRON:OnEventScore(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventScore" ><strong>TIMER:OnEventScore(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any modification to the "Score" as seen on the debrief menu would occur.</p>
@@ -5403,7 +4628,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventShootingEnd" ><strong>AI_AIR_SQUADRON:OnEventShootingEnd(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventShootingEnd" ><strong>TIMER:OnEventShootingEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit stops firing its weapon.</p>
@@ -5440,7 +4665,7 @@ initiator : The unit that was doing the shooting. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventShootingStart" ><strong>AI_AIR_SQUADRON:OnEventShootingStart(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventShootingStart" ><strong>TIMER:OnEventShootingStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
@@ -5478,7 +4703,7 @@ target: The unit that is being targeted. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventShot" ><strong>AI_AIR_SQUADRON:OnEventShot(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventShot" ><strong>TIMER:OnEventShot(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
@@ -5514,7 +4739,7 @@ target: The unit that is being targeted. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventTakeoff" ><strong>AI_AIR_SQUADRON:OnEventTakeoff(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventTakeoff" ><strong>TIMER:OnEventTakeoff(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
@@ -5551,7 +4776,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).OnEventUnitLost" ><strong>AI_AIR_SQUADRON:OnEventUnitLost(EventData)</strong></a></h2>
+<h2><a id="#(TIMER).OnEventUnitLost" ><strong>TIMER:OnEventUnitLost(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the game thinks an object is destroyed.</p>
@@ -5591,7 +4816,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).ScheduleOnce" ><strong>AI_AIR_SQUADRON:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(TIMER).ScheduleOnce" ><strong>TIMER:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -5664,7 +4889,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).ScheduleRepeat" ><strong>AI_AIR_SQUADRON:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(TIMER).ScheduleRepeat" ><strong>TIMER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -5776,7 +5001,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).ScheduleStop" ><strong>AI_AIR_SQUADRON:ScheduleStop(SchedulerFunction)</strong></a></h2>
+<h2><a id="#(TIMER).ScheduleStop" ><strong>TIMER:ScheduleStop(SchedulerFunction)</strong></a></h2>
 </div>
     
 <p>Stops the Schedule.</p>
@@ -5809,7 +5034,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetEventPriority" ><strong>AI_AIR_SQUADRON:SetEventPriority(EventPriority)</strong></a></h2>
+<h2><a id="#(TIMER).SetEventPriority" ><strong>TIMER:SetEventPriority(EventPriority)</strong></a></h2>
 </div>
     
 <p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
@@ -5857,7 +5082,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).SetState" ><strong>AI_AIR_SQUADRON:SetState(Object, Key, Value)</strong></a></h2>
+<h2><a id="#(TIMER).SetState" ><strong>TIMER:SetState(Object, Key, Value)</strong></a></h2>
 </div>
     
 <p>Set a state or property of the Object given a Key and a Value.</p>
@@ -5926,7 +5151,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).T" ><strong>AI_AIR_SQUADRON:T(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).T" ><strong>TIMER:T(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 1.</p>
@@ -5961,7 +5186,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).T2" ><strong>AI_AIR_SQUADRON:T2(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).T2" ><strong>TIMER:T2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 2.</p>
@@ -5996,7 +5221,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).T3" ><strong>AI_AIR_SQUADRON:T3(Arguments)</strong></a></h2>
+<h2><a id="#(TIMER).T3" ><strong>TIMER:T3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 3.</p>
@@ -6031,7 +5256,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceAll" ><strong>AI_AIR_SQUADRON:TraceAll(TraceAll)</strong></a></h2>
+<h2><a id="#(TIMER).TraceAll" ><strong>TIMER:TraceAll(TraceAll)</strong></a></h2>
 </div>
     
 <p>Trace all methods in MOOSE</p>
@@ -6064,7 +5289,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceClass" ><strong>AI_AIR_SQUADRON:TraceClass(Class)</strong></a></h2>
+<h2><a id="#(TIMER).TraceClass" ><strong>TIMER:TraceClass(Class)</strong></a></h2>
 </div>
     
 <p>Set tracing for a class</p>
@@ -6095,7 +5320,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceClassMethod" ><strong>AI_AIR_SQUADRON:TraceClassMethod(Class, Method)</strong></a></h2>
+<h2><a id="#(TIMER).TraceClassMethod" ><strong>TIMER:TraceClassMethod(Class, Method)</strong></a></h2>
 </div>
     
 <p>Set tracing for a specific method of  class</p>
@@ -6137,7 +5362,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceLevel" ><strong>AI_AIR_SQUADRON:TraceLevel(Level)</strong></a></h2>
+<h2><a id="#(TIMER).TraceLevel" ><strong>TIMER:TraceLevel(Level)</strong></a></h2>
 </div>
     
 <p>Set trace level</p>
@@ -6168,7 +5393,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceOff" ><strong>AI_AIR_SQUADRON:TraceOff()</strong></a></h2>
+<h2><a id="#(TIMER).TraceOff" ><strong>TIMER:TraceOff()</strong></a></h2>
 </div>
     
 <p>Set trace off.</p>
@@ -6191,7 +5416,7 @@ BASE:TraceOff()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceOn" ><strong>AI_AIR_SQUADRON:TraceOn()</strong></a></h2>
+<h2><a id="#(TIMER).TraceOn" ><strong>TIMER:TraceOn()</strong></a></h2>
 </div>
     
 <p>Set trace on.</p>
@@ -6214,7 +5439,7 @@ BASE:TraceOn()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).TraceOnOff" ><strong>AI_AIR_SQUADRON:TraceOnOff(TraceOnOff)</strong></a></h2>
+<h2><a id="#(TIMER).TraceOnOff" ><strong>TIMER:TraceOnOff(TraceOnOff)</strong></a></h2>
 </div>
     
 <p>Set trace on or off
@@ -6260,7 +5485,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).UnHandleEvent" ><strong>AI_AIR_SQUADRON:UnHandleEvent(Event)</strong></a></h2>
+<h2><a id="#(TIMER).UnHandleEvent" ><strong>TIMER:UnHandleEvent(Event)</strong></a></h2>
 </div>
     
 <p>UnSubscribe to a DCS event.</p>
@@ -6302,7 +5527,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON)._F" ><strong>AI_AIR_SQUADRON:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(TIMER)._F" ><strong>TIMER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -6357,7 +5582,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON)._T" ><strong>AI_AIR_SQUADRON:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(TIMER)._T" ><strong>TIMER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function logic.</p>
@@ -6409,7 +5634,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_AIR_SQUADRON).onEvent" ><strong>AI_AIR_SQUADRON:onEvent(event)</strong></a></h2>
+<h2><a id="#(TIMER).onEvent" ><strong>TIMER:onEvent(event)</strong></a></h2>
 </div>
     
 
@@ -6448,7 +5673,7 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/MOOSE.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/CORE_Timer.png')";
 }
 </script>
 
