@@ -1073,7 +1073,7 @@
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.OpsGroup.html">Ops.OpsGroup</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Ops</strong> - Generic group enhancement functions.</p>
+<p><strong>Ops</strong> - Generic group enhancement.</p>
 </p></div>
        </div>         
      </div>
@@ -1465,18 +1465,36 @@
 
     
 
-<p><strong>Main Features:</strong></p>
+<h2>Main Features:</h2>
 
 <ul>
-    <li>Dynamically add and remove waypoints.</li>
-    <li>Let the group steam into the wind.</li>
-    <li>Command a full stop.</li>
-    <li>Let a submarine dive and surface.</li>
+    <li>Let the group steam into the wind</li>
+    <li>Command a full stop</li>
+    <li>Patrol waypoints <em>ad infinitum</em></li>
+    <li>Collision warning, if group is heading towards a land mass</li>
+    <li>Automatic pathfinding, e.g. around islands</li>
+    <li>Let a submarine dive and surface</li>
+    <li>Manage TACAN and ICLS beacons</li>
+    <li>Dynamically add and remove waypoints</li>
+    <li>Sophisticated task queueing system (know when DCS tasks start and end)</li>
+    <li>Convenient checks when the group enters or leaves a zone</li>
+    <li>Detection events for new, known and lost units</li>
+    <li>Simple LASER and IR-pointer setup</li>
+    <li>Compatible with AUFTRAG class</li>
+    <li>Many additional events that the mission designer can hook into</li>
 </ul>
 
 <hr/>
 
+<h2>Example Missions:</h2>
+
+<p>Demo missions can be found on <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/OPS%20-%20Navygroup">github</a></p>
+
+<hr/>
+
 <h3>Author: <strong>funkyfranky</strong></h3>
+
+<hr/>
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
@@ -1554,7 +1572,7 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).AddTurnIntoWind">NAVYGROUP:AddTurnIntoWind(starttime, stoptime, speed, uturn, offset)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Add aircraft recovery time window and recovery case.</p>
+<p>Add a time window, where the groups steams into the wind.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1564,27 +1582,21 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).CreateTurnIntoWind">NAVYGROUP:CreateTurnIntoWind(starttime, stoptime, speed, uturn, offset)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Add aircraft recovery time window and recovery case.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).Debug">NAVYGROUP.Debug</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetHeadingIntoWind">NAVYGROUP:GetHeadingIntoWind(Offset)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get heading of group into the wind.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetNextTurnIntoWind">NAVYGROUP:GetNextTurnIntoWind()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetTurnIntoWindCurrent">NAVYGROUP:GetTurnIntoWindCurrent()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check queued turns into wind.</p>
+<p>Get the turn into wind window, which is currently open. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetTurnIntoWindNext">NAVYGROUP:GetTurnIntoWindNext()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the next turn into wind window, which is not yet running.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1660,6 +1672,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).RemoveTurnIntoWind">NAVYGROUP:RemoveTurnIntoWind(IntoWindData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove steam into wind window from queue.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).SetPathfinding">NAVYGROUP:SetPathfinding(Switch, CorridorWidth)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enable/disable pathfinding.</p>
@@ -1702,6 +1720,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._CreateTurnIntoWind">NAVYGROUP:_CreateTurnIntoWind(starttime, stoptime, speed, uturn, offset)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a turn into wind window.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._FindPathToNextWaypoint">NAVYGROUP:_FindPathToNextWaypoint()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Find free path to next waypoint.</p>
@@ -1727,12 +1751,6 @@
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).adinfinitum">NAVYGROUP.adinfinitum</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).ai">NAVYGROUP.ai</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -1781,6 +1799,12 @@
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).intowindcounter">NAVYGROUP.intowindcounter</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Counter of into wind IDs.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).isAI">NAVYGROUP.isAI</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -1900,9 +1924,15 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterTurnIntoWindOver">NAVYGROUP:onafterTurnIntoWindOver(From, Event, To, Duration, Speed, Uturn)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterTurnIntoWindOver">NAVYGROUP:onafterTurnIntoWindOver(From, Event, To, IntoWindData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "TurnIntoWindOver" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterTurnIntoWindStop">NAVYGROUP:onafterTurnIntoWindStop(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "TurnIntoWindStop" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1929,6 +1959,12 @@
 <ul>
     <li>Update status.</li>
 </ul>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onbeforeTurnIntoWindStop">NAVYGROUP:onbeforeTurnIntoWindStop(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "TurnIntoWindStop" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2138,6 +2174,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetAmmo0">NAVYGROUP:GetAmmo0()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get inital amount of ammunition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetAmmoElement">NAVYGROUP:GetAmmoElement(element)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the number of shells a unit or group currently has.</p>
@@ -2186,6 +2228,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetDetectedGroups">NAVYGROUP:GetDetectedGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get set of detected groups.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetDetectedUnits">NAVYGROUP:GetDetectedUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get set of detected units.</p>
@@ -2195,6 +2243,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetDistanceToWaypoint">NAVYGROUP:GetDistanceToWaypoint(indx)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get distance to waypoint.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetElementAlive">NAVYGROUP:GetElementAlive()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the first element of a group, which is alive.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2219,6 +2273,30 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetHeading">NAVYGROUP:GetHeading()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get current heading of the group.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetHighestThreat">NAVYGROUP:GetHighestThreat()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get highest threat.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetLaserCode">NAVYGROUP:GetLaserCode()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get LASER code. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetLaserCoordinate">NAVYGROUP:GetLaserCoordinate()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get current LASER coordinate, i.e.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetLaserTarget">NAVYGROUP:GetLaserTarget()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get current target of the LASER.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2327,6 +2405,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetTasksWaypoint">NAVYGROUP:GetTasksWaypoint(id)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the unfinished waypoint tasks</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetThreat">NAVYGROUP:GetThreat(ThreatLevelMin, ThreatLevelMax)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get highest detected threat.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2452,7 +2536,13 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).GetWeaponData">NAVYGROUP:GetWeaponData(BitType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Get weapon data.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).HasLoS">NAVYGROUP:HasLoS(Coordinate, Element, OffsetElement, OffsetCoordinate)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if an element of the group has line of sight to a coordinate.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2498,9 +2588,21 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).IsLasing">NAVYGROUP:IsLasing()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the group has currently switched a LASER on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).IsLateActivated">NAVYGROUP:IsLateActivated()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if this group is currently "late activated" and needs to be "activated" to appear in the mission.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).IsRearming">NAVYGROUP:IsRearming()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the group is currently rearming.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2667,6 +2769,18 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).SetLaser">NAVYGROUP:SetLaser(Code, CheckLOS, IROff, UpdateTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set LASER parameters. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).SetLaserTarget">NAVYGROUP:SetLaserTarget(Target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set LASER target.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).SetTask">NAVYGROUP:SetTask(DCSTask)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set DCS task.</p>
@@ -2787,6 +2901,18 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._CheckAmmoFull">NAVYGROUP:_CheckAmmoFull()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check ammo is full.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._CheckAmmoStatus">NAVYGROUP:_CheckAmmoStatus()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check ammo status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._CheckDetectedUnits">NAVYGROUP:_CheckDetectedUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check detected units.</p>
@@ -2808,6 +2934,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._CheckStuck">NAVYGROUP:_CheckStuck()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if group got stuck.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._CoordinateFromObject">NAVYGROUP:_CoordinateFromObject(Object)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get coordinate from an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2867,7 +2999,7 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._SetWaypointTasks">NAVYGROUP:_SetWaypointTasks(Waypoint)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>On after "GotoWaypoint" event.</p>
+<p>Set tasks at this waypoint</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2898,6 +3030,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._TaskExecute">NAVYGROUP._TaskExecute(group, opsgroup, task)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p> Function called when a task is executed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP)._UpdateLaser">NAVYGROUP:_UpdateLaser()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update laser point.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2937,9 +3075,10 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).ai">NAVYGROUP.ai</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).ammo">NAVYGROUP.ammo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, group is purely AI.</p>
+<p>Initial ammuont of ammo.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2990,6 +3129,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).dTpositionUpdate">NAVYGROUP.dTpositionUpdate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).detectedgroups">NAVYGROUP.detectedgroups</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set of detected groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3066,6 +3211,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).isAI">NAVYGROUP.isAI</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, group is purely AI.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).isAircraft">NAVYGROUP.isAircraft</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, group is airplane or helicopter.</p>
@@ -3127,6 +3278,18 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterDetectedGroup">NAVYGROUP:onafterDetectedGroup(From, Event, To, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "DetectedGroup" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterDetectedGroupNew">NAVYGROUP:onafterDetectedGroupNew(From, Event, To, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "DetectedGroupNew" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterDetectedUnit">NAVYGROUP:onafterDetectedUnit(From, Event, To, Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "DetectedUnit" event.</p>
@@ -3160,6 +3323,48 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterGotoWaypoint">NAVYGROUP:onafterGotoWaypoint(From, Event, To, UID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "GotoWaypoint" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserCode">NAVYGROUP:onafterLaserCode(From, Event, To, Code)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserCode" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserGotLOS">NAVYGROUP:onafterLaserGotLOS(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserGotLOS" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserLostLOS">NAVYGROUP:onafterLaserLostLOS(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserLostLOS" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserOff">NAVYGROUP:onafterLaserOff(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserOff" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserOn">NAVYGROUP:onafterLaserOn(From, Event, To, Target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserOn" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserPause">NAVYGROUP:onafterLaserPause(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserPause" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterLaserResume">NAVYGROUP:onafterLaserResume(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserResume" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3225,13 +3430,31 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterTaskExecute">NAVYGROUP:onafterTaskExecute(From, Event, To, Task)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>On after TaskExecute event.</p>
+<p>On after "TaskExecute" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onafterUnpauseMission">NAVYGROUP:onafterUnpauseMission(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "UnpauseMission" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onbeforeLaserOff">NAVYGROUP:onbeforeLaserOff(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "LaserOff" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onbeforeLaserOn">NAVYGROUP:onbeforeLaserOn(From, Event, To, Target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "LaserOn" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).onbeforeLaserResume">NAVYGROUP:onbeforeLaserResume(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "LaserResume" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3269,6 +3492,60 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).orientXLast">NAVYGROUP.orientXLast</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Backup of last orientation to monitor changes.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outofAmmo">NAVYGROUP.outofAmmo</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outofBombs">NAVYGROUP.outofBombs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outofGuns">NAVYGROUP.outofGuns</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outofMissiles">NAVYGROUP.outofMissiles</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outofRockets">NAVYGROUP.outofRockets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outoffBombs">NAVYGROUP.outoffBombs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outoffGuns">NAVYGROUP.outoffGuns</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outoffMissiles">NAVYGROUP.outoffMissiles</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).outoffRockets">NAVYGROUP.outoffRockets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3336,6 +3613,13 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).speedWp">NAVYGROUP.speedWp</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Speed to the next waypoint in m/s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).spot">NAVYGROUP.spot</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Laser and IR spot.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3589,7 +3873,7 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).Is">NAVYGROUP:Is(State, If)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).Is">NAVYGROUP:Is(State)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if FSM is in state.</p>
 </td>
@@ -3739,7 +4023,7 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).is">NAVYGROUP:is(State, If, state)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP).is">NAVYGROUP:is(State, state)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if FSM is in state.</p>
 </td>
@@ -4263,9 +4547,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP.Element).ai">NAVYGROUP.Element.ai</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP.Element).ammo0">NAVYGROUP.Element.ammo0</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP.Element).category">NAVYGROUP.Element.category</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP.Element).categoryname">NAVYGROUP.Element.categoryname</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP.Element).name">NAVYGROUP.Element.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of the element, i.e. the unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(NAVYGROUP.Element).skill">NAVYGROUP.Element.skill</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -4386,17 +4700,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(NAVYGROUP).Debug" ><strong>NAVYGROUP.Debug</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(NAVYGROUP).Qintowind" ><strong>NAVYGROUP.Qintowind</strong></a>
     
@@ -4408,35 +4711,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).actype" ><strong>NAVYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).adinfinitum" ><strong>NAVYGROUP.adinfinitum</strong></a>
     
 
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(NAVYGROUP).ai" ><strong>NAVYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -4480,17 +4758,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).descriptors" ><strong>NAVYGROUP.descriptors</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).groupinitialized" ><strong>NAVYGROUP.groupinitialized</strong></a>
     
@@ -4520,6 +4787,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(NAVYGROUP).intowind" ><strong>NAVYGROUP.intowind</strong></a>
     
 <p>Into wind info.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(NAVYGROUP).intowindcounter" ><strong>NAVYGROUP.intowindcounter</strong></a>
+    
+<p>Counter of into wind IDs.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(NAVYGROUP).isAI" ><strong>NAVYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ships are always AI.</p>
 
 </div>
 
@@ -5085,7 +5377,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(NAVYGROUP).AddTurnIntoWind" ><strong>NAVYGROUP:AddTurnIntoWind(starttime, stoptime, speed, uturn, offset)</strong></a></h2>
 </div>
     
-<p>Add aircraft recovery time window and recovery case.</p>
+<p>Add a time window, where the groups steams into the wind.</p>
 
 <div id= "#Functions##AddTurnIntoWind" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5142,7 +5434,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>If true (or nil), carrier wil perform a U-turn and go back to where it came from before resuming its route to the next waypoint. If false, it will go directly to the next waypoint.</p>
+<p>If <code>true</code> (or <code>nil</code>), carrier wil perform a U-turn and go back to where it came from before resuming its route to the next waypoint. If false, it will go directly to the next waypoint.</p>
 
           </div>
         </div>
@@ -5166,7 +5458,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-<p>Recovery window.</p>
+<p>Turn into window data table.</p>
 
       </div>
     </div>
@@ -5274,102 +5566,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(NAVYGROUP).CreateTurnIntoWind" ><strong>NAVYGROUP:CreateTurnIntoWind(starttime, stoptime, speed, uturn, offset)</strong></a></h2>
-</div>
-    
-<p>Add aircraft recovery time window and recovery case.</p>
-
-<div id= "#Functions##CreateTurnIntoWind" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>NAVYGROUP</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>starttime</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Start time, e.g. "8:00" for eight o'clock. Default now.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>stoptime</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Stop time, e.g. "9:00" for nine o'clock. Default 90 minutes after start time.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>speed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Speed in knots during turn into wind leg.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>uturn</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>If true (or nil), carrier wil perform a U-turn and go back to where it came from before resuming its route to the next waypoint. If false, it will go directly to the next waypoint.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>offset</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Offset angle in degrees, e.g. to account for an angled runway. Default 0 deg.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(NAVYGROUP.IntoWind)">#NAVYGROUP.IntoWind</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Recovery window.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).GetHeadingIntoWind" ><strong>NAVYGROUP:GetHeadingIntoWind(Offset)</strong></a></h2>
 </div>
     
@@ -5414,12 +5610,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(NAVYGROUP).GetNextTurnIntoWind" ><strong>NAVYGROUP:GetNextTurnIntoWind()</strong></a></h2>
+<h2><a id="#(NAVYGROUP).GetTurnIntoWindCurrent" ><strong>NAVYGROUP:GetTurnIntoWindCurrent()</strong></a></h2>
 </div>
     
-<p>Check queued turns into wind.</p>
+<p>Get the turn into wind window, which is currently open. </p>
 
-<div id= "#Functions##GetNextTurnIntoWind" class="w3-show w3-white">
+<div id= "#Functions##GetTurnIntoWindCurrent" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -5432,7 +5628,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-<p>Next into wind data.</p>
+<p>Current into wind data. Could be <code>nil</code> if there is no window currenly open.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetTurnIntoWindNext" ><strong>NAVYGROUP:GetTurnIntoWindNext()</strong></a></h2>
+</div>
+    
+<p>Get the next turn into wind window, which is not yet running.</p>
+
+<div id= "#Functions##GetTurnIntoWindNext" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>NAVYGROUP</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(NAVYGROUP.IntoWind)">#NAVYGROUP.IntoWind</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Next into wind data. Could be <code>nil</code> if there is not next window.</p>
 
       </div>
     </div>
@@ -5805,6 +6031,53 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).RemoveTurnIntoWind" ><strong>NAVYGROUP:RemoveTurnIntoWind(IntoWindData)</strong></a></h2>
+</div>
+    
+<p>Remove steam into wind window from queue.</p>
+
+    
+<p>If the window is currently active, it is stopped first.</p>
+
+<div id= "#Functions##RemoveTurnIntoWind" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>NAVYGROUP</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(NAVYGROUP.IntoWind)">#NAVYGROUP.IntoWind</a>
+            <strong><strong>IntoWindData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Turn into window data table.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(NAVYGROUP)">#NAVYGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).SetPathfinding" ><strong>NAVYGROUP:SetPathfinding(Switch, CorridorWidth)</strong></a></h2>
 </div>
     
@@ -6068,6 +6341,105 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>NAVYGROUP</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP)._CreateTurnIntoWind" ><strong>NAVYGROUP:_CreateTurnIntoWind(starttime, stoptime, speed, uturn, offset)</strong></a></h2>
+</div>
+    
+<p>Create a turn into wind window.</p>
+
+    
+<p>Note that this is not executed as it not added to the queue.</p>
+
+<div id= "#Functions##_CreateTurnIntoWind" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>NAVYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>starttime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Start time, e.g. "8:00" for eight o'clock. Default now.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>stoptime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Stop time, e.g. "9:00" for nine o'clock. Default 90 minutes after start time.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Speed in knots during turn into wind leg.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>uturn</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true (or nil), carrier wil perform a U-turn and go back to where it came from before resuming its route to the next waypoint. If false, it will go directly to the next waypoint.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>offset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset angle in degrees, e.g. to account for an angled runway. Default 0 deg.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(NAVYGROUP.IntoWind)">#NAVYGROUP.IntoWind</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Recovery window.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -7030,7 +7402,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(NAVYGROUP).onafterTurnIntoWindOver" ><strong>NAVYGROUP:onafterTurnIntoWindOver(From, Event, To, Duration, Speed, Uturn)</strong></a></h2>
+<h2><a id="#(NAVYGROUP).onafterTurnIntoWindOver" ><strong>NAVYGROUP:onafterTurnIntoWindOver(From, Event, To, IntoWindData)</strong></a></h2>
 </div>
     
 <p>On after "TurnIntoWindOver" event.</p>
@@ -7084,39 +7456,72 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
-            <strong><strong>Duration</strong></strong>
+                <a href="##(NAVYGROUP.IntoWind)">#NAVYGROUP.IntoWind</a>
+            <strong><strong>IntoWindData</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Duration in seconds.</p>
+<p>Data table.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterTurnIntoWindStop" ><strong>NAVYGROUP:onafterTurnIntoWindStop(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "TurnIntoWindStop" event.</p>
+
+<div id= "#Functions##onafterTurnIntoWindStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>NAVYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
-            <strong><strong>Speed</strong></strong>
+                #string
+            <strong><strong>Event</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Speed in knots.</p>
+<p>Event.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #boolean
-            <strong><strong>Uturn</strong></strong>
+                #string
+            <strong><strong>To</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Return to the place we came from.</p>
+<p>To state.</p>
 
           </div>
         </div>
@@ -7393,20 +7798,68 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onbeforeTurnIntoWindStop" ><strong>NAVYGROUP:onbeforeTurnIntoWindStop(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On before "TurnIntoWindStop" event.</p>
+
+<div id= "#Functions##onbeforeTurnIntoWindStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>NAVYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(NAVYGROUP).Debug" ><strong>NAVYGROUP.Debug</strong></a>
-    
-
-
-</div>
-
-</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -7421,35 +7874,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).actype" ><strong>NAVYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).adinfinitum" ><strong>NAVYGROUP.adinfinitum</strong></a>
     
 
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(NAVYGROUP).ai" ><strong>NAVYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -7493,17 +7921,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).descriptors" ><strong>NAVYGROUP.descriptors</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).groupinitialized" ><strong>NAVYGROUP.groupinitialized</strong></a>
     
@@ -7533,6 +7950,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(NAVYGROUP).intowind" ><strong>NAVYGROUP.intowind</strong></a>
     
 <p>Into wind info.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(NAVYGROUP).intowindcounter" ><strong>NAVYGROUP.intowindcounter</strong></a>
+    
+<p>Counter of into wind IDs.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(NAVYGROUP).isAI" ><strong>NAVYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ships are always AI.</p>
 
 </div>
 
@@ -8620,6 +9062,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetAmmo0" ><strong>NAVYGROUP:GetAmmo0()</strong></a></h2>
+</div>
+    
+<p>Get inital amount of ammunition.</p>
+
+<div id= "#Functions##GetAmmo0" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(OPSGROUP.Ammo)">#OPSGROUP.Ammo</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Initial ammo table.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).GetAmmoElement" ><strong>NAVYGROUP:GetAmmoElement(element)</strong></a></h2>
 </div>
     
@@ -8935,6 +9407,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetDetectedGroups" ><strong>NAVYGROUP:GetDetectedGroups()</strong></a></h2>
+</div>
+    
+<p>Get set of detected groups.</p>
+
+<div id= "#Functions##GetDetectedGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set of detected groups.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).GetDetectedUnits" ><strong>NAVYGROUP:GetDetectedUnits()</strong></a></h2>
 </div>
     
@@ -8998,6 +9500,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Distance in meters.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetElementAlive" ><strong>NAVYGROUP:GetElementAlive()</strong></a></h2>
+</div>
+    
+<p>Get the first element of a group, which is alive.</p>
+
+<div id= "#Functions##GetElementAlive" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(OPSGROUP.Element)">#OPSGROUP.Element</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The element or <code>#nil</code> if no element is alive any more.</p>
 
       </div>
     </div>
@@ -9132,6 +9664,140 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Current heading of the group in degrees.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetHighestThreat" ><strong>NAVYGROUP:GetHighestThreat()</strong></a></h2>
+</div>
+    
+<p>Get highest threat.</p>
+
+<div id= "#Functions##GetHighestThreat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>The highest threat unit.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Threat level of the unit.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetLaserCode" ><strong>NAVYGROUP:GetLaserCode()</strong></a></h2>
+</div>
+    
+<p>Get LASER code. </p>
+
+<div id= "#Functions##GetLaserCode" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current Laser code.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetLaserCoordinate" ><strong>NAVYGROUP:GetLaserCoordinate()</strong></a></h2>
+</div>
+    
+<p>Get current LASER coordinate, i.e.</p>
+
+    
+<p>where the beam is pointing at if the LASER is on.</p>
+
+<div id= "#Functions##GetLaserCoordinate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current position where the LASER is pointing at.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetLaserTarget" ><strong>NAVYGROUP:GetLaserTarget()</strong></a></h2>
+</div>
+    
+<p>Get current target of the LASER.</p>
+
+    
+<p>This can be a STATIC or UNIT object.</p>
+
+<div id= "#Functions##GetLaserTarget" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.Positionable.html##(POSITIONABLE)">Wrapper.Positionable#POSITIONABLE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current target object.</p>
 
       </div>
     </div>
@@ -9857,6 +10523,74 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>Table of tasks. Table could also be empty {}.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).GetThreat" ><strong>NAVYGROUP:GetThreat(ThreatLevelMin, ThreatLevelMax)</strong></a></h2>
+</div>
+    
+<p>Get highest detected threat.</p>
+
+    
+<p>Detection must be turned on. The threat level is a number between 0 and 10, where 0 is the lowest, e.g. unarmed units.</p>
+
+<div id= "#Functions##GetThreat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ThreatLevelMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only consider threats with level greater or equal to this number. Default 1 (so unarmed units wont be considered).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ThreatLevelMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only consider threats with level smaller or queal to this number. Default 10.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Highest threat unit detected by the group or <code>nil</code> if no threat is currently detected.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Threat level.</p>
+
+        </div>
     </div>
 </div>
 
@@ -10687,7 +11421,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(NAVYGROUP).GetWeaponData" ><strong>NAVYGROUP:GetWeaponData(BitType)</strong></a></h2>
 </div>
     
-
+<p>Get weapon data.</p>
 
 <div id= "#Functions##GetWeaponData" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -10704,7 +11438,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Type of weapon.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -10715,6 +11451,89 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Weapon range data.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).HasLoS" ><strong>NAVYGROUP:HasLoS(Coordinate, Element, OffsetElement, OffsetCoordinate)</strong></a></h2>
+</div>
+    
+<p>Check if an element of the group has line of sight to a coordinate.</p>
+
+<div id= "#Functions##HasLoS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Coordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The position to which we check the LoS.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(OPSGROUP.Element)">#OPSGROUP.Element</a>
+            <strong><strong>Element</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The (optinal) element. If not given, all elements are checked.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>OffsetElement</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset vector of the element.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>OffsetCoordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset vector of the coordinate.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If <code>true</code>, there is line of sight to the specified coordinate.</p>
 
       </div>
     </div>
@@ -10936,6 +11755,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).IsLasing" ><strong>NAVYGROUP:IsLasing()</strong></a></h2>
+</div>
+    
+<p>Check if the group has currently switched a LASER on.</p>
+
+<div id= "#Functions##IsLasing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, LASER of the group is on.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).IsLateActivated" ><strong>NAVYGROUP:IsLateActivated()</strong></a></h2>
 </div>
     
@@ -10955,6 +11804,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Is this the group late activated?</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).IsRearming" ><strong>NAVYGROUP:IsRearming()</strong></a></h2>
+</div>
+    
+<p>Check if the group is currently rearming.</p>
+
+<div id= "#Functions##IsRearming" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, group is rearming.</p>
 
       </div>
     </div>
@@ -11121,7 +12000,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>The group object. Can also be given by its group name as #string.</p>
+<p>The group object. Can also be given by its group name as <code>#string</code>.</p>
 
           </div>
         </div>
@@ -12293,6 +13172,122 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).SetLaser" ><strong>NAVYGROUP:SetLaser(Code, CheckLOS, IROff, UpdateTime)</strong></a></h2>
+</div>
+    
+<p>Set LASER parameters. </p>
+
+<div id= "#Functions##SetLaser" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Code</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Laser code. Default 1688.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>CheckLOS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Check if lasing unit has line of sight to target coordinate. Default is <code>true</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IROff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, then dont switch on the additional IR pointer.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>UpdateTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Time interval in seconds the beam gets up for moving targets. Default every 0.5 sec.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(OPSGROUP)">#OPSGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).SetLaserTarget" ><strong>NAVYGROUP:SetLaserTarget(Target)</strong></a></h2>
+</div>
+    
+<p>Set LASER target.</p>
+
+<div id= "#Functions##SetLaserTarget" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Positionable.html##(POSITIONABLE)">Wrapper.Positionable#POSITIONABLE</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The target to lase. Can also be a COORDINATE object.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).SetTask" ><strong>NAVYGROUP:SetTask(DCSTask)</strong></a></h2>
 </div>
     
@@ -13078,6 +14073,55 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP)._CheckAmmoFull" ><strong>NAVYGROUP:_CheckAmmoFull()</strong></a></h2>
+</div>
+    
+<p>Check ammo is full.</p>
+
+<div id= "#Functions##_CheckAmmoFull" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, ammo is full.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP)._CheckAmmoStatus" ><strong>NAVYGROUP:_CheckAmmoStatus()</strong></a></h2>
+</div>
+    
+<p>Check ammo status.</p>
+
+<div id= "#Functions##_CheckAmmoStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP)._CheckDetectedUnits" ><strong>NAVYGROUP:_CheckDetectedUnits()</strong></a></h2>
 </div>
     
@@ -13160,6 +14204,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP)._CoordinateFromObject" ><strong>NAVYGROUP:_CoordinateFromObject(Object)</strong></a></h2>
+</div>
+    
+<p>Get coordinate from an object.</p>
+
+<div id= "#Functions##_CoordinateFromObject" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Object.html##(OBJECT)">Wrapper.Object#OBJECT</a>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The coordinate of the object.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -13503,10 +14591,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(NAVYGROUP)._SetWaypointTasks" ><strong>NAVYGROUP:_SetWaypointTasks(Waypoint)</strong></a></h2>
 </div>
     
-<p>On after "GotoWaypoint" event.</p>
-
-    
-<p>Group will got to the given waypoint and execute its route from there.</p>
+<p>Set tasks at this waypoint</p>
 
 <div id= "#Functions##_SetWaypointTasks" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -13772,6 +14857,25 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP)._UpdateLaser" ><strong>NAVYGROUP:_UpdateLaser()</strong></a></h2>
+</div>
+    
+<p>Update laser point.</p>
+
+<div id= "#Functions##_UpdateLaser" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP)._UpdatePosition" ><strong>NAVYGROUP:_UpdatePosition()</strong></a></h2>
 </div>
     
@@ -14022,13 +15126,157 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterDetectedGroup" ><strong>NAVYGROUP:onafterDetectedGroup(From, Event, To, Group)</strong></a></h2>
+</div>
+    
+<p>On after "DetectedGroup" event.</p>
+
+<div id= "#Functions##onafterDetectedGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The detected Group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterDetectedGroupNew" ><strong>NAVYGROUP:onafterDetectedGroupNew(From, Event, To, Group)</strong></a></h2>
+</div>
+    
+<p>On after "DetectedGroupNew" event.</p>
+
+    
+<p>Add newly detected group to detected group set.</p>
+
+<div id= "#Functions##onafterDetectedGroupNew" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The detected group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(NAVYGROUP).onafterDetectedUnit" ><strong>NAVYGROUP:onafterDetectedUnit(From, Event, To, Unit)</strong></a></h2>
 </div>
     
 <p>On after "DetectedUnit" event.</p>
-
-    
-<p>Add newly detected unit to detected units set.</p>
 
 <div id= "#Functions##onafterDetectedUnit" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -14101,6 +15349,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </div>
     
 <p>On after "DetectedUnitNew" event.</p>
+
+    
+<p>Add newly detected unit to detected unit set.</p>
 
 <div id= "#Functions##onafterDetectedUnitNew" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -14452,6 +15703,448 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>The goto waypoint unique ID.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserCode" ><strong>NAVYGROUP:onafterLaserCode(From, Event, To, Code)</strong></a></h2>
+</div>
+    
+<p>On after "LaserCode" event.</p>
+
+    
+<p>Changes the LASER code.</p>
+
+<div id= "#Functions##onafterLaserCode" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Code</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Laser code. Default is 1688.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserGotLOS" ><strong>NAVYGROUP:onafterLaserGotLOS(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserGotLOS" event.</p>
+
+<div id= "#Functions##onafterLaserGotLOS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserLostLOS" ><strong>NAVYGROUP:onafterLaserLostLOS(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserLostLOS" event.</p>
+
+<div id= "#Functions##onafterLaserLostLOS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserOff" ><strong>NAVYGROUP:onafterLaserOff(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserOff" event.</p>
+
+<div id= "#Functions##onafterLaserOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserOn" ><strong>NAVYGROUP:onafterLaserOn(From, Event, To, Target)</strong></a></h2>
+</div>
+    
+<p>On after "LaserOn" event.</p>
+
+<div id= "#Functions##onafterLaserOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Target Coordinate. Target can also be any POSITIONABLE from which we can obtain its coordinates.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserPause" ><strong>NAVYGROUP:onafterLaserPause(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserPause" event.</p>
+
+<div id= "#Functions##onafterLaserPause" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onafterLaserResume" ><strong>NAVYGROUP:onafterLaserResume(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserResume" event.</p>
+
+<div id= "#Functions##onafterLaserResume" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
 
           </div>
         </div>
@@ -15168,7 +16861,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(NAVYGROUP).onafterTaskExecute" ><strong>NAVYGROUP:onafterTaskExecute(From, Event, To, Task)</strong></a></h2>
 </div>
     
-<p>On after TaskExecute event.</p>
+<p>On after "TaskExecute" event.</p>
 
 <div id= "#Functions##onafterTaskExecute" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -15243,6 +16936,199 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>On after "UnpauseMission" event.</p>
 
 <div id= "#Functions##onafterUnpauseMission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onbeforeLaserOff" ><strong>NAVYGROUP:onbeforeLaserOff(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On before "LaserOff" event.</p>
+
+    
+<p>Check if LASER is on.</p>
+
+<div id= "#Functions##onbeforeLaserOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onbeforeLaserOn" ><strong>NAVYGROUP:onbeforeLaserOn(From, Event, To, Target)</strong></a></h2>
+</div>
+    
+<p>On before "LaserOn" event.</p>
+
+<div id= "#Functions##onbeforeLaserOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Target Coordinate. Target can also be any POSITIONABLE from which we can obtain its coordinates.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(NAVYGROUP).onbeforeLaserResume" ><strong>NAVYGROUP:onbeforeLaserResume(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On before "LaserResume" event.</p>
+
+<div id= "#Functions##onbeforeLaserResume" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -15444,17 +17330,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(NAVYGROUP).Debug" ><strong>NAVYGROUP.Debug</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(NAVYGROUP).Qintowind" ><strong>NAVYGROUP.Qintowind</strong></a>
     
@@ -15466,35 +17341,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).actype" ><strong>NAVYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).adinfinitum" ><strong>NAVYGROUP.adinfinitum</strong></a>
     
 
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(NAVYGROUP).ai" ><strong>NAVYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -15538,17 +17388,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).descriptors" ><strong>NAVYGROUP.descriptors</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).groupinitialized" ><strong>NAVYGROUP.groupinitialized</strong></a>
     
@@ -15578,6 +17417,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(NAVYGROUP).intowind" ><strong>NAVYGROUP.intowind</strong></a>
     
 <p>Into wind info.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(NAVYGROUP).intowindcounter" ><strong>NAVYGROUP.intowindcounter</strong></a>
+    
+<p>Counter of into wind IDs.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(NAVYGROUP).isAI" ><strong>NAVYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ships are always AI.</p>
 
 </div>
 
@@ -16438,7 +18302,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(NAVYGROUP).Is" ><strong>NAVYGROUP:Is(State, If)</strong></a></h2>
+<h2><a id="#(NAVYGROUP).Is" ><strong>NAVYGROUP:Is(State)</strong></a></h2>
 </div>
     
 <p>Check if FSM is in state.</p>
@@ -16449,7 +18313,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
 </div>
-    <h2><strong>Parameters:</strong></h2>
+    <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -16463,19 +18327,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>If</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>true, FSM is in this state.</p>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM is in this state.</p>
 
-          </div>
-        </div>
+      </div>
+    </div>
 </div>
 
 </div>
@@ -17201,7 +19063,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(NAVYGROUP).is" ><strong>NAVYGROUP:is(State, If, state)</strong></a></h2>
+<h2><a id="#(NAVYGROUP).is" ><strong>NAVYGROUP:is(State, state)</strong></a></h2>
 </div>
     
 <p>Check if FSM is in state.</p>
@@ -17229,19 +19091,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #boolean
-            <strong><strong>If</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>true, FSM is in this state.  </p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
             <strong><strong>state</strong></strong>
             </p>
           </div>
@@ -17249,6 +19098,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
               <p></p>
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM is in this state.  </p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -17257,17 +19117,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(NAVYGROUP).Debug" ><strong>NAVYGROUP.Debug</strong></a>
-    
-
-
-</div>
-
-</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -17282,35 +19131,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).actype" ><strong>NAVYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).adinfinitum" ><strong>NAVYGROUP.adinfinitum</strong></a>
     
 
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(NAVYGROUP).ai" ><strong>NAVYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -17354,17 +19178,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(NAVYGROUP).descriptors" ><strong>NAVYGROUP.descriptors</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(NAVYGROUP).groupinitialized" ><strong>NAVYGROUP.groupinitialized</strong></a>
     
@@ -17394,6 +19207,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(NAVYGROUP).intowind" ><strong>NAVYGROUP.intowind</strong></a>
     
 <p>Into wind info.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(NAVYGROUP).intowindcounter" ><strong>NAVYGROUP.intowindcounter</strong></a>
+    
+<p>Counter of into wind IDs.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(NAVYGROUP).isAI" ><strong>NAVYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ships are always AI.</p>
 
 </div>
 
@@ -20672,6 +22510,50 @@ BASE:TraceOnOff( false )</code></pre>
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(NAVYGROUP.Element).ai" ><strong>NAVYGROUP.Element.ai</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(NAVYGROUP.Element).ammo0" ><strong>NAVYGROUP.Element.ammo0</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(NAVYGROUP.Element).category" ><strong>NAVYGROUP.Element.category</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(NAVYGROUP.Element).categoryname" ><strong>NAVYGROUP.Element.categoryname</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 

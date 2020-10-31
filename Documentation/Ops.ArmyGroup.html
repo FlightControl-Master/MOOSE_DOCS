@@ -1073,7 +1073,7 @@
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.OpsGroup.html">Ops.OpsGroup</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
-<p><strong>Ops</strong> - Generic group enhancement functions.</p>
+<p><strong>Ops</strong> - Generic group enhancement.</p>
 </p></div>
        </div>         
      </div>
@@ -1465,15 +1465,32 @@
 
     
 
-<p><strong>Main Features:</strong></p>
+<h2>Main Features:</h2>
 
 <ul>
-    <li>Dynamically add and remove waypoints.</li>
+    <li>Patrol waypoints <em>ad infinitum</em></li>
+    <li>Easy change of ROE and alarm state, formation and other settings</li>
+    <li>Dynamically add and remove waypoints</li>
+    <li>Sophisticated task queueing system  (know when DCS tasks start and end)</li>
+    <li>Convenient checks when the group enters or leaves a zone</li>
+    <li>Detection events for new, known and lost units</li>
+    <li>Simple LASER and IR-pointer setup</li>
+    <li>Compatible with AUFTRAG class</li>
+    <li>Many additional events that the mission designer can hook into</li>
 </ul>
 
 <hr/>
 
+<h2>Example Missions:</h2>
+
+<p>Demo missions can be found on <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/OPS%20-%20Armygroup">github</a>.</p>
+
+<hr/>
+
 <h3>Author: <strong>funkyfranky</strong></h3>
+
+<p>==</p>
+
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
@@ -1579,7 +1596,7 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).New">ARMYGROUP:New(GroupName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).New">ARMYGROUP:New(Group)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new ARMYGROUP class object.</p>
 </td>
@@ -1597,9 +1614,15 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).OnEventHit">ARMYGROUP:OnEventHit(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Event function handling when a unit is hit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).OnEventRemoveUnit">ARMYGROUP:OnEventRemoveUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Event function handling the crash of a unit.</p>
+<p>Event function handling when a unit is removed from the game.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1639,12 +1662,6 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).ai">ARMYGROUP.ai</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).ammo">ARMYGROUP.ammo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -1669,6 +1686,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).isAI">ARMYGROUP.isAI</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).isAircraft">ARMYGROUP.isAircraft</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -1684,6 +1707,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).isLateActivated">ARMYGROUP.isLateActivated</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).isMobile">ARMYGROUP.isMobile</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, group is mobile.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1735,6 +1764,30 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterGotoWaypoint">ARMYGROUP:onafterGotoWaypoint(From, Event, To, UID, Speed, Formation)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "GotoWaypoint" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterRearm">ARMYGROUP:onafterRearm(From, Event, To, Coordinate, Formation)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Rearm" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterRearmed">ARMYGROUP:onafterRearmed(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Rearmed" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterRearming">ARMYGROUP:onafterRearming(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Rearming" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterSpawned">ARMYGROUP:onafterSpawned(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "Spawned" event.</p>
@@ -1749,7 +1802,7 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterStop">ARMYGROUP:onafterStop(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>On after Start event.</p>
+<p>On after "Stop" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1955,6 +2008,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetAmmo0">ARMYGROUP:GetAmmo0()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get inital amount of ammunition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetAmmoElement">ARMYGROUP:GetAmmoElement(element)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the number of shells a unit or group currently has.</p>
@@ -2003,6 +2062,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetDetectedGroups">ARMYGROUP:GetDetectedGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get set of detected groups.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetDetectedUnits">ARMYGROUP:GetDetectedUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get set of detected units.</p>
@@ -2012,6 +2077,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetDistanceToWaypoint">ARMYGROUP:GetDistanceToWaypoint(indx)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get distance to waypoint.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetElementAlive">ARMYGROUP:GetElementAlive()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the first element of a group, which is alive.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2036,6 +2107,30 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetHeading">ARMYGROUP:GetHeading()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get current heading of the group.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetHighestThreat">ARMYGROUP:GetHighestThreat()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get highest threat.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetLaserCode">ARMYGROUP:GetLaserCode()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get LASER code. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetLaserCoordinate">ARMYGROUP:GetLaserCoordinate()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get current LASER coordinate, i.e.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetLaserTarget">ARMYGROUP:GetLaserTarget()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get current target of the LASER.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2144,6 +2239,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetTasksWaypoint">ARMYGROUP:GetTasksWaypoint(id)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the unfinished waypoint tasks</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetThreat">ARMYGROUP:GetThreat(ThreatLevelMin, ThreatLevelMax)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get highest detected threat.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2269,7 +2370,13 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetWeaponData">ARMYGROUP:GetWeaponData(BitType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Get weapon data.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).HasLoS">ARMYGROUP:HasLoS(Coordinate, Element, OffsetElement, OffsetCoordinate)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if an element of the group has line of sight to a coordinate.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2315,9 +2422,21 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).IsLasing">ARMYGROUP:IsLasing()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the group has currently switched a LASER on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).IsLateActivated">ARMYGROUP:IsLateActivated()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if this group is currently "late activated" and needs to be "activated" to appear in the mission.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).IsRearming">ARMYGROUP:IsRearming()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the group is currently rearming.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2484,6 +2603,18 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).SetLaser">ARMYGROUP:SetLaser(Code, CheckLOS, IROff, UpdateTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set LASER parameters. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).SetLaserTarget">ARMYGROUP:SetLaserTarget(Target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set LASER target.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).SetTask">ARMYGROUP:SetTask(DCSTask)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set DCS task.</p>
@@ -2604,6 +2735,18 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._CheckAmmoFull">ARMYGROUP:_CheckAmmoFull()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check ammo is full.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._CheckAmmoStatus">ARMYGROUP:_CheckAmmoStatus()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check ammo status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._CheckDetectedUnits">ARMYGROUP:_CheckDetectedUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check detected units.</p>
@@ -2625,6 +2768,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._CheckStuck">ARMYGROUP:_CheckStuck()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if group got stuck.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._CoordinateFromObject">ARMYGROUP:_CoordinateFromObject(Object)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get coordinate from an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2684,7 +2833,7 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._SetWaypointTasks">ARMYGROUP:_SetWaypointTasks(Waypoint)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>On after "GotoWaypoint" event.</p>
+<p>Set tasks at this waypoint</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2715,6 +2864,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._TaskExecute">ARMYGROUP._TaskExecute(group, opsgroup, task)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p> Function called when a task is executed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._UpdateLaser">ARMYGROUP:_UpdateLaser()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update laser point.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2754,9 +2909,10 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).ai">ARMYGROUP.ai</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).ammo">ARMYGROUP.ammo</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, group is purely AI.</p>
+<p>Initial ammuont of ammo.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2807,6 +2963,12 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).dTpositionUpdate">ARMYGROUP.dTpositionUpdate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).detectedgroups">ARMYGROUP.detectedgroups</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set of detected groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2883,6 +3045,12 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).isAI">ARMYGROUP.isAI</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, group is purely AI.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).isAircraft">ARMYGROUP.isAircraft</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, group is airplane or helicopter.</p>
@@ -2944,6 +3112,18 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterDetectedGroup">ARMYGROUP:onafterDetectedGroup(From, Event, To, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "DetectedGroup" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterDetectedGroupNew">ARMYGROUP:onafterDetectedGroupNew(From, Event, To, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "DetectedGroupNew" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterDetectedUnit">ARMYGROUP:onafterDetectedUnit(From, Event, To, Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "DetectedUnit" event.</p>
@@ -2977,6 +3157,48 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterGotoWaypoint">ARMYGROUP:onafterGotoWaypoint(From, Event, To, UID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "GotoWaypoint" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserCode">ARMYGROUP:onafterLaserCode(From, Event, To, Code)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserCode" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserGotLOS">ARMYGROUP:onafterLaserGotLOS(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserGotLOS" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserLostLOS">ARMYGROUP:onafterLaserLostLOS(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserLostLOS" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserOff">ARMYGROUP:onafterLaserOff(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserOff" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserOn">ARMYGROUP:onafterLaserOn(From, Event, To, Target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserOn" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserPause">ARMYGROUP:onafterLaserPause(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserPause" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterLaserResume">ARMYGROUP:onafterLaserResume(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "LaserResume" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3042,13 +3264,31 @@
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterTaskExecute">ARMYGROUP:onafterTaskExecute(From, Event, To, Task)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>On after TaskExecute event.</p>
+<p>On after "TaskExecute" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onafterUnpauseMission">ARMYGROUP:onafterUnpauseMission(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "UnpauseMission" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onbeforeLaserOff">ARMYGROUP:onbeforeLaserOff(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "LaserOff" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onbeforeLaserOn">ARMYGROUP:onbeforeLaserOn(From, Event, To, Target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "LaserOn" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).onbeforeLaserResume">ARMYGROUP:onbeforeLaserResume(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "LaserResume" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3086,6 +3326,60 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).orientXLast">ARMYGROUP.orientXLast</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Backup of last orientation to monitor changes.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outofAmmo">ARMYGROUP.outofAmmo</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outofBombs">ARMYGROUP.outofBombs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outofGuns">ARMYGROUP.outofGuns</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outofMissiles">ARMYGROUP.outofMissiles</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outofRockets">ARMYGROUP.outofRockets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outoffBombs">ARMYGROUP.outoffBombs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outoffGuns">ARMYGROUP.outoffGuns</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outoffMissiles">ARMYGROUP.outoffMissiles</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).outoffRockets">ARMYGROUP.outoffRockets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3153,6 +3447,13 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).speedWp">ARMYGROUP.speedWp</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Speed to the next waypoint in m/s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).spot">ARMYGROUP.spot</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Laser and IR spot.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3406,7 +3707,7 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).Is">ARMYGROUP:Is(State, If)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).Is">ARMYGROUP:Is(State)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if FSM is in state.</p>
 </td>
@@ -3556,7 +3857,7 @@
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).is">ARMYGROUP:is(State, If, state)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).is">ARMYGROUP:is(State, state)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check if FSM is in state.</p>
 </td>
@@ -4080,15 +4381,57 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).ai">ARMYGROUP.Element.ai</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).ammo0">ARMYGROUP.Element.ammo0</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).category">ARMYGROUP.Element.category</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).categoryname">ARMYGROUP.Element.categoryname</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).height">ARMYGROUP.Element.height</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Height of element in meters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).length">ARMYGROUP.Element.length</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Length of element in meters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).name">ARMYGROUP.Element.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of the element, i.e. the unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).status">ARMYGROUP.Element.status</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).skill">ARMYGROUP.Element.skill</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).status">ARMYGROUP.Element.status</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The element status.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4100,7 +4443,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).unit">ARMYGROUP.Element.unit</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>The UNIT object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP.Element).width">ARMYGROUP.Element.width</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Width of element in meters.</p>
 </td>
           </tr>
         </table>
@@ -4124,35 +4473,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(ARMYGROUP).actype" ><strong>ARMYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(ARMYGROUP).adinfinitum" ><strong>ARMYGROUP.adinfinitum</strong></a>
     
 <p>Resume route at first waypoint when final waypoint is reached.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(ARMYGROUP).ai" ><strong>ARMYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -4167,17 +4491,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Group ammo.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(ARMYGROUP).descriptors" ><strong>ARMYGROUP.descriptors</strong></a>
-    
-
 
 </div>
 
@@ -4203,6 +4516,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isAI" ><strong>ARMYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ground are always AI.</p>
 
 </div>
 
@@ -4242,6 +4569,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Is (template) group late activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isMobile" ><strong>ARMYGROUP.isMobile</strong></a>
+    
+<p>If true, group is mobile.</p>
 
 </div>
 
@@ -4942,7 +5280,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-<p>If true, group is on a detour</p>
+<p>If true, group is on a detour.</p>
 
       </div>
     </div>
@@ -4954,7 +5292,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(ARMYGROUP).New" ><strong>ARMYGROUP:New(GroupName)</strong></a></h2>
+<h2><a id="#(ARMYGROUP).New" ><strong>ARMYGROUP:New(Group)</strong></a></h2>
 </div>
     
 <p>Create a new ARMYGROUP class object.</p>
@@ -4969,13 +5307,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #string
-            <strong><strong>GroupName</strong></strong>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Name of the group.</p>
+<p>The group object. Can also be given by its group name as <code>#string</code>.</p>
 
           </div>
         </div>
@@ -5064,10 +5402,43 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).OnEventHit" ><strong>ARMYGROUP:OnEventHit(EventData)</strong></a></h2>
+</div>
+    
+<p>Event function handling when a unit is hit.</p>
+
+<div id= "#Functions##OnEventHit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event data.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).OnEventRemoveUnit" ><strong>ARMYGROUP:OnEventRemoveUnit(EventData)</strong></a></h2>
 </div>
     
-<p>Event function handling the crash of a unit.</p>
+<p>Event function handling when a unit is removed from the game.</p>
 
 <div id= "#Functions##OnEventRemoveUnit" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5669,6 +6040,310 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterGotoWaypoint" ><strong>ARMYGROUP:onafterGotoWaypoint(From, Event, To, UID, Speed, Formation)</strong></a></h2>
+</div>
+    
+<p>On after "GotoWaypoint" event.</p>
+
+    
+<p>Group will got to the given waypoint and execute its route from there.</p>
+
+<div id= "#Functions##onafterGotoWaypoint" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>UID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The goto waypoint unique ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Speed to waypoint in knots.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Formation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Formation to waypoint.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterRearm" ><strong>ARMYGROUP:onafterRearm(From, Event, To, Coordinate, Formation)</strong></a></h2>
+</div>
+    
+<p>On after "Rearm" event.</p>
+
+<div id= "#Functions##onafterRearm" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Coordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coordinate where to rearm.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Formation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Formation of the group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterRearmed" ><strong>ARMYGROUP:onafterRearmed(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "Rearmed" event.</p>
+
+<div id= "#Functions##onafterRearmed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterRearming" ><strong>ARMYGROUP:onafterRearming(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "Rearming" event.</p>
+
+<div id= "#Functions##onafterRearming" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).onafterSpawned" ><strong>ARMYGROUP:onafterSpawned(From, Event, To)</strong></a></h2>
 </div>
     
@@ -5781,10 +6456,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(ARMYGROUP).onafterStop" ><strong>ARMYGROUP:onafterStop(From, Event, To)</strong></a></h2>
 </div>
     
-<p>On after Start event.</p>
-
-    
-<p>Starts the ARMYGROUP FSM and event handlers.</p>
+<p>On after "Stop" event.</p>
 
 <div id= "#Functions##onafterStop" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5993,35 +6665,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(ARMYGROUP).actype" ><strong>ARMYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(ARMYGROUP).adinfinitum" ><strong>ARMYGROUP.adinfinitum</strong></a>
     
 <p>Resume route at first waypoint when final waypoint is reached.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(ARMYGROUP).ai" ><strong>ARMYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -6036,17 +6683,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Group ammo.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(ARMYGROUP).descriptors" ><strong>ARMYGROUP.descriptors</strong></a>
-    
-
 
 </div>
 
@@ -6072,6 +6708,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isAI" ><strong>ARMYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ground are always AI.</p>
 
 </div>
 
@@ -6111,6 +6761,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Is (template) group late activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isMobile" ><strong>ARMYGROUP.isMobile</strong></a>
+    
+<p>If true, group is mobile.</p>
 
 </div>
 
@@ -7115,6 +7776,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetAmmo0" ><strong>ARMYGROUP:GetAmmo0()</strong></a></h2>
+</div>
+    
+<p>Get inital amount of ammunition.</p>
+
+<div id= "#Functions##GetAmmo0" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(OPSGROUP.Ammo)">#OPSGROUP.Ammo</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Initial ammo table.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).GetAmmoElement" ><strong>ARMYGROUP:GetAmmoElement(element)</strong></a></h2>
 </div>
     
@@ -7430,6 +8121,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetDetectedGroups" ><strong>ARMYGROUP:GetDetectedGroups()</strong></a></h2>
+</div>
+    
+<p>Get set of detected groups.</p>
+
+<div id= "#Functions##GetDetectedGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set of detected groups.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).GetDetectedUnits" ><strong>ARMYGROUP:GetDetectedUnits()</strong></a></h2>
 </div>
     
@@ -7493,6 +8214,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Distance in meters.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetElementAlive" ><strong>ARMYGROUP:GetElementAlive()</strong></a></h2>
+</div>
+    
+<p>Get the first element of a group, which is alive.</p>
+
+<div id= "#Functions##GetElementAlive" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(OPSGROUP.Element)">#OPSGROUP.Element</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The element or <code>#nil</code> if no element is alive any more.</p>
 
       </div>
     </div>
@@ -7627,6 +8378,140 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Current heading of the group in degrees.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetHighestThreat" ><strong>ARMYGROUP:GetHighestThreat()</strong></a></h2>
+</div>
+    
+<p>Get highest threat.</p>
+
+<div id= "#Functions##GetHighestThreat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>The highest threat unit.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Threat level of the unit.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetLaserCode" ><strong>ARMYGROUP:GetLaserCode()</strong></a></h2>
+</div>
+    
+<p>Get LASER code. </p>
+
+<div id= "#Functions##GetLaserCode" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current Laser code.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetLaserCoordinate" ><strong>ARMYGROUP:GetLaserCoordinate()</strong></a></h2>
+</div>
+    
+<p>Get current LASER coordinate, i.e.</p>
+
+    
+<p>where the beam is pointing at if the LASER is on.</p>
+
+<div id= "#Functions##GetLaserCoordinate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current position where the LASER is pointing at.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetLaserTarget" ><strong>ARMYGROUP:GetLaserTarget()</strong></a></h2>
+</div>
+    
+<p>Get current target of the LASER.</p>
+
+    
+<p>This can be a STATIC or UNIT object.</p>
+
+<div id= "#Functions##GetLaserTarget" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.Positionable.html##(POSITIONABLE)">Wrapper.Positionable#POSITIONABLE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current target object.</p>
 
       </div>
     </div>
@@ -8352,6 +9237,74 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>Table of tasks. Table could also be empty {}.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).GetThreat" ><strong>ARMYGROUP:GetThreat(ThreatLevelMin, ThreatLevelMax)</strong></a></h2>
+</div>
+    
+<p>Get highest detected threat.</p>
+
+    
+<p>Detection must be turned on. The threat level is a number between 0 and 10, where 0 is the lowest, e.g. unarmed units.</p>
+
+<div id= "#Functions##GetThreat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ThreatLevelMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only consider threats with level greater or equal to this number. Default 1 (so unarmed units wont be considered).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ThreatLevelMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only consider threats with level smaller or queal to this number. Default 10.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Highest threat unit detected by the group or <code>nil</code> if no threat is currently detected.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Threat level.</p>
+
+        </div>
     </div>
 </div>
 
@@ -9182,7 +10135,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(ARMYGROUP).GetWeaponData" ><strong>ARMYGROUP:GetWeaponData(BitType)</strong></a></h2>
 </div>
     
-
+<p>Get weapon data.</p>
 
 <div id= "#Functions##GetWeaponData" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -9199,7 +10152,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Type of weapon.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -9210,6 +10165,89 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Weapon range data.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).HasLoS" ><strong>ARMYGROUP:HasLoS(Coordinate, Element, OffsetElement, OffsetCoordinate)</strong></a></h2>
+</div>
+    
+<p>Check if an element of the group has line of sight to a coordinate.</p>
+
+<div id= "#Functions##HasLoS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Coordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The position to which we check the LoS.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(OPSGROUP.Element)">#OPSGROUP.Element</a>
+            <strong><strong>Element</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The (optinal) element. If not given, all elements are checked.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>OffsetElement</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset vector of the element.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>OffsetCoordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Offset vector of the coordinate.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If <code>true</code>, there is line of sight to the specified coordinate.</p>
 
       </div>
     </div>
@@ -9431,6 +10469,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).IsLasing" ><strong>ARMYGROUP:IsLasing()</strong></a></h2>
+</div>
+    
+<p>Check if the group has currently switched a LASER on.</p>
+
+<div id= "#Functions##IsLasing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, LASER of the group is on.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).IsLateActivated" ><strong>ARMYGROUP:IsLateActivated()</strong></a></h2>
 </div>
     
@@ -9450,6 +10518,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>Is this the group late activated?</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).IsRearming" ><strong>ARMYGROUP:IsRearming()</strong></a></h2>
+</div>
+    
+<p>Check if the group is currently rearming.</p>
+
+<div id= "#Functions##IsRearming" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, group is rearming.</p>
 
       </div>
     </div>
@@ -9616,7 +10714,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>The group object. Can also be given by its group name as #string.</p>
+<p>The group object. Can also be given by its group name as <code>#string</code>.</p>
 
           </div>
         </div>
@@ -10788,6 +11886,122 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).SetLaser" ><strong>ARMYGROUP:SetLaser(Code, CheckLOS, IROff, UpdateTime)</strong></a></h2>
+</div>
+    
+<p>Set LASER parameters. </p>
+
+<div id= "#Functions##SetLaser" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Code</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Laser code. Default 1688.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>CheckLOS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Check if lasing unit has line of sight to target coordinate. Default is <code>true</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IROff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, then dont switch on the additional IR pointer.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>UpdateTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Time interval in seconds the beam gets up for moving targets. Default every 0.5 sec.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(OPSGROUP)">#OPSGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).SetLaserTarget" ><strong>ARMYGROUP:SetLaserTarget(Target)</strong></a></h2>
+</div>
+    
+<p>Set LASER target.</p>
+
+<div id= "#Functions##SetLaserTarget" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Positionable.html##(POSITIONABLE)">Wrapper.Positionable#POSITIONABLE</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The target to lase. Can also be a COORDINATE object.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).SetTask" ><strong>ARMYGROUP:SetTask(DCSTask)</strong></a></h2>
 </div>
     
@@ -11573,6 +12787,55 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP)._CheckAmmoFull" ><strong>ARMYGROUP:_CheckAmmoFull()</strong></a></h2>
+</div>
+    
+<p>Check ammo is full.</p>
+
+<div id= "#Functions##_CheckAmmoFull" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, ammo is full.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP)._CheckAmmoStatus" ><strong>ARMYGROUP:_CheckAmmoStatus()</strong></a></h2>
+</div>
+    
+<p>Check ammo status.</p>
+
+<div id= "#Functions##_CheckAmmoStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP)._CheckDetectedUnits" ><strong>ARMYGROUP:_CheckDetectedUnits()</strong></a></h2>
 </div>
     
@@ -11655,6 +12918,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP)._CoordinateFromObject" ><strong>ARMYGROUP:_CoordinateFromObject(Object)</strong></a></h2>
+</div>
+    
+<p>Get coordinate from an object.</p>
+
+<div id= "#Functions##_CoordinateFromObject" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Object.html##(OBJECT)">Wrapper.Object#OBJECT</a>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The coordinate of the object.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -11998,10 +13305,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(ARMYGROUP)._SetWaypointTasks" ><strong>ARMYGROUP:_SetWaypointTasks(Waypoint)</strong></a></h2>
 </div>
     
-<p>On after "GotoWaypoint" event.</p>
-
-    
-<p>Group will got to the given waypoint and execute its route from there.</p>
+<p>Set tasks at this waypoint</p>
 
 <div id= "#Functions##_SetWaypointTasks" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12267,6 +13571,25 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP)._UpdateLaser" ><strong>ARMYGROUP:_UpdateLaser()</strong></a></h2>
+</div>
+    
+<p>Update laser point.</p>
+
+<div id= "#Functions##_UpdateLaser" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP)._UpdatePosition" ><strong>ARMYGROUP:_UpdatePosition()</strong></a></h2>
 </div>
     
@@ -12517,13 +13840,157 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterDetectedGroup" ><strong>ARMYGROUP:onafterDetectedGroup(From, Event, To, Group)</strong></a></h2>
+</div>
+    
+<p>On after "DetectedGroup" event.</p>
+
+<div id= "#Functions##onafterDetectedGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The detected Group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterDetectedGroupNew" ><strong>ARMYGROUP:onafterDetectedGroupNew(From, Event, To, Group)</strong></a></h2>
+</div>
+    
+<p>On after "DetectedGroupNew" event.</p>
+
+    
+<p>Add newly detected group to detected group set.</p>
+
+<div id= "#Functions##onafterDetectedGroupNew" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The detected group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).onafterDetectedUnit" ><strong>ARMYGROUP:onafterDetectedUnit(From, Event, To, Unit)</strong></a></h2>
 </div>
     
 <p>On after "DetectedUnit" event.</p>
-
-    
-<p>Add newly detected unit to detected units set.</p>
 
 <div id= "#Functions##onafterDetectedUnit" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12596,6 +14063,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </div>
     
 <p>On after "DetectedUnitNew" event.</p>
+
+    
+<p>Add newly detected unit to detected unit set.</p>
 
 <div id= "#Functions##onafterDetectedUnitNew" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12947,6 +14417,448 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>The goto waypoint unique ID.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserCode" ><strong>ARMYGROUP:onafterLaserCode(From, Event, To, Code)</strong></a></h2>
+</div>
+    
+<p>On after "LaserCode" event.</p>
+
+    
+<p>Changes the LASER code.</p>
+
+<div id= "#Functions##onafterLaserCode" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Code</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Laser code. Default is 1688.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserGotLOS" ><strong>ARMYGROUP:onafterLaserGotLOS(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserGotLOS" event.</p>
+
+<div id= "#Functions##onafterLaserGotLOS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserLostLOS" ><strong>ARMYGROUP:onafterLaserLostLOS(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserLostLOS" event.</p>
+
+<div id= "#Functions##onafterLaserLostLOS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserOff" ><strong>ARMYGROUP:onafterLaserOff(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserOff" event.</p>
+
+<div id= "#Functions##onafterLaserOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserOn" ><strong>ARMYGROUP:onafterLaserOn(From, Event, To, Target)</strong></a></h2>
+</div>
+    
+<p>On after "LaserOn" event.</p>
+
+<div id= "#Functions##onafterLaserOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Target Coordinate. Target can also be any POSITIONABLE from which we can obtain its coordinates.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserPause" ><strong>ARMYGROUP:onafterLaserPause(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserPause" event.</p>
+
+<div id= "#Functions##onafterLaserPause" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onafterLaserResume" ><strong>ARMYGROUP:onafterLaserResume(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "LaserResume" event.</p>
+
+<div id= "#Functions##onafterLaserResume" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
 
           </div>
         </div>
@@ -13663,7 +15575,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(ARMYGROUP).onafterTaskExecute" ><strong>ARMYGROUP:onafterTaskExecute(From, Event, To, Task)</strong></a></h2>
 </div>
     
-<p>On after TaskExecute event.</p>
+<p>On after "TaskExecute" event.</p>
 
 <div id= "#Functions##onafterTaskExecute" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -13738,6 +15650,199 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>On after "UnpauseMission" event.</p>
 
 <div id= "#Functions##onafterUnpauseMission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onbeforeLaserOff" ><strong>ARMYGROUP:onbeforeLaserOff(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On before "LaserOff" event.</p>
+
+    
+<p>Check if LASER is on.</p>
+
+<div id= "#Functions##onbeforeLaserOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onbeforeLaserOn" ><strong>ARMYGROUP:onbeforeLaserOn(From, Event, To, Target)</strong></a></h2>
+</div>
+    
+<p>On before "LaserOn" event.</p>
+
+<div id= "#Functions##onbeforeLaserOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Ops.OpsGroup.html##(OPSGROUP)">Ops.OpsGroup#OPSGROUP</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Target Coordinate. Target can also be any POSITIONABLE from which we can obtain its coordinates.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).onbeforeLaserResume" ><strong>ARMYGROUP:onbeforeLaserResume(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On before "LaserResume" event.</p>
+
+<div id= "#Functions##onbeforeLaserResume" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -13939,35 +16044,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(ARMYGROUP).actype" ><strong>ARMYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(ARMYGROUP).adinfinitum" ><strong>ARMYGROUP.adinfinitum</strong></a>
     
 <p>Resume route at first waypoint when final waypoint is reached.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(ARMYGROUP).ai" ><strong>ARMYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
 
 </div>
 
@@ -13982,17 +16062,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Group ammo.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(ARMYGROUP).descriptors" ><strong>ARMYGROUP.descriptors</strong></a>
-    
-
 
 </div>
 
@@ -14018,6 +16087,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isAI" ><strong>ARMYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ground are always AI.</p>
 
 </div>
 
@@ -14057,6 +16140,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Is (template) group late activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isMobile" ><strong>ARMYGROUP.isMobile</strong></a>
+    
+<p>If true, group is mobile.</p>
 
 </div>
 
@@ -14834,7 +16928,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(ARMYGROUP).Is" ><strong>ARMYGROUP:Is(State, If)</strong></a></h2>
+<h2><a id="#(ARMYGROUP).Is" ><strong>ARMYGROUP:Is(State)</strong></a></h2>
 </div>
     
 <p>Check if FSM is in state.</p>
@@ -14845,7 +16939,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
 </div>
-    <h2><strong>Parameters:</strong></h2>
+    <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -14859,19 +16953,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>If</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>true, FSM is in this state.</p>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM is in this state.</p>
 
-          </div>
-        </div>
+      </div>
+    </div>
 </div>
 
 </div>
@@ -15597,7 +17689,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(ARMYGROUP).is" ><strong>ARMYGROUP:is(State, If, state)</strong></a></h2>
+<h2><a id="#(ARMYGROUP).is" ><strong>ARMYGROUP:is(State, state)</strong></a></h2>
 </div>
     
 <p>Check if FSM is in state.</p>
@@ -15625,19 +17717,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #boolean
-            <strong><strong>If</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>true, FSM is in this state.  </p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
             <strong><strong>state</strong></strong>
             </p>
           </div>
@@ -15645,6 +17724,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
               <p></p>
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM is in this state.  </p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -15653,17 +17743,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(ARMYGROUP).actype" ><strong>ARMYGROUP.actype</strong></a>
-    
-
-
-</div>
-
-</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -15678,20 +17757,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(ARMYGROUP).ai" ><strong>ARMYGROUP.ai</strong></a>
-    
-
-
-    
-<p> Ships are always AI.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     
 <a id="#(ARMYGROUP).ammo" ><strong>ARMYGROUP.ammo</strong></a>
     
@@ -15699,17 +17764,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Group ammo.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(ARMYGROUP).descriptors" ><strong>ARMYGROUP.descriptors</strong></a>
-    
-
 
 </div>
 
@@ -15735,6 +17789,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isAI" ><strong>ARMYGROUP.isAI</strong></a>
+    
+
+
+    
+<p> Ground are always AI.</p>
 
 </div>
 
@@ -15774,6 +17842,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Is (template) group late activated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(ARMYGROUP).isMobile" ><strong>ARMYGROUP.isMobile</strong></a>
+    
+<p>If true, group is mobile.</p>
 
 </div>
 
@@ -18972,6 +21051,72 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(ARMYGROUP.Element).ai" ><strong>ARMYGROUP.Element.ai</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP.Element).ammo0" ><strong>ARMYGROUP.Element.ammo0</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP.Element).category" ><strong>ARMYGROUP.Element.category</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP.Element).categoryname" ><strong>ARMYGROUP.Element.categoryname</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARMYGROUP.Element).height" ><strong>ARMYGROUP.Element.height</strong></a>
+    
+<p>Height of element in meters.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARMYGROUP.Element).length" ><strong>ARMYGROUP.Element.length</strong></a>
+    
+<p>Length of element in meters.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ARMYGROUP.Element).name" ><strong>ARMYGROUP.Element.name</strong></a>
     
@@ -18983,10 +21128,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(ARMYGROUP.Element).status" ><strong>ARMYGROUP.Element.status</strong></a>
     
-
+<p>The element status.</p>
 
 </div>
 
@@ -19005,10 +21150,21 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
 <a id="#(ARMYGROUP.Element).unit" ><strong>ARMYGROUP.Element.unit</strong></a>
     
+<p>The UNIT object.</p>
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ARMYGROUP.Element).width" ><strong>ARMYGROUP.Element.width</strong></a>
+    
+<p>Width of element in meters.</p>
 
 </div>
 
