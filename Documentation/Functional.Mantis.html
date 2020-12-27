@@ -1539,7 +1539,35 @@ Leverage attack range setup added by DCS in 11/20.</p>
 Set up your EWR system in the mission editor. Name the groups with common prefix like "Red EWR". Can be e.g. AWACS or a combination of AWACS and Search Radars like e.g. EWR 1L13 etc.
 [optional] Set up your HQ. Can be any group, e.g. a command vehicle.</p>
 
-<h1>1. Start up your MANTIS</h1>
+<h1>1. Basic tactical considerations when setting up your SAM sites</h1>
+
+<h2>1.1 Radar systems and AWACS</h2>
+
+<p> Typically, your setup should consist of EWR (early warning) radars to detect and track targets, accompanied by AWACS if your scenario forsees that. Ensure that your EWR radars have a good coverage of the area you want to track.
+ <strong>Location</strong> is of highest importantance here. Whilst AWACS in DCS has almost the "all seeing eye", EWR don't have that. Choose your location wisely, against a mountain backdrop or inside a valley even the best EWR system
+ doesn't work well. Prefer higher-up locations with a good view; use F7 in-game to check where you actually placed your EWR and have a look around. Apart from the obvious choice, do also consider other radar units
+ for this role, most have "SR" (search radar) or "STR" (search and track radar) in their names, use the encyclopedia to see what they actually do.  </p>
+
+<h2>1.2 SAM sites</h2>
+
+<p>Typically your SAM should cover all attack ranges. The closer the enemy gets, the more systems you will need to deploy to defend your location. Use a combination of long-range systems like the SA-10/11, midrange like SA-6 and short-range like 
+SA-2 for defense (Patriot, Hawk, Gepard, Blindfire for the blue side). For close-up defense and defense against HARMs or low-flying aircraft, helicopters it is also advisable to deploy SA-15 TOR systems, Shilka, Strela and Tunguska units, as well as manpads (Think Gepard, Avenger, Chaparral, 
+Linebacker, Roland systems for the blue side). If possible, overlap ranges for mutual coverage.</p>
+
+<h2>1.3 Typical problems</h2>
+
+<p>Often times, people complain because the detection cannot "see" oncoming targets and/or Mantis switches on too late. Three typial problems here are  </p>
+
+<ul>
+    <li>bad placement of radar units, </li>
+    <li>overestimation how far units can "see" and </li>
+    <li>not taking into account that a SAM site will take (e.g for a SA-6) 30-40 seconds between switching to RED, acquiring the target and firing. </li>
+</ul>
+
+<p>An attacker doing 350knots will cover ca 180meters/second or thus more than 6km until the SA-6 fires. Use triggers zones and the ruler in the missione editor to understand distances and zones. Take into account that the ranges given by the circles
+in the mission editor are absolute maximum ranges; in-game this is rather 50-75% of that depending on the system. Fiddle with placement and options to see what works best for your scenario, and remember <strong>everything in here is in meters</strong>.</p>
+
+<h1>2. Start up your MANTIS with a basic setting</h1>
 
 <p>   <code>myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)</code></p>
 
@@ -1557,13 +1585,17 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 
 <p>   <code>myredmantis:Start()</code></p>
 
-<h1>2. Default settings</h1>
+<p>If you want to use a separate AWACS unit (default detection range: 250km) to support your EWR system, use e.g. the following setup:</p>
+
+<p>   <code>mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")</code></p>
+
+<h1>3. Default settings</h1>
 
 <p>By default, the following settings are active:</p>
 
 <ul>
     <li>SAM_Templates_Prefix = "Red SAM" - SAM site group names in the mission editor begin with "Red SAM"</li>
-    <li>EWR_Templates_Prefix = "Red EWR" - EWR group names in the mission editor begin with "Red EWR" - can also be AWACS</li>
+    <li>EWR_Templates_Prefix = "Red EWR" - EWR group names in the mission editor begin with "Red EWR" - can also be combined with an AWACS unit</li>
     <li>checkradius = 25000 (meters) - SAMs will engage enemy flights, if they are within a 25km around each SAM site - <code>MANTIS:SetSAMRadius(radius)</code></li>
     <li>grouping = 5000 (meters) - Detection (EWR) will group enemy flights to areas of 5km for tracking - <code>MANTIS:SetEWRGrouping(radius)</code></li>
     <li>acceptrange = 80000 (meters) - Detection (EWR) will on consider flights inside a 80km radius - <code>MANTIS:SetEWRRange(radius)</code>  </li>
@@ -1574,7 +1606,36 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
     <li>debug = false - Debugging reports on screen are set to off - <code>MANTIS:Debug(onoff)</code></li>
 </ul>
 
+<h1>4. Advanced Mode</h1>
 
+<p> Advanced mode will <em>decrease</em> reactivity of MANTIS, if HQ and/or EWR  network dies.  Awacs is counted as one EWR unit. It will set SAMs to RED state if both are dead.  Requires usage of an <strong>HQ</strong> object and the <strong>dynamic</strong> option. <br/>
+ E.g. <code>mymantis:SetAdvancedMode( true, 90 )</code> <br/>
+ Use this option if you want to make use of or allow advanced SEAD tactics.  </p>
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##_MANTISAwacs')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>_MANTISAwacs</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##_MANTISAwacs" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="_MANTISAwacs" ><strong>_MANTISAwacs</strong></a>
+    
+
+
+    
+<p>[internal] Grouping detected objects to 5000m zones</p>
 
 </div>
 
@@ -1617,7 +1678,19 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).@">MANTIS.@</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Functional.Detection#DETECTION_AREAS} Detection The #DETECTION_AREAS object</p>
+<p>Functional.Detection#DETECTION_AREAS} AWACS_Detection The #DETECTION_AREAS object for AWACS</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AWACS_Detection">MANTIS.AWACS_Detection</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AWACS_Prefix">MANTIS.AWACS_Prefix</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -1675,6 +1748,24 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).HQ_CC">MANTIS.HQ_CC</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).HQ_Template_CC">MANTIS.HQ_Template_CC</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The ME name of the HQ object</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).MantisATimer">MANTIS.MantisATimer</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).MantisAdvTimer">MANTIS.MantisAdvTimer</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -1693,7 +1784,7 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).New">MANTIS:New(name, samprefix, ewrprefix, hq, coaltion, dynamic)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).New">MANTIS:New(name, samprefix, ewrprefix, hq, coaltion, dynamic, awacs)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p> Function instantiate new class</p>
 </td>
@@ -1717,18 +1808,6 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SEAD_CC">MANTIS.SEAD_CC</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SEAD_Template_CC">MANTIS.SEAD_Template_CC</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>The ME name of the HQ object</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAdvancedMode">MANTIS:SetAdvancedMode(onoff, ratio)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to set Advanded Mode</p>
@@ -1738,6 +1817,12 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAutoRelocate">MANTIS:SetAutoRelocate(hq, ewr)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to set autorelocation for HQ and EWR objects.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAwacs">MANTIS:SetAwacs(prefix)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set separate AWACS detection instance</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1789,6 +1874,12 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartAwacsDetection">MANTIS:StartAwacsDetection()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to start the detection via AWACS if defined as separate</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartDetection">MANTIS:StartDetection()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to start the detection via EWR groups</p>
@@ -1825,6 +1916,12 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._RefreshSAMTable">MANTIS:_RefreshSAMTable()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to update SAM table and SEAD state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._RelocateGroups">MANTIS:_RelocateGroups()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Function to execute the relocation</p>
@@ -1840,6 +1937,12 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).acceptrange">MANTIS.acceptrange</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Radius of the EWR detection</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).advAwacs">MANTIS.advAwacs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Boolean switch to use Awacs as a separate detection stream</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1870,6 +1973,12 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).autorelocateunits">MANTIS.autorelocateunits</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).awacsrange">MANTIS.awacsrange</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Detection range of an optional Awacs unit</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1915,6 +2024,12 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).mysead">MANTIS.mysead</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).name">MANTIS.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of this Mantis</p>
@@ -1956,7 +2071,7 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
+<a id="#(MANTIS).AWACS_Detection" ><strong>MANTIS.AWACS_Detection</strong></a>
     
 
 
@@ -2014,12 +2129,42 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(MANTIS).HQ_CC" ><strong>MANTIS.HQ_CC</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MANTIS).HQ_Template_CC" ><strong>MANTIS.HQ_Template_CC</strong></a>
+    
+<p>The ME name of the HQ object</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).MantisATimer" ><strong>MANTIS.MantisATimer</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(MANTIS).MantisAdvTimer" ><strong>MANTIS.MantisAdvTimer</strong></a>
     
 
-
-    
-<p> timer for advanced state check</p>
 
 </div>
 
@@ -2085,32 +2230,21 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).SEAD_CC" ><strong>MANTIS.SEAD_CC</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(MANTIS).SEAD_Template_CC" ><strong>MANTIS.SEAD_Template_CC</strong></a>
-    
-<p>The ME name of the HQ object</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #number
 <a id="#(MANTIS).acceptrange" ><strong>MANTIS.acceptrange</strong></a>
     
 <p>Radius of the EWR detection</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).advAwacs" ><strong>MANTIS.advAwacs</strong></a>
+    
+<p>Boolean switch to use Awacs as a separate detection stream</p>
 
 </div>
 
@@ -2166,6 +2300,17 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 <a id="#(MANTIS).autorelocateunits" ><strong>MANTIS.autorelocateunits</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).awacsrange" ><strong>MANTIS.awacsrange</strong></a>
+    
+<p>Detection range of an optional Awacs unit</p>
 
 </div>
 
@@ -2232,6 +2377,17 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
 <a id="#(MANTIS).lid" ><strong>MANTIS.lid</strong></a>
     
 <p>Prefix for logging</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
+    
+
 
 </div>
 
@@ -2397,7 +2553,7 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MANTIS).New" ><strong>MANTIS:New(name, samprefix, ewrprefix, hq, coaltion, dynamic)</strong></a></h2>
+<h2><a id="#(MANTIS).New" ><strong>MANTIS:New(name, samprefix, ewrprefix, hq, coaltion, dynamic, awacs)</strong></a></h2>
 </div>
     
 <p> Function instantiate new class</p>
@@ -2444,7 +2600,7 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
           </div>
           <div class="w3-half">
               
-<p>Prefixes for the EWR and AWACS groups from the ME, e.g. all groups starting with "Red EWR..."</p>
+<p>Prefixes for the EWR groups from the ME, e.g. all groups starting with "Red EWR..."</p>
 
           </div>
         </div>
@@ -2483,7 +2639,20 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
           </div>
           <div class="w3-half">
               
-<p>Use constant (true) filtering or just filter once (false, default)</p>
+<p>Use constant (true) filtering or just filter once (false, default) (optional)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>awacs</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group name of your Awacs (optional)</p>
 
           </div>
         </div>
@@ -2545,7 +2714,7 @@ Set up your EWR system in the mission editor. Name the groups with common prefix
           </div>
         </div>
       <h2><strong>Usage:</strong></h2>
-    <pre class="example"><code>Advanced mode will *decrease* reactivity of MANTIS, if HQ and/or EWR network dies.  Set SAMs to RED state if both are dead.  Requires usage of an **HQ** object
+    <pre class="example"><code>Advanced mode will *decrease* reactivity of MANTIS, if HQ and/or EWR network dies.  Set SAMs to RED state if both are dead.  Requires usage of an **HQ** object and the **dynamic** option.
 E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 
 </div>
@@ -2594,6 +2763,39 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
           <div class="w3-half">
               
 <p>If true, will relocate  EWR objects</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetAwacs" ><strong>MANTIS:SetAwacs(prefix)</strong></a></h2>
+</div>
+    
+<p>Function to set separate AWACS detection instance</p>
+
+<div id= "#Functions##SetAwacs" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>prefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the AWACS group in the mission editor</p>
 
           </div>
         </div>
@@ -2876,6 +3078,36 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS).StartAwacsDetection" ><strong>MANTIS:StartAwacsDetection()</strong></a></h2>
+</div>
+    
+<p>Function to start the detection via AWACS if defined as separate</p>
+
+<div id= "#Functions##StartAwacsDetection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The running detection set</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS).StartDetection" ><strong>MANTIS:StartDetection()</strong></a></h2>
 </div>
     
@@ -3053,6 +3285,36 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
       <div class="w3-half">
         
 <p>table  </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._RefreshSAMTable" ><strong>MANTIS:_RefreshSAMTable()</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to update SAM table and SEAD state</p>
+
+<div id= "#Functions##_RefreshSAMTable" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
