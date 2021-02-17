@@ -1514,267 +1514,317 @@ Controls a network of short range air/missile defense groups.</p>
    </div>
   </nav>
   
-<img src="..\Images\Core_Base.JPG" alt="Banner Image"/>   
+<img src="..\Images\Functional.Shorad.jpg" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Core.Base</strong></h1>
+    <h1>Module <strong>Functional.Shorad</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Core</strong> - The base class within the framework.</p>
+<p><strong>Functional</strong> -- Short Range Air Defense System</p>
+
+<hr/>
+
+<p><strong>SHORAD</strong> - Short Range Air Defense System
+Controls a network of short range air/missile defense groups.</p>
 
     
 
 <hr/>
 
-<h2>Features:</h2>
+<h2>Missions:</h2>
 
-<ul>
-    <li>The construction and inheritance of MOOSE classes.</li>
-    <li>The class naming and numbering system.</li>
-    <li>The class hierarchy search system.</li>
-    <li>The tracing of information or objects during mission execution for debuggin purposes.</li>
-    <li>The subscription to DCS events for event handling in MOOSE objects.</li>
-    <li>Object inspection.</li>
-</ul>
+<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master/SRD%20-%20SHORAD%20Defense">SHORAD - Short Range Air Defense</a></h3>
 
 <hr/>
 
-<p>All classes within the MOOSE framework are derived from the BASE class.
-Note: The BASE class is an abstract class and is not meant to be used directly.</p>
-
-<hr/>
-
-<h3>Author: <strong>FlightControl</strong></h3>
-<h3>Contributions:</h3>
-
-<hr/>
+<h3>Author : <em>*applevangelist *</em></h3>
 
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##BASE')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SHORAD')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>BASE</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>SHORAD</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>BASE class</p>
+<p><em>Good friends are worth defending.</em> Mr Tushman, Wonder (the Movie) </p>
 
-<h1>1.</h1>
+<p>Simple Class for a more intelligent Short Range Air Defense System</p>
+
+<h1>SHORAD</h1>
+<p>Moose derived missile intercepting short range defense system.</p>
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##BASE" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##SHORAD" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(BASE)">#BASE</a>
-<a id="BASE" ><strong>BASE</strong></a>
+    <a href="##(SHORAD)">#SHORAD</a>
+<a id="SHORAD" ><strong>SHORAD</strong></a>
     
-<p>BASE class</p>
+<p><em>Good friends are worth defending.</em> Mr Tushman, Wonder (the Movie) </p>
 
-<h1>1.</h1>
+<p>Simple Class for a more intelligent Short Range Air Defense System</p>
+
+<h1>SHORAD</h1>
+<p>Moose derived missile intercepting short range defense system.</p>
 
     
-<p>BASE constructor.</p>
+<p>Protects a network of SAM sites. Uses events to switch on the defense groups closest to the enemy.
+Easily integrated with <a href="Functional.Mantis.html##(MANTIS)">Functional.Mantis#MANTIS</a> to complete the defensive system setup.</p>
 
-<p>Any class derived from BASE, will use the <a href="Core.Base.html##(BASE).New">Core.Base#BASE.New</a> constructor embedded in the <a href="Core.Base.html##(BASE).Inherit">Core.Base#BASE.Inherit</a> method. 
-See an example at the <a href="Core.Base.html##(BASE).New">Core.Base#BASE.New</a> method how this is done.</p>
+<h2>Usage</h2>
 
-<h1>2. Trace information for debugging.</h1>
+<p>Set up a #SET_GROUP for the SAM sites to be protected:  </p>
 
-<p>The BASE class contains trace methods to trace progress within a mission execution of a certain object.
-These trace methods are inherited by each MOOSE class interiting BASE, soeach object created from derived class from BASE can use the tracing methods to trace its execution.</p>
-
-<p>Any type of information can be passed to these tracing methods. See the following examples:</p>
-
-<pre><code>self:E( "Hello" )
+<pre><code>   `local SamSet = SET_GROUP:New():FilterPrefixes("Red SAM"):FilterCoalitions("red"):FilterStart()`   
 </code></pre>
 
-<p>Result in the word "Hello" in the dcs.log.</p>
+<p>By default, SHORAD will defense against both HARMs and AG-Missiles with short to medium range. The default defense probability is 70-90%.
+When a missile is detected, SHORAD will activate defense groups in the given radius around the target for 10 minutes. It will <em>not</em> react to friendly fire.    </p>
 
-<pre><code>local Array = { 1, nil, "h", { "a","b" }, "x" }
-self:E( Array )
-</code></pre>
-
-<p>Results with the text [1]=1,[3]="h",[4]={[1]="a",[2]="b"},[5]="x"} in the dcs.log.   </p>
-
-<pre><code>local Object1 = "Object1"
-local Object2 = 3
-local Object3 = { Object 1, Object 2 }
-self:E( { Object1, Object2, Object3 } )
-</code></pre>
-
-<p>Results with the text [1]={[1]="Object",[2]=3,[3]={[1]="Object",[2]=3}} in the dcs.log.</p>
-
-<pre><code>local SpawnObject = SPAWN:New( "Plane" )
-local GroupObject = GROUP:FindByName( "Group" )
-self:E( { Spawn = SpawnObject, Group = GroupObject } )
-</code></pre>
-
-<p>Results with the text [1]={Spawn={....),Group={...}} in the dcs.log.  </p>
-
-<p>Below a more detailed explanation of the different method types for tracing.</p>
-
-<h2>2.1. Tracing methods categories.</h2>
-
-<p>There are basically 3 types of tracing methods available:</p>
+<h3>Start a new SHORAD system, parameters are:</h3>
 
 <ul>
-    <li><a href="##(BASE).F">BASE.F</a>: Used to trace the entrance of a function and its given parameters. An F is indicated at column 44 in the DCS.log file.</li>
-    <li><a href="##(BASE).T">BASE.T</a>: Used to trace further logic within a function giving optional variables or parameters. A T is indicated at column 44 in the DCS.log file.</li>
-    <li><a href="##(BASE).E">BASE.E</a>: Used to always trace information giving optional variables or parameters. An E is indicated at column 44 in the DCS.log file.</li>
-</ul>
-
-<h2>2.2 Tracing levels.</h2>
-
-<p>There are 3 tracing levels within MOOSE. <br/>
-These tracing levels were defined to avoid bulks of tracing to be generated by lots of objects.</p>
-
-<p>As such, the F and T methods have additional variants to trace level 2 and 3 respectively:</p>
-
-<ul>
-    <li><a href="##(BASE).F2">BASE.F2</a>: Trace the beginning of a function and its given parameters with tracing level 2.</li>
-    <li><a href="##(BASE).F3">BASE.F3</a>: Trace the beginning of a function and its given parameters with tracing level 3.</li>
-    <li><a href="##(BASE).T2">BASE.T2</a>: Trace further logic within a function giving optional variables or parameters with tracing level 2.</li>
-    <li><a href="##(BASE).T3">BASE.T3</a>: Trace further logic within a function giving optional variables or parameters with tracing level 3.</li>
-</ul>
-
-<h2>2.3. Trace activation.</h2>
-
-<p>Tracing can be activated in several ways:</p>
-
-<ul>
-    <li>Switch tracing on or off through the <a href="##(BASE).TraceOnOff">BASE.TraceOnOff</a>() method.</li>
-    <li>Activate all tracing through the <a href="##(BASE).TraceAll">BASE.TraceAll</a>() method.</li>
-    <li>Activate only the tracing of a certain class (name) through the <a href="##(BASE).TraceClass">BASE.TraceClass</a>() method.</li>
-    <li>Activate only the tracing of a certain method of a certain class through the <a href="##(BASE).TraceClassMethod">BASE.TraceClassMethod</a>() method.</li>
-    <li>Activate only the tracing of a certain level through the <a href="##(BASE).TraceLevel">BASE.TraceLevel</a>() method.</li>
-</ul>
-
-<h2>2.4. Check if tracing is on.</h2>
-
-<p>The method <a href="##(BASE).IsTrace">BASE.IsTrace</a>() will validate if tracing is activated or not.</p>
-
-
-<h1>3. DCS simulator Event Handling.</h1>
-
-<p>The BASE class provides methods to catch DCS Events. These are events that are triggered from within the DCS simulator, 
-and handled through lua scripting. MOOSE provides an encapsulation to handle these events more efficiently.</p>
-
-<h2>3.1. Subscribe / Unsubscribe to DCS Events.</h2>
-
-<p>At first, the mission designer will need to <strong>Subscribe</strong> to a specific DCS event for the class.
-So, when the DCS event occurs, the class will be notified of that event.
-There are two methods which you use to subscribe to or unsubscribe from an event.</p>
-
-<ul>
-    <li><a href="##(BASE).HandleEvent">BASE.HandleEvent</a>(): Subscribe to a DCS Event.</li>
-    <li><a href="##(BASE).UnHandleEvent">BASE.UnHandleEvent</a>(): Unsubscribe from a DCS Event.</li>
-</ul>
-
-<h2>3.2. Event Handling of DCS Events.</h2>
-
-<p>Once the class is subscribed to the event, an <strong>Event Handling</strong> method on the object or class needs to be written that will be called
-when the DCS event occurs. The Event Handling method receives an <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a> structure, which contains a lot of information
-about the event that occurred.</p>
-
-<p>Find below an example of the prototype how to write an event handling function for two units: </p>
-
-<pre><code> local Tank1 = UNIT:FindByName( "Tank A" )
- local Tank2 = UNIT:FindByName( "Tank B" )
-
- -- Here we subscribe to the Dead events. So, if one of these tanks dies, the Tank1 or Tank2 objects will be notified.
- Tank1:HandleEvent( EVENTS.Dead )
- Tank2:HandleEvent( EVENTS.Dead )
-
- --- This function is an Event Handling function that will be called when Tank1 is Dead.
- -- @param Wrapper.Unit#UNIT self 
- -- @param Core.Event#EVENTDATA EventData
- function Tank1:OnEventDead( EventData )
-
-   self:SmokeGreen()
- end
-
- --- This function is an Event Handling function that will be called when Tank2 is Dead.
- -- @param Wrapper.Unit#UNIT self 
- -- @param Core.Event#EVENTDATA EventData
- function Tank2:OnEventDead( EventData )
-
-   self:SmokeBlue()
- end
-</code></pre>
-
-
-
-<p>See the <a href="Event.html">Event</a> module for more information about event handling.</p>
-
-<h1>4. Class identification methods.</h1>
-
-<p>BASE provides methods to get more information of each object:</p>
-
-<ul>
-    <li><a href="##(BASE).GetClassID">BASE.GetClassID</a>(): Gets the ID (number) of the object. Each object created is assigned a number, that is incremented by one.</li>
-    <li><a href="##(BASE).GetClassName">BASE.GetClassName</a>(): Gets the name of the object, which is the name of the class the object was instantiated from.</li>
-    <li><a href="##(BASE).GetClassNameAndID">BASE.GetClassNameAndID</a>(): Gets the name and ID of the object.</li>
-</ul>
-
-<h1>5. All objects derived from BASE can have "States".</h1>
-
-<p>A mechanism is in place in MOOSE, that allows to let the objects administer <strong>states</strong>. <br/>
-States are essentially properties of objects, which are identified by a <strong>Key</strong> and a <strong>Value</strong>.  </p>
-
-<p>The method <a href="##(BASE).SetState">BASE.SetState</a>() can be used to set a Value with a reference Key to the object. <br/>
-To <strong>read or retrieve</strong> a state Value based on a Key, use the <a href="##(BASE).GetState">BASE.GetState</a> method.  </p>
-
-<p>These two methods provide a very handy way to keep state at long lasting processes.
-Values can be stored within the objects, and later retrieved or changed when needed.
-There is one other important thing to note, the <a href="##(BASE).SetState">BASE.SetState</a>() and <a href="##(BASE).GetState">BASE.GetState</a> methods
-receive as the <strong>first parameter the object for which the state needs to be set</strong>.
-Thus, if the state is to be set for the same object as the object for which the method is used, then provide the same
-object name to the method.</p>
-
-<h1>6. Inheritance.</h1>
-
-<p>The following methods are available to implement inheritance</p>
-
-<ul>
-    <li><a href="##(BASE).Inherit">BASE.Inherit</a>: Inherits from a class.</li>
-    <li><a href="##(BASE).GetParent">BASE.GetParent</a>: Returns the parent object from the object it is handling, or nil if there is no parent object.</li>
-</ul>
-
-<hr/>
-
-
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##FORMATION')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>FORMATION</strong></h2></p></td>
-        <td class="style="width:60%;">
-
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##FORMATION" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="##(FORMATION)">#FORMATION</a>
-<a id="FORMATION" ><strong>FORMATION</strong></a>
+    <li><p>Name: Name of this SHORAD.  </p></li>
+    <li><p>ShoradPrefix: Filter for the Shorad #SET_GROUP.  </p></li>
+    <li><p>Samset: The #SET_GROUP of SAM sites to defend.  </p></li>
+    <li><p>Radius: Defense radius in meters. </p></li>
+    <li><p>ActiveTimer: Determines how many seconds the systems stay on red alert after wake-up call.  </p></li>
+    <li><p>Coalition: Coalition, i.e. "blue", "red", or "neutral".* </p>
     
+    <p>   <code>myshorad = SHORAD:New("RedShorad", "Red SHORAD", SamSet, 25000, 600, "red")</code>       </p></li>
+</ul>
+
+<h2>Customize options</h2>
+
+<ul>
+    <li>SHORAD:SwitchDebug(debug)</li>
+    <li>SHORAD:SwitchHARMDefense(onoff)</li>
+    <li>SHORAD:SwitchAGMDefense(onoff)</li>
+    <li>SHORAD:SetDefenseLimits(low,high)</li>
+    <li>SHORAD:SetActiveTimer(seconds)</li>
+    <li>SHORAD:SetDefenseRadius(meters)</li>
+</ul>
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(BASE)">Type <strong>BASE</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SHORAD)">Type <strong>SHORAD</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(BASE)">BASE</a></strong>
+     <strong><a href="##(SHORAD)">SHORAD</a></strong>
+, extends <strong><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></strong>
    </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from SHORAD</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ActiveGroups">SHORAD.ActiveGroups</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table for the timer function</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ActiveTimer">SHORAD.ActiveTimer</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>How long a Shorad stays active after wake-up in seconds</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ClassName">SHORAD.ClassName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Coalition">SHORAD.Coalition</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The coalition of this Shorad</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).DefendHarms">SHORAD.DefendHarms</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Default true, intercept incoming HARMS</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).DefendMavs">SHORAD.DefendMavs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Default true, intercept incoming AG-Missiles</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).DefenseHighProb">SHORAD.DefenseHighProb</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Default 90, maximim detection limit</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).DefenseLowProb">SHORAD.DefenseLowProb</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Default 70, minimum detection limit</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Groupset">SHORAD.Groupset</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The set of Shorad groups</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Harms">SHORAD.Harms</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Mavs">SHORAD.Mavs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>TODO complete list?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).New">SHORAD:New(Name, ShoradPrefix, Samset, Radius, ActiveTimer, Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Instantiates a new SHORAD object</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventShot">SHORAD:OnEventShot(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Main function - work on the EventData</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Prefixes">SHORAD.Prefixes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>String to be used to build the <a href="##(Core).Set">Core.Set</a> </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Radius">SHORAD.Radius</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Shorad defense radius in meters</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Samset">SHORAD.Samset</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The set of SAM groups to defend</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SetActiveTimer">SHORAD:SetActiveTimer(seconds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the number of seconds a SHORAD site will stay active</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SetDefenseLimits">SHORAD:SetDefenseLimits(low, high)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set defense probability limits</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SetDefenseRadius">SHORAD:SetDefenseRadius(meters)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the number of meters for the SHORAD defense zone</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SwitchAGMDefense">SHORAD:SwitchAGMDefense(onoff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Switch defense for AGMs</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SwitchDebug">SHORAD:SwitchDebug(debug)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Switch debug state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SwitchHARMDefense">SHORAD:SwitchHARMDefense(onoff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Switch defense for HARMs</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).WakeUpShorad">SHORAD:WakeUpShorad(TargetGroup, Radius, ActiveTimer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Wake up #SHORADs in a zone with diameter Radius for ActiveTimer seconds</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._CheckCoalition">SHORAD:_CheckCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check the coalition of the attacker</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._CheckHarms">SHORAD:_CheckHarms(WeaponName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if a HARM was fired</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._CheckMavs">SHORAD:_CheckMavs(WeaponName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if an AGM was fired</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._CheckShotAtSams">SHORAD:_CheckShotAtSams(TargetGroupName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the missile is aimed at a SAM site</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._CheckShotAtShorad">SHORAD:_CheckShotAtShorad(TargetGroupName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the missile is aimed at a SHORAD</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._InitState">SHORAD:_InitState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Initially set all groups to alarm state GREEN</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._ShotIsDetected">SHORAD:_ShotIsDetected()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Calculate if the missile shot is detected</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).debug">SHORAD.debug</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the debug state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).lid">SHORAD.lid</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The log ID for the dcs.log</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).name">SHORAD.name</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Name of this Shorad</p>
+</td>
+          </tr>
+        </table>
+        </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
@@ -1782,254 +1832,254 @@ object name to the method.</p>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ClassID">BASE.ClassID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ClassID">SHORAD.ClassID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ClassName">BASE.ClassName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ClassName">SHORAD.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ClassNameAndID">BASE.ClassNameAndID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ClassNameAndID">SHORAD.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ClearState">BASE:ClearState(Object, StateName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ClearState">SHORAD:ClearState(Object, StateName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Clear the state of an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventBirth">BASE:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventBirth">SHORAD:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Birth Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventCrash">BASE:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventCrash">SHORAD:CreateEventCrash(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Crash Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventDead">BASE:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventDead">SHORAD:CreateEventDead(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Dead Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventPlayerEnterAircraft">BASE:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventPlayerEnterAircraft">SHORAD:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventRemoveUnit">BASE:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventRemoveUnit">SHORAD:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Remove Unit Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventTakeoff">BASE:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventTakeoff">SHORAD:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Takeoff Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).CreateEventUnitLost">BASE:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).CreateEventUnitLost">SHORAD:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Crash Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).E">BASE:E(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).E">SHORAD:E(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an exception which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).EventDispatcher">BASE:EventDispatcher()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).EventDispatcher">SHORAD:EventDispatcher()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns the event dispatcher</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).EventRemoveAll">BASE:EventRemoveAll()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).EventRemoveAll">SHORAD:EventRemoveAll()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Remove all subscribed events</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).F">BASE:F(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).F">SHORAD:F(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).F2">BASE:F2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).F2">SHORAD:F2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).F3">BASE:F3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).F3">SHORAD:F3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).GetClassID">BASE:GetClassID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).GetClassID">SHORAD:GetClassID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).GetClassName">BASE:GetClassName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).GetClassName">SHORAD:GetClassName()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).GetClassNameAndID">BASE:GetClassNameAndID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).GetClassNameAndID">SHORAD:GetClassNameAndID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName + ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).GetEventPriority">BASE:GetEventPriority()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).GetEventPriority">SHORAD:GetEventPriority()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).GetParent">BASE:GetParent(Child, FromClass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).GetParent">SHORAD:GetParent(Child, FromClass)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to retrieve the Parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).GetState">BASE:GetState(Object, Key)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).GetState">SHORAD:GetState(Object, Key)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get a Value given a Key from the Object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).HandleEvent">BASE:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).HandleEvent">SHORAD:HandleEvent(EventID, EventFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Subscribe to a DCS Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).I">BASE:I(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).I">SHORAD:I(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an information which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).Inherit">BASE:Inherit(Child, Parent)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Inherit">SHORAD:Inherit(Child, Parent)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to inherit from a parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).IsInstanceOf">BASE:IsInstanceOf(ClassName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).IsInstanceOf">SHORAD:IsInstanceOf(ClassName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).IsTrace">BASE:IsTrace()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).IsTrace">SHORAD:IsTrace()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enquires if tracing is on (for the class).</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).New">BASE:New()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).New">SHORAD:New()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEvent">BASE:OnEvent(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEvent">SHORAD:OnEvent(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventBaseCaptured">BASE:OnEventBaseCaptured(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventBaseCaptured">SHORAD:OnEventBaseCaptured(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventBirth">BASE:OnEventBirth(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventBirth">SHORAD:OnEventBirth(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any object is spawned into the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventCrash">BASE:OnEventCrash(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventCrash">SHORAD:OnEventCrash(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventDead">BASE:OnEventDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventDead">SHORAD:OnEventDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is dead.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventDetailedFailure">BASE:OnEventDetailedFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventDetailedFailure">SHORAD:OnEventDetailedFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Unknown precisely what creates this event, likely tied into newer damage model.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventEjection">BASE:OnEventEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventEjection">SHORAD:OnEventEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a pilot ejects from an aircraft
 initiator : The unit that has ejected </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventEngineShutdown">BASE:OnEventEngineShutdown(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventEngineShutdown">SHORAD:OnEventEngineShutdown(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft shuts down its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventEngineStartup">BASE:OnEventEngineStartup(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventEngineStartup">SHORAD:OnEventEngineStartup(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft starts its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventHit">BASE:OnEventHit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventHit">SHORAD:OnEventHit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever an object is hit by a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventHumanFailure">BASE:OnEventHumanFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventHumanFailure">SHORAD:OnEventHumanFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any system fails on a human controlled aircraft.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventKill">BASE:OnEventKill(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventKill">SHORAD:OnEventKill(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs on the death of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventLand">BASE:OnEventLand(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventLand">SHORAD:OnEventLand(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft lands at an airbase, farp or ship
 initiator : The unit that has landed
@@ -2037,205 +2087,205 @@ place: Object that the unit landed on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventLandingAfterEjection">BASE:OnEventLandingAfterEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventLandingAfterEjection">SHORAD:OnEventLandingAfterEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs shortly after the landing animation of an ejected pilot touching the ground and standing up.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventMarkAdded">BASE:OnEventMarkAdded(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventMarkAdded">SHORAD:OnEventMarkAdded(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a new mark was added.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventMarkChange">BASE:OnEventMarkChange(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventMarkChange">SHORAD:OnEventMarkChange(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark text was changed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventMarkRemoved">BASE:OnEventMarkRemoved(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventMarkRemoved">SHORAD:OnEventMarkRemoved(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark was removed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventMissionEnd">BASE:OnEventMissionEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventMissionEnd">SHORAD:OnEventMissionEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission ends</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventMissionStart">BASE:OnEventMissionStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventMissionStart">SHORAD:OnEventMissionStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission starts </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventPilotDead">BASE:OnEventPilotDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventPilotDead">SHORAD:OnEventPilotDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the pilot of an aircraft is killed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventPlayerEnterAircraft">BASE:OnEventPlayerEnterAircraft(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventPlayerEnterAircraft">SHORAD:OnEventPlayerEnterAircraft(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a player enters a slot and takes control of an aircraft.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventPlayerEnterUnit">BASE:OnEventPlayerEnterUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventPlayerEnterUnit">SHORAD:OnEventPlayerEnterUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player assumes direct control of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventPlayerLeaveUnit">BASE:OnEventPlayerLeaveUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventPlayerLeaveUnit">SHORAD:OnEventPlayerLeaveUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player relieves control of a unit to the AI.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventRefueling">BASE:OnEventRefueling(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventRefueling">SHORAD:OnEventRefueling(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventRefuelingStop">BASE:OnEventRefuelingStop(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventRefuelingStop">SHORAD:OnEventRefuelingStop(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft is finished taking fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventScore">BASE:OnEventScore(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventScore">SHORAD:OnEventScore(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any modification to the "Score" as seen on the debrief menu would occur.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventShootingEnd">BASE:OnEventShootingEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventShootingEnd">SHORAD:OnEventShootingEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit stops firing its weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventShootingStart">BASE:OnEventShootingStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventShootingStart">SHORAD:OnEventShootingStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventShot">BASE:OnEventShot(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventShot">SHORAD:OnEventShot(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventTakeoff">BASE:OnEventTakeoff(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventTakeoff">SHORAD:OnEventTakeoff(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).OnEventUnitLost">BASE:OnEventUnitLost(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).OnEventUnitLost">SHORAD:OnEventUnitLost(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ScheduleOnce">BASE:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ScheduleOnce">SHORAD:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ScheduleRepeat">BASE:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ScheduleRepeat">SHORAD:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).ScheduleStop">BASE:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).ScheduleStop">SHORAD:ScheduleStop(SchedulerFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Stops the Schedule.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).Scheduler">BASE.Scheduler</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).Scheduler">SHORAD.Scheduler</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).SetEventPriority">BASE:SetEventPriority(EventPriority)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SetEventPriority">SHORAD:SetEventPriority(EventPriority)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).SetState">BASE:SetState(Object, Key, Value)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).SetState">SHORAD:SetState(Object, Key, Value)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set a state or property of the Object given a Key and a Value.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).T">BASE:T(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).T">SHORAD:T(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 1.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).T2">BASE:T2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).T2">SHORAD:T2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).T3">BASE:T3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).T3">SHORAD:T3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceAll">BASE:TraceAll(TraceAll)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceAll">SHORAD:TraceAll(TraceAll)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace all methods in MOOSE</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceClass">BASE:TraceClass(Class)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceClass">SHORAD:TraceClass(Class)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceClassMethod">BASE:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceClassMethod">SHORAD:TraceClassMethod(Class, Method)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a specific method of  class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceLevel">BASE:TraceLevel(Level)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceLevel">SHORAD:TraceLevel(Level)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace level</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceOff">BASE:TraceOff()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceOff">SHORAD:TraceOff()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace off.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceOn">BASE:TraceOn()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceOn">SHORAD:TraceOn()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).TraceOnOff">BASE:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).TraceOnOff">SHORAD:TraceOnOff(TraceOnOff)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on or off
 Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
@@ -2243,37 +2293,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).UnHandleEvent">BASE:UnHandleEvent(EventID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).UnHandleEvent">SHORAD:UnHandleEvent(EventID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>UnSubscribe to a DCS event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE)._">BASE._</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._">SHORAD._</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE)._F">BASE:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._F">SHORAD:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE)._T">BASE:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._T">SHORAD:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).__">BASE.__</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).__">SHORAD.__</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BASE).onEvent">BASE:onEvent(event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).onEvent">SHORAD:onEvent(event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2281,48 +2331,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(FORMATION)">Type <strong>FORMATION</strong></a></h2></div>
-         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(FORMATION)">FORMATION</a></strong>
-   </div>
-        <div class="w3-card w3-margin">
-        <table class="w3-table w3-border-bottom w3-border-theme-l2">
-          <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from FORMATION</th>
-            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FORMATION).Cone">FORMATION.Cone</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>A cone formation.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FORMATION).Vee">FORMATION.Vee</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-        </table>
-        </div>
-
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Core.Base)" >Type <strong>Core.Base</strong></a></h2></div>
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Functional.Shorad)" >Type <strong>Functional.Shorad</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##BASE')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(BASE)">Type <strong>BASE</strong></a></h2></div>
-        <div id= "#Types##BASE" class="w3-container w3-white w3-padding-16" id="module_other_types">
+      <div onclick="myFunction('#Types##SHORAD')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SHORAD)">Type <strong>SHORAD</strong></a></h2></div>
+        <div id= "#Types##SHORAD" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
+  
+<ul>
+    <li><strong>SHORAD</strong> class, extends Core.Base#BASE</li>
+</ul>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(SHORAD).ActiveGroups" ><strong>SHORAD.ActiveGroups</strong></a>
     
-<a id="#(BASE).Scheduler" ><strong>BASE.Scheduler</strong></a>
+<p>Table for the timer function</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).ActiveTimer" ><strong>SHORAD.ActiveTimer</strong></a>
+    
+<p>How long a Shorad stays active after wake-up in seconds</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).ClassName" ><strong>SHORAD.ClassName</strong></a>
     
 
 
@@ -2332,10 +2384,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(BASE._)">#BASE._</a>
-<a id="#(BASE)._" ><strong>BASE._</strong></a>
+    #string
+<a id="#(SHORAD).Coalition" ><strong>SHORAD.Coalition</strong></a>
     
-
+<p>The coalition of this Shorad</p>
 
 </div>
 
@@ -2343,10 +2395,147 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(BASE.__)">#BASE.__</a>
-<a id="#(BASE).__" ><strong>BASE.__</strong></a>
+    #boolean
+<a id="#(SHORAD).DefendHarms" ><strong>SHORAD.DefendHarms</strong></a>
+    
+<p>Default true, intercept incoming HARMS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SHORAD).DefendMavs" ><strong>SHORAD.DefendMavs</strong></a>
+    
+<p>Default true, intercept incoming AG-Missiles</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).DefenseHighProb" ><strong>SHORAD.DefenseHighProb</strong></a>
+    
+<p>Default 90, maximim detection limit</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).DefenseLowProb" ><strong>SHORAD.DefenseLowProb</strong></a>
+    
+<p>Default 70, minimum detection limit</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(SHORAD).Groupset" ><strong>SHORAD.Groupset</strong></a>
+    
+<p>The set of Shorad groups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SHORAD).Harms" ><strong>SHORAD.Harms</strong></a>
     
 
+
+    
+<p> TODO Complete list?
+- Missile enumerators
+ @field Harms</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SHORAD).Mavs" ><strong>SHORAD.Mavs</strong></a>
+    
+<p>TODO complete list?</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).Prefixes" ><strong>SHORAD.Prefixes</strong></a>
+    
+<p>String to be used to build the <a href="##(Core).Set">Core.Set</a> </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).Radius" ><strong>SHORAD.Radius</strong></a>
+    
+<p>Shorad defense radius in meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(SHORAD).Samset" ><strong>SHORAD.Samset</strong></a>
+    
+<p>The set of SAM groups to defend</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SHORAD).debug" ><strong>SHORAD.debug</strong></a>
+    
+<p>Set the debug state</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).lid" ><strong>SHORAD.lid</strong></a>
+    
+<p>The log ID for the dcs.log</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).name" ><strong>SHORAD.name</strong></a>
+    
+<p>Name of this Shorad</p>
 
 </div>
 
@@ -2357,7 +2546,870 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).ClearState" ><strong>BASE:ClearState(Object, StateName)</strong></a></h2>
+<h2><a id="#(SHORAD).New" ><strong>SHORAD:New(Name, ShoradPrefix, Samset, Radius, ActiveTimer, Coalition)</strong></a></h2>
+</div>
+    
+<p>Instantiates a new SHORAD object</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of this SHORAD</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ShoradPrefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Filter for the Shorad #SET_GROUP</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>Samset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The #SET_GROUP of SAM sites to defend</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Defense radius in meters, used to switch on groups</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ActiveTimer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Determines how many seconds the systems stay on red alert after wake-up call</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition, i.e. "blue", "red", or "neutral"</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).OnEventShot" ><strong>SHORAD:OnEventShot(EventData)</strong></a></h2>
+</div>
+    
+<p>Main function - work on the EventData</p>
+
+<div id= "#Functions##OnEventShot" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event details table data set</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).SetActiveTimer" ><strong>SHORAD:SetActiveTimer(seconds)</strong></a></h2>
+</div>
+    
+<p>Set the number of seconds a SHORAD site will stay active</p>
+
+<div id= "#Functions##SetActiveTimer" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>seconds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of seconds systems stay active</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).SetDefenseLimits" ><strong>SHORAD:SetDefenseLimits(low, high)</strong></a></h2>
+</div>
+    
+<p>Set defense probability limits</p>
+
+<div id= "#Functions##SetDefenseLimits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>low</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Minimum detection limit, integer 1-100</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>high</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Maximum detection limit integer 1-100</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).SetDefenseRadius" ><strong>SHORAD:SetDefenseRadius(meters)</strong></a></h2>
+</div>
+    
+<p>Set the number of meters for the SHORAD defense zone</p>
+
+<div id= "#Functions##SetDefenseRadius" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>meters</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius of the defense search zone in meters. #SHORADs in this range around a targeted group will go active </p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).SwitchAGMDefense" ><strong>SHORAD:SwitchAGMDefense(onoff)</strong></a></h2>
+</div>
+    
+<p>Switch defense for AGMs</p>
+
+<div id= "#Functions##SwitchAGMDefense" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>onoff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).SwitchDebug" ><strong>SHORAD:SwitchDebug(debug)</strong></a></h2>
+</div>
+    
+<p>Switch debug state</p>
+
+<div id= "#Functions##SwitchDebug" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>debug</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch debug on (true) or off (false)</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).SwitchHARMDefense" ><strong>SHORAD:SwitchHARMDefense(onoff)</strong></a></h2>
+</div>
+    
+<p>Switch defense for HARMs</p>
+
+<div id= "#Functions##SwitchHARMDefense" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>onoff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).WakeUpShorad" ><strong>SHORAD:WakeUpShorad(TargetGroup, Radius, ActiveTimer)</strong></a></h2>
+</div>
+    
+<p>Wake up #SHORADs in a zone with diameter Radius for ActiveTimer seconds</p>
+
+<div id= "#Functions##WakeUpShorad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the target group used to build the #ZONE</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius of the #ZONE</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ActiveTimer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of seconds to stay active</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Use this function to integrate with other systems.</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._CheckCoalition" ><strong>SHORAD:_CheckCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Check the coalition of the attacker</p>
+
+<div id= "#Functions##_CheckCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>name</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns false for a match</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._CheckHarms" ><strong>SHORAD:_CheckHarms(WeaponName)</strong></a></h2>
+</div>
+    
+<p>Check if a HARM was fired</p>
+
+<div id= "#Functions##_CheckHarms" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>WeaponName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns true for a match</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._CheckMavs" ><strong>SHORAD:_CheckMavs(WeaponName)</strong></a></h2>
+</div>
+    
+<p>Check if an AGM was fired</p>
+
+<div id= "#Functions##_CheckMavs" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>WeaponName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns true for a match</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._CheckShotAtSams" ><strong>SHORAD:_CheckShotAtSams(TargetGroupName)</strong></a></h2>
+</div>
+    
+<p>Check if the missile is aimed at a SAM site</p>
+
+<div id= "#Functions##_CheckShotAtSams" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetGroupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the target group</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns true for a match, else false</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._CheckShotAtShorad" ><strong>SHORAD:_CheckShotAtShorad(TargetGroupName)</strong></a></h2>
+</div>
+    
+<p>Check if the missile is aimed at a SHORAD</p>
+
+<div id= "#Functions##_CheckShotAtShorad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetGroupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the target group</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns true for a match, else false</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._InitState" ><strong>SHORAD:_InitState()</strong></a></h2>
+</div>
+    
+<p>Initially set all groups to alarm state GREEN</p>
+
+<div id= "#Functions##_InitState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD)._ShotIsDetected" ><strong>SHORAD:_ShotIsDetected()</strong></a></h2>
+</div>
+    
+<p>Calculate if the missile shot is detected</p>
+
+<div id= "#Functions##_ShotIsDetected" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns true for a detection, else false</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SHORAD).ActiveGroups" ><strong>SHORAD.ActiveGroups</strong></a>
+    
+<p>Table for the timer function</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).ActiveTimer" ><strong>SHORAD.ActiveTimer</strong></a>
+    
+<p>How long a Shorad stays active after wake-up in seconds</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).ClassName" ><strong>SHORAD.ClassName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).Coalition" ><strong>SHORAD.Coalition</strong></a>
+    
+<p>The coalition of this Shorad</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SHORAD).DefendHarms" ><strong>SHORAD.DefendHarms</strong></a>
+    
+<p>Default true, intercept incoming HARMS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SHORAD).DefendMavs" ><strong>SHORAD.DefendMavs</strong></a>
+    
+<p>Default true, intercept incoming AG-Missiles</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).DefenseHighProb" ><strong>SHORAD.DefenseHighProb</strong></a>
+    
+<p>Default 90, maximim detection limit</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).DefenseLowProb" ><strong>SHORAD.DefenseLowProb</strong></a>
+    
+<p>Default 70, minimum detection limit</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(SHORAD).Groupset" ><strong>SHORAD.Groupset</strong></a>
+    
+<p>The set of Shorad groups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SHORAD).Harms" ><strong>SHORAD.Harms</strong></a>
+    
+
+
+    
+<p> TODO Complete list?
+- Missile enumerators
+ @field Harms</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SHORAD).Mavs" ><strong>SHORAD.Mavs</strong></a>
+    
+<p>TODO complete list?</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).Prefixes" ><strong>SHORAD.Prefixes</strong></a>
+    
+<p>String to be used to build the <a href="##(Core).Set">Core.Set</a> </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SHORAD).Radius" ><strong>SHORAD.Radius</strong></a>
+    
+<p>Shorad defense radius in meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(SHORAD).Samset" ><strong>SHORAD.Samset</strong></a>
+    
+<p>The set of SAM groups to defend</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SHORAD).debug" ><strong>SHORAD.debug</strong></a>
+    
+<p>Set the debug state</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).lid" ><strong>SHORAD.lid</strong></a>
+    
+<p>The log ID for the dcs.log</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(SHORAD).name" ><strong>SHORAD.name</strong></a>
+    
+<p>Name of this Shorad</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).ClearState" ><strong>SHORAD:ClearState(Object, StateName)</strong></a></h2>
 </div>
     
 <p>Clear the state of an object.</p>
@@ -2366,7 +3418,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2401,7 +3453,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventBirth" ><strong>BASE:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventBirth" ><strong>SHORAD:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
 </div>
     
 <p>Creation of a Birth Event.</p>
@@ -2410,7 +3462,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2480,7 +3532,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventCrash" ><strong>BASE:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventCrash" ><strong>SHORAD:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Crash Event.</p>
@@ -2489,7 +3541,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2526,7 +3578,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventDead" ><strong>BASE:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventDead" ><strong>SHORAD:CreateEventDead(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Dead Event.</p>
@@ -2535,7 +3587,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2572,7 +3624,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventPlayerEnterAircraft" ><strong>BASE:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventPlayerEnterAircraft" ><strong>SHORAD:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
 </div>
     
 <p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
@@ -2581,7 +3633,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2605,7 +3657,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventRemoveUnit" ><strong>BASE:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventRemoveUnit" ><strong>SHORAD:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Remove Unit Event.</p>
@@ -2614,7 +3666,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2651,7 +3703,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventTakeoff" ><strong>BASE:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventTakeoff" ><strong>SHORAD:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Takeoff Event.</p>
@@ -2660,7 +3712,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2697,7 +3749,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).CreateEventUnitLost" ><strong>BASE:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(SHORAD).CreateEventUnitLost" ><strong>SHORAD:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Crash Event.</p>
@@ -2706,7 +3758,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2743,7 +3795,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).E" ><strong>BASE:E(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).E" ><strong>SHORAD:E(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an exception which will be traced always.</p>
@@ -2755,7 +3807,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2778,7 +3830,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).EventDispatcher" ><strong>BASE:EventDispatcher()</strong></a></h2>
+<h2><a id="#(SHORAD).EventDispatcher" ><strong>SHORAD:EventDispatcher()</strong></a></h2>
 </div>
     
 <p>Returns the event dispatcher</p>
@@ -2787,7 +3839,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -2808,7 +3860,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).EventRemoveAll" ><strong>BASE:EventRemoveAll()</strong></a></h2>
+<h2><a id="#(SHORAD).EventRemoveAll" ><strong>SHORAD:EventRemoveAll()</strong></a></h2>
 </div>
     
 <p>Remove all subscribed events</p>
@@ -2817,7 +3869,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -2838,7 +3890,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).F" ><strong>BASE:F(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).F" ><strong>SHORAD:F(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -2850,7 +3902,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2873,7 +3925,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).F2" ><strong>BASE:F2(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).F2" ><strong>SHORAD:F2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 2.</p>
@@ -2885,7 +3937,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2908,7 +3960,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).F3" ><strong>BASE:F3(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).F3" ><strong>SHORAD:F3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 3.</p>
@@ -2920,7 +3972,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -2943,7 +3995,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).GetClassID" ><strong>BASE:GetClassID()</strong></a></h2>
+<h2><a id="#(SHORAD).GetClassID" ><strong>SHORAD:GetClassID()</strong></a></h2>
 </div>
     
 <p>Get the ClassID of the class instance.</p>
@@ -2952,7 +4004,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -2973,7 +4025,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).GetClassName" ><strong>BASE:GetClassName()</strong></a></h2>
+<h2><a id="#(SHORAD).GetClassName" ><strong>SHORAD:GetClassName()</strong></a></h2>
 </div>
     
 <p>Get the ClassName of the class instance.</p>
@@ -2982,7 +4034,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -3003,7 +4055,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).GetClassNameAndID" ><strong>BASE:GetClassNameAndID()</strong></a></h2>
+<h2><a id="#(SHORAD).GetClassNameAndID" ><strong>SHORAD:GetClassNameAndID()</strong></a></h2>
 </div>
     
 <p>Get the ClassName + ClassID of the class instance.</p>
@@ -3015,7 +4067,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -3036,7 +4088,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).GetEventPriority" ><strong>BASE:GetEventPriority()</strong></a></h2>
+<h2><a id="#(SHORAD).GetEventPriority" ><strong>SHORAD:GetEventPriority()</strong></a></h2>
 </div>
     
 <p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
@@ -3049,7 +4101,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -3070,7 +4122,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).GetParent" ><strong>BASE:GetParent(Child, FromClass)</strong></a></h2>
+<h2><a id="#(SHORAD).GetParent" ><strong>SHORAD:GetParent(Child, FromClass)</strong></a></h2>
 </div>
     
 <p>This is the worker method to retrieve the Parent class.</p>
@@ -3087,7 +4139,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3135,7 +4187,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).GetState" ><strong>BASE:GetState(Object, Key)</strong></a></h2>
+<h2><a id="#(SHORAD).GetState" ><strong>SHORAD:GetState(Object, Key)</strong></a></h2>
 </div>
     
 <p>Get a Value given a Key from the Object.</p>
@@ -3147,7 +4199,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3192,7 +4244,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).HandleEvent" ><strong>BASE:HandleEvent(EventID, EventFunction)</strong></a></h2>
+<h2><a id="#(SHORAD).HandleEvent" ><strong>SHORAD:HandleEvent(EventID, EventFunction)</strong></a></h2>
 </div>
     
 <p>Subscribe to a DCS Event.</p>
@@ -3201,7 +4253,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3249,7 +4301,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).I" ><strong>BASE:I(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).I" ><strong>SHORAD:I(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an information which will be traced always.</p>
@@ -3261,7 +4313,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3284,7 +4336,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).Inherit" ><strong>BASE:Inherit(Child, Parent)</strong></a></h2>
+<h2><a id="#(SHORAD).Inherit" ><strong>SHORAD:Inherit(Child, Parent)</strong></a></h2>
 </div>
     
 <p>This is the worker method to inherit from a parent class.</p>
@@ -3293,7 +4345,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3340,7 +4392,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).IsInstanceOf" ><strong>BASE:IsInstanceOf(ClassName)</strong></a></h2>
+<h2><a id="#(SHORAD).IsInstanceOf" ><strong>SHORAD:IsInstanceOf(ClassName)</strong></a></h2>
 </div>
     
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
@@ -3362,7 +4414,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3396,7 +4448,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).IsTrace" ><strong>BASE:IsTrace()</strong></a></h2>
+<h2><a id="#(SHORAD).IsTrace" ><strong>SHORAD:IsTrace()</strong></a></h2>
 </div>
     
 <p>Enquires if tracing is on (for the class).</p>
@@ -3405,7 +4457,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -3426,7 +4478,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).New" ><strong>BASE:New()</strong></a></h2>
+<h2><a id="#(SHORAD).New" ><strong>SHORAD:New()</strong></a></h2>
 </div>
     
 <p>BASE constructor.</p>
@@ -3446,7 +4498,7 @@ end
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
@@ -3467,7 +4519,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEvent" ><strong>BASE:OnEvent(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEvent" ><strong>SHORAD:OnEvent(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is completely destroyed.</p>
@@ -3479,7 +4531,7 @@ end
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3503,7 +4555,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventBaseCaptured" ><strong>BASE:OnEventBaseCaptured(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventBaseCaptured" ><strong>SHORAD:OnEventBaseCaptured(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
@@ -3516,7 +4568,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3540,7 +4592,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventBirth" ><strong>BASE:OnEventBirth(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventBirth" ><strong>SHORAD:OnEventBirth(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any object is spawned into the mission.</p>
@@ -3552,7 +4604,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3576,7 +4628,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventCrash" ><strong>BASE:OnEventCrash(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventCrash" ><strong>SHORAD:OnEventCrash(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
@@ -3588,7 +4640,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3612,7 +4664,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventDead" ><strong>BASE:OnEventDead(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventDead" ><strong>SHORAD:OnEventDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is dead.</p>
@@ -3624,7 +4676,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3648,7 +4700,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventDetailedFailure" ><strong>BASE:OnEventDetailedFailure(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventDetailedFailure" ><strong>SHORAD:OnEventDetailedFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Unknown precisely what creates this event, likely tied into newer damage model.</p>
@@ -3665,7 +4717,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3689,7 +4741,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventEjection" ><strong>BASE:OnEventEjection(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventEjection" ><strong>SHORAD:OnEventEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a pilot ejects from an aircraft
@@ -3699,7 +4751,7 @@ initiator : The unit that has ejected </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3723,7 +4775,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventEngineShutdown" ><strong>BASE:OnEventEngineShutdown(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventEngineShutdown" ><strong>SHORAD:OnEventEngineShutdown(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft shuts down its engines.</p>
@@ -3735,7 +4787,7 @@ initiator : The unit that has ejected </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3759,7 +4811,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventEngineStartup" ><strong>BASE:OnEventEngineStartup(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventEngineStartup" ><strong>SHORAD:OnEventEngineStartup(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft starts its engines.</p>
@@ -3771,7 +4823,7 @@ initiator : The unit that has ejected </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3795,7 +4847,7 @@ initiator : The unit that has ejected </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventHit" ><strong>BASE:OnEventHit(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventHit" ><strong>SHORAD:OnEventHit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever an object is hit by a weapon.</p>
@@ -3809,7 +4861,7 @@ target: The Object that was hit. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3833,7 +4885,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventHumanFailure" ><strong>BASE:OnEventHumanFailure(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventHumanFailure" ><strong>SHORAD:OnEventHumanFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any system fails on a human controlled aircraft.</p>
@@ -3845,7 +4897,7 @@ target: The Object that was hit. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3869,7 +4921,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventKill" ><strong>BASE:OnEventKill(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventKill" ><strong>SHORAD:OnEventKill(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs on the death of a unit.</p>
@@ -3888,7 +4940,7 @@ target: The Object that was hit. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3912,7 +4964,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventLand" ><strong>BASE:OnEventLand(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventLand" ><strong>SHORAD:OnEventLand(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft lands at an airbase, farp or ship
@@ -3926,7 +4978,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3950,7 +5002,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventLandingAfterEjection" ><strong>BASE:OnEventLandingAfterEjection(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventLandingAfterEjection" ><strong>SHORAD:OnEventLandingAfterEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs shortly after the landing animation of an ejected pilot touching the ground and standing up.</p>
@@ -3969,7 +5021,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3993,7 +5045,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventMarkAdded" ><strong>BASE:OnEventMarkAdded(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventMarkAdded" ><strong>SHORAD:OnEventMarkAdded(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a new mark was added.</p>
@@ -4005,7 +5057,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4029,7 +5081,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventMarkChange" ><strong>BASE:OnEventMarkChange(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventMarkChange" ><strong>SHORAD:OnEventMarkChange(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark text was changed.</p>
@@ -4041,7 +5093,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4065,7 +5117,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventMarkRemoved" ><strong>BASE:OnEventMarkRemoved(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventMarkRemoved" ><strong>SHORAD:OnEventMarkRemoved(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark was removed.</p>
@@ -4077,7 +5129,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4101,7 +5153,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventMissionEnd" ><strong>BASE:OnEventMissionEnd(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventMissionEnd" ><strong>SHORAD:OnEventMissionEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission ends</p>
@@ -4110,7 +5162,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4134,7 +5186,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventMissionStart" ><strong>BASE:OnEventMissionStart(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventMissionStart" ><strong>SHORAD:OnEventMissionStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission starts </p>
@@ -4143,7 +5195,7 @@ place: Object that the unit landed on.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4167,7 +5219,7 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventPilotDead" ><strong>BASE:OnEventPilotDead(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventPilotDead" ><strong>SHORAD:OnEventPilotDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the pilot of an aircraft is killed.</p>
@@ -4180,7 +5232,7 @@ initiator : The unit that the pilot has died in. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4204,7 +5256,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventPlayerEnterAircraft" ><strong>BASE:OnEventPlayerEnterAircraft(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventPlayerEnterAircraft" ><strong>SHORAD:OnEventPlayerEnterAircraft(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a player enters a slot and takes control of an aircraft.</p>
@@ -4217,7 +5269,7 @@ initiator : The unit that is being taken control of. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4241,7 +5293,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventPlayerEnterUnit" ><strong>BASE:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventPlayerEnterUnit" ><strong>SHORAD:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player assumes direct control of a unit.</p>
@@ -4253,7 +5305,7 @@ initiator : The unit that is being taken control of. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4277,7 +5329,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventPlayerLeaveUnit" ><strong>BASE:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventPlayerLeaveUnit" ><strong>SHORAD:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player relieves control of a unit to the AI.</p>
@@ -4289,7 +5341,7 @@ initiator : The unit that is being taken control of. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4313,7 +5365,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventRefueling" ><strong>BASE:OnEventRefueling(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventRefueling" ><strong>SHORAD:OnEventRefueling(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
@@ -4325,7 +5377,7 @@ initiator : The unit that is being taken control of. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4349,7 +5401,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventRefuelingStop" ><strong>BASE:OnEventRefuelingStop(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventRefuelingStop" ><strong>SHORAD:OnEventRefuelingStop(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft is finished taking fuel.</p>
@@ -4361,7 +5413,7 @@ initiator : The unit that is being taken control of. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4385,7 +5437,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventScore" ><strong>BASE:OnEventScore(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventScore" ><strong>SHORAD:OnEventScore(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any modification to the "Score" as seen on the debrief menu would occur.</p>
@@ -4397,7 +5449,7 @@ initiator : The unit that is being taken control of. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4421,7 +5473,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventShootingEnd" ><strong>BASE:OnEventShootingEnd(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventShootingEnd" ><strong>SHORAD:OnEventShootingEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit stops firing its weapon.</p>
@@ -4434,7 +5486,7 @@ initiator : The unit that was doing the shooting. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4458,7 +5510,7 @@ initiator : The unit that was doing the shooting. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventShootingStart" ><strong>BASE:OnEventShootingStart(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventShootingStart" ><strong>SHORAD:OnEventShootingStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
@@ -4472,7 +5524,7 @@ target: The unit that is being targeted. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4496,7 +5548,7 @@ target: The unit that is being targeted. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventShot" ><strong>BASE:OnEventShot(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventShot" ><strong>SHORAD:OnEventShot(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
@@ -4508,7 +5560,7 @@ target: The unit that is being targeted. </p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4532,7 +5584,7 @@ target: The unit that is being targeted. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventTakeoff" ><strong>BASE:OnEventTakeoff(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventTakeoff" ><strong>SHORAD:OnEventTakeoff(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
@@ -4545,7 +5597,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4569,7 +5621,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).OnEventUnitLost" ><strong>BASE:OnEventUnitLost(EventData)</strong></a></h2>
+<h2><a id="#(SHORAD).OnEventUnitLost" ><strong>SHORAD:OnEventUnitLost(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the game thinks an object is destroyed.</p>
@@ -4585,7 +5637,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4609,7 +5661,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).ScheduleOnce" ><strong>BASE:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(SHORAD).ScheduleOnce" ><strong>SHORAD:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -4621,7 +5673,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4682,7 +5734,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).ScheduleRepeat" ><strong>BASE:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(SHORAD).ScheduleRepeat" ><strong>SHORAD:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -4694,7 +5746,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4794,7 +5846,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).ScheduleStop" ><strong>BASE:ScheduleStop(SchedulerFunction)</strong></a></h2>
+<h2><a id="#(SHORAD).ScheduleStop" ><strong>SHORAD:ScheduleStop(SchedulerFunction)</strong></a></h2>
 </div>
     
 <p>Stops the Schedule.</p>
@@ -4803,7 +5855,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4827,7 +5879,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).SetEventPriority" ><strong>BASE:SetEventPriority(EventPriority)</strong></a></h2>
+<h2><a id="#(SHORAD).SetEventPriority" ><strong>SHORAD:SetEventPriority(EventPriority)</strong></a></h2>
 </div>
     
 <p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
@@ -4840,7 +5892,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4875,7 +5927,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).SetState" ><strong>BASE:SetState(Object, Key, Value)</strong></a></h2>
+<h2><a id="#(SHORAD).SetState" ><strong>SHORAD:SetState(Object, Key, Value)</strong></a></h2>
 </div>
     
 <p>Set a state or property of the Object given a Key and a Value.</p>
@@ -4887,7 +5939,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4944,7 +5996,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).T" ><strong>BASE:T(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).T" ><strong>SHORAD:T(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 1.</p>
@@ -4956,7 +6008,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -4979,7 +6031,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).T2" ><strong>BASE:T2(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).T2" ><strong>SHORAD:T2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 2.</p>
@@ -4991,7 +6043,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5014,7 +6066,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).T3" ><strong>BASE:T3(Arguments)</strong></a></h2>
+<h2><a id="#(SHORAD).T3" ><strong>SHORAD:T3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 3.</p>
@@ -5026,7 +6078,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5049,7 +6101,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceAll" ><strong>BASE:TraceAll(TraceAll)</strong></a></h2>
+<h2><a id="#(SHORAD).TraceAll" ><strong>SHORAD:TraceAll(TraceAll)</strong></a></h2>
 </div>
     
 <p>Trace all methods in MOOSE</p>
@@ -5058,7 +6110,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5082,7 +6134,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceClass" ><strong>BASE:TraceClass(Class)</strong></a></h2>
+<h2><a id="#(SHORAD).TraceClass" ><strong>SHORAD:TraceClass(Class)</strong></a></h2>
 </div>
     
 <p>Set tracing for a class</p>
@@ -5091,7 +6143,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5113,7 +6165,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceClassMethod" ><strong>BASE:TraceClassMethod(Class, Method)</strong></a></h2>
+<h2><a id="#(SHORAD).TraceClassMethod" ><strong>SHORAD:TraceClassMethod(Class, Method)</strong></a></h2>
 </div>
     
 <p>Set tracing for a specific method of  class</p>
@@ -5122,7 +6174,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5155,7 +6207,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceLevel" ><strong>BASE:TraceLevel(Level)</strong></a></h2>
+<h2><a id="#(SHORAD).TraceLevel" ><strong>SHORAD:TraceLevel(Level)</strong></a></h2>
 </div>
     
 <p>Set trace level</p>
@@ -5164,7 +6216,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5186,7 +6238,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceOff" ><strong>BASE:TraceOff()</strong></a></h2>
+<h2><a id="#(SHORAD).TraceOff" ><strong>SHORAD:TraceOff()</strong></a></h2>
 </div>
     
 <p>Set trace off.</p>
@@ -5195,7 +6247,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
       <h2><strong>Usage:</strong></h2>
     <pre class="example"><code>-- Switch the tracing Off
@@ -5209,7 +6261,7 @@ BASE:TraceOff()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceOn" ><strong>BASE:TraceOn()</strong></a></h2>
+<h2><a id="#(SHORAD).TraceOn" ><strong>SHORAD:TraceOn()</strong></a></h2>
 </div>
     
 <p>Set trace on.</p>
@@ -5218,7 +6270,7 @@ BASE:TraceOff()</code></pre>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
       <h2><strong>Usage:</strong></h2>
     <pre class="example"><code>-- Switch the tracing On
@@ -5232,7 +6284,7 @@ BASE:TraceOn()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).TraceOnOff" ><strong>BASE:TraceOnOff(TraceOnOff)</strong></a></h2>
+<h2><a id="#(SHORAD).TraceOnOff" ><strong>SHORAD:TraceOnOff(TraceOnOff)</strong></a></h2>
 </div>
     
 <p>Set trace on or off
@@ -5247,7 +6299,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5278,7 +6330,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).UnHandleEvent" ><strong>BASE:UnHandleEvent(EventID)</strong></a></h2>
+<h2><a id="#(SHORAD).UnHandleEvent" ><strong>SHORAD:UnHandleEvent(EventID)</strong></a></h2>
 </div>
     
 <p>UnSubscribe to a DCS event.</p>
@@ -5287,7 +6339,7 @@ BASE:TraceOnOff( false )</code></pre>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5322,7 +6374,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE)._F" ><strong>BASE:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(SHORAD)._F" ><strong>SHORAD:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -5334,7 +6386,7 @@ BASE:TraceOnOff( false )</code></pre>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5377,7 +6429,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE)._T" ><strong>BASE:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(SHORAD)._T" ><strong>SHORAD:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function logic.</p>
@@ -5386,7 +6438,7 @@ BASE:TraceOnOff( false )</code></pre>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5429,7 +6481,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(BASE).onEvent" ><strong>BASE:onEvent(event)</strong></a></h2>
+<h2><a id="#(SHORAD).onEvent" ><strong>SHORAD:onEvent(event)</strong></a></h2>
 </div>
     
 
@@ -5444,7 +6496,7 @@ BASE:TraceOnOff( false )</code></pre>
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>BASE</p>
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
 </div>
     <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5465,36 +6517,10 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 
         </div>
-      <div onclick="myFunction('#Types##FORMATION')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(FORMATION)">Type <strong>FORMATION</strong></a></h2></div>
-        <div id= "#Types##FORMATION" class="w3-container w3-white w3-padding-16" id="module_other_types">
-          <div class="w3-white" id="record_type">
-  
-<p>The Formation Class</p>
-
-<div class="fields w3-container w3-theme-l2">
-  <h2>Field(s)</h2>
-</div>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(FORMATION).Vee" ><strong>FORMATION.Vee</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div class="functions  w3-container w3-theme-l2">
-  <h2>Function(s)</h2>
-</div>  
-</div>
-
-        </div>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Core_Base.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Functional.Shorad.jpg')";
 }
 </script>
 
