@@ -1542,9 +1542,29 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 
 <h1>4. Advanced Mode</h1>
 
-<p> Advanced mode will <em>decrease</em> reactivity of MANTIS, if HQ and/or EWR  network dies.  Awacs is counted as one EWR unit. It will set SAMs to RED state if both are dead.  Requires usage of an <strong>HQ</strong> object and the <strong>dynamic</strong> option. <br/>
- E.g. <code>mymantis:SetAdvancedMode( true, 90 )</code> <br/>
- Use this option if you want to make use of or allow advanced SEAD tactics.  </p>
+<p> Advanced mode will <em>decrease</em> reactivity of MANTIS, if HQ and/or EWR  network dies.  Awacs is counted as one EWR unit. It will set SAMs to RED state if both are dead.  Requires usage of an <strong>HQ</strong> object and the <strong>dynamic</strong> option.  </p>
+
+<p> E.g.        <code>mymantis:SetAdvancedMode( true, 90 )</code>  </p>
+
+<p> Use this option if you want to make use of or allow advanced SEAD tactics.  </p>
+
+<h1>5. Integrate SHORAD</h1>
+
+<p> You can also choose to integrate Mantis with <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a> for protection against HARMs and AGMs. When SHORAD detects a missile fired at one of MANTIS' SAM sites, it will activate SHORAD systems in
+ the given defense checkradius around that SAM site. Create a SHORAD object first, then integrate with MANTIS like so:</p>
+
+<pre><code> `local SamSet = SET_GROUP:New():FilterPrefixes("Blue SAM"):FilterCoalitions("blue"):FilterStart()`
+ `myshorad = SHORAD:New("BlueShorad", "Blue SHORAD", SamSet, 22000, 600, "blue")`
+ `-- now set up MANTIS`
+ `mymantis = MANTIS:New("BlueMantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")`
+ `mymantis:AddShorad(myshorad,720)`
+ `mymantis:Start()`
+</code></pre>
+
+<p> and (optionally) remove the link later on with</p>
+
+<pre><code>   `mymantis:RemoveShorad()`    
+</code></pre>
 
 
 </div>
@@ -1611,12 +1631,6 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).#">MANTIS.#</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>ET_GROUP Adv_EWR_Group The EWR #SET_GROUP used for advanced mode</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AWACS_Detection">MANTIS.AWACS_Detection</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The #DETECTION_AREAS object for AWACS</p>
@@ -1637,7 +1651,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Adv_EWR_Group">MANTIS.Adv_EWR_Group</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>The EWR #SET_GROUP used for advanced mode</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2540,17 +2554,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(Core.Set)">#Core.Set</a>
-<a id="#(MANTIS).#" ><strong>MANTIS.#</strong></a>
-    
-<p>ET_GROUP Adv_EWR_Group The EWR #SET_GROUP used for advanced mode</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>
 <a id="#(MANTIS).AWACS_Detection" ><strong>MANTIS.AWACS_Detection</strong></a>
     
@@ -2562,10 +2565,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
     
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
-    
-
+<p>The EWR #SET_GROUP used for advanced mode</p>
 
 </div>
 
@@ -4021,17 +4024,6 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(Core.Set)">#Core.Set</a>
-<a id="#(MANTIS).#" ><strong>MANTIS.#</strong></a>
-    
-<p>ET_GROUP Adv_EWR_Group The EWR #SET_GROUP used for advanced mode</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>
 <a id="#(MANTIS).AWACS_Detection" ><strong>MANTIS.AWACS_Detection</strong></a>
     
@@ -4043,10 +4035,10 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
     
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
-    
-
+<p>The EWR #SET_GROUP used for advanced mode</p>
 
 </div>
 
