@@ -1525,10 +1525,13 @@ Controls a network of short range air/missile defense groups.</p>
 
     
 
-<p><strong>Main Features:</strong></p>
+<h2>Main Features:</h2>
 
 <ul>
-    <li>Stuff</li>
+    <li>Detect and track contacts consistently</li>
+    <li>Detect and track clusters of contacts consistently</li>
+    <li>Use FSM events to link functionality into your scripts</li>
+    <li>Easy setup  </li>
 </ul>
 
 <hr/>
@@ -1550,7 +1553,44 @@ Controls a network of short range air/missile defense groups.</p>
 
 <h1>The INTEL Concept</h1>
 
+<ul>
+    <li>Lightweight replacement for <a href="Functional.Detection.html##(DETECTION)">Functional.Detection#DETECTION</a></li>
+    <li>Detect and track contacts consistently</li>
+    <li>Detect and track clusters of contacts consistently</li>
+    <li>Once detected and still alive, planes will be tracked 10 minutes, helicopters 20 minutes, ships and trains 1 hour, ground units 2 hours</li>
+    <li>Use FSM events to link functionality into your scripts</li>
+</ul>
 
+<h1>Basic Usage</h1>
+
+<p> ## set up a detection SET_GROUP  </p>
+
+<p> <code>Red_DetectionSetGroup = SET_GROUP:New()</code> <br/>
+ <code>Red_DetectionSetGroup:FilterPrefixes( { "Red EWR" } )</code> <br/>
+ <code>Red_DetectionSetGroup:FilterOnce()</code>  </p>
+
+<p> ## New Intel type detection for the red side, logname "KGB"    </p>
+
+<p> <code>RedIntel = INTEL:New(Red_DetectionSetGroup,"red","KGB")</code> <br/>
+ <code>RedIntel:SetClusterAnalysis(true,true)</code> <br/>
+ <code>RedIntel:SetVerbosity(2)</code> <br/>
+ <code>RedIntel:Start()</code>  </p>
+
+<p> ## Hook into new contacts found  </p>
+
+<p> <code>function RedIntel:OnAfterNewContact(From, Event, To, Contact)</code>  </p>
+<pre><code>   `local text = string.format("NEW contact %s detected by %s", Contact.groupname, Contact.recce or "unknown")`  
+   `local m = MESSAGE:New(text,15,"KGB"):ToAll()`  
+</code></pre>
+<p><code>end</code>  </p>
+
+<p> ## And/or new clusters found  </p>
+
+<p><code>function RedIntel:OnAfterNewCluster(From, Event, To, Contact, Cluster)</code>  </p>
+<pre><code>   `local text = string.format("NEW cluster %d size %d with contact %s", Cluster.index, Cluster.size, Contact.groupname)`  
+   `local m = MESSAGE:New(text,15,"KGB"):ToAll()`  
+</code></pre>
+<p><code>end</code>   </p>
 
 </td>
       </tr>
@@ -1570,7 +1610,44 @@ Controls a network of short range air/missile defense groups.</p>
 
 <h1>The INTEL Concept</h1>
 
+<ul>
+    <li>Lightweight replacement for <a href="Functional.Detection.html##(DETECTION)">Functional.Detection#DETECTION</a></li>
+    <li>Detect and track contacts consistently</li>
+    <li>Detect and track clusters of contacts consistently</li>
+    <li>Once detected and still alive, planes will be tracked 10 minutes, helicopters 20 minutes, ships and trains 1 hour, ground units 2 hours</li>
+    <li>Use FSM events to link functionality into your scripts</li>
+</ul>
 
+<h1>Basic Usage</h1>
+
+<p> ## set up a detection SET_GROUP  </p>
+
+<p> <code>Red_DetectionSetGroup = SET_GROUP:New()</code> <br/>
+ <code>Red_DetectionSetGroup:FilterPrefixes( { "Red EWR" } )</code> <br/>
+ <code>Red_DetectionSetGroup:FilterOnce()</code>  </p>
+
+<p> ## New Intel type detection for the red side, logname "KGB"    </p>
+
+<p> <code>RedIntel = INTEL:New(Red_DetectionSetGroup,"red","KGB")</code> <br/>
+ <code>RedIntel:SetClusterAnalysis(true,true)</code> <br/>
+ <code>RedIntel:SetVerbosity(2)</code> <br/>
+ <code>RedIntel:Start()</code>  </p>
+
+<p> ## Hook into new contacts found  </p>
+
+<p> <code>function RedIntel:OnAfterNewContact(From, Event, To, Contact)</code>  </p>
+<pre><code>   `local text = string.format("NEW contact %s detected by %s", Contact.groupname, Contact.recce or "unknown")`  
+   `local m = MESSAGE:New(text,15,"KGB"):ToAll()`  
+</code></pre>
+<p><code>end</code>  </p>
+
+<p> ## And/or new clusters found  </p>
+
+<p><code>function RedIntel:OnAfterNewCluster(From, Event, To, Contact, Cluster)</code>  </p>
+<pre><code>   `local text = string.format("NEW cluster %d size %d with contact %s", Cluster.index, Cluster.size, Contact.groupname)`  
+   `local m = MESSAGE:New(text,15,"KGB"):ToAll()`  
+</code></pre>
+<p><code>end</code>   </p>
 
 
 </div>
@@ -5098,7 +5175,8 @@ If no detection method is given, the detection will use all the available method
 <p>Set forget contacts time interval.</p>
 
     
-<p>Previously known contacts that are not detected any more, are "lost" after this time.
+<p>For unknown contacts only.
+Previously known contacts that are not detected any more, are "lost" after this time.
 This avoids fast oscillations between a contact being detected and undetected.</p>
 
 <div id= "#Functions##SetForgetTime" class="w3-show w3-white">
