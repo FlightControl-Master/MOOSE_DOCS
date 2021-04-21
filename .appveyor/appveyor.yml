@@ -87,8 +87,10 @@ build_script:
           "Authorization" = "Bearer $token"
           "Content-type" = "application/json"
           }
-        $RequestBody = @{ AccountName = 'Applevangelist'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
+        # $RequestBody = @{ AccountName = 'Applevangelist'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
+        $RequestBody = @{ AccountName = 'Applevangelist'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} }
         # get project with last build details
+        Invoke-RestMethod -method Get -Uri "$apiUrl/users" -Headers $headers
         $project = Invoke-RestMethod -method Post -Uri "$apiUrl/builds" -Headers $headers -Body $RequestBody
       }
 artifacts:
