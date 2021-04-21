@@ -8,7 +8,7 @@ skip_tags: false
 
 environment:
   access_token_documentation:
-    secure: JVBVVL8uJUcLXN+48eRdELEeCGOGCCaMzCqutsUqNuaZ/KblG5ZTt7+LV4UKv/0f
+    secure: doUbkLRiz3sTESHDV0BG3Av28lB6q6XA6mrFTadXpxikTBej/k5cZDK36JahdlP7
   LUAROCKS_VER: 2.4.1
   LUA_VER: 5.1.5
   LUA: lua5.3
@@ -71,8 +71,8 @@ build_script:
       echo "Commit to GITHUB"
       git config --global credential.helper store  
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token_documentation):x-oauth-basic@github.com`n" 
-      git config --global user.email "sven.van.de.velde@telenet.be" 
-      git config --global user.name "FlightControl-User" 
+      git config --global user.email "post@tniedermeier.com" 
+      git config --global user.name "Applevangelist" 
       git add ./Documentation 2>&1
       git commit -m "MOOSE generated documentation [skip ci]" 2>&1 
       git push origin "$env:appveyor_repo_branch" 2>&1
@@ -80,22 +80,20 @@ build_script:
   - ps: | 
       if( $env:appveyor_repo_branch -eq 'develop' )     
       {
-        $apiUrl = 'https://ci.appveyor.com/api'
-        $token = 'qts80b5kpq0ooj4x6vvw'
+        $accountname = 'Applevangelist'
+        $apiUrl = 'https://ci.appveyor.com/api/account/$accountname'
+        $token = 'v2.6hcv3ige78kg3yvg4ge8'
         $headers = @{
           "Authorization" = "Bearer $token"
           "Content-type" = "application/json"
           }
-        $RequestBody = @{ accountName = 'FlightControl-Master'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
+        $RequestBody = @{ accountName = 'Applevangelist'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
         # get project with last build details
         $project = Invoke-RestMethod -method Post -Uri "$apiUrl/builds" -Headers $headers -Body $RequestBody
       }
-
 artifacts:
 #  - path: 'Documentation\**\*'
 #    name: Documentation
 
 on_finish:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
- 
- 
