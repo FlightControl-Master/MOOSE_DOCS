@@ -1262,6 +1262,20 @@ Controls a network of short range air/missile defense groups.</p>
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
            <img src= "../Images/MOOSE.JPG" alt="Image">
+           <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Utilities.Templates.html">Utilities.Templates</a></strong></h2></div>
+         </div>
+         <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Utils</strong> Templates</p>
+
+<p>DCS unit templates</p>
+
+</p></div>
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin-16">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/MOOSE.JPG" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Utils.html">Utils</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
@@ -1433,6 +1447,7 @@ Controls a network of short range air/missile defense groups.</p>
     <li>Get zone properties.</li>
     <li>Get zone bounding box.</li>
     <li>Set/get zone name.</li>
+    <li>Draw zones (circular and polygon) on the F10 map.</li>
 </ul>
 
 
@@ -1690,7 +1705,7 @@ that was created at mission startup, and reference it into the <code>PolygonZone
 <p>This is especially handy if you want to quickly setup a SET_ZONE...
 So when you would declare <code>local SetZone = SET_ZONE:New():FilterPrefixes( "Defense" ):FilterStart()</code>,
 then SetZone would contain the ZONE_POLYGON object <code>DefenseZone</code> as part of the zone collection,
-without much scripting overhead!!! </p>
+without much scripting overhead!</p>
 
 
 </div>
@@ -1727,6 +1742,13 @@ This class is an abstract BASE class for derived classes, and is not meant to be
     <li><a href="##(ZONE_POLYGON_BASE).GetRandomPointVec2">ZONE_POLYGON_BASE.GetRandomPointVec2</a>(): Return a <a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a> object representing a random 2D point within the zone.</li>
     <li><a href="##(ZONE_POLYGON_BASE).GetRandomPointVec3">ZONE_POLYGON_BASE.GetRandomPointVec3</a>(): Return a <a href="Core.Point.html##(POINT_VEC3)">Core.Point#POINT_VEC3</a> object representing a random 3D point at landheight within the zone.</li>
 </ul>
+
+<h2>Draw zone</h2>
+
+<ul>
+    <li><a href="##(ZONE_POLYGON_BASE).DrawZone">ZONE_POLYGON_BASE.DrawZone</a>(): Draws the zone on the F10 map.</li>
+</ul>
+
 
 
 </div>
@@ -1784,6 +1806,12 @@ This class is an abstract BASE class for derived classes, and is not meant to be
     <li><a href="##(ZONE_RADIUS).GetRandomPointVec3">ZONE_RADIUS.GetRandomPointVec3</a>(): Gets a <a href="Core.Point.html##(POINT_VEC3)">Core.Point#POINT_VEC3</a> object representing a random 3D point in the zone. Note that the height of the point is at landheight.</li>
 </ul>
 
+<h2>Draw zone</h2>
+
+<ul>
+    <li><a href="##(ZONE_RADIUS).DrawZone">ZONE_RADIUS.DrawZone</a>(): Draws the zone on the F10 map.</li>
+</ul>
+
 
 </div>
 
@@ -1838,7 +1866,7 @@ This class is an abstract BASE class for derived classes, and is not meant to be
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE).New">ZONE:New(ZoneName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Constructor of ZONE, taking the zone name.</p>
+<p>Constructor of ZONE taking the zone name.</p>
 </td>
           </tr>
         </table>
@@ -1907,15 +1935,51 @@ This class is an abstract BASE class for derived classes, and is not meant to be
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).Color">ZONE_BASE.Color</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).DrawID">ZONE_BASE.DrawID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Unique ID of the drawn zone on the F10 map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetBoundingSquare">ZONE_BASE:GetBoundingSquare()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the bounding square the zone.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetColor">ZONE_BASE:GetColor()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get color table of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetColorAlpha">ZONE_BASE:GetColorAlpha()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get transperency Alpha value of zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetColorRGB">ZONE_BASE:GetColorRGB()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get RGB color of zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetCoordinate">ZONE_BASE:GetCoordinate()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns a <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a> of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetDrawID">ZONE_BASE:GetDrawID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get ID of the zone object drawn on the F10 map.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2015,6 +2079,12 @@ This class is an abstract BASE class for derived classes, and is not meant to be
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).SetColor">ZONE_BASE:SetColor(RGBcolor, Alpha)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set color of zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).SetName">ZONE_BASE:SetName(ZoneName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Sets the name of the zone.</p>
@@ -2030,6 +2100,12 @@ This class is an abstract BASE class for derived classes, and is not meant to be
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).SmokeZone">ZONE_BASE:SmokeZone(SmokeColor)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Smokes the zone boundaries in a color.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).UndrawZone">ZONE_BASE:UndrawZone(Delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove the drawing of the zone from the F10 map. </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2125,7 +2201,7 @@ This class is an abstract BASE class for derived classes, and is not meant to be
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetScores">ZONE_BASE:GetScores(Scores)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetScores">ZONE_BASE:GetScores()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns a table with the scores defined.</p>
 </td>
@@ -2979,6 +3055,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).DrawID">ZONE_POLYGON_BASE.DrawID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).DrawZone">ZONE_POLYGON_BASE:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Draw the zone on the F10 map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).FlareZone">ZONE_POLYGON_BASE:FlareZone(FlareColor, Segments, Azimuth, AddHeight)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Flare the zone boundaries in a color.</p>
@@ -3024,6 +3112,42 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVec2">ZONE_POLYGON_BASE:GetVec2()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns the center location of the polygon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVertexCoordinate">ZONE_POLYGON_BASE:GetVertexCoordinate(Index)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a vertex of the polygon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVertexVec2">ZONE_POLYGON_BASE:GetVertexVec2(Index)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a vertex of the polygon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVertexVec3">ZONE_POLYGON_BASE:GetVertexVec3(Index)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a vertex of the polygon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVerticiesCoordinates">ZONE_POLYGON_BASE:GetVerticiesCoordinates()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a list of verticies of the polygon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVerticiesVec2">ZONE_POLYGON_BASE:GetVerticiesVec2()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a list of verticies of the polygon.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).GetVerticiesVec3">ZONE_POLYGON_BASE:GetVerticiesVec3()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a list of verticies of the polygon.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3074,6 +3198,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).CountScannedCoalitions">ZONE_RADIUS:CountScannedCoalitions()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Count the number of different coalitions inside the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).DrawID">ZONE_RADIUS.DrawID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).DrawZone">ZONE_RADIUS:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Draw the zone circle on the F10 map. </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3370,6 +3506,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).DrawID">ZONE_UNIT.DrawID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).DrawZone">ZONE_UNIT:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Draw the zone circle on the F10 map. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).FlareZone">ZONE_UNIT:FlareZone(FlareColor, Points, Azimuth, AddHeight)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Flares the zone boundaries in a color.</p>
@@ -3623,7 +3771,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(ZONE).New" ><strong>ZONE:New(ZoneName)</strong></a></h2>
 </div>
     
-<p>Constructor of ZONE, taking the zone name.</p>
+<p>Constructor of ZONE taking the zone name.</p>
 
 <div id= "#Functions##New" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -3652,7 +3800,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       </div>
       <div class="w3-half">
         
-
+<p>self</p>
 
       </div>
     </div>
@@ -3889,6 +4037,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ZONE_BASE).Color" ><strong>ZONE_BASE.Color</strong></a>
+    
+<p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ZONE_BASE).DrawID" ><strong>ZONE_BASE.DrawID</strong></a>
+    
+<p>Unique ID of the drawn zone on the F10 map.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(ZONE_BASE).ZoneName" ><strong>ZONE_BASE.ZoneName</strong></a>
     
@@ -3963,6 +4133,96 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ZONE_BASE).GetColor" ><strong>ZONE_BASE:GetColor()</strong></a></h2>
+</div>
+    
+<p>Get color table of the zone.</p>
+
+<div id= "#Functions##GetColor" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_BASE).GetColorAlpha" ><strong>ZONE_BASE:GetColorAlpha()</strong></a></h2>
+</div>
+    
+<p>Get transperency Alpha value of zone.</p>
+
+<div id= "#Functions##GetColorAlpha" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Alpha value.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_BASE).GetColorRGB" ><strong>ZONE_BASE:GetColorRGB()</strong></a></h2>
+</div>
+    
+<p>Get RGB color of zone.</p>
+
+<div id= "#Functions##GetColorRGB" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Table with three entries, e.g. {1, 0, 0}, which is the RGB color code.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ZONE_BASE).GetCoordinate" ><strong>ZONE_BASE:GetCoordinate()</strong></a></h2>
 </div>
     
@@ -3982,6 +4242,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>The Coordinate of the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_BASE).GetDrawID" ><strong>ZONE_BASE:GetDrawID()</strong></a></h2>
+</div>
+    
+<p>Get ID of the zone object drawn on the F10 map.</p>
+
+    
+<p>The ID can be used to remove the drawn object from the F10 map view via <code>UTILS.RemoveMark(MarkID)</code>.  </p>
+
+<div id= "#Functions##GetDrawID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Unique ID of the</p>
 
       </div>
     </div>
@@ -4629,6 +4922,63 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ZONE_BASE).SetColor" ><strong>ZONE_BASE:SetColor(RGBcolor, Alpha)</strong></a></h2>
+</div>
+    
+<p>Set color of zone.</p>
+
+<div id= "#Functions##SetColor" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_BASE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>RGBcolor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table. Default <code>{1, 0, 0}</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Alpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparacy between 0 and 1. Default 0.15.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_BASE)">#ZONE_BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ZONE_BASE).SetName" ><strong>ZONE_BASE:SetName(ZoneName)</strong></a></h2>
 </div>
     
@@ -4747,9 +5097,75 @@ end
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_BASE).UndrawZone" ><strong>ZONE_BASE:UndrawZone(Delay)</strong></a></h2>
+</div>
+    
+<p>Remove the drawing of the zone from the F10 map. </p>
+
+<div id= "#Functions##UndrawZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_BASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Delay before the drawing is removed.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_BASE)">#ZONE_BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ZONE_BASE).Color" ><strong>ZONE_BASE.Color</strong></a>
+    
+<p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ZONE_BASE).DrawID" ><strong>ZONE_BASE.DrawID</strong></a>
+    
+<p>Unique ID of the drawn zone on the F10 map.</p>
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -5252,7 +5668,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(ZONE_BASE).GetScores" ><strong>ZONE_BASE:GetScores(Scores)</strong></a></h2>
+<h2><a id="#(ZONE_BASE).GetScores" ><strong>ZONE_BASE:GetScores()</strong></a></h2>
 </div>
     
 <p>Returns a table with the scores defined.</p>
@@ -5263,18 +5679,17 @@ end
    <div class="w3-margin-left">
 <p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>Scores</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Scores.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -6222,6 +6637,28 @@ end
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(ZONE_BASE).Color" ><strong>ZONE_BASE.Color</strong></a>
+    
+<p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ZONE_BASE).DrawID" ><strong>ZONE_BASE.DrawID</strong></a>
+    
+<p>Unique ID of the drawn zone on the F10 map.</p>
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -9907,6 +10344,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_POLYGON_BASE).DrawID" ><strong>ZONE_POLYGON_BASE.DrawID</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
@@ -9935,6 +10383,131 @@ BASE:TraceOnOff( false )</code></pre>
           <div class="w3-half">
               
 <p>If true, the tyres will be destroyed.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_POLYGON_BASE)">#ZONE_POLYGON_BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).DrawZone" ><strong>ZONE_POLYGON_BASE:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
+</div>
+    
+<p>Draw the zone on the F10 map.</p>
+
+    
+<p> <strong>NOTE</strong> Currently, only polygons with <strong>exactly four points</strong> are supported!</p>
+
+<div id= "#Functions##DrawZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition: All=-1, Neutral=0, Red=1, Blue=2. Default -1=All.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Color</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Alpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>FillColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red. Default is same as <code>Color</code> value.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>FillAlpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 0.15.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LineType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Line type: 0=No line, 1=Solid, 2=Dashed, 3=Dotted, 4=Dot dash, 5=Long dash, 6=Two dash. Default 1=Solid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ReadOnly</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Mark is readonly and cannot be removed by users. Default false.</p>
 
           </div>
         </div>
@@ -10248,6 +10821,227 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).GetVertexCoordinate" ><strong>ZONE_POLYGON_BASE:GetVertexCoordinate(Index)</strong></a></h2>
+</div>
+    
+<p>Get a vertex of the polygon.</p>
+
+<div id= "#Functions##GetVertexCoordinate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Index</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Index of the vertex. Default 1. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Vertex of the polygon.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).GetVertexVec2" ><strong>ZONE_POLYGON_BASE:GetVertexVec2(Index)</strong></a></h2>
+</div>
+    
+<p>Get a vertex of the polygon.</p>
+
+<div id= "#Functions##GetVertexVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Index</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Index of the vertex. Default 1. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec2)">DCS#Vec2</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Vertex of the polygon.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).GetVertexVec3" ><strong>ZONE_POLYGON_BASE:GetVertexVec3(Index)</strong></a></h2>
+</div>
+    
+<p>Get a vertex of the polygon.</p>
+
+<div id= "#Functions##GetVertexVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Index</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Index of the vertex. Default 1. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec3)">DCS#Vec3</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Vertex of the polygon.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).GetVerticiesCoordinates" ><strong>ZONE_POLYGON_BASE:GetVerticiesCoordinates()</strong></a></h2>
+</div>
+    
+<p>Get a list of verticies of the polygon.</p>
+
+<div id= "#Functions##GetVerticiesCoordinates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>List of COORDINATES verticies defining the edges of the polygon.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).GetVerticiesVec2" ><strong>ZONE_POLYGON_BASE:GetVerticiesVec2()</strong></a></h2>
+</div>
+    
+<p>Get a list of verticies of the polygon.</p>
+
+<div id= "#Functions##GetVerticiesVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p><DCS#Vec2> List of DCS#Vec2 verticies defining the edges of the polygon.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).GetVerticiesVec3" ><strong>ZONE_POLYGON_BASE:GetVerticiesVec3()</strong></a></h2>
+</div>
+    
+<p>Get a list of verticies of the polygon.</p>
+
+<div id= "#Functions##GetVerticiesVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>List of DCS#Vec3 verticies defining the edges of the polygon.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ZONE_POLYGON_BASE).IsVec2InZone" ><strong>ZONE_POLYGON_BASE:IsVec2InZone(Vec2)</strong></a></h2>
 </div>
     
@@ -10424,6 +11218,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(ZONE_RADIUS).DrawID" ><strong>ZONE_RADIUS.DrawID</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="DCS.html##(Distance)">DCS#Distance</a>
 <a id="#(ZONE_RADIUS).Radius" ><strong>ZONE_RADIUS.Radius</strong></a>
     
@@ -10593,6 +11398,128 @@ BASE:TraceOnOff( false )</code></pre>
       <div class="w3-half">
         
 <p>Counted coalitions.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_RADIUS).DrawZone" ><strong>ZONE_RADIUS:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
+</div>
+    
+<p>Draw the zone circle on the F10 map. </p>
+
+<div id= "#Functions##DrawZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_RADIUS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition: All=-1, Neutral=0, Red=1, Blue=2. Default -1=All.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Color</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Alpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>FillColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red. Default is same as <code>Color</code> value.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>FillAlpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 0.15.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LineType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Line type: 0=No line, 1=Solid, 2=Dashed, 3=Dotted, 4=Dot dash, 5=Long dash, 6=Two dash. Default 1=Solid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ReadOnly</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Mark is readonly and cannot be removed by users. Default false.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
@@ -12370,6 +13297,128 @@ Note that once a zone has been scanned, multiple evaluations can be done on the 
       <div class="w3-half">
         
 <p>Counted coalitions.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_UNIT).DrawZone" ><strong>ZONE_UNIT:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
+</div>
+    
+<p>Draw the zone circle on the F10 map. </p>
+
+<div id= "#Functions##DrawZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition: All=-1, Neutral=0, Red=1, Blue=2. Default -1=All.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Color</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Alpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>FillColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red. Default is same as <code>Color</code> value.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>FillAlpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 0.15.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LineType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Line type: 0=No line, 1=Solid, 2=Dashed, 3=Dotted, 4=Dot dash, 5=Long dash, 6=Two dash. Default 1=Solid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ReadOnly</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Mark is readonly and cannot be removed by users. Default false.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
