@@ -1491,6 +1491,26 @@ Controls a network of short range air/missile defense groups.</p>
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Limit')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Limit</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Limit" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<a id="Limit" ><strong>Limit</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
     <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ZONE')">
       <tr>
         <td class="style="width:40%;"><p><h2>Global <strong>ZONE</strong></h2></p></td>
@@ -1527,14 +1547,14 @@ The ZONE name will be the trigger zone name.</p>
 
 <p>So, you can search yourself for the ZONE object by using the <a href="##(ZONE).FindByName">ZONE.FindByName</a>() method.
 In this example, <code>local TriggerZone = ZONE:FindByName( "DefenseZone" )</code> would return the ZONE object
-that was created at mission startup, and reference it into the <code>TriggerZone</code> local object. </p>
+that was created at mission startup, and reference it into the <code>TriggerZone</code> local object.</p>
 
 <p>Refer to mission <code>ZON-110</code> for a demonstration.</p>
 
 <p>This is especially handy if you want to quickly setup a SET_ZONE...
 So when you would declare <code>local SetZone = SET_ZONE:New():FilterPrefixes( "Defense" ):FilterStart()</code>,
 then SetZone would contain the ZONE object <code>DefenseZone</code> as part of the zone collection,
-without much scripting overhead!!! </p>
+without much scripting overhead!!!</p>
 
 
 
@@ -1747,6 +1767,7 @@ This class is an abstract BASE class for derived classes, and is not meant to be
 
 <ul>
     <li><a href="##(ZONE_POLYGON_BASE).DrawZone">ZONE_POLYGON_BASE.DrawZone</a>(): Draws the zone on the F10 map.</li>
+    <li><a href="##(ZONE_POLYGON_BASE).Boundary">ZONE_POLYGON_BASE.Boundary</a>(): Draw a frontier on the F10 map with small filled circles.</li>
 </ul>
 
 
@@ -1941,6 +1962,12 @@ This class is an abstract BASE class for derived classes, and is not meant to be
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).Coordinate">ZONE_BASE.Coordinate</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).DrawID">ZONE_BASE.DrawID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Unique ID of the drawn zone on the F10 map.</p>
@@ -1971,7 +1998,7 @@ This class is an abstract BASE class for derived classes, and is not meant to be
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetCoordinate">ZONE_BASE:GetCoordinate()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).GetCoordinate">ZONE_BASE:GetCoordinate(Height)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns a <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a> of the zone.</p>
 </td>
@@ -2105,7 +2132,7 @@ This class is an abstract BASE class for derived classes, and is not meant to be
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_BASE).UndrawZone">ZONE_BASE:UndrawZone(Delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Remove the drawing of the zone from the F10 map. </p>
+<p>Remove the drawing of the zone from the F10 map.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3055,6 +3082,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).Boundary">ZONE_POLYGON_BASE:Boundary(Coalition, Color, Radius, Alpha, Segments, Closed)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Draw a frontier on the F10 map with small filled circles.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).DrawID">ZONE_POLYGON_BASE.DrawID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -3168,6 +3201,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>Smokes the zone boundaries in a color.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).UpdateFromVec2">ZONE_POLYGON_BASE:UpdateFromVec2(Vec2Array)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update polygon points with an array of <a href="DCS.html##(Vec2)">DCS#Vec2</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_POLYGON_BASE).UpdateFromVec3">ZONE_POLYGON_BASE:UpdateFromVec3(Vec2Array, Vec3Array)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update polygon points with an array of <a href="DCS.html##(Vec3)">DCS#Vec3</a>.</p>
+</td>
+          </tr>
         </table>
         </div>
 
@@ -3209,7 +3254,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).DrawZone">ZONE_RADIUS:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Draw the zone circle on the F10 map. </p>
+<p>Draw the zone circle on the F10 map.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3270,6 +3315,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).GetScannedSceneryType">ZONE_RADIUS:GetScannedSceneryType(SceneryType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get scanned scenery type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).GetScannedSetGroup">ZONE_RADIUS:GetScannedSetGroup()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a set of scanned units.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3369,6 +3420,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).ScanSetGroup">ZONE_RADIUS.ScanSetGroup</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).SearchZone">ZONE_RADIUS:SearchZone(ObjectCategories, EvaluateFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Searches the zone</p>
@@ -3390,6 +3447,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).SmokeZone">ZONE_RADIUS:SmokeZone(SmokeColor, Points, AddHeight, AddOffSet, AngleOffset)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Smokes the zone boundaries in a color.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).UpdateFromVec2">ZONE_RADIUS:UpdateFromVec2(Vec2, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update zone from a 2D vector.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_RADIUS).UpdateFromVec3">ZONE_RADIUS:UpdateFromVec3(Vec3, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update zone from a 2D vector.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3514,7 +3583,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).DrawZone">ZONE_UNIT:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Draw the zone circle on the F10 map. </p>
+<p>Draw the zone circle on the F10 map.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3575,6 +3644,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).GetScannedSceneryType">ZONE_UNIT:GetScannedSceneryType(SceneryType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get scanned scenery type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).GetScannedSetGroup">ZONE_UNIT:GetScannedSetGroup()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a set of scanned units.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3674,6 +3749,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).ScanSetGroup">ZONE_UNIT.ScanSetGroup</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).SearchZone">ZONE_UNIT:SearchZone(ObjectCategories, EvaluateFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Searches the zone</p>
@@ -3695,6 +3776,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).SmokeZone">ZONE_UNIT:SmokeZone(SmokeColor, Points, AddHeight, AddOffSet, AngleOffset)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Smokes the zone boundaries in a color.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).UpdateFromVec2">ZONE_UNIT:UpdateFromVec2(Vec2, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update zone from a 2D vector.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_UNIT).UpdateFromVec3">ZONE_UNIT:UpdateFromVec3(Vec3, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update zone from a 2D vector.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4048,6 +4141,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(ZONE_BASE).Coordinate" ><strong>ZONE_BASE.Coordinate</strong></a>
+    
+
+
+    
+<p> Create a new coordinate object.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ZONE_BASE).DrawID" ><strong>ZONE_BASE.DrawID</strong></a>
     
@@ -4223,7 +4330,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(ZONE_BASE).GetCoordinate" ><strong>ZONE_BASE:GetCoordinate()</strong></a></h2>
+<h2><a id="#(ZONE_BASE).GetCoordinate" ><strong>ZONE_BASE:GetCoordinate(Height)</strong></a></h2>
 </div>
     
 <p>Returns a <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a> of the zone.</p>
@@ -4234,6 +4341,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>ZONE_BASE</p>
 </div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Height</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The height to add to the land height where the center of the zone is located.</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -4259,7 +4380,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>Get ID of the zone object drawn on the F10 map.</p>
 
     
-<p>The ID can be used to remove the drawn object from the F10 map view via <code>UTILS.RemoveMark(MarkID)</code>.  </p>
+<p>The ID can be used to remove the drawn object from the F10 map view via <code>UTILS.RemoveMark(MarkID)</code>.</p>
 
 <div id= "#Functions##GetDrawID" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5103,7 +5224,7 @@ end
 <h2><a id="#(ZONE_BASE).UndrawZone" ><strong>ZONE_BASE:UndrawZone(Delay)</strong></a></h2>
 </div>
     
-<p>Remove the drawing of the zone from the F10 map. </p>
+<p>Remove the drawing of the zone from the F10 map.</p>
 
 <div id= "#Functions##UndrawZone" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5151,6 +5272,20 @@ end
 <a id="#(ZONE_BASE).Color" ><strong>ZONE_BASE.Color</strong></a>
     
 <p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_BASE).Coordinate" ><strong>ZONE_BASE.Coordinate</strong></a>
+    
+
+
+    
+<p> Create a new coordinate object.</p>
 
 </div>
 
@@ -6644,6 +6779,20 @@ end
 <a id="#(ZONE_BASE).Color" ><strong>ZONE_BASE.Color</strong></a>
     
 <p>Table with four entries, e.g. {1, 0, 0, 0.15}. First three are RGB color code. Fourth is the transparency Alpha value.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_BASE).Coordinate" ><strong>ZONE_BASE.Coordinate</strong></a>
+    
+
+
+    
+<p> Create a new coordinate object.</p>
 
 </div>
 
@@ -10405,6 +10554,115 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).Boundary" ><strong>ZONE_POLYGON_BASE:Boundary(Coalition, Color, Radius, Alpha, Segments, Closed)</strong></a></h2>
+</div>
+    
+<p>Draw a frontier on the F10 map with small filled circles.</p>
+
+<div id= "#Functions##Boundary" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Coalition: All=-1, Neutral=0, Red=1, Blue=2. Default -1= All.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Color</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) RGB color table {r, g, b}, e.g. {1, 0, 0} for red. Default {1, 1, 1}= White.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Radius of the circles in meters. Default 1000.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Alpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Alpha transparency [0,1]. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Segments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Number of segments within boundary line. Default 10.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Closed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Link the last point with the first one to obtain a closed boundary. Default false</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_POLYGON_BASE)">#ZONE_POLYGON_BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ZONE_POLYGON_BASE).DrawZone" ><strong>ZONE_POLYGON_BASE:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
 </div>
     
@@ -10842,7 +11100,7 @@ BASE:TraceOnOff( false )</code></pre>
           </div>
           <div class="w3-half">
               
-<p>Index of the vertex. Default 1. </p>
+<p>Index of the vertex. Default 1.</p>
 
           </div>
         </div>
@@ -10886,7 +11144,7 @@ BASE:TraceOnOff( false )</code></pre>
           </div>
           <div class="w3-half">
               
-<p>Index of the vertex. Default 1. </p>
+<p>Index of the vertex. Default 1.</p>
 
           </div>
         </div>
@@ -10930,7 +11188,7 @@ BASE:TraceOnOff( false )</code></pre>
           </div>
           <div class="w3-half">
               
-<p>Index of the vertex. Default 1. </p>
+<p>Index of the vertex. Default 1.</p>
 
           </div>
         </div>
@@ -11126,7 +11384,7 @@ BASE:TraceOnOff( false )</code></pre>
           </div>
           <div class="w3-half">
               
-<p>An array of <a href="DCS.html##(Vec2)">DCS#Vec2</a>, forming a polygon..</p>
+<p>An array of <a href="DCS.html##(Vec2)">DCS#Vec2</a>, forming a polygon.</p>
 
           </div>
         </div>
@@ -11203,6 +11461,104 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).UpdateFromVec2" ><strong>ZONE_POLYGON_BASE:UpdateFromVec2(Vec2Array)</strong></a></h2>
+</div>
+    
+<p>Update polygon points with an array of <a href="DCS.html##(Vec2)">DCS#Vec2</a>.</p>
+
+<div id= "#Functions##UpdateFromVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(ZONE_POLYGON_BASE.ListVec2)">#ZONE_POLYGON_BASE.ListVec2</a>
+            <strong><strong>Vec2Array</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>An array of <a href="DCS.html##(Vec2)">DCS#Vec2</a>, forming a polygon.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_POLYGON_BASE)">#ZONE_POLYGON_BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_POLYGON_BASE).UpdateFromVec3" ><strong>ZONE_POLYGON_BASE:UpdateFromVec3(Vec2Array, Vec3Array)</strong></a></h2>
+</div>
+    
+<p>Update polygon points with an array of <a href="DCS.html##(Vec3)">DCS#Vec3</a>.</p>
+
+<div id= "#Functions##UpdateFromVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_POLYGON_BASE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(ZONE_POLYGON_BASE.ListVec3)">#ZONE_POLYGON_BASE.ListVec3</a>
+            <strong><strong>Vec2Array</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>An array of <a href="DCS.html##(Vec3)">DCS#Vec3</a>, forming a polygon.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Vec3Array</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_POLYGON_BASE)">#ZONE_POLYGON_BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 </div>
 
         </div>
@@ -11242,6 +11598,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #table
 <a id="#(ZONE_RADIUS).ScanData" ><strong>ZONE_RADIUS.ScanData</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(ZONE_RADIUS).ScanSetGroup" ><strong>ZONE_RADIUS.ScanSetGroup</strong></a>
     
 
 
@@ -11412,7 +11779,7 @@ BASE:TraceOnOff( false )</code></pre>
 <h2><a id="#(ZONE_RADIUS).DrawZone" ><strong>ZONE_RADIUS:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
 </div>
     
-<p>Draw the zone circle on the F10 map. </p>
+<p>Draw the zone circle on the F10 map.</p>
 
 <div id= "#Functions##DrawZone" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12035,6 +12402,36 @@ Returns the Coalition for the given Coalition if there are units of the Coalitio
       <div class="w3-half">
         
 <p>Table of DCS scenery type objects.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_RADIUS).GetScannedSetGroup" ><strong>ZONE_RADIUS:GetScannedSetGroup()</strong></a></h2>
+</div>
+    
+<p>Get a set of scanned units.</p>
+
+<div id= "#Functions##GetScannedSetGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_RADIUS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set of groups.</p>
 
       </div>
     </div>
@@ -12906,6 +13303,120 @@ Note that once a zone has been scanned, multiple evaluations can be done on the 
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_RADIUS).UpdateFromVec2" ><strong>ZONE_RADIUS:UpdateFromVec2(Vec2, Radius)</strong></a></h2>
+</div>
+    
+<p>Update zone from a 2D vector.</p>
+
+<div id= "#Functions##UpdateFromVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_RADIUS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec2)">DCS#Vec2</a>
+            <strong><strong>Vec2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_RADIUS).UpdateFromVec3" ><strong>ZONE_RADIUS:UpdateFromVec3(Vec3, Radius)</strong></a></h2>
+</div>
+    
+<p>Update zone from a 2D vector.</p>
+
+<div id= "#Functions##UpdateFromVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_RADIUS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>Vec3</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 </div>
 
         </div>
@@ -13311,7 +13822,7 @@ Note that once a zone has been scanned, multiple evaluations can be done on the 
 <h2><a id="#(ZONE_UNIT).DrawZone" ><strong>ZONE_UNIT:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
 </div>
     
-<p>Draw the zone circle on the F10 map. </p>
+<p>Draw the zone circle on the F10 map.</p>
 
 <div id= "#Functions##DrawZone" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -13934,6 +14445,36 @@ Returns the Coalition for the given Coalition if there are units of the Coalitio
       <div class="w3-half">
         
 <p>Table of DCS scenery type objects.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_UNIT).GetScannedSetGroup" ><strong>ZONE_UNIT:GetScannedSetGroup()</strong></a></h2>
+</div>
+    
+<p>Get a set of scanned units.</p>
+
+<div id= "#Functions##GetScannedSetGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set of groups.</p>
 
       </div>
     </div>
@@ -14787,6 +15328,120 @@ Note that once a zone has been scanned, multiple evaluations can be done on the 
           </div>
           <div class="w3-half">
               <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_UNIT).UpdateFromVec2" ><strong>ZONE_UNIT:UpdateFromVec2(Vec2, Radius)</strong></a></h2>
+</div>
+    
+<p>Update zone from a 2D vector.</p>
+
+<div id= "#Functions##UpdateFromVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec2)">DCS#Vec2</a>
+            <strong><strong>Vec2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_UNIT).UpdateFromVec3" ><strong>ZONE_UNIT:UpdateFromVec3(Vec3, Radius)</strong></a></h2>
+</div>
+    
+<p>Update zone from a 2D vector.</p>
+
+<div id= "#Functions##UpdateFromVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>Vec3</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
