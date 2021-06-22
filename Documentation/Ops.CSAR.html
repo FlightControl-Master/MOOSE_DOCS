@@ -1085,6 +1085,17 @@ Controls a network of short range air/missile defense groups.</p>
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/OPS_CTLD.jpg" alt="Image">
+           <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.CTLD.html">Ops.CTLD</a></strong></h2></div>
+         </div>
+         <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Ops</strong> -- Combat Troops &amp; Logistics Deployment.</p>
+</p></div>
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin-16">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
            <img src= "../Images/OPS_FlightGroup.png" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.FlightGroup.html">Ops.FlightGroup</a></strong></h2></div>
          </div>
@@ -1687,7 +1698,7 @@ Create a late-activated single infantry unit as template in the mission editor a
    local my_csar = CSAR:New(coalition.side.BLUE,"Downed Pilot","Luftrettung")
    -- options
    my_csar.immortalcrew = true -- downed pilot spawn is immortal
-   my_csar.invisiblevrew = false -- downed pilot spawn is visible
+   my_csar.invisiblecrew = false -- downed pilot spawn is visible
    -- start the FSM
    my_csar:__Start(5)
 </code></pre>
@@ -1715,6 +1726,9 @@ Create a late-activated single infantry unit as template in the mission editor a
     self.useprefix = true  -- Requires CSAR helicopter #GROUP names to have the prefix(es) defined below.
     self.csarPrefix = { "helicargo", "MEDEVAC"} -- #GROUP name prefixes used for useprefix=true - DO NOT use # in helicopter names in the Mission Editor! 
     self.verbose = 0 -- set to &gt; 1 for stats output for debugging.
+    -- (added 0.1.4) limit amount of downed pilots spawned by ejection events
+    self.limitmaxdownedpilots = true,
+    self.maxdownedpilots = 10,
 </code></pre>
 
 <h2>2.1 Experimental Features</h2>
@@ -1963,6 +1977,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._CountActiveDownedPilots">CSAR:_CountActiveDownedPilots()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Helper function to count active downed pilots.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._CreateDownedPilotTrack">CSAR:_CreateDownedPilotTrack(Group, Groupname, Side, OriginalUnit, Description, Typename, Frequency, Playername)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to insert downed pilot tracker object.</p>
@@ -2074,6 +2094,12 @@ Create a late-activated single infantry unit as template in the mission editor a
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._PopSmokeForGroup">CSAR:_PopSmokeForGroup(_woundedGroupName, _woundedLeader)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to pop a smoke at a wounded pilot's positions.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._ReachedPilotLimit">CSAR:_ReachedPilotLimit()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Helper to decide if we're over max limit.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2305,6 +2331,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).limitmaxdownedpilots">CSAR.limitmaxdownedpilots</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).loadDistance">CSAR.loadDistance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2324,6 +2356,12 @@ Create a late-activated single infantry unit as template in the mission editor a
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).max_units">CSAR.max_units</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).maxdownedpilots">CSAR.maxdownedpilots</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3564,10 +3602,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).allheligroupset" ><strong>CSAR.allheligroupset</strong></a>
     
 
+
+    
+<p> GROUP_SET of all helis</p>
 
 </div>
 
@@ -3609,7 +3650,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> automatically smoke location when heli is near</p>
+<p> automatically smoke location when heli is near
+ added 0.1.4</p>
 
 </div>
 
@@ -3695,13 +3737,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -3876,6 +3915,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).limitmaxdownedpilots" ><strong>CSAR.limitmaxdownedpilots</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).loadDistance" ><strong>CSAR.loadDistance</strong></a>
     
@@ -3925,6 +3975,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p>max number of pilots that can be carried</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).maxdownedpilots" ><strong>CSAR.maxdownedpilots</strong></a>
+    
+
 
 </div>
 
@@ -5195,6 +5256,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR)._CountActiveDownedPilots" ><strong>CSAR:_CountActiveDownedPilots()</strong></a></h2>
+</div>
+    
+<p>Helper function to count active downed pilots.</p>
+
+<div id= "#Functions##_CountActiveDownedPilots" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Number of pilots in the field.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR)._CreateDownedPilotTrack" ><strong>CSAR:_CreateDownedPilotTrack(Group, Groupname, Side, OriginalUnit, Description, Typename, Frequency, Playername)</strong></a></h2>
 </div>
     
@@ -6190,6 +6281,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR)._ReachedPilotLimit" ><strong>CSAR:_ReachedPilotLimit()</strong></a></h2>
+</div>
+    
+<p>Helper to decide if we're over max limit.</p>
+
+<div id= "#Functions##_ReachedPilotLimit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True or false.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -7514,10 +7635,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).allheligroupset" ><strong>CSAR.allheligroupset</strong></a>
     
 
+
+    
+<p> GROUP_SET of all helis</p>
 
 </div>
 
@@ -7559,7 +7683,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> automatically smoke location when heli is near</p>
+<p> automatically smoke location when heli is near
+ added 0.1.4</p>
 
 </div>
 
@@ -7645,13 +7770,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -7826,6 +7948,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).limitmaxdownedpilots" ><strong>CSAR.limitmaxdownedpilots</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).loadDistance" ><strong>CSAR.loadDistance</strong></a>
     
@@ -7875,6 +8008,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p>max number of pilots that can be carried</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).maxdownedpilots" ><strong>CSAR.maxdownedpilots</strong></a>
+    
+
 
 </div>
 
@@ -9594,10 +9738,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).allheligroupset" ><strong>CSAR.allheligroupset</strong></a>
     
 
+
+    
+<p> GROUP_SET of all helis</p>
 
 </div>
 
@@ -9639,7 +9786,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> automatically smoke location when heli is near</p>
+<p> automatically smoke location when heli is near
+ added 0.1.4</p>
 
 </div>
 
@@ -9725,13 +9873,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -9906,6 +10051,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).limitmaxdownedpilots" ><strong>CSAR.limitmaxdownedpilots</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).loadDistance" ><strong>CSAR.loadDistance</strong></a>
     
@@ -9955,6 +10111,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p>max number of pilots that can be carried</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).maxdownedpilots" ><strong>CSAR.maxdownedpilots</strong></a>
+    
+
 
 </div>
 
