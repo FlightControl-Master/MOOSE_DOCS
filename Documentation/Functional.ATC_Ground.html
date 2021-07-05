@@ -1800,6 +1800,127 @@ ATC_Ground = ATC_GROUND_CAUCASUS:New(
 
   </div>
   <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ATC_GROUND_MARIANAISLANDS')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>ATC_GROUND_MARIANAISLANDS</strong></h2></p></td>
+        <td class="style="width:60%;">
+<h1>ATC_GROUND_MARIANA, extends <a href="##(ATC_GROUND)">#ATC_GROUND</a></h1>
+
+<p>The ATC_GROUND_MARIANA class monitors the speed of the airplanes at the airbase during taxi.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##ATC_GROUND_MARIANAISLANDS" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="ATC_GROUND_MARIANAISLANDS" ><strong>ATC_GROUND_MARIANAISLANDS</strong></a>
+    
+<h1>ATC_GROUND_MARIANA, extends <a href="##(ATC_GROUND)">#ATC_GROUND</a></h1>
+
+<p>The ATC_GROUND_MARIANA class monitors the speed of the airplanes at the airbase during taxi.</p>
+
+    
+<p>The pilots may not drive faster than the maximum speed for the airbase, or they will be despawned.</p>
+
+<hr/>
+
+<p><img src="..\Presentations\ATC_GROUND\Dia1.JPG" alt="Banner Image"/></p>
+
+<hr/>
+
+<p>The default maximum speed for the airbases at Persian Gulf is <strong>50 km/h</strong>. Warnings are given if this speed limit is trespassed.
+Players will be immediately kicked when driving faster than <strong>150 km/h</strong> on the taxi way.</p>
+
+<p>The ATC_GROUND_MARIANA class monitors the speed of the airplanes at the airbase during taxi.
+The pilots may not drive faster than the maximum speed for the airbase, or they will be despawned.</p>
+
+<p>The pilot will receive 3 times a warning during speeding. After the 3rd warning, if the pilot is still driving
+faster than the maximum allowed speed, the pilot will be kicked.</p>
+
+<p>Different airbases have different maximum speeds, according safety regulations.</p>
+
+<h1>Airbases monitored</h1>
+
+<p>The following airbases are monitored at the Mariana Island region.
+Use the <a href="Wrapper.Airbase.html##(AIRBASE).MarianaIslands">Wrapper.Airbase#AIRBASE.MarianaIslands</a> enumeration to select the airbases to be monitored.</p>
+
+<ul>
+    <li>AIRBASE.MarianaIslands.Rota_Intl</li>
+    <li>AIRBASE.MarianaIslands.Andersen_AFB</li>
+    <li>AIRBASE.MarianaIslands.Antonio_B_Won_Pat_Intl</li>
+    <li>AIRBASE.MarianaIslands.Saipan_Intl</li>
+    <li>AIRBASE.MarianaIslands.Tinian_Intl</li>
+    <li>AIRBASE.MarianaIslands.Olf_Orote</li>
+</ul>
+
+<h1>Installation</h1>
+
+<h2>In Single Player Missions</h2>
+
+<p>ATC_GROUND is fully functional in single player.</p>
+
+<h2>In Multi Player Missions</h2>
+
+<p>ATC_GROUND is functional in multi player, however ...</p>
+
+<p>Due to a bug in DCS since release 1.5, the despawning of clients are not anymore working in multi player.
+To <strong>work around this problem</strong>, a much better solution has been made, using the <strong>slot blocker</strong> script designed
+by Ciribob. </p>
+
+<p>With the help of <strong>Ciribob</strong>, this script has been extended to also kick client players while in flight.
+ATC_GROUND is communicating with this modified script to kick players!</p>
+
+<p>Install the file <strong>SimpleSlotBlockGameGUI.lua</strong> on the server, following the installation instructions described by Ciribob.</p>
+
+<p><a href="https://github.com/ciribob/DCS-SimpleSlotBlock">Simple Slot Blocker from Ciribob &amp; FlightControl</a></p>
+
+<h1>Script it!</h1>
+
+<h2>1. ATC_GROUND_MARIANAISLANDS Constructor</h2>
+
+<p>Creates a new ATC_GROUND_MARIANAISLANDS object that will monitor pilots taxiing behaviour.</p>
+
+<pre><code>-- This creates a new ATC_GROUND_MARIANAISLANDS object.
+
+-- Monitor for these clients the airbases.
+AirbasePoliceCaucasus = ATC_GROUND_MARIANAISLANDS:New()
+
+ATC_Ground = ATC_GROUND_MARIANAISLANDS:New( 
+  { AIRBASE.MarianaIslands.Andersen_AFB,
+    AIRBASE.MarianaIslands.Saipan_Intl 
+  } 
+)
+</code></pre>
+
+
+<h2>2. Set various options</h2>
+
+<p>There are various methods that you can use to tweak the behaviour of the ATC_GROUND classes.</p>
+
+<h3>2.1 Speed limit at an airbase.</h3>
+
+<ul>
+    <li><a href="##(ATC_GROUND).SetKickSpeed">ATC_GROUND.SetKickSpeed</a>(): Set the speed limit allowed at an airbase in meters per second.</li>
+    <li><a href="##(ATC_GROUND).SetKickSpeedKmph">ATC_GROUND.SetKickSpeedKmph</a>(): Set the speed limit allowed at an airbase in kilometers per hour.</li>
+    <li><a href="##(ATC_GROUND).SetKickSpeedMiph">ATC_GROUND.SetKickSpeedMiph</a>(): Set the speed limit allowed at an airbase in miles per hour.</li>
+</ul>
+
+<h3>2.2 Prevent Takeoff at an airbase. Players will be kicked immediately.</h3>
+
+<ul>
+    <li><a href="##(ATC_GROUND).SetMaximumKickSpeed">ATC_GROUND.SetMaximumKickSpeed</a>(): Set the maximum speed allowed at an airbase in meters per second. </li>
+    <li><a href="##(ATC_GROUND).SetMaximumKickSpeedKmph">ATC_GROUND.SetMaximumKickSpeedKmph</a>(): Set the maximum speed allowed at an airbase in kilometers per hour.</li>
+    <li><a href="##(ATC_GROUND).SetMaximumKickSpeedMiph">ATC_GROUND.SetMaximumKickSpeedMiph</a>(): Set the maximum speed allowed at an airbase in miles per hour.</li>
+</ul>
+
+<p>-- @field #ATC_GROUND_MARIANAISLANDS</p>
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
     <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ATC_GROUND_NEVADA')">
       <tr>
         <td class="style="width:40%;"><p><h2>Global <strong>ATC_GROUND_NEVADA</strong></h2></p></td>
@@ -2912,6 +3033,26 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATC_GROUND_CAUCASUS).Start">ATC_GROUND_CAUCASUS:Start(RepeatScanSeconds)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Start SCHEDULER for ATC_GROUND_CAUCASUS object.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATC_GROUND_MARIANAISLANDS)">Type <strong>ATC_GROUND_MARIANAISLANDS</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(ATC_GROUND_MARIANAISLANDS)">ATC_GROUND_MARIANAISLANDS</a></strong>
+, extends <strong><a href="##(ATC_GROUND)">#ATC_GROUND</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from ATC_GROUND_MARIANAISLANDS</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATC_GROUND_MARIANAISLANDS).AirbaseMonitor">ATC_GROUND_MARIANAISLANDS.AirbaseMonitor</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
         </table>
@@ -7049,6 +7190,29 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##ATC_GROUND_MARIANAISLANDS')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ATC_GROUND_MARIANAISLANDS)">Type <strong>ATC_GROUND_MARIANAISLANDS</strong></a></h2></div>
+        <div id= "#Types##ATC_GROUND_MARIANAISLANDS" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ATC_GROUND_MARIANAISLANDS).AirbaseMonitor" ><strong>ATC_GROUND_MARIANAISLANDS.AirbaseMonitor</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
