@@ -1727,18 +1727,22 @@ Create a late-activated single infantry unit as template in the mission editor a
     self.useprefix = true  -- Requires CSAR helicopter #GROUP names to have the prefix(es) defined below.
     self.csarPrefix = { "helicargo", "MEDEVAC"} -- #GROUP name prefixes used for useprefix=true - DO NOT use # in helicopter names in the Mission Editor! 
     self.verbose = 0 -- set to &gt; 1 for stats output for debugging.
-    -- (added 0.1.4) limit amount of downed pilots spawned by ejection events
-    self.limitmaxdownedpilots = true,
-    self.maxdownedpilots = 10,
+    -- (added 0.1.4) limit amount of downed pilots spawned by **ejection** events
+    self.limitmaxdownedpilots = true
+    self.maxdownedpilots = 10 
+    -- (added 0.1.8) - allow to set far/near distance for approach and optionally pilot must open doors
+    self.approachdist_far = 5000 -- switch do 10 sec interval approach mode, meters
+    self.approachdist_near = 3000 -- switch to 5 sec interval approach mode, meters
+    self.pilotmustopendoors = false -- switch to true to enable check of open doors
 </code></pre>
 
 <h2>2.1 Experimental Features</h2>
 
-<pre><code>  "WARNING - Here\'ll be dragons!
+<pre><code>  WARNING - Here\'ll be dragons!
   DANGER - For this to work you need to de-sanitize your mission environment (all three entries) in &lt;DCS root&gt;\Scripts\MissionScripting.lua
-  Needs SRS =&gt; 1.9.6 to work (works on the *server* side of SRS)"
+  Needs SRS =&gt; 1.9.6 to work (works on the **server** side of SRS)
   self.useSRS = false -- Set true to use FF\'s SRS integration
-  self.SRSPath = "E:\\Program Files\\DCS-SimpleRadio-Standalone\\" -- adjust your own path in your SRS installation -- server(!)
+  self.SRSPath = "E:\\Progra~1\\DCS-SimpleRadio-Standalone\\" -- adjust your own path in your SRS installation -- server(!)
   self.SRSchannel = 300 -- radio channel
   self.SRSModulation = radio.modulation.AM -- modulation
 </code></pre>
@@ -2080,6 +2084,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._IsLoadingDoorOpen">CSAR:_IsLoadingDoorOpen(unit_name)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(internal) Function to check if the heli door(s) are open.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._OrderGroupToMoveToPoint">CSAR:_OrderGroupToMoveToPoint(_leader, _destination)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Move group to destination.</p>
@@ -2206,6 +2216,18 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).approachdist_far">CSAR.approachdist_far</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).approachdist_near">CSAR.approachdist_near</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).autosmoke">CSAR.autosmoke</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2303,6 +2325,12 @@ Create a late-activated single infantry unit as template in the mission editor a
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).inTransitGroups">CSAR.inTransitGroups</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).index">CSAR.index</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2435,6 +2463,12 @@ Create a late-activated single infantry unit as template in the mission editor a
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).pilotRuntoExtractPoint">CSAR.pilotRuntoExtractPoint</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).pilotmustopendoors">CSAR.pilotmustopendoors</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3509,7 +3543,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -3651,6 +3685,34 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CSAR).approachdist_far" ><strong>CSAR.approachdist_far</strong></a>
+    
+
+
+    
+<p> switch do 10 sec interval approach mode, meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).approachdist_near" ><strong>CSAR.approachdist_near</strong></a>
+    
+
+
+    
+<p> switch to 5 sec interval approach mode, meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(CSAR).autosmoke" ><strong>CSAR.autosmoke</strong></a>
     
@@ -3744,36 +3806,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
 
-    
-<p> table of CSAR unit names</p>
-
 </div>
 
 </div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
-    
-
-
-    
-<p> Replacement woundedGroups</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -3874,6 +3919,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
+    
+
 
 </div>
 
@@ -4048,6 +4104,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).pilotmustopendoors" ><strong>CSAR.pilotmustopendoors</strong></a>
+    
+
+
+    
+<p> switch to true to enable check on open doors</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CSAR).radioSound" ><strong>CSAR.radioSound</strong></a>
     
@@ -4055,34 +4125,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
-    
-
-
-    
-<p> counter for saved pilots</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
-    
-
-
-    
-<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -6236,6 +6278,53 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR)._IsLoadingDoorOpen" ><strong>CSAR:_IsLoadingDoorOpen(unit_name)</strong></a></h2>
+</div>
+    
+<p>(internal) Function to check if the heli door(s) are open.</p>
+
+    
+<p>Thanks to Shadowze.</p>
+
+<div id= "#Functions##_IsLoadingDoorOpen" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>unit_name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>outcome The outcome.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR)._OrderGroupToMoveToPoint" ><strong>CSAR:_OrderGroupToMoveToPoint(_leader, _destination)</strong></a></h2>
 </div>
     
@@ -7697,7 +7786,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -7839,6 +7928,34 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CSAR).approachdist_far" ><strong>CSAR.approachdist_far</strong></a>
+    
+
+
+    
+<p> switch do 10 sec interval approach mode, meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).approachdist_near" ><strong>CSAR.approachdist_near</strong></a>
+    
+
+
+    
+<p> switch to 5 sec interval approach mode, meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(CSAR).autosmoke" ><strong>CSAR.autosmoke</strong></a>
     
@@ -7932,36 +8049,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
 
-    
-<p> table of CSAR unit names</p>
-
 </div>
 
 </div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
-    
-
-
-    
-<p> Replacement woundedGroups</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -8062,6 +8162,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
+    
+
 
 </div>
 
@@ -8236,6 +8347,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).pilotmustopendoors" ><strong>CSAR.pilotmustopendoors</strong></a>
+    
+
+
+    
+<p> switch to true to enable check on open doors</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CSAR).radioSound" ><strong>CSAR.radioSound</strong></a>
     
@@ -8243,34 +8368,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
-    
-
-
-    
-<p> counter for saved pilots</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
-    
-
-
-    
-<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -9848,7 +9945,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -9990,6 +10087,34 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CSAR).approachdist_far" ><strong>CSAR.approachdist_far</strong></a>
+    
+
+
+    
+<p> switch do 10 sec interval approach mode, meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).approachdist_near" ><strong>CSAR.approachdist_near</strong></a>
+    
+
+
+    
+<p> switch to 5 sec interval approach mode, meters</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(CSAR).autosmoke" ><strong>CSAR.autosmoke</strong></a>
     
@@ -10083,36 +10208,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
 
-    
-<p> table of CSAR unit names</p>
-
 </div>
 
 </div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
-    
-
-
-    
-<p> Replacement woundedGroups</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -10213,6 +10321,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
+    
+
 
 </div>
 
@@ -10387,6 +10506,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).pilotmustopendoors" ><strong>CSAR.pilotmustopendoors</strong></a>
+    
+
+
+    
+<p> switch to true to enable check on open doors</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CSAR).radioSound" ><strong>CSAR.radioSound</strong></a>
     
@@ -10394,34 +10527,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
-    
-
-
-    
-<p> counter for saved pilots</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
-    
-
-
-    
-<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
