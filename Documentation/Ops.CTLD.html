@@ -1657,7 +1657,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    ["SA342M"] = {type="SA342M", crates=false, troops=true, cratelimit = 0, trooplimit = 4},
    ["SA342Minigun"] = {type="SA342Minigun", crates=false, troops=true, cratelimit = 0, trooplimit = 2},
    ["UH-1H"] = {type="UH-1H", crates=true, troops=true, cratelimit = 1, trooplimit = 8},
-   ["Mi-8MTV2"] = {type="Mi-8MTV2", crates=true, troops=true, cratelimit = 2, trooplimit = 12},
+   ["Mi-8MT"] = {type="Mi-8MT", crates=true, troops=true, cratelimit = 2, trooplimit = 12},
    ["Ka-50"] = {type="Ka-50", crates=false, troops=false, cratelimit = 0, trooplimit = 0},
    ["Mi-24P"] = {type="Mi-24P", crates=true, troops=true, cratelimit = 1, trooplimit = 8},
    ["Mi-24V"] = {type="Mi-24V", crates=true, troops=true, cratelimit = 1, trooplimit = 8},
@@ -1710,7 +1710,16 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.4 OnAfterCratesDropped</h2>
+<h2>3.4 OnAfterTroopsExtracted</h2>
+
+<p>   This function is called when a player has re-boarded already deployed troops from the field:</p>
+
+<pre><code>   function my_ctld:OnAfterTroopsExtracted(From, Event, To, Group, Unit, Troops)
+     ... your code here ...
+   end
+</code></pre>
+
+<h2>3.5 OnAfterCratesDropped</h2>
 
 <p>   This function is called when a player has deployed crates to a DROP zone:</p>
 
@@ -1719,7 +1728,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.5 OnAfterCratesBuild</h2>
+<h2>3.6 OnAfterCratesBuild</h2>
 
 <p>   This function is called when a player has build a vehicle or FOB:</p>
 
@@ -1728,7 +1737,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.6 A simple SCORING example:</h2>
+<h2>3.7 A simple SCORING example:</h2>
 
 <p>   To award player with points, using the SCORING Class (SCORING: my_Scoring, CTLD: CTLD_Cargotransport)</p>
 
@@ -1757,7 +1766,8 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
 
 <h2>4.2 Manage Troops</h2>
 
-<p>Use this entry to load and drop troops.</p>
+<p>Use this entry to load, drop and extract troops. NOTE - with extract you can only load troops from the field that were deployed prior. 
+Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> template. Also, this will heal/complete your units as they are respawned.</p>
 
 <h2>4.3 List boarded cargo</h2>
 
@@ -2104,6 +2114,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterTroopsExtracted">CTLD:OnAfterTroopsExtracted(From, Event, To, Group, Unit, Cargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM Function OnAfterTroopsExtracted.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterTroopsPickedUp">CTLD:OnAfterTroopsPickedUp(From, Event, To, Group, Unit, Cargo)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Function OnAfterTroopsPickedUp.</p>
@@ -2233,6 +2249,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._EventHandler">CTLD:_EventHandler(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Event handler function</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._ExtractTroops">CTLD:_ExtractTroops(Group, Unit, Cargotype)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to extract (load from the field) troops into a heli.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2515,6 +2537,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onbeforeTroopsDeployed">CTLD:onbeforeTroopsDeployed(From, Event, To, Group, Unit, Troops)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) FSM Function onbeforeTroopsDeployed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onbeforeTroopsExtracted">CTLD:onbeforeTroopsExtracted(From, Event, To, Group, Unit, Troops)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) FSM Function onbeforeTroopsExtracted.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4793,17 +4821,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -4872,7 +4889,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -4887,6 +4904,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
+
+    
+<p> Beacons</p>
 
 </div>
 
@@ -5007,9 +5027,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
-    
-<p>self:T("CTLD with prefixes and Hercules")</p>
-
 </div>
 
 </div>   
@@ -5054,6 +5071,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #table
 <a id="#(CTLD).Templates" ><strong>CTLD.Templates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
     
 
 
@@ -6603,6 +6631,115 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).OnAfterTroopsExtracted" ><strong>CTLD:OnAfterTroopsExtracted(From, Event, To, Group, Unit, Cargo)</strong></a></h2>
+</div>
+    
+<p>FSM Function OnAfterTroopsExtracted.</p>
+
+<div id= "#Functions##OnAfterTroopsExtracted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Trigger.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group Object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Unit Object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Cargo troops.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).OnAfterTroopsPickedUp" ><strong>CTLD:OnAfterTroopsPickedUp(From, Event, To, Group, Unit, Cargo)</strong></a></h2>
 </div>
     
@@ -7215,6 +7352,59 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <p>
                 <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
             <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._ExtractTroops" ><strong>CTLD:_ExtractTroops(Group, Unit, Cargotype)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to extract (load from the field) troops into a heli.</p>
+
+<div id= "#Functions##_ExtractTroops" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargotype</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -9093,6 +9283,115 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).onbeforeTroopsExtracted" ><strong>CTLD:onbeforeTroopsExtracted(From, Event, To, Group, Unit, Troops)</strong></a></h2>
+</div>
+    
+<p>(Internal) FSM Function onbeforeTroopsExtracted.</p>
+
+<div id= "#Functions##onbeforeTroopsExtracted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Trigger.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group Object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Unit Object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Troops</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Troops #GROUP Object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).onbeforeTroopsPickedUp" ><strong>CTLD:onbeforeTroopsPickedUp(From, Event, To, Group, Unit, Cargo)</strong></a></h2>
 </div>
     
@@ -9360,17 +9659,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -9439,7 +9727,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -9454,6 +9742,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
+
+    
+<p> Beacons</p>
 
 </div>
 
@@ -9574,9 +9865,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
-    
-<p>self:T("CTLD with prefixes and Hercules")</p>
-
 </div>
 
 </div>   
@@ -9621,6 +9909,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #table
 <a id="#(CTLD).Templates" ><strong>CTLD.Templates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
     
 
 
@@ -11417,17 +11716,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -11496,7 +11784,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -11511,6 +11799,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
+
+    
+<p> Beacons</p>
 
 </div>
 
@@ -11631,9 +11922,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
-    
-<p>self:T("CTLD with prefixes and Hercules")</p>
-
 </div>
 
 </div>   
@@ -11678,6 +11966,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #table
 <a id="#(CTLD).Templates" ><strong>CTLD.Templates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
     
 
 
