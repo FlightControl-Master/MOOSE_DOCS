@@ -1778,7 +1778,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    ["SA342M"] = {type="SA342M", crates=false, troops=true, cratelimit = 0, trooplimit = 4},
    ["SA342Minigun"] = {type="SA342Minigun", crates=false, troops=true, cratelimit = 0, trooplimit = 2},
    ["UH-1H"] = {type="UH-1H", crates=true, troops=true, cratelimit = 1, trooplimit = 8},
-   ["Mi-8MTV2"] = {type="Mi-8MTV2", crates=true, troops=true, cratelimit = 2, trooplimit = 12},
+   ["Mi-8MT"] = {type="Mi-8MT", crates=true, troops=true, cratelimit = 2, trooplimit = 12},
    ["Ka-50"] = {type="Ka-50", crates=false, troops=false, cratelimit = 0, trooplimit = 0},
    ["Mi-24P"] = {type="Mi-24P", crates=true, troops=true, cratelimit = 1, trooplimit = 8},
    ["Mi-24V"] = {type="Mi-24V", crates=true, troops=true, cratelimit = 1, trooplimit = 8},
@@ -1831,7 +1831,16 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.4 OnAfterCratesDropped</h2>
+<h2>3.4 OnAfterTroopsExtracted</h2>
+
+<p>   This function is called when a player has re-boarded already deployed troops from the field:</p>
+
+<pre><code>   function my_ctld:OnAfterTroopsExtracted(From, Event, To, Group, Unit, Troops)
+     ... your code here ...
+   end
+</code></pre>
+
+<h2>3.5 OnAfterCratesDropped</h2>
 
 <p>   This function is called when a player has deployed crates to a DROP zone:</p>
 
@@ -1840,7 +1849,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.5 OnAfterCratesBuild</h2>
+<h2>3.6 OnAfterCratesBuild</h2>
 
 <p>   This function is called when a player has build a vehicle or FOB:</p>
 
@@ -1849,7 +1858,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.6 A simple SCORING example:</h2>
+<h2>3.7 A simple SCORING example:</h2>
 
 <p>   To award player with points, using the SCORING Class (SCORING: my_Scoring, CTLD: CTLD_Cargotransport)</p>
 
@@ -1878,7 +1887,8 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
 
 <h2>4.2 Manage Troops</h2>
 
-<p>Use this entry to load and drop troops.</p>
+<p>Use this entry to load, drop and extract troops. NOTE - with extract you can only load troops from the field that were deployed prior. 
+Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> template. Also, this will heal/complete your units as they are respawned.</p>
 
 <h2>4.3 List boarded cargo</h2>
 
@@ -4968,7 +4978,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -5012,7 +5022,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -5147,9 +5157,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
-    
-<p>self:T("CTLD with prefixes and Hercules")</p>
-
 </div>
 
 </div>   
@@ -5174,17 +5181,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
 
 </div>
 
@@ -9806,7 +9802,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -9850,7 +9846,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -9985,9 +9981,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
-    
-<p>self:T("CTLD with prefixes and Hercules")</p>
-
 </div>
 
 </div>   
@@ -10012,17 +10005,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
 
 </div>
 
@@ -11859,7 +11841,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -11903,7 +11885,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -12038,9 +12020,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
-    
-<p>self:T("CTLD with prefixes and Hercules")</p>
-
 </div>
 
 </div>   
@@ -12065,17 +12044,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
 
 </div>
 
