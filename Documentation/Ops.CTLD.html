@@ -1719,6 +1719,9 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
 
    -- add infantry unit called "Forward Ops Base" using template "FOB", of type FOB, size 4, i.e. needs four crates to be build:
    my_ctld:AddCratesCargo("Forward Ops Base",{"FOB"},CTLD_CARGO.Enum.FOB,4)
+
+   -- add crates to repair FOB or VEHICLE type units - the 2nd parameter needs to match the template you want to repair
+   my_ctld:AddCratesRepair("Humvee Repair","Humvee",CTLD_CARGO.Enum.REPAIR,1)
 </code></pre>
 
 <h2>1.3 Add logistics zones</h2>
@@ -1759,6 +1762,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
      my_ctld.movetroopsdistance = 5000 -- .. but only if this far away (in meters)
      my_ctld.smokedistance = 2000 -- Only smoke or flare zones if requesting player unit is this far away (in meters)
      my_ctld.suppressmessages = false -- Set to true if you want to script your own messages.
+     my_ctld.repairtime = 300 -- Number of seconds it takes to repair a unit.
 </code></pre>
 
 <h2>2.1 User functions</h2>
@@ -1849,11 +1853,15 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    end
 </code></pre>
 
-<h2>3.6 OnAfterCratesBuild</h2>
+<h2>3.6 OnAfterCratesBuild, OnAfterCratesRepaired</h2>
 
 <p>   This function is called when a player has build a vehicle or FOB:</p>
 
 <pre><code>   function my_ctld:OnAfterCratesBuild(From, Event, To, Group, Unit, Vehicle)
+     ... your code here ...
+   end
+
+   function my_ctld:OnAfterCratesRepaired(From, Event, To, Group, Unit, Vehicle)
      ... your code here ...
    end
 </code></pre>
@@ -1883,7 +1891,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
 
 <h2>4.1 Manage Crates</h2>
 
-<p>Use this entry to get, load, list nearby, drop, and build crates. Also @see options.</p>
+<p>Use this entry to get, load, list nearby, drop, build and repair crates. Also @see options.</p>
 
 <h2>4.2 Manage Troops</h2>
 
@@ -1986,6 +1994,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCratesCargo">CTLD:AddCratesCargo(Name, Templates, Type, NoCrates)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User function - Add <em>generic</em> crate-type loadable as cargo.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCratesRepair">CTLD:AddCratesRepair(Name, Template, Type, NoCrates)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User function - Add <em>generic</em> repair crates loadable as cargo.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2235,6 +2249,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterCratesRepaired">CTLD:OnAfterCratesRepaired(From, Event, To, Group, Unit, Vehicle)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM Function OnAfterCratesRepaired.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterTroopsDeployed">CTLD:OnAfterTroopsDeployed(From, Event, To, Group, Unit, Troops)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Function OnAfterTroopsDeployed.</p>
@@ -2361,7 +2381,7 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildObjectFromCrates">CTLD:_BuildObjectFromCrates(Group, Unit, Build)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildObjectFromCrates">CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to actually SPAWN buildables in the mission.</p>
 </td>
@@ -2388,6 +2408,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._FindCratesNearby">CTLD:_FindCratesNearby(_group, _unit, _dist)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to find and return nearby crates.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._FindRepairNearby">CTLD:_FindRepairNearby(Group, Unit, Repairtype)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2490,6 +2516,18 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._RefreshRadioBeacons">CTLD:_RefreshRadioBeacons()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to refresh radio beacons</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._RepairCrates">CTLD:_RepairCrates(Group, Unit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to repair nearby vehicles / FOBs</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._RepairObjectFromCrates">CTLD:_RepairObjectFromCrates(Group, Unit, Crates, Build, Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to repair an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2692,6 +2730,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).prefixes">CTLD.prefixes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).repairtime">CTLD.repairtime</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3963,6 +4007,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).IsRepair">CTLD_CARGO:IsRepair()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Query crate type for REPAIR</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).Isloaded">CTLD_CARGO:Isloaded(loaded)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Query if cargo has been loaded.</p>
@@ -4861,6 +4911,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO.Enum).REPAIR">CTLD_CARGO.Enum.REPAIR</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO.Enum).TROOPS">CTLD_CARGO.Enum.TROOPS</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -4960,17 +5016,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -4995,7 +5040,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -5050,7 +5095,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -5435,6 +5480,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).repairtime" ><strong>CTLD.repairtime</strong></a>
+    
+
+
+    
+<p> noob catch</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).smokedistance" ><strong>CTLD.smokedistance</strong></a>
     
 
@@ -5720,6 +5779,81 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Type of cargo. I.e. VEHICLE or FOB. VEHICLE will move to destination zones when dropped/build, FOB stays put.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>NoCrates</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of crates needed to build this cargo.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).AddCratesRepair" ><strong>CTLD:AddCratesRepair(Name, Template, Type, NoCrates)</strong></a></h2>
+</div>
+    
+<p>User function - Add <em>generic</em> repair crates loadable as cargo.</p>
+
+    
+<p>This type will create crates that need to be loaded, moved, dropped and built.</p>
+
+<div id= "#Functions##AddCratesRepair" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Unique name of this type of cargo. E.g. "Humvee".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Template</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Template of VEHICLE or FOB cargo that this can repair.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
+            <strong><strong>Type</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of cargo, here REPAIR.</p>
 
           </div>
         </div>
@@ -6688,6 +6822,115 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).OnAfterCratesRepaired" ><strong>CTLD:OnAfterCratesRepaired(From, Event, To, Group, Unit, Vehicle)</strong></a></h2>
+</div>
+    
+<p>FSM Function OnAfterCratesRepaired.</p>
+
+<div id= "#Functions##OnAfterCratesRepaired" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Trigger.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group Object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Unit Object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Vehicle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The #GROUP object of the vehicle or FOB repaired.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).OnAfterTroopsDeployed" ><strong>CTLD:OnAfterTroopsDeployed(From, Event, To, Group, Unit, Troops)</strong></a></h2>
 </div>
     
@@ -7389,7 +7632,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD)._BuildObjectFromCrates" ><strong>CTLD:_BuildObjectFromCrates(Group, Unit, Build)</strong></a></h2>
+<h2><a id="#(CTLD)._BuildObjectFromCrates" ><strong>CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair)</strong></a></h2>
 </div>
     
 <p>(Internal) Function to actually SPAWN buildables in the mission.</p>
@@ -7432,6 +7675,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Repair</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true this is a repair and not a new build</p>
+
           </div>
         </div>
 </div>
@@ -7655,6 +7911,56 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
         </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._FindRepairNearby" ><strong>CTLD:_FindRepairNearby(Group, Unit, Repairtype)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##_FindRepairNearby" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Repairtype</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
 </div>
 
 </div>
@@ -8380,6 +8686,129 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>CTLD</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._RepairCrates" ><strong>CTLD:_RepairCrates(Group, Unit)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to repair nearby vehicles / FOBs</p>
+
+<div id= "#Functions##_RepairCrates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrappe.Unit.html##(UNIT)">Wrappe.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._RepairObjectFromCrates" ><strong>CTLD:_RepairObjectFromCrates(Group, Unit, Crates, Build, Number)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to repair an object.</p>
+
+<div id= "#Functions##_RepairObjectFromCrates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Crates</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of #CTLD_CARGO objects near the unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD.Buildable)">#CTLD.Buildable</a>
+            <strong><strong>Build</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table build object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of objects in Crates (found) to limit search.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -9825,17 +10254,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -9860,7 +10278,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -9915,7 +10333,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -10292,6 +10710,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> zones stuff</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).repairtime" ><strong>CTLD.repairtime</strong></a>
+    
+
+
+    
+<p> noob catch</p>
 
 </div>
 
@@ -11875,17 +12307,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -11910,7 +12331,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -11965,7 +12386,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -12342,6 +12763,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> zones stuff</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).repairtime" ><strong>CTLD.repairtime</strong></a>
+    
+
+
+    
+<p> noob catch</p>
 
 </div>
 
@@ -16597,6 +17032,25 @@ BASE:TraceOnOff( false )</code></pre>
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).IsRepair" ><strong>CTLD_CARGO:IsRepair()</strong></a></h2>
+</div>
+    
+<p>Query crate type for REPAIR</p>
+
+<div id= "#Functions##IsRepair" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
 </div>
 
 </div>
@@ -21892,6 +22346,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #string
 <a id="#(CTLD_CARGO.Enum).FOB" ><strong>CTLD_CARGO.Enum.FOB</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CTLD_CARGO.Enum).REPAIR" ><strong>CTLD_CARGO.Enum.REPAIR</strong></a>
     
 
 
