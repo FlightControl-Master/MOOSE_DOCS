@@ -1588,6 +1588,7 @@ Create a late-activated single infantry unit as template in the mission editor a
 
 <pre><code>    self.allowDownedPilotCAcontrol = false -- Set to false if you don\'t want to allow control by Combined Arms.
     self.allowFARPRescue = true -- allows pilots to be rescued by landing at a FARP or Airbase. Else MASH only!
+    self.FARPRescueDistance = 1000 -- you need to be this close to a FARP or Airport for the pilot to be rescued.
     self.autosmoke = false -- automatically smoke a downed pilot\'s location when a heli is near.
     self.autosmokedistance = 1000 -- distance for autosmoke
     self.coordtype = 1 -- Use Lat/Long DDM (0), Lat/Long DMS (1), MGRS (2), Bullseye imperial (3) or Bullseye metric (4) for coordinates.
@@ -1722,6 +1723,12 @@ Create a late-activated single infantry unit as template in the mission editor a
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).ClassName">CSAR.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of the class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).FARPRescueDistance">CSAR.FARPRescueDistance</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2025,7 +2032,7 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._ScheduledSARFlight">CSAR:_ScheduledSARFlight(heliname, groupname)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._ScheduledSARFlight">CSAR:_ScheduledSARFlight(heliname, groupname, isairport)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Monitor in-flight returning groups.</p>
 </td>
@@ -2325,7 +2332,7 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onbeforeReturning">CSAR:onbeforeReturning(From, Event, To, Heliname, Woundedgroupname)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onbeforeReturning">CSAR:onbeforeReturning(From, Event, To, Heliname, Woundedgroupname, IsAirport, IsAirPort)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function called before Returning() event. </p>
 </td>
@@ -3430,6 +3437,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CSAR).FARPRescueDistance" ><strong>CSAR.FARPRescueDistance</strong></a>
+    
+
+
+    
+<p> you need to be this close to a FARP or Airport for the pilot to be rescued.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
@@ -3679,10 +3700,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
+
+    
+<p> table of CSAR unit names</p>
 
 </div>
 
@@ -3690,13 +3714,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
     
 
-
-    
-<p> Replacement woundedGroups</p>
 
 </div>
 
@@ -4001,6 +4022,34 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
+    
+
+
+    
+<p> counter for saved pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+    
+
+
+    
+<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -6669,7 +6718,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR)._ScheduledSARFlight" ><strong>CSAR:_ScheduledSARFlight(heliname, groupname)</strong></a></h2>
+<h2><a id="#(CSAR)._ScheduledSARFlight" ><strong>CSAR:_ScheduledSARFlight(heliname, groupname, isairport)</strong></a></h2>
 </div>
     
 <p>(Internal) Monitor in-flight returning groups.</p>
@@ -6704,6 +6753,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Group name</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>isairport</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, EVENT.Landing took place at an airport or FARP</p>
 
           </div>
         </div>
@@ -7614,7 +7676,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR).onbeforeReturning" ><strong>CSAR:onbeforeReturning(From, Event, To, Heliname, Woundedgroupname)</strong></a></h2>
+<h2><a id="#(CSAR).onbeforeReturning" ><strong>CSAR:onbeforeReturning(From, Event, To, Heliname, Woundedgroupname, IsAirport, IsAirPort)</strong></a></h2>
 </div>
     
 <p>(Internal) Function called before Returning() event. </p>
@@ -7689,6 +7751,29 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
               
 <p>Name of the downed pilot's group.</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IsAirport</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>True if heli has landed on an AFB (from event land).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>IsAirPort</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>
@@ -7776,6 +7861,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CSAR).ClassName" ><strong>CSAR.ClassName</strong></a>
     
 <p>Name of the class.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).FARPRescueDistance" ><strong>CSAR.FARPRescueDistance</strong></a>
+    
+
+
+    
+<p> you need to be this close to a FARP or Airport for the pilot to be rescued.</p>
 
 </div>
 
@@ -8032,10 +8131,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
+
+    
+<p> table of CSAR unit names</p>
 
 </div>
 
@@ -8043,13 +8145,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
     
 
-
-    
-<p> Replacement woundedGroups</p>
 
 </div>
 
@@ -8354,6 +8453,34 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
+    
+
+
+    
+<p> counter for saved pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+    
+
+
+    
+<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -9946,6 +10073,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CSAR).FARPRescueDistance" ><strong>CSAR.FARPRescueDistance</strong></a>
+    
+
+
+    
+<p> you need to be this close to a FARP or Airport for the pilot to be rescued.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
@@ -10195,10 +10336,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
+
+    
+<p> table of CSAR unit names</p>
 
 </div>
 
@@ -10206,13 +10350,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
     
 
-
-    
-<p> Replacement woundedGroups</p>
 
 </div>
 
@@ -10517,6 +10658,34 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
+    
+
+
+    
+<p> counter for saved pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+    
+
+
+    
+<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
