@@ -1712,14 +1712,16 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
    -- if you want to add weight to your Heli, troops can have a weight in kg **per person**. Currently no max weight checked. Fly carefully.
    my_ctld:AddTroopsCargo("Anti-Tank Small",{"ATS"},CTLD_CARGO.Enum.TROOPS,3,80)
 
-   -- add infantry unit called "Anti-Tank" using templates "AA" and "AA"", of type TROOP with size 4
-   my_ctld:AddTroopsCargo("Anti-Air",{"AA","AA2"},CTLD_CARGO.Enum.TROOPS,4)
+   -- add infantry unit called "Anti-Tank" using templates "AA" and "AA"", of type TROOP with size 4. No weight. We only have 2 in stock:
+   my_ctld:AddTroopsCargo("Anti-Air",{"AA","AA2"},CTLD_CARGO.Enum.TROOPS,4,nil,2)
 
    -- add vehicle called "Humvee" using template "Humvee", of type VEHICLE, size 2, i.e. needs two crates to be build
    -- vehicles and FOB will be spawned as crates in a LOAD zone first. Once transported to DROP zones, they can be build into the objects
    my_ctld:AddCratesCargo("Humvee",{"Humvee"},CTLD_CARGO.Enum.VEHICLE,2)
    -- if you want to add weight to your Heli, crates can have a weight in kg **per crate**. Currently no max weight checked. Fly carefully.
    my_ctld:AddCratesCargo("Humvee",{"Humvee"},CTLD_CARGO.Enum.VEHICLE,2,2775)
+   -- if you want to limit your stock, add a number (here: 10) as parameter after weight. No parameter / nil means unlimited stock.
+   my_ctld:AddCratesCargo("Humvee",{"Humvee"},CTLD_CARGO.Enum.VEHICLE,2,2775,10)
 
    -- add infantry unit called "Forward Ops Base" using template "FOB", of type FOB, size 4, i.e. needs four crates to be build:
    my_ctld:AddCratesCargo("Forward Ops Base",{"FOB"},CTLD_CARGO.Enum.FOB,4)
@@ -1813,6 +1815,28 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
 <pre><code>   -- Deactivate zone called Name of type #CTLD.CargoZoneType ZoneType:
    my_ctld:DeactivateZone(Name,CTLD.CargoZoneType.DROP)
 </code></pre>
+
+<h2>2.1.3 Limit and manage available resources</h2>
+
+<p> When adding generic cargo types, you can effectively limit how many units can be dropped/build by the players, e.g.</p>
+
+<pre><code>         -- if you want to limit your stock, add a number (here: 10) as parameter after weight. No parameter / nil means unlimited stock.
+         my_ctld:AddCratesCargo("Humvee",{"Humvee"},CTLD_CARGO.Enum.VEHICLE,2,2775,10)
+</code></pre>
+
+<p> You can manually add or remove the available stock like so:</p>
+
+<pre><code>         -- Crates
+         my_ctld:AddStockCrates("Humvee", 2)
+         my_ctld:RemoveStockCrates("Humvee", 2)
+
+         -- Troops
+         my_ctld:AddStockTroops("Anti-Air", 2)
+         my_ctld:RemoveStockTroops("Anti-Air", 2)
+</code></pre>
+
+<p> Notes:
+ Troops dropped back into a LOAD zone will effectively be added to the stock. Crates lost in e.g. a heli crash are just that - lost.</p>
 
 <h2>3. Events</h2>
 
@@ -2044,19 +2068,31 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCratesCargo">CTLD:AddCratesCargo(Name, Templates, Type, NoCrates, PerCrateMass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCratesCargo">CTLD:AddCratesCargo(Name, Templates, Type, NoCrates, PerCrateMass, Stock)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User function - Add <em>generic</em> crate-type loadable as cargo.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCratesRepair">CTLD:AddCratesRepair(Name, Template, Type, NoCrates, PerCrateMass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCratesRepair">CTLD:AddCratesRepair(Name, Template, Type, NoCrates, PerCrateMass, Stock)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User function - Add <em>generic</em> repair crates loadable as cargo.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddTroopsCargo">CTLD:AddTroopsCargo(Name, Templates, Type, NoTroops, PerTroopMass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddStockCrates">CTLD:AddStockCrates(Name, Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User - function to add stock of a certain crates type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddStockTroops">CTLD:AddStockTroops(Name, Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User - function to add stock of a certain troops type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddTroopsCargo">CTLD:AddTroopsCargo(Name, Templates, Type, NoTroops, PerTroopMass, Stock)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User function - Add <em>generic</em> troop type loadable as cargo.</p>
 </td>
@@ -2362,6 +2398,18 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).RemoveStockCrates">CTLD:RemoveStockCrates(Name, Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User - function to remove stock of a certain crates type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).RemoveStockTroops">CTLD:RemoveStockTroops(Name, Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User - function to remove stock of a certain troops type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SmokeZoneNearBy">CTLD:SmokeZoneNearBy(Unit, Flare)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User function - Start smoke in a zone close to the Unit.</p>
@@ -2389,6 +2437,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).Status">CTLD:Status()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Status".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).Stock">CTLD.Stock</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -4018,6 +4072,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).AddStock">CTLD_CARGO:AddStock(Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add Stock.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).CanLoadDirectly">CTLD_CARGO:CanLoadDirectly()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Query directly loadable.</p>
@@ -4069,6 +4129,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetPositionable">CTLD_CARGO:GetPositionable()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Query type.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetStock">CTLD_CARGO:GetStock()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get Stock.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4132,7 +4198,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).New">CTLD_CARGO:New(ID, Name, Templates, Sorte, HasBeenMoved, LoadDirectly, CratesNeeded, Positionable, Dropped, PerCrateMass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).New">CTLD_CARGO:New(ID, Name, Templates, Sorte, HasBeenMoved, LoadDirectly, CratesNeeded, Positionable, Dropped, PerCrateMass, Stock)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to create new CTLD_CARGO object.</p>
 </td>
@@ -4150,6 +4216,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).RemoveStock">CTLD_CARGO:RemoveStock(Number)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove Stock.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).SetHasMoved">CTLD_CARGO:SetHasMoved(moved)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set HasMoved.</p>
@@ -4159,6 +4231,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).SetWasDropped">CTLD_CARGO:SetWasDropped(dropped)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set WasDropped.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).Stock">CTLD_CARGO.Stock</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Number of builds available, -1 for unlimited</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5169,7 +5247,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -5194,7 +5272,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -5205,7 +5283,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -5346,13 +5424,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
-
-    
-<p> tables</p>
 
 </div>
 
@@ -5386,7 +5461,29 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).Stock" ><strong>CTLD.Stock</strong></a>
     
 
 
@@ -5620,7 +5717,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> time to repair a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -5900,7 +5997,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD).AddCratesCargo" ><strong>CTLD:AddCratesCargo(Name, Templates, Type, NoCrates, PerCrateMass)</strong></a></h2>
+<h2><a id="#(CTLD).AddCratesCargo" ><strong>CTLD:AddCratesCargo(Name, Templates, Type, NoCrates, PerCrateMass, Stock)</strong></a></h2>
 </div>
     
 <p>User function - Add <em>generic</em> crate-type loadable as cargo.</p>
@@ -5980,6 +6077,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stock</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of groups in stock. Nil for unlimited.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -5988,7 +6098,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD).AddCratesRepair" ><strong>CTLD:AddCratesRepair(Name, Template, Type, NoCrates, PerCrateMass)</strong></a></h2>
+<h2><a id="#(CTLD).AddCratesRepair" ><strong>CTLD:AddCratesRepair(Name, Template, Type, NoCrates, PerCrateMass, Stock)</strong></a></h2>
 </div>
     
 <p>User function - Add <em>generic</em> repair crates loadable as cargo.</p>
@@ -6068,6 +6178,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stock</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of groups in stock. Nil for unlimited.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -6076,7 +6199,121 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD).AddTroopsCargo" ><strong>CTLD:AddTroopsCargo(Name, Templates, Type, NoTroops, PerTroopMass)</strong></a></h2>
+<h2><a id="#(CTLD).AddStockCrates" ><strong>CTLD:AddStockCrates(Name, Number)</strong></a></h2>
+</div>
+    
+<p>User - function to add stock of a certain crates type</p>
+
+<div id= "#Functions##AddStockCrates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name as defined in the generic cargo.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of units/groups to add.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).AddStockTroops" ><strong>CTLD:AddStockTroops(Name, Number)</strong></a></h2>
+</div>
+    
+<p>User - function to add stock of a certain troops type</p>
+
+<div id= "#Functions##AddStockTroops" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name as defined in the generic cargo.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of units/groups to add.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).AddTroopsCargo" ><strong>CTLD:AddTroopsCargo(Name, Templates, Type, NoTroops, PerTroopMass, Stock)</strong></a></h2>
 </div>
     
 <p>User function - Add <em>generic</em> troop type loadable as cargo.</p>
@@ -6153,6 +6390,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Mass in kg of each soldier</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stock</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of groups in stock. Nil for unlimited.</p>
 
           </div>
         </div>
@@ -7562,6 +7812,120 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).RemoveStockCrates" ><strong>CTLD:RemoveStockCrates(Name, Number)</strong></a></h2>
+</div>
+    
+<p>User - function to remove stock of a certain crates type</p>
+
+<div id= "#Functions##RemoveStockCrates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name as defined in the generic cargo.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of units/groups to add.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).RemoveStockTroops" ><strong>CTLD:RemoveStockTroops(Name, Number)</strong></a></h2>
+</div>
+    
+<p>User - function to remove stock of a certain troops type</p>
+
+<div id= "#Functions##RemoveStockTroops" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name as defined in the generic cargo.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of units/groups to add.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).SmokeZoneNearBy" ><strong>CTLD:SmokeZoneNearBy(Unit, Flare)</strong></a></h2>
 </div>
     
@@ -7835,7 +8199,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrappe.Unit.html##(UNIT)">Wrappe.Unit#UNIT</a>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
             <strong><strong>Unit</strong></strong>
             </p>
           </div>
@@ -10604,7 +10968,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -10629,7 +10993,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -10640,7 +11004,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -10781,13 +11145,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
-
-    
-<p> tables</p>
 
 </div>
 
@@ -10821,7 +11182,29 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).Stock" ><strong>CTLD.Stock</strong></a>
     
 
 
@@ -11055,7 +11438,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> time to repair a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -12696,7 +13079,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -12721,7 +13104,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -12732,7 +13115,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -12873,13 +13256,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
-
-    
-<p> tables</p>
 
 </div>
 
@@ -12913,7 +13293,29 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).Stock" ><strong>CTLD.Stock</strong></a>
     
 
 
@@ -13147,7 +13549,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> time to repair a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -17201,6 +17603,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD_CARGO).Stock" ><strong>CTLD_CARGO.Stock</strong></a>
+    
+<p>Number of builds available, -1 for unlimited</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD_CARGO).Templates" ><strong>CTLD_CARGO.Templates</strong></a>
     
@@ -17223,6 +17636,50 @@ BASE:TraceOnOff( false )</code></pre>
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).AddStock" ><strong>CTLD_CARGO:AddStock(Number)</strong></a></h2>
+</div>
+    
+<p>Add Stock.</p>
+
+<div id= "#Functions##AddStock" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>to add, one if nil.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD_CARGO)">#CTLD_CARGO</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -17376,6 +17833,36 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).GetStock" ><strong>CTLD_CARGO:GetStock()</strong></a></h2>
+</div>
+    
+<p>Get Stock.</p>
+
+<div id= "#Functions##GetStock" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Stock</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD_CARGO).GetTemplates" ><strong>CTLD_CARGO:GetTemplates()</strong></a></h2>
 </div>
     
@@ -17516,7 +18003,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD_CARGO).New" ><strong>CTLD_CARGO:New(ID, Name, Templates, Sorte, HasBeenMoved, LoadDirectly, CratesNeeded, Positionable, Dropped, PerCrateMass)</strong></a></h2>
+<h2><a id="#(CTLD_CARGO).New" ><strong>CTLD_CARGO:New(ID, Name, Templates, Sorte, HasBeenMoved, LoadDirectly, CratesNeeded, Positionable, Dropped, PerCrateMass, Stock)</strong></a></h2>
 </div>
     
 <p>Function to create new CTLD_CARGO object.</p>
@@ -17655,6 +18142,63 @@ BASE:TraceOnOff( false )</code></pre>
           <div class="w3-half">
               
 <p>Mass in kg</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stock</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of builds available, nil for unlimited</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD_CARGO)">#CTLD_CARGO</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).RemoveStock" ><strong>CTLD_CARGO:RemoveStock(Number)</strong></a></h2>
+</div>
+    
+<p>Remove Stock.</p>
+
+<div id= "#Functions##RemoveStock" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Number</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>to reduce, one if nil.</p>
 
           </div>
         </div>
@@ -17886,6 +18430,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(CTLD_CARGO).Positionable" ><strong>CTLD_CARGO.Positionable</strong></a>
     
 <p>Representation of cargo in the mission.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD_CARGO).Stock" ><strong>CTLD_CARGO.Stock</strong></a>
+    
+<p>Number of builds available, -1 for unlimited</p>
 
 </div>
 
@@ -19474,6 +20029,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(CTLD_CARGO).Positionable" ><strong>CTLD_CARGO.Positionable</strong></a>
     
 <p>Representation of cargo in the mission.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD_CARGO).Stock" ><strong>CTLD_CARGO.Stock</strong></a>
+    
+<p>Number of builds available, -1 for unlimited</p>
 
 </div>
 
