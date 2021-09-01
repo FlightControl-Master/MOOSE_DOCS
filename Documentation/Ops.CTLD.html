@@ -2184,6 +2184,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).InjectTroops">CTLD:InjectTroops(Zone, Cargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(User) Pre-populate troops in the field.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).IsCorrectFlightParameters">CTLD:IsCorrectFlightParameters(Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Check if a Hercules is flying <em>in parameters</em> for air drops.</p>
@@ -4875,7 +4881,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_ENGINEERING).New">CTLD_ENGINEERING:New(Name, GroupName, HeliGroup, HeliGroup, HeliUnit)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_ENGINEERING).New">CTLD_ENGINEERING:New(Name, GroupName, HeliGroup, HeliUnit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new instance.</p>
 </td>
@@ -5557,6 +5563,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -5581,7 +5598,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -5848,6 +5865,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
     
 
@@ -6093,7 +6121,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repair a unit/group</p>
 
 </div>
 
@@ -7005,6 +7033,72 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).InjectTroops" ><strong>CTLD:InjectTroops(Zone, Cargo)</strong></a></h2>
+</div>
+    
+<p>(User) Pre-populate troops in the field.</p>
+
+<div id= "#Functions##InjectTroops" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The zone where to drop the troops.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.CTLD.html##(CTLD_CARGO)">Ops.CTLD#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The #CTLD_CARGO object to spawn.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Use this function to pre-populate the field with Troops or Engineers at a random coordinate in a zone:
+           -- create a matching #CTLD_CARGO type
+           local InjectTroopsType = CTLD_CARGO:New(nil,"Injected Infantry",{"Inf12"},CTLD_CARGO.Enum.TROOPS,true,true,12,nil,false,80)
+           -- get a #ZONE object
+           local dropzone = ZONE:New("InjectZone") -- Core.Zone#ZONE
+           -- and go:
+           my_ctld:InjectTroops(dropzone,InjectTroopsType)</code></pre>
+
 </div>
 
 </div>
@@ -11367,6 +11461,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -11391,7 +11496,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -11658,6 +11763,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
     
 
@@ -11903,7 +12019,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repair a unit/group</p>
 
 </div>
 
@@ -13502,6 +13618,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -13526,7 +13653,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -13793,6 +13920,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
     
 
@@ -14038,7 +14176,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repair a unit/group</p>
 
 </div>
 
@@ -22419,6 +22557,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD_ENGINEERING).lid" ><strong>CTLD_ENGINEERING.lid</strong></a>
     
@@ -22684,7 +22833,7 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD_ENGINEERING).New" ><strong>CTLD_ENGINEERING:New(Name, GroupName, HeliGroup, HeliGroup, HeliUnit)</strong></a></h2>
+<h2><a id="#(CTLD_ENGINEERING).New" ><strong>CTLD_ENGINEERING:New(Name, GroupName, HeliGroup, HeliUnit)</strong></a></h2>
 </div>
     
 <p>Create a new instance.</p>
@@ -22715,7 +22864,9 @@ BASE:TraceOnOff( false )</code></pre>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Name of Engineering #GROUP object</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -22735,23 +22886,13 @@ BASE:TraceOnOff( false )</code></pre>
           <div class="w3-half">
             <p>
                 <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-            <strong><strong>HeliGroup</strong></strong>
+            <strong><strong>HeliUnit</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
 <p>HeliUnit</p>
 
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>HeliUnit</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -23071,6 +23212,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #string
 <a id="#(CTLD_ENGINEERING).Version" ><strong>CTLD_ENGINEERING.Version</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
     
 
 
