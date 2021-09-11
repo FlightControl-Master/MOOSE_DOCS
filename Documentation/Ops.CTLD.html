@@ -2194,7 +2194,7 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).InjectTroops">CTLD:InjectTroops(Zone, Cargo)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>(User) Pre-populate troops in the field.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2552,6 +2552,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._ListInventory">CTLD:_ListInventory(Group, Unit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to list loaded cargo.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._ListRadioBeacons">CTLD:_ListRadioBeacons(Group, Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to show list of radio beacons</p>
@@ -2805,6 +2811,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).pickupZones">CTLD.pickupZones</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).placeCratesAhead">CTLD.placeCratesAhead</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -5524,17 +5536,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).CargoCounter" ><strong>CTLD.CargoCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD).CargoType" ><strong>CTLD.CargoType</strong></a>
     
@@ -5629,7 +5630,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -5651,7 +5652,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -5690,13 +5691,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
-
-    
-<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -5905,17 +5903,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
 
 </div>
 
@@ -6188,13 +6175,27 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CTLD).placeCratesAhead" ><strong>CTLD.placeCratesAhead</strong></a>
+    
+
+
+    
+<p> place spawned crates in front of aircraft</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CTLD).repairtime" ><strong>CTLD.repairtime</strong></a>
     
 
 
     
-<p> time to repair a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -7117,7 +7118,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(CTLD).InjectTroops" ><strong>CTLD:InjectTroops(Zone, Cargo)</strong></a></h2>
 </div>
     
-<p>(User) Pre-populate troops in the field.</p>
+
+
+    
+<p> DONE: Make inject respect existing cargo types
+- (User) Pre-populate troops in the field.
+ @param #CTLD self
+ @param Core.Zone#ZONE Zone The zone where to drop the troops.
+ @param Ops.CTLD#CTLD_CARGO Cargo The #CTLD_CARGO object to spawn.
+ @return #CTLD self
+ @usage Use this function to pre-populate the field with Troops or Engineers at a random coordinate in a zone:</p>
+<pre><code>        -- create a matching #CTLD_CARGO type
+        local InjectTroopsType = CTLD_CARGO:New(nil,"Injected Infantry",{"Inf12"},CTLD_CARGO.Enum.TROOPS,true,true,12,nil,false,80)
+        -- get a #ZONE object
+        local dropzone = ZONE:New("InjectZone") -- Core.Zone#ZONE
+        -- and go:
+        my_ctld:InjectTroops(dropzone,InjectTroopsType)
+</code></pre>
 
 <div id= "#Functions##InjectTroops" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -7129,49 +7146,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
             <strong><strong>Zone</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              
-<p>The zone where to drop the troops.</p>
-
+              <p></p>
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Ops.CTLD.html##(CTLD_CARGO)">Ops.CTLD#CTLD_CARGO</a>
             <strong><strong>Cargo</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              
-<p>The #CTLD_CARGO object to spawn.</p>
-
+              <p></p>
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(CTLD)">#CTLD</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>self</p>
-
-      </div>
-    </div>
-      <h2><strong>Usage:</strong></h2>
-    <pre class="example"><code>Use this function to pre-populate the field with Troops or Engineers at a random coordinate in a zone:
-           -- create a matching #CTLD_CARGO type
-           local InjectTroopsType = CTLD_CARGO:New(nil,"Injected Infantry",{"Inf12"},CTLD_CARGO.Enum.TROOPS,true,true,12,nil,false,80)
-           -- get a #ZONE object
-           local dropzone = ZONE:New("InjectZone") -- Core.Zone#ZONE
-           -- and go:
-           my_ctld:InjectTroops(dropzone,InjectTroopsType)</code></pre>
-
 </div>
 
 </div>
@@ -9713,6 +9704,59 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD)._ListInventory" ><strong>CTLD:_ListInventory(Group, Unit)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to list loaded cargo.</p>
+
+<div id= "#Functions##_ListInventory" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD)._ListRadioBeacons" ><strong>CTLD:_ListRadioBeacons(Group, Unit)</strong></a></h2>
 </div>
     
@@ -11501,17 +11545,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).CargoCounter" ><strong>CTLD.CargoCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD).CargoType" ><strong>CTLD.CargoType</strong></a>
     
@@ -11606,7 +11639,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -11628,7 +11661,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -11667,13 +11700,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
-
-    
-<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -11882,17 +11912,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
 
 </div>
 
@@ -12165,13 +12184,27 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CTLD).placeCratesAhead" ><strong>CTLD.placeCratesAhead</strong></a>
+    
+
+
+    
+<p> place spawned crates in front of aircraft</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CTLD).repairtime" ><strong>CTLD.repairtime</strong></a>
     
 
 
     
-<p> time to repair a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -13711,17 +13744,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).CargoCounter" ><strong>CTLD.CargoCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD).CargoType" ><strong>CTLD.CargoType</strong></a>
     
@@ -13816,7 +13838,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -13838,7 +13860,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -13877,13 +13899,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
-
-    
-<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -14092,17 +14111,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
 
 </div>
 
@@ -14375,13 +14383,27 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CTLD).placeCratesAhead" ><strong>CTLD.placeCratesAhead</strong></a>
+    
+
+
+    
+<p> place spawned crates in front of aircraft</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CTLD).repairtime" ><strong>CTLD.repairtime</strong></a>
     
 
 
     
-<p> time to repair a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -18163,17 +18185,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(CTLD.UnitCapabilities).crates" ><strong>CTLD.UnitCapabilities.crates</strong></a>
     
 <p>Can transport crate.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD.UnitCapabilities).length" ><strong>CTLD.UnitCapabilities.length</strong></a>
-    
-
 
 </div>
 
