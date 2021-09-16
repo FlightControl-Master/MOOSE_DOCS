@@ -1957,6 +1957,10 @@ Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> t
 
 <p>Lists hover parameters and indicates if these are curently fulfilled. Also @see options on hover heights.</p>
 
+<h2>4.7 List Inventory</h2>
+
+<p>Lists invetory of available units to drop or build.</p>
+
 <h2>5. Support for Hercules mod by Anubis</h2>
 
 <p>Basic support for the Hercules mod By Anubis has been build into CTLD. Currently this does <strong>not</strong> cover objects and troops which can
@@ -1982,7 +1986,29 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 
 <pre><code>          ["Hercules"] = {type="Hercules", crates=true, troops=true, cratelimit = 7, trooplimit = 64}, -- 19t cargo, 64 paratroopers
 </code></pre>
-<p> </p>
+
+<h2>6. Save and load back units - persistance</h2>
+
+<p>You can save and later load back units dropped or build to make your mission persistent.
+For this to work, you need to de-sanitize <strong>io</strong> and <strong>lfs</strong> in your MissionScripting.lua, which is located in your DCS installtion folder under Scripts.
+There is a risk involved in doing that; if you do not know what that means, this is possibly not for you.</p>
+
+<p>Use the following options to manage your saves:</p>
+
+<pre><code>         my_ctld.enableLoadSave = true -- allow auto-saving and loading of files
+         my_ctld.saveinterval = 600 -- save every 10 minutes
+         my_ctld.filename = "missionsave.csv" -- example filename
+         my_ctld.filepath = "C:\\Users\\myname\\Saved Games\\DCS\Missions\\MyMission" -- example path
+</code></pre>
+
+<p> Then use an initial load at the beginning of your mission:</p>
+
+<pre><code>       my_ctld:__Load(10)
+</code></pre>
+
+<p><strong>Caveat:</strong>
+If you use units build by multiple templates, they will effectively double on loading. Dropped crates are not saved. Current stock is not saved.
+ </p>
 
 </div>
 
@@ -2315,7 +2341,13 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).InjectTroops">CTLD:InjectTroops(Zone, Cargo)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>(User) Pre-populate troops in the field.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).InjectVehicles">CTLD:InjectVehicles(Zone, Cargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(User) Pre-populate vehicles in the field.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2406,6 +2438,18 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterCratesRepaired">CTLD:OnAfterCratesRepaired(From, Event, To, Group, Unit, Vehicle)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Function OnAfterCratesRepaired.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterLoad">CTLD:OnAfterLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM Function OnAfterLoad.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterSave">CTLD:OnAfterSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM Function OnAfterSave.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2823,6 +2867,24 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).enableLoadSave">CTLD.enableLoadSave</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).filename">CTLD.filename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).filepath">CTLD.filepath</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).forcehoverload">CTLD.forcehoverload</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2865,6 +2927,18 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onafterLoad">CTLD:onafterLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Load" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onafterSave">CTLD:onafterSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Save" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onafterStart">CTLD:onafterStart(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) FSM Function onafterStart.</p>
@@ -2898,6 +2972,18 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onbeforeCratesPickedUp">CTLD:onbeforeCratesPickedUp(From, Event, To, Group, Unit, Cargo)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) FSM Function onbeforeCratesPickedUp.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onbeforeLoad">CTLD:onbeforeLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "Load" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).onbeforeSave">CTLD:onbeforeSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "Save" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2950,6 +3036,12 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).repairtime">CTLD.repairtime</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).saveinterval">CTLD.saveinterval</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -4180,7 +4272,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).CargoType">CTLD_CARGO.CargoType</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Enumerator of Type.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4349,12 +4441,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).Templates">CTLD_CARGO.Templates</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table of #POSITIONABLE objects.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).Type">CTLD_CARGO.Type</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Enumerator of Type.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5734,6 +5820,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -5805,20 +5902,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
-    
-
-
-    
-<p>use as counter</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
@@ -5873,6 +5956,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
+
+    
+<p> Beacons</p>
 
 </div>
 
@@ -5999,10 +6085,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -6028,6 +6117,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
 
 </div>
 
@@ -6199,6 +6299,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).enableLoadSave" ><strong>CTLD.enableLoadSave</strong></a>
+    
+
+
+    
+<p> load and save dropped TROOPS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).filename" ><strong>CTLD.filename</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).forcehoverload" ><strong>CTLD.forcehoverload</strong></a>
     
 
@@ -6309,7 +6434,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repair a unit/group</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).saveinterval" ><strong>CTLD.saveinterval</strong></a>
+    
+
 
 </div>
 
@@ -7232,23 +7368,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(CTLD).InjectTroops" ><strong>CTLD:InjectTroops(Zone, Cargo)</strong></a></h2>
 </div>
     
-
-
-    
-<p> DONE: Make inject respect existing cargo types
-- (User) Pre-populate troops in the field.
- @param #CTLD self
- @param Core.Zone#ZONE Zone The zone where to drop the troops.
- @param Ops.CTLD#CTLD_CARGO Cargo The #CTLD_CARGO object to spawn.
- @return #CTLD self
- @usage Use this function to pre-populate the field with Troops or Engineers at a random coordinate in a zone:</p>
-<pre><code>        -- create a matching #CTLD_CARGO type
-        local InjectTroopsType = CTLD_CARGO:New(nil,"Injected Infantry",{"Inf12"},CTLD_CARGO.Enum.TROOPS,true,true,12,nil,false,80)
-        -- get a #ZONE object
-        local dropzone = ZONE:New("InjectZone") -- Core.Zone#ZONE
-        -- and go:
-        my_ctld:InjectTroops(dropzone,InjectTroopsType)
-</code></pre>
+<p>(User) Pre-populate troops in the field.</p>
 
 <div id= "#Functions##InjectTroops" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -7260,23 +7380,115 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
             <strong><strong>Zone</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>The zone where to drop the troops.</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                <a href="Ops.CTLD.html##(CTLD_CARGO)">Ops.CTLD#CTLD_CARGO</a>
             <strong><strong>Cargo</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>The #CTLD_CARGO object to spawn.</p>
+
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Use this function to pre-populate the field with Troops or Engineers at a random coordinate in a zone:
+           -- create a matching #CTLD_CARGO type
+           local InjectTroopsType = CTLD_CARGO:New(nil,"Infantry",{"Inf12"},CTLD_CARGO.Enum.TROOPS,true,true,12,nil,false,80)
+           -- get a #ZONE object
+           local dropzone = ZONE:New("InjectZone") -- Core.Zone#ZONE
+           -- and go:
+           my_ctld:InjectTroops(dropzone,InjectTroopsType)</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).InjectVehicles" ><strong>CTLD:InjectVehicles(Zone, Cargo)</strong></a></h2>
+</div>
+    
+<p>(User) Pre-populate vehicles in the field.</p>
+
+<div id= "#Functions##InjectVehicles" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The zone where to drop the troops.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.CTLD.html##(CTLD_CARGO)">Ops.CTLD#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The #CTLD_CARGO object to spawn.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Use this function to pre-populate the field with Vehicles or FOB at a random coordinate in a zone:
+           -- create a matching #CTLD_CARGO type
+           local InjectVehicleType = CTLD_CARGO:New(nil,"Humvee",{"Humvee"},CTLD_CARGO.Enum.VEHICLE,true,true,1,nil,false,1000)
+           -- get a #ZONE object
+           local dropzone = ZONE:New("InjectZone") -- Core.Zone#ZONE
+           -- and go:
+           my_ctld:InjectVehicles(dropzone,InjectVehicleType)</code></pre>
+
 </div>
 
 </div>
@@ -8040,6 +8252,176 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).OnAfterLoad" ><strong>CTLD:OnAfterLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>FSM Function OnAfterLoad.</p>
+
+<div id= "#Functions##OnAfterLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is located. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for loading. Default is "CTLD_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).OnAfterSave" ><strong>CTLD:OnAfterSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>FSM Function OnAfterSave.</p>
+
+<div id= "#Functions##OnAfterSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is saved. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving. Default is "CTLD_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -10626,6 +11008,182 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).onafterLoad" ><strong>CTLD:onafterLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Load" event.</p>
+
+    
+<p>Loads dropped units from file.</p>
+
+<div id= "#Functions##onafterLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is located. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for loading. Default is "CTLD_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).onafterSave" ><strong>CTLD:onafterSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Save" event.</p>
+
+    
+<p>Player data is saved to file.</p>
+
+<div id= "#Functions##onafterSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is saved. If nil, file is saved in the DCS root installtion directory or your "Saved Games" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving. Default is Default is "CTLD_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).onafterStart" ><strong>CTLD:onafterStart(From, Event, To)</strong></a></h2>
 </div>
     
@@ -11155,6 +11713,182 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).onbeforeLoad" ><strong>CTLD:onbeforeLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On before "Load" event.</p>
+
+    
+<p>Checks if io and lfs and the file are available.</p>
+
+<div id= "#Functions##onbeforeLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is located. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for loading. Default is "CTLD_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).onbeforeSave" ><strong>CTLD:onbeforeSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On before "Save" event.</p>
+
+    
+<p>Checks if io and lfs are available.</p>
+
+<div id= "#Functions##onbeforeSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is saved. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving. Default is "CTLD_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -11718,6 +12452,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -11789,20 +12534,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
-    
-
-
-    
-<p>use as counter</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
@@ -11857,6 +12588,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
+
+    
+<p> Beacons</p>
 
 </div>
 
@@ -11983,10 +12717,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -12012,6 +12749,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
 
 </div>
 
@@ -12183,6 +12931,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).enableLoadSave" ><strong>CTLD.enableLoadSave</strong></a>
+    
+
+
+    
+<p> load and save dropped TROOPS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).filename" ><strong>CTLD.filename</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).forcehoverload" ><strong>CTLD.forcehoverload</strong></a>
     
 
@@ -12293,7 +13066,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repair a unit/group</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).saveinterval" ><strong>CTLD.saveinterval</strong></a>
+    
+
 
 </div>
 
@@ -13888,6 +14672,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -13959,20 +14754,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
-    
-
-
-    
-<p>use as counter</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
@@ -14027,6 +14808,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
+
+    
+<p> Beacons</p>
 
 </div>
 
@@ -14153,10 +14937,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -14182,6 +14969,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
+    
+
 
 </div>
 
@@ -14353,6 +15151,31 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).enableLoadSave" ><strong>CTLD.enableLoadSave</strong></a>
+    
+
+
+    
+<p> load and save dropped TROOPS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).filename" ><strong>CTLD.filename</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).forcehoverload" ><strong>CTLD.forcehoverload</strong></a>
     
 
@@ -14463,7 +15286,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repair a unit/group</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).saveinterval" ><strong>CTLD.saveinterval</strong></a>
+    
+
 
 </div>
 
@@ -18299,6 +19133,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD.UnitCapabilities).length" ><strong>CTLD.UnitCapabilities.length</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD.UnitCapabilities).trooplimit" ><strong>CTLD.UnitCapabilities.trooplimit</strong></a>
     
 <p>Number of troop units transportable.</p>
@@ -18396,10 +19241,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #string
+    <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD_CARGO).CargoType" ><strong>CTLD_CARGO.CargoType</strong></a>
     
-
+<p>Enumerator of Type.</p>
 
 </div>
 
@@ -18532,17 +19377,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(CTLD_CARGO).Templates" ><strong>CTLD_CARGO.Templates</strong></a>
     
 <p>Table of #POSITIONABLE objects.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
-<a id="#(CTLD_CARGO).Type" ><strong>CTLD_CARGO.Type</strong></a>
-    
-<p>Enumerator of Type.</p>
 
 </div>
 
@@ -19309,10 +20143,10 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #string
+    <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD_CARGO).CargoType" ><strong>CTLD_CARGO.CargoType</strong></a>
     
-
+<p>Enumerator of Type.</p>
 
 </div>
 
@@ -19445,17 +20279,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(CTLD_CARGO).Templates" ><strong>CTLD_CARGO.Templates</strong></a>
     
 <p>Table of #POSITIONABLE objects.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
-<a id="#(CTLD_CARGO).Type" ><strong>CTLD_CARGO.Type</strong></a>
-    
-<p>Enumerator of Type.</p>
 
 </div>
 
@@ -22936,6 +23759,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD_ENGINEERING).lid" ><strong>CTLD_ENGINEERING.lid</strong></a>
     
@@ -23580,6 +24414,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #string
 <a id="#(CTLD_ENGINEERING).Version" ><strong>CTLD_ENGINEERING.Version</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
     
 
 
