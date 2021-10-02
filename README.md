@@ -110,5 +110,5 @@ There are a lot of people supporting Mission Designers on Discord.
 
 
 Thank you!
-FC
+The Moose Team
  
