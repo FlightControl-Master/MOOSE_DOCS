@@ -1627,13 +1627,25 @@ Controls a network of short range air/missile defense groups.</p>
 
     
 
+<hr/>
+
+<p><strong>AUOTLASE</strong> - Autolase targets in the field.</p>
+
+<hr/>
+
+<h2>Missions:</h2>
+
+<h3><a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/">Autolase</a></h3>
+
+<hr/>
+
 <p><strong>Main Features:</strong></p>
 
 <ul>
     <li>Detect and lase contacts automatically</li>
     <li>Targets are lased by threat priority order</li>
     <li>Use FSM events to link functionality into your scripts</li>
-    <li>Easy setup </li>
+    <li>Easy setup</li>
 </ul>
 
 <hr/>
@@ -1693,14 +1705,10 @@ Controls a network of short range air/missile defense groups.</p>
          :SpawnScheduled(30,0.5)
 </code></pre>
 
-<h2>2.6 Example - Inform pilots about a new target:</h2>
+<h2>2.6 Example - Inform pilots about events:</h2>
 
-<pre><code>       function autolaser:OnAfterLasing(From,Event,To,LaserSpot)
-         local laserspot = LaserSpot -- #AUTOLASE.LaserSpot
-         local text = string.format("%s is lasing %s code %d\nat %s",laserspot.reccename,laserspot.unittype,laserspot.lasercode,laserspot.location)
-         local m = MESSAGE:New(text,15,"Autolase"):ToAll()
-         return self
-       end
+<pre><code>       autolaser:SetNotifyPilots(true) -- defaults to true, also shown if debug == true
+       -- Note - message are shown to pilots in the #SET_CLIENT only if using the pilotset option, else to the coalition.
 </code></pre>
 
 </td>
@@ -1759,14 +1767,10 @@ Controls a network of short range air/missile defense groups.</p>
          :SpawnScheduled(30,0.5)
 </code></pre>
 
-<h2>2.6 Example - Inform pilots about a new target:</h2>
+<h2>2.6 Example - Inform pilots about events:</h2>
 
-<pre><code>       function autolaser:OnAfterLasing(From,Event,To,LaserSpot)
-         local laserspot = LaserSpot -- #AUTOLASE.LaserSpot
-         local text = string.format("%s is lasing %s code %d\nat %s",laserspot.reccename,laserspot.unittype,laserspot.lasercode,laserspot.location)
-         local m = MESSAGE:New(text,15,"Autolase"):ToAll()
-         return self
-       end
+<pre><code>       autolaser:SetNotifyPilots(true) -- defaults to true, also shown if debug == true
+       -- Note - message are shown to pilots in the #SET_CLIENT only if using the pilotset option, else to the coalition.
 </code></pre>
 
 
@@ -1786,6 +1790,12 @@ Controls a network of short range air/missile defense groups.</p>
           <tr class="w3-theme-l1">
             <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AUTOLASE</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).Cancel">AUTOLASE:Cancel()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Cancel".</p>
+</td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).ClassName">AUTOLASE.ClassName</a></p></td>
@@ -1884,6 +1894,12 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).NotifyPilots">AUTOLASE:NotifyPilots(Message, Duration)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to show messages.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).OnAfterLaserTimeout">AUTOLASE:OnAfterLaserTimeout(From, Event, To, UnitName, RecceName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On After "LaserTimeout" event.</p>
@@ -1950,6 +1966,12 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).SetNotifyPilots">AUTOLASE:SetNotifyPilots(OnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function set notify pilots on events</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).SetPilotMenu">AUTOLASE:SetPilotMenu()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to set pilot menu.</p>
@@ -1980,9 +2002,27 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).Status">AUTOLASE:Status()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Monitor".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).UnitsByThreat">AUTOLASE.UnitsByThreat</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).__Cancel">AUTOLASE:__Cancel(delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Cancel" after a delay.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).__Status">AUTOLASE:__Status(delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Monitor" after a delay.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2028,9 +2068,21 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).notifypilots">AUTOLASE.notifypilots</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).onafterMonitor">AUTOLASE:onafterMonitor(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) FSM Function for monitoring</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUTOLASE).onbeforeCancel">AUTOLASE:onbeforeCancel(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) FSM Function onbeforeCancel</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3554,31 +3606,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(INTEL)">Type <strong>INTEL</strong></a></h2></div>
-         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(INTEL)">INTEL</a></strong>
-   </div>
-        <div class="w3-card w3-margin">
-        <table class="w3-table w3-border-bottom w3-border-theme-l2">
-          <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from INTEL</th>
-            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).Status">INTEL:Status()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Triggers the FSM event "Monitor".</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).__Status">INTEL:__Status(delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Triggers the FSM event "Monitor" after a delay.</p>
-</td>
-          </tr>
-        </table>
-        </div>
-
     <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Functional.Autolase)" >Type <strong>Functional.Autolase</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
@@ -3877,6 +3904,25 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).Cancel" ><strong>AUTOLASE:Cancel()</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Cancel".</p>
+
+<div id= "#Functions##Cancel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AUTOLASE).CleanCurrentLasing" ><strong>AUTOLASE:CleanCurrentLasing()</strong></a></h2>
 </div>
     
@@ -4023,6 +4069,63 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <div class="w3-half">
         
 <p>self </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).NotifyPilots" ><strong>AUTOLASE:NotifyPilots(Message, Duration)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to show messages.</p>
+
+<div id= "#Functions##NotifyPilots" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The message to be sent</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Duration</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Duration in seconds</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AUTOLASE)">#AUTOLASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
@@ -4576,6 +4679,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).SetNotifyPilots" ><strong>AUTOLASE:SetNotifyPilots(OnOff)</strong></a></h2>
+</div>
+    
+<p>Function set notify pilots on events</p>
+
+<div id= "#Functions##SetNotifyPilots" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>OnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch messaging on (true) or off (false)</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AUTOLASE)">#AUTOLASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AUTOLASE).SetPilotMenu" ><strong>AUTOLASE:SetPilotMenu()</strong></a></h2>
 </div>
     
@@ -4821,12 +4968,167 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).Status" ><strong>AUTOLASE:Status()</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Monitor".</p>
+
+<div id= "#Functions##Status" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).__Cancel" ><strong>AUTOLASE:__Cancel(delay)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Cancel" after a delay.</p>
+
+<div id= "#Functions##__Cancel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).__Status" ><strong>AUTOLASE:__Status(delay)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Monitor" after a delay.</p>
+
+<div id= "#Functions##__Status" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AUTOLASE).onafterMonitor" ><strong>AUTOLASE:onafterMonitor(From, Event, To)</strong></a></h2>
 </div>
     
 <p>(Internal) FSM Function for monitoring</p>
 
 <div id= "#Functions##onafterMonitor" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AUTOLASE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The from state</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The to state</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AUTOLASE)">#AUTOLASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AUTOLASE).onbeforeCancel" ><strong>AUTOLASE:onbeforeCancel(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>(Internal) FSM Function onbeforeCancel</p>
+
+<div id= "#Functions##onbeforeCancel" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -14039,70 +14341,6 @@ BASE:TraceOnOff( false )</code></pre>
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
-</div>
-
-        </div>
-      <div onclick="myFunction('#Types##INTEL')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(INTEL)">Type <strong>INTEL</strong></a></h2></div>
-        <div id= "#Types##INTEL" class="w3-container w3-white w3-padding-16" id="module_other_types">
-          <div class="w3-white" id="record_type">
-<div class="fields w3-container w3-theme-l2">
-  <h2>Field(s)</h2>
-</div>
-<div class="functions  w3-container w3-theme-l2">
-  <h2>Function(s)</h2>
-</div>  
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(INTEL).Status" ><strong>INTEL:Status()</strong></a></h2>
-</div>
-    
-<p>Triggers the FSM event "Monitor".</p>
-
-<div id= "#Functions##Status" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>INTEL</p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(INTEL).__Status" ><strong>INTEL:__Status(delay)</strong></a></h2>
-</div>
-    
-<p>Triggers the FSM event "Monitor" after a delay.</p>
-
-<div id= "#Functions##__Status" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>INTEL</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Delay in seconds.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
 </div>
 
         </div>
