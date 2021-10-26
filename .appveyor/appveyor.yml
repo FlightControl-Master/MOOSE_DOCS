@@ -1,4 +1,4 @@
-version: 2.7.7.d.{build}
+version: 2.7.5.m.{build}
 shallow_clone: false
 skip_branch_with_pr: false
 skip_commits:
@@ -24,7 +24,7 @@ init:
         https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
         Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
         throw "There are newer queued builds for this pull request, failing early." }
-#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')).
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
 # Outcomment if lua environment invalidates and needs to be reinstalled, otherwise all will run from the cache...
@@ -59,13 +59,11 @@ build_script:
       dir c:\Projects
       dir
       echo "Removing old Documentation"
-      Remove-Item "c:/Projects/Documentation" -Recurse -ErrorAction Ignore
-      #del Documentation\*
-      New-Item -ItemType Directory -Force -Path "c:/Projects/Documentation"
+      del Documentation\*
       echo "Documenting"
-      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d "c:/Projects/Documentation" "c:/Projects/Moose/Moose Development/Moose"
+      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d ./Documentation "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
-      cd "c:/Projects/Documentation"
+      cd .\Documentation
       foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>',  '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97385487-1"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
@@ -75,7 +73,7 @@ build_script:
       git config --global credential.helper store  
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token_documentation):x-oauth-basic@github.com`n" 
       git config --global user.email "post@tniedermeier.com" 
-      git config --global user.name "Applevangelist" 
+      git config --global user.name "Applevangelist"
       git add ./Documentation 2>&1
       git commit -m "MOOSE generated documentation [skip ci]" 2>&1 
       git push origin "$env:appveyor_repo_branch" 2>&1
