@@ -59,13 +59,13 @@ build_script:
       dir c:\Projects
       dir
       echo "Removing old Documentation"
-      Remove-Item "c:/Projects/moose-docs/Documentation" -Recurse -ErrorAction Ignore
+      Remove-Item "c:/Projects/Documentation" -Recurse -ErrorAction Ignore
       #del Documentation\*
-      New-Item -ItemType Directory -Force -Path "c:/Projects/moose-docs/Documentation"
+      New-Item -ItemType Directory -Force -Path "c:/Projects/Documentation"
       echo "Documenting"
-      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d "c:/Projects/moose-docs/Documentation" "c:/Projects/Moose/Moose Development/Moose"
+      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d "c:/Projects/Documentation" "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
-      cd "c:/Proejcts/moose-docs/Documentation"
+      cd "c:/Projects/Documentation"
       foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>',  '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97385487-1"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
@@ -92,7 +92,7 @@ build_script:
           }
         $RequestBody = @{ accountName = 'Applevangelist'; projectSlug = 'moose-docs-develop'; branch = 'master'; environmentVariables = @{} } | ConvertTo-Json
         # get project with last build details
-        $project = Invoke-RestMethod -method Post -Uri "$apiUrl/builds" -Headers $headers -Body $RequestBody
+        # $project = Invoke-RestMethod -method Post -Uri "$apiUrl/builds" -Headers $headers -Body $RequestBody
       }
 artifacts:
 #  - path: 'Documentation\**\*'
