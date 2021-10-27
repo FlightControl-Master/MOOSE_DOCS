@@ -35,8 +35,7 @@ install:
   - cmd: PATH = %PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\bin
   - cmd: set LUA_PATH = %LUA_PATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?\init.lua
   - cmd: set LUA_CPATH = %LUA_CPATH%;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\lib\lua\5.1\?.dll 
-  - call luarocks install luafilesystem 1.6.3-2
-#   - call luarocks install markdown 0.32-2
+  - call luarocks install luafilesystem 1.6.3-2   - call luarocks install markdown 0.32-2
   - call luarocks install metalua-compiler 0.7.3-1
   - call luarocks install metalua-parser 0.7.3-2
   - call luarocks install penlight 0.9.8-1
@@ -61,9 +60,10 @@ build_script:
       echo "Removing old Documentation"
       del Documentation\*
       echo "Documenting"
-      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d ./Documentation "c:/Projects/Moose/Moose Development/Moose"
+      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -f doc -n -d ./Documentation "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
       cd .\Documentation
+      dir
       foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>',  '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97385487-1"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
