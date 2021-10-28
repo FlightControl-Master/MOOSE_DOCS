@@ -1,0 +1,55 @@
+# This is a basic workflow that is manually triggered
+
+name: Build Documenation
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+    
+  push:
+    branches:
+      - master
+      - develop
+
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Moose Documents Build'
+        required: false
+        default: 'The Docuverse'
+        
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SUPER_SECRET: ${{ secrets.APPLE_KEY }}
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  build-moose-docs:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: prepare environment
+      run: | 
+        # Outcomment if lua environment invalidates and needs to be reinstalled, otherwise all will run from the cache...
+        choco install -y 7zip.commandline
+        choco install -y lua51
+        choco install -y luarocks
+        C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
+        $env:PATH += C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\bin
+        $env:LUA_PATH += C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?\init.lua
+        $env:LUA_CPATH += C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\lib\lua\5.1\?.dll 
+        luarocks install luafilesystem 1.6.3-2
+        luarocks install markdown 0.32-2
+        luarocks install metalua-compiler 0.7.3-1
+        luarocks install metalua-parser 0.7.3-2
+        luarocks install penlight 0.9.8-1
+        luarocks install checks
+        
+    - name: Build done
+      run: |
+        $branch = $env:GITHUB_REF -replace "refs/heads/",""
+        Write-Host "*****Build done for $branch"
