@@ -1,4 +1,4 @@
-version: 2.7.5.m.{build}
+version: 2.7.7.m.{build}
 shallow_clone: false
 skip_branch_with_pr: false
 skip_commits:
@@ -39,7 +39,7 @@ install:
 #   - call luarocks install markdown 0.32-2
   - call luarocks install metalua-compiler 0.7.3-1
   - call luarocks install metalua-parser 0.7.3-2
-  - call luarocks install penlight 0.9.8-1
+  - call luarocks install penlight 1.11.0-1 #was 0.9.8-1
   - call luarocks install checks
 
 
@@ -53,17 +53,34 @@ build_script:
       git config --global core.autocrlf input 
       git checkout "$env:appveyor_repo_branch" 2>&1
       git clone -q --depth=1 -b "$env:appveyor_repo_branch" https://github.com/FlightControl-Master/MOOSE.git c:\Projects\Moose 
-      git clone -q --depth=1 -b "W3" https://github.com/FlightControl-User/luadocumentor.git c:\Projects\luadocumentor
+      git clone -q --depth=1 -b "patch-1" https://github.com/Applevangelist/luadocumentor.git c:\Projects\luadocumentor
       $env:LUA_PATH = "c:\Projects\luadocumentor\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?.lua;C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\share\lua\5.1\?\init.lua"
       $env:LUA_CPATH = "C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\systree\lib\lua\5.1\?.dll"
       dir c:\Projects
       dir
       echo "Removing old Documentation"
-      del Documentation\*
+      $FolderName = ".\Documentation"
+      if (Test-Path $FolderName) {
+          Write-Host "Folder Exists"
+          # Perform Delete file from folder operation
+      }
+      else
+      {
+          #PowerShell Create directory if not exists
+          New-Item $FolderName -ItemType Directory
+          Write-Host "Folder Created successfully"
+      }
+      #del Documentation\*
       echo "Documenting"
-      lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d ./Documentation "c:/Projects/Moose/Moose Development/Moose"
+      try {
+        lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -f doc -n -d ./Documentation "c:/Projects/Moose/Moose Development/Moose"
+          } catch {
+        $string_err = $_ | Out-String
+          }
+      write-host $string_err  
       echo "Updating Files"
       cd .\Documentation
+      dir
       foreach( $file in Get-ChildItem . -Filter *.html ) 
       { 
         ( Get-Content $file ).replace( '<head>',  '<head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97385487-1"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(''js'', new Date());gtag(''config'', ''UA-97385487-1'');</script>' ) | Set-Content $file  
