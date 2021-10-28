@@ -1693,6 +1693,128 @@ players capture zones in a co-operation effort. </p>
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TASK_CAPTURE_DISPATCHER')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>TASK_CAPTURE_DISPATCHER</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Implements the dynamic dispatching of capture zone tasks.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##TASK_CAPTURE_DISPATCHER" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(TASK_CAPTURE_DISPATCHER)">#TASK_CAPTURE_DISPATCHER</a>
+<a id="TASK_CAPTURE_DISPATCHER" ><strong>TASK_CAPTURE_DISPATCHER</strong></a>
+    
+<p>Implements the dynamic dispatching of capture zone tasks.</p>
+
+    
+
+<p>The <strong>TASK_CAPTURE_DISPATCHER</strong> allows you to setup various tasks for let human
+players capture zones in a co-operation effort. </p>
+
+<p>Let's explore <strong>step by step</strong> how to setup the task capture zone dispatcher.</p>
+
+<h1>1. Setup a mission environment.</h1>
+
+<p>It is easy, as it works just like any other task setup, so setup a command center and a mission.</p>
+
+<h2>1.1. Create a command center.</h2>
+
+<p>First you need to create a command center using the <a href="Tasking.CommandCenter.html##(COMMANDCENTER).New">Tasking.CommandCenter#COMMANDCENTER.New</a>() constructor.
+The command assumes that you´ve setup a group in the mission editor with the name HQ.
+This group will act as the command center object.
+It is a good practice to mark this group as invisible and invulnerable.</p>
+
+<pre><code>local CommandCenter = COMMANDCENTER
+   :New( GROUP:FindByName( "HQ" ), "HQ" ) -- Create the CommandCenter.
+</code></pre>
+
+<h2>1.2. Create a mission.</h2>
+
+<p>Tasks work in a <strong>mission</strong>, which groups these tasks to achieve a joint <strong>mission goal</strong>. A command center can <strong>govern multiple missions</strong>.</p>
+
+<p>Create a new mission, using the <a href="Tasking.Mission.html##(MISSION).New">Tasking.Mission#MISSION.New</a>() constructor.</p>
+
+<pre><code>-- Declare the Mission for the Command Center.
+local Mission = MISSION
+  :New( CommandCenter, 
+        "Overlord", 
+        "High", 
+        "Capture the blue zones.", 
+        coalition.side.RED 
+      ) 
+</code></pre>
+
+
+<h1>2. Dispatch a <strong>capture zone</strong> task.</h1>
+
+<p>So, now that we have a command center and a mission, we now create the capture zone task.
+We create the capture zone task using the <a href="##(TASK_CAPTURE_DISPATCHER).AddCaptureZoneTask">TASK_CAPTURE_DISPATCHER.AddCaptureZoneTask</a>() constructor.</p>
+
+<h2>2.1. Create the capture zones.</h2>
+
+<p>Because a capture zone task will not generate the capture zones, you'll need to create them first.</p>
+
+
+<pre><code>-- We define here a capture zone; of the type ZONE_CAPTURE_COALITION.
+-- The zone to be captured has the name Alpha, and was defined in the mission editor as a trigger zone.
+CaptureZone = ZONE:New( "Alpha" )
+CaptureZoneCoalitionApha = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED )
+</code></pre>
+
+<h2>2.2. Create a set of player groups.</h2>
+
+<p>What is also needed, is to have a set of <a href="Core.Group.html">Core.Group</a>s defined that contains the clients of the players.</p>
+
+<pre><code>-- Allocate the player slots, which must be aircraft (airplanes or helicopters), that can be manned by players.
+-- We use the method FilterPrefixes to filter those player groups that have client slots, as defined in the mission editor.
+-- In this example, we filter the groups where the name starts with "Blue Player", which captures the blue player slots.
+local PlayerGroupSet = SET_GROUP:New():FilterPrefixes( "Blue Player" ):FilterStart()
+</code></pre>
+
+<h2>2.3. Setup the capture zone task.</h2>
+
+<p>First, we need to create a TASK_CAPTURE_DISPATCHER object.</p>
+
+<pre><code>TaskCaptureZoneDispatcher = TASK_CAPTURE_DISPATCHER:New( Mission, PilotGroupSet )
+</code></pre>
+
+<p>So, the variable <code>TaskCaptureZoneDispatcher</code> will contain the object of class TASK_CAPTURE_DISPATCHER, 
+which will allow you to dispatch capture zone tasks:</p>
+
+<ul>
+    <li>for mission <code>Mission</code>, as was defined in section 1.2.</li>
+    <li>for the group set <code>PilotGroupSet</code>, as was defined in section 2.2.</li>
+</ul>
+
+<p>Now that we have <code>TaskDispatcher</code> object, we can now <strong>create the TaskCaptureZone</strong>, using the <a href="##(TASK_CAPTURE_DISPATCHER).AddCaptureZoneTask">TASK_CAPTURE_DISPATCHER.AddCaptureZoneTask</a>() method!</p>
+
+<pre><code>local TaskCaptureZone = TaskCaptureZoneDispatcher:AddCaptureZoneTask( 
+  "Capture zone Alpha", 
+  CaptureZoneCoalitionAlpha, 
+  "Fly to zone Alpha and eliminate all enemy forces to capture it." )
+</code></pre>
+
+<p>As a result of this code, the <code>TaskCaptureZone</code> (returned) variable will contain an object of <a href="##(TASK_CAPTURE_ZONE)">#TASK_CAPTURE_ZONE</a>!
+We pass to the method the title of the task, and the <code>CaptureZoneCoalitionAlpha</code>, which is the zone to be captured, as defined in section 2.1!
+This returned <code>TaskCaptureZone</code> object can now be used to setup additional task configurations, or to control this specific task with special events.</p>
+
+<p>And you're done! As you can see, it is a small bit of work, but the reward is great.
+And, because all this is done using program interfaces, you can easily build a mission to capture zones yourself!
+Based on various events happening within your mission, you can use the above methods to create new capture zones, 
+and setup a new capture zone task and assign it to a group of players, while your mission is running!</p>
+
+
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CAPTURE_DISPATCHER)">Type <strong>TASK_CAPTURE_DISPATCHER</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1708,9 +1830,93 @@ players capture zones in a co-operation effort. </p>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AI_A2G_Dispatcher">TASK_CAPTURE_DISPATCHER.AI_A2G_Dispatcher</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AddCaptureZoneTask">TASK_CAPTURE_DISPATCHER:AddCaptureZoneTask(TaskPrefix, CaptureZone, Briefing)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a capture zone task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).DefenseAIA2GDispatcher">TASK_CAPTURE_DISPATCHER.DefenseAIA2GDispatcher</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).DefenseTaskCaptureDispatcher">TASK_CAPTURE_DISPATCHER.DefenseTaskCaptureDispatcher</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).FlashNewTask">TASK_CAPTURE_DISPATCHER.FlashNewTask</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetDefenseAIA2GDispatcher">TASK_CAPTURE_DISPATCHER:GetDefenseAIA2GDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the linked AI A2G dispatcher from the other coalition to understand its plan for defenses.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetDefenseTaskCaptureDispatcher">TASK_CAPTURE_DISPATCHER:GetDefenseTaskCaptureDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the linked task capture dispatcher from the other coalition to understand its plan for defenses.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Link_AI_A2G_Dispatcher">TASK_CAPTURE_DISPATCHER:Link_AI_A2G_Dispatcher(AI_A2G_Dispatcher)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Link an AI_A2G_DISPATCHER to the TASK_CAPTURE_DISPATCHER.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ManageTasks">TASK_CAPTURE_DISPATCHER:ManageTasks()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Assigns tasks to the <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Mission">TASK_CAPTURE_DISPATCHER.Mission</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).New">TASK_CAPTURE_DISPATCHER:New(Mission, SetGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>TASK_CAPTURE_DISPATCHER constructor.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetDefenseAIA2GDispatcher">TASK_CAPTURE_DISPATCHER:SetDefenseAIA2GDispatcher(DefenseAIA2GDispatcher)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Link an AI A2G dispatcher from the other coalition to understand its plan for defenses.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetDefenseTaskCaptureDispatcher">TASK_CAPTURE_DISPATCHER:SetDefenseTaskCaptureDispatcher(DefenseTaskCaptureDispatcher)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Link a task capture dispatcher from the other coalition to understand its plan for defenses.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TASK_CAPTURE_DISPATCHER">TASK_CAPTURE_DISPATCHER.TASK_CAPTURE_DISPATCHER</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>ZONE ZONE</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ZoneCount">TASK_CAPTURE_DISPATCHER.ZoneCount</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
         </table>
@@ -1720,6 +1926,24 @@ players capture zones in a co-operation effort. </p>
           <tr class="w3-theme-l1">
             <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from TASK_MANAGER</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ClassName">TASK_CAPTURE_DISPATCHER.ClassName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ManageTasks">TASK_CAPTURE_DISPATCHER:ManageTasks()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Manages the tasks for the <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).New">TASK_CAPTURE_DISPATCHER:New(SetGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>TASK_MANAGER constructor.</p>
+</td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).OnAfterAborted">TASK_CAPTURE_DISPATCHER:OnAfterAborted(From, Event, To, Task)</a></p></td>
@@ -1776,6 +2000,12 @@ players capture zones in a co-operation effort. </p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetRefreshTimeInterval">TASK_CAPTURE_DISPATCHER:SetRefreshTimeInterval(RefreshTimeInterval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the refresh time interval in seconds when a new task management action needs to be done.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).StartTasks">TASK_CAPTURE_DISPATCHER:StartTasks()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>StartTasks Trigger for TASK_MANAGER</p>
@@ -1785,6 +2015,12 @@ players capture zones in a co-operation effort. </p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).StopTasks">TASK_CAPTURE_DISPATCHER:StopTasks()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>StopTasks Trigger for TASK_MANAGER</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._RefreshTimeInterval">TASK_CAPTURE_DISPATCHER._RefreshTimeInterval</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -1799,6 +2035,18 @@ players capture zones in a co-operation effort. </p>
 <p>StopTasks Asynchronous Trigger for TASK_MANAGER</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).onafterManage">TASK_CAPTURE_DISPATCHER:onafterManage(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).onafterStartTasks">TASK_CAPTURE_DISPATCHER:onafterStartTasks(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
         </table>
         </div>
         <div class="w3-card w3-margin">
@@ -1806,6 +2054,36 @@ players capture zones in a co-operation effort. </p>
           <tr class="w3-theme-l1">
             <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from FSM</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AddEndState">TASK_CAPTURE_DISPATCHER:AddEndState(State)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Adds an End state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AddProcess">TASK_CAPTURE_DISPATCHER:AddProcess(From, Event, Process, ReturnEvents)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the default <a href="Process.html">Process</a> template with key ProcessName providing the ProcessClass and the process object when it is assigned to a <a href="Wrapper.Controllable.html">Wrapper.Controllable</a> by the task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AddScore">TASK_CAPTURE_DISPATCHER:AddScore(State, ScoreText, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Adds a score for the FSM to be achieved.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AddScoreProcess">TASK_CAPTURE_DISPATCHER:AddScoreProcess(From, Event, State, ScoreText, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Adds a score for the FSM_PROCESS to be achieved.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).AddTransition">TASK_CAPTURE_DISPATCHER:AddTransition(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a new transition rule to the FSM.</p>
+</td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CallScheduler">TASK_CAPTURE_DISPATCHER.CallScheduler</a></p></td>
@@ -1820,15 +2098,219 @@ players capture zones in a co-operation effort. </p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Events">TASK_CAPTURE_DISPATCHER.Events</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetCurrentState">TASK_CAPTURE_DISPATCHER:GetCurrentState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get current state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetEndStates">TASK_CAPTURE_DISPATCHER:GetEndStates()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the End states.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetProcess">TASK_CAPTURE_DISPATCHER:GetProcess(From, Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetProcesses">TASK_CAPTURE_DISPATCHER:GetProcesses()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a table of the SubFSM rules defined within the FSM.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetScores">TASK_CAPTURE_DISPATCHER:GetScores()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a table with the scores defined.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetStartState">TASK_CAPTURE_DISPATCHER:GetStartState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the start state of the FSM.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetState">TASK_CAPTURE_DISPATCHER:GetState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get current state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetSubs">TASK_CAPTURE_DISPATCHER:GetSubs()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a table with the Subs defined.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetTransitions">TASK_CAPTURE_DISPATCHER:GetTransitions()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a table of the transition rules defined within the FSM.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Is">TASK_CAPTURE_DISPATCHER:Is(State)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if FSM is in state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).LoadCallBacks">TASK_CAPTURE_DISPATCHER:LoadCallBacks(CallBackTable)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Load call backs.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).New">TASK_CAPTURE_DISPATCHER:New()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creates a new FSM object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Scores">TASK_CAPTURE_DISPATCHER.Scores</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Scores.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetProcess">TASK_CAPTURE_DISPATCHER:SetProcess(From, Event, Fsm)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetStartState">TASK_CAPTURE_DISPATCHER:SetStartState(State)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the start state of the FSM.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._EndStates">TASK_CAPTURE_DISPATCHER._EndStates</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._EventSchedules">TASK_CAPTURE_DISPATCHER._EventSchedules</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._Processes">TASK_CAPTURE_DISPATCHER._Processes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._Scores">TASK_CAPTURE_DISPATCHER._Scores</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._StartState">TASK_CAPTURE_DISPATCHER._StartState</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._Transitions">TASK_CAPTURE_DISPATCHER._Transitions</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._add_to_map">TASK_CAPTURE_DISPATCHER:_add_to_map(Map, Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add to map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._call_handler">TASK_CAPTURE_DISPATCHER:_call_handler(step, trigger, params, EventName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Call handler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._create_transition">TASK_CAPTURE_DISPATCHER:_create_transition(EventName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create transition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._delayed_transition">TASK_CAPTURE_DISPATCHER:_delayed_transition(EventName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Delayed transition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._eventmap">TASK_CAPTURE_DISPATCHER:_eventmap(Events, EventStructure)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Event map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._gosub">TASK_CAPTURE_DISPATCHER:_gosub(ParentFrom, ParentEvent)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Go sub.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._handler">TASK_CAPTURE_DISPATCHER:_handler(EventName, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Handler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._isendstate">TASK_CAPTURE_DISPATCHER:_isendstate(Current)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is end state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._submap">TASK_CAPTURE_DISPATCHER:_submap(subs, sub, name)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sub maps.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).can">TASK_CAPTURE_DISPATCHER:can(e)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if can do an event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).cannot">TASK_CAPTURE_DISPATCHER:cannot(e)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if cannot do an event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).current">TASK_CAPTURE_DISPATCHER.current</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Current state name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).endstates">TASK_CAPTURE_DISPATCHER.endstates</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).is">TASK_CAPTURE_DISPATCHER:is(State, state)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if FSM is in state.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1867,6 +2349,162 @@ players capture zones in a co-operation effort. </p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ClassNameAndID">TASK_CAPTURE_DISPATCHER.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ClearState">TASK_CAPTURE_DISPATCHER:ClearState(Object, StateName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clear the state of an object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventBirth">TASK_CAPTURE_DISPATCHER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Birth Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventCrash">TASK_CAPTURE_DISPATCHER:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventDead">TASK_CAPTURE_DISPATCHER:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Dead Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventPlayerEnterAircraft">TASK_CAPTURE_DISPATCHER:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventRemoveUnit">TASK_CAPTURE_DISPATCHER:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Remove Unit Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventTakeoff">TASK_CAPTURE_DISPATCHER:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Takeoff Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).CreateEventUnitLost">TASK_CAPTURE_DISPATCHER:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).E">TASK_CAPTURE_DISPATCHER:E(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an exception which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).EventDispatcher">TASK_CAPTURE_DISPATCHER:EventDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the event dispatcher</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).EventRemoveAll">TASK_CAPTURE_DISPATCHER:EventRemoveAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove all subscribed events</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).F">TASK_CAPTURE_DISPATCHER:F(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).F2">TASK_CAPTURE_DISPATCHER:F2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).F3">TASK_CAPTURE_DISPATCHER:F3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetClassID">TASK_CAPTURE_DISPATCHER:GetClassID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetClassName">TASK_CAPTURE_DISPATCHER:GetClassName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetClassNameAndID">TASK_CAPTURE_DISPATCHER:GetClassNameAndID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName + ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetEventPriority">TASK_CAPTURE_DISPATCHER:GetEventPriority()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetParent">TASK_CAPTURE_DISPATCHER:GetParent(Child, FromClass)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to retrieve the Parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).GetState">TASK_CAPTURE_DISPATCHER:GetState(Object, Key)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a Value given a Key from the Object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).HandleEvent">TASK_CAPTURE_DISPATCHER:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Subscribe to a DCS Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).I">TASK_CAPTURE_DISPATCHER:I(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an information which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Inherit">TASK_CAPTURE_DISPATCHER:Inherit(Child, Parent)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to inherit from a parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).IsInstanceOf">TASK_CAPTURE_DISPATCHER:IsInstanceOf(ClassName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).IsTrace">TASK_CAPTURE_DISPATCHER:IsTrace()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enquires if tracing is on (for the class).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).New">TASK_CAPTURE_DISPATCHER:New()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2088,6 +2726,140 @@ place: Object that the unit landed on.</p>
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ScheduleOnce">TASK_CAPTURE_DISPATCHER:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ScheduleRepeat">TASK_CAPTURE_DISPATCHER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).ScheduleStop">TASK_CAPTURE_DISPATCHER:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the Schedule.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).Scheduler">TASK_CAPTURE_DISPATCHER.Scheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetEventPriority">TASK_CAPTURE_DISPATCHER:SetEventPriority(EventPriority)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).SetState">TASK_CAPTURE_DISPATCHER:SetState(Object, Key, Value)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a state or property of the Object given a Key and a Value.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).T">TASK_CAPTURE_DISPATCHER:T(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 1.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).T2">TASK_CAPTURE_DISPATCHER:T2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).T3">TASK_CAPTURE_DISPATCHER:T3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceAll">TASK_CAPTURE_DISPATCHER:TraceAll(TraceAll)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace all methods in MOOSE</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceClass">TASK_CAPTURE_DISPATCHER:TraceClass(Class)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceClassMethod">TASK_CAPTURE_DISPATCHER:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a specific method of  class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceLevel">TASK_CAPTURE_DISPATCHER:TraceLevel(Level)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace level</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceOff">TASK_CAPTURE_DISPATCHER:TraceOff()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceOn">TASK_CAPTURE_DISPATCHER:TraceOn()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).TraceOnOff">TASK_CAPTURE_DISPATCHER:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).UnHandleEvent">TASK_CAPTURE_DISPATCHER:UnHandleEvent(EventID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnSubscribe to a DCS event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._">TASK_CAPTURE_DISPATCHER._</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._F">TASK_CAPTURE_DISPATCHER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER)._T">TASK_CAPTURE_DISPATCHER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).__">TASK_CAPTURE_DISPATCHER.__</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CAPTURE_DISPATCHER).onEvent">TASK_CAPTURE_DISPATCHER:onEvent(event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
         </table>
         </div>
 
@@ -2131,15 +2903,540 @@ place: Object that the unit landed on.</p>
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>
+<a id="#(TASK_CAPTURE_DISPATCHER).AI_A2G_Dispatcher" ><strong>TASK_CAPTURE_DISPATCHER.AI_A2G_Dispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseAIA2GDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseAIA2GDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseTaskCaptureDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseTaskCaptureDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TASK_CAPTURE_DISPATCHER).FlashNewTask" ><strong>TASK_CAPTURE_DISPATCHER.FlashNewTask</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).Mission" ><strong>TASK_CAPTURE_DISPATCHER.Mission</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).AddCaptureZoneTask" ><strong>TASK_CAPTURE_DISPATCHER:AddCaptureZoneTask(TaskPrefix, CaptureZone, Briefing)</strong></a></h2>
+</div>
+    
+<p>Add a capture zone task.</p>
+
+<div id= "#Functions##AddCaptureZoneTask" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskPrefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The prefix of the capture zone task. 
+If no TaskPrefix is given, then "Capture" will be used as the TaskPrefix. 
+The TaskPrefix will be appended with a . + a number of 3 digits, if the TaskPrefix already exists in the task collection.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Functional.CaptureZoneCoalition.html##(ZONE_CAPTURE_COALITION)">Functional.CaptureZoneCoalition#ZONE_CAPTURE_COALITION</a>
+            <strong><strong>CaptureZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The zone of the coalition to be captured as the task goal.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Briefing</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The briefing of the task to be shown to the player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Tasking.Task_Capture_Zone.html##(TASK_CAPTURE_ZONE)">Tasking.Task_Capture_Zone#TASK_CAPTURE_ZONE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>
+ </code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetDefenseAIA2GDispatcher" ><strong>TASK_CAPTURE_DISPATCHER:GetDefenseAIA2GDispatcher()</strong></a></h2>
+</div>
+    
+<p>Get the linked AI A2G dispatcher from the other coalition to understand its plan for defenses.</p>
+
+    
+<p>This is used for the tactical overview, so the players also know the zones attacked by the AI A2G dispatcher!</p>
+
+<div id= "#Functions##GetDefenseAIA2GDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetDefenseTaskCaptureDispatcher" ><strong>TASK_CAPTURE_DISPATCHER:GetDefenseTaskCaptureDispatcher()</strong></a></h2>
+</div>
+    
+<p>Get the linked task capture dispatcher from the other coalition to understand its plan for defenses.</p>
+
+    
+<p>This is used for the tactical overview, so the players also know the zones attacked by the other coalition!</p>
+
+<div id= "#Functions##GetDefenseTaskCaptureDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK_CAPTURE_DISPATCHER)">#TASK_CAPTURE_DISPATCHER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).Link_AI_A2G_Dispatcher" ><strong>TASK_CAPTURE_DISPATCHER:Link_AI_A2G_Dispatcher(AI_A2G_Dispatcher)</strong></a></h2>
+</div>
+    
+<p>Link an AI_A2G_DISPATCHER to the TASK_CAPTURE_DISPATCHER.</p>
+
+<div id= "#Functions##Link_AI_A2G_Dispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>
+            <strong><strong>AI_A2G_Dispatcher</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The AI Dispatcher to be linked to the tasking. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Tasking.Task_Capture_Zone.html##(TASK_CAPTURE_ZONE)">Tasking.Task_Capture_Zone#TASK_CAPTURE_ZONE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).ManageTasks" ><strong>TASK_CAPTURE_DISPATCHER:ManageTasks()</strong></a></h2>
+</div>
+    
+<p>Assigns tasks to the <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+
+<div id= "#Functions##ManageTasks" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Return true if you want the task assigning to continue... false will cancel the loop.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).New" ><strong>TASK_CAPTURE_DISPATCHER:New(Mission, SetGroup)</strong></a></h2>
+</div>
+    
+<p>TASK_CAPTURE_DISPATCHER constructor.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
+            <strong><strong>Mission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The mission for which the task dispatching is done.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>SetGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The set of groups that can join the tasks within the mission.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK_CAPTURE_DISPATCHER)">#TASK_CAPTURE_DISPATCHER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetDefenseAIA2GDispatcher" ><strong>TASK_CAPTURE_DISPATCHER:SetDefenseAIA2GDispatcher(DefenseAIA2GDispatcher)</strong></a></h2>
+</div>
+    
+<p>Link an AI A2G dispatcher from the other coalition to understand its plan for defenses.</p>
+
+    
+<p>This is used for the tactical overview, so the players also know the zones attacked by the other AI A2G dispatcher!</p>
+
+<div id= "#Functions##SetDefenseAIA2GDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>
+            <strong><strong>DefenseAIA2GDispatcher</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetDefenseTaskCaptureDispatcher" ><strong>TASK_CAPTURE_DISPATCHER:SetDefenseTaskCaptureDispatcher(DefenseTaskCaptureDispatcher)</strong></a></h2>
+</div>
+    
+<p>Link a task capture dispatcher from the other coalition to understand its plan for defenses.</p>
+
+    
+<p>This is used for the tactical overview, so the players also know the zones attacked by the other coalition!</p>
+
+<div id= "#Functions##SetDefenseTaskCaptureDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CAPTURE_DISPATCHER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(TASK_CAPTURE_DISPATCHER)">#TASK_CAPTURE_DISPATCHER</a>
+            <strong><strong>DefenseTaskCaptureDispatcher</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>
+<a id="#(TASK_CAPTURE_DISPATCHER).AI_A2G_Dispatcher" ><strong>TASK_CAPTURE_DISPATCHER.AI_A2G_Dispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseAIA2GDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseAIA2GDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseTaskCaptureDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseTaskCaptureDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TASK_CAPTURE_DISPATCHER).FlashNewTask" ><strong>TASK_CAPTURE_DISPATCHER.FlashNewTask</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).Mission" ><strong>TASK_CAPTURE_DISPATCHER.Mission</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).ManageTasks" ><strong>TASK_CAPTURE_DISPATCHER:ManageTasks()</strong></a></h2>
+</div>
+    
+<p>Manages the tasks for the <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+
+<div id= "#Functions##ManageTasks" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.Task_Manager.html##(TASK_MANAGER)">Tasking.Task_Manager#TASK_MANAGER</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK_MANAGER)">#TASK_MANAGER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).New" ><strong>TASK_CAPTURE_DISPATCHER:New(SetGroup)</strong></a></h2>
+</div>
+    
+<p>TASK_MANAGER constructor.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.Task_Manager.html##(TASK_MANAGER)">Tasking.Task_Manager#TASK_MANAGER</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>SetGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The set of group objects containing players for which tasks are managed.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK_MANAGER)">#TASK_MANAGER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -2633,6 +3930,50 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetRefreshTimeInterval" ><strong>TASK_CAPTURE_DISPATCHER:SetRefreshTimeInterval(RefreshTimeInterval)</strong></a></h2>
+</div>
+    
+<p>Set the refresh time interval in seconds when a new task management action needs to be done.</p>
+
+<div id= "#Functions##SetRefreshTimeInterval" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.Task_Manager.html##(TASK_MANAGER)">Tasking.Task_Manager#TASK_MANAGER</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RefreshTimeInterval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The refresh time interval in seconds when a new task management action needs to be done.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK_MANAGER)">#TASK_MANAGER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(TASK_CAPTURE_DISPATCHER).StartTasks" ><strong>TASK_CAPTURE_DISPATCHER:StartTasks()</strong></a></h2>
 </div>
     
@@ -2730,18 +4071,2777 @@ place: Object that the unit landed on.</p>
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).onafterManage" ><strong>TASK_CAPTURE_DISPATCHER:onafterManage(From, Event, To)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##onafterManage" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.Task_Manager.html##(TASK_MANAGER)">Tasking.Task_Manager#TASK_MANAGER</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).onafterStartTasks" ><strong>TASK_CAPTURE_DISPATCHER:onafterStartTasks(From, Event, To)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##onafterStartTasks" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Tasking.Task_Manager.html##(TASK_MANAGER)">Tasking.Task_Manager#TASK_MANAGER</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>
+<a id="#(TASK_CAPTURE_DISPATCHER).AI_A2G_Dispatcher" ><strong>TASK_CAPTURE_DISPATCHER.AI_A2G_Dispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseAIA2GDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseAIA2GDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseTaskCaptureDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseTaskCaptureDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TASK_CAPTURE_DISPATCHER).FlashNewTask" ><strong>TASK_CAPTURE_DISPATCHER.FlashNewTask</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).Mission" ><strong>TASK_CAPTURE_DISPATCHER.Mission</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).AddEndState" ><strong>TASK_CAPTURE_DISPATCHER:AddEndState(State)</strong></a></h2>
+</div>
+    
+<p>Adds an End state.</p>
+
+<div id= "#Functions##AddEndState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>State</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The FSM state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).AddProcess" ><strong>TASK_CAPTURE_DISPATCHER:AddProcess(From, Event, Process, ReturnEvents)</strong></a></h2>
+</div>
+    
+<p>Set the default <a href="Process.html">Process</a> template with key ProcessName providing the ProcessClass and the process object when it is assigned to a <a href="Wrapper.Controllable.html">Wrapper.Controllable</a> by the task.</p>
+
+<div id= "#Functions##AddProcess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Can contain a string indicating the From state or a table of strings containing multiple From states.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a>
+            <strong><strong>Process</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>An sub-process FSM.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>ReturnEvents</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A table indicating for which returned events of the SubFSM which Event must be triggered in the FSM.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The SubFSM.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).AddScore" ><strong>TASK_CAPTURE_DISPATCHER:AddScore(State, ScoreText, Score)</strong></a></h2>
+</div>
+    
+<p>Adds a score for the FSM to be achieved.</p>
+
+<div id= "#Functions##AddScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>State</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the state of the process when the score needs to be given. (See the relevant state descriptions of the process).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScoreText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is a text describing the score that is given according the status.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is a number providing the score of the status.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(FSM)">#FSM</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).AddScoreProcess" ><strong>TASK_CAPTURE_DISPATCHER:AddScoreProcess(From, Event, State, ScoreText, Score)</strong></a></h2>
+</div>
+    
+<p>Adds a score for the FSM_PROCESS to be achieved.</p>
+
+<div id= "#Functions##AddScoreProcess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the From State of the main process.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Event of the main process.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>State</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the state of the process when the score needs to be given. (See the relevant state descriptions of the process).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScoreText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is a text describing the score that is given according the status.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is a number providing the score of the status.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(FSM)">#FSM</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).AddTransition" ><strong>TASK_CAPTURE_DISPATCHER:AddTransition(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>Add a new transition rule to the FSM.</p>
+
+    
+<p>A transition rule defines when and if the FSM can transition from a state towards another state upon a triggered event.</p>
+
+<div id= "#Functions##AddTransition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Can contain a string indicating the From state or a table of strings containing multiple From states.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetCurrentState" ><strong>TASK_CAPTURE_DISPATCHER:GetCurrentState()</strong></a></h2>
+</div>
+    
+<p>Get current state.</p>
+
+<div id= "#Functions##GetCurrentState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current FSM state.  </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetEndStates" ><strong>TASK_CAPTURE_DISPATCHER:GetEndStates()</strong></a></h2>
+</div>
+    
+<p>Returns the End states.</p>
+
+<div id= "#Functions##GetEndStates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>End states.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetProcess" ><strong>TASK_CAPTURE_DISPATCHER:GetProcess(From, Event)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##GetProcess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetProcesses" ><strong>TASK_CAPTURE_DISPATCHER:GetProcesses()</strong></a></h2>
+</div>
+    
+<p>Returns a table of the SubFSM rules defined within the FSM.</p>
+
+<div id= "#Functions##GetProcesses" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Sub processes.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetScores" ><strong>TASK_CAPTURE_DISPATCHER:GetScores()</strong></a></h2>
+</div>
+    
+<p>Returns a table with the scores defined.</p>
+
+<div id= "#Functions##GetScores" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Scores.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetStartState" ><strong>TASK_CAPTURE_DISPATCHER:GetStartState()</strong></a></h2>
+</div>
+    
+<p>Returns the start state of the FSM.</p>
+
+<div id= "#Functions##GetStartState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>A string containing the start state.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetState" ><strong>TASK_CAPTURE_DISPATCHER:GetState()</strong></a></h2>
+</div>
+    
+<p>Get current state.</p>
+
+<div id= "#Functions##GetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Current FSM state.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetSubs" ><strong>TASK_CAPTURE_DISPATCHER:GetSubs()</strong></a></h2>
+</div>
+    
+<p>Returns a table with the Subs defined.</p>
+
+<div id= "#Functions##GetSubs" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Sub processes.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetTransitions" ><strong>TASK_CAPTURE_DISPATCHER:GetTransitions()</strong></a></h2>
+</div>
+    
+<p>Returns a table of the transition rules defined within the FSM.</p>
+
+<div id= "#Functions##GetTransitions" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Transitions.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).Is" ><strong>TASK_CAPTURE_DISPATCHER:Is(State)</strong></a></h2>
+</div>
+    
+<p>Check if FSM is in state.</p>
+
+<div id= "#Functions##Is" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>State</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM is in this state.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).LoadCallBacks" ><strong>TASK_CAPTURE_DISPATCHER:LoadCallBacks(CallBackTable)</strong></a></h2>
+</div>
+    
+<p>Load call backs.</p>
+
+<div id= "#Functions##LoadCallBacks" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>CallBackTable</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of call backs.  </p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).New" ><strong>TASK_CAPTURE_DISPATCHER:New()</strong></a></h2>
+</div>
+    
+<p>Creates a new FSM object.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(FSM)">#FSM</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetProcess" ><strong>TASK_CAPTURE_DISPATCHER:SetProcess(From, Event, Fsm)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##SetProcess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Fsm</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetStartState" ><strong>TASK_CAPTURE_DISPATCHER:SetStartState(State)</strong></a></h2>
+</div>
+    
+<p>Sets the start state of the FSM.</p>
+
+<div id= "#Functions##SetStartState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>State</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A string defining the start state.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._add_to_map" ><strong>TASK_CAPTURE_DISPATCHER:_add_to_map(Map, Event)</strong></a></h2>
+</div>
+    
+<p>Add to map.</p>
+
+<div id= "#Functions##_add_to_map" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Map</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Map.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event table.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._call_handler" ><strong>TASK_CAPTURE_DISPATCHER:_call_handler(step, trigger, params, EventName)</strong></a></h2>
+</div>
+    
+<p>Call handler.</p>
+
+<div id= "#Functions##_call_handler" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>step</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Step "onafter", "onbefore", "onenter", "onleave".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>trigger</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Trigger.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>params</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Parameters.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>EventName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>Value.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._create_transition" ><strong>TASK_CAPTURE_DISPATCHER:_create_transition(EventName)</strong></a></h2>
+</div>
+    
+<p>Create transition.</p>
+
+<div id= "#Functions##_create_transition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>EventName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event name.  </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#function:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Function.  </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._delayed_transition" ><strong>TASK_CAPTURE_DISPATCHER:_delayed_transition(EventName)</strong></a></h2>
+</div>
+    
+<p>Delayed transition.</p>
+
+<div id= "#Functions##_delayed_transition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>EventName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event name.  </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#function:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Function.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._eventmap" ><strong>TASK_CAPTURE_DISPATCHER:_eventmap(Events, EventStructure)</strong></a></h2>
+</div>
+    
+<p>Event map.</p>
+
+<div id= "#Functions##_eventmap" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Events</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Events.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>EventStructure</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event structure.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._gosub" ><strong>TASK_CAPTURE_DISPATCHER:_gosub(ParentFrom, ParentEvent)</strong></a></h2>
+</div>
+    
+<p>Go sub.</p>
+
+<div id= "#Functions##_gosub" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ParentFrom</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Parent from state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ParentEvent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Parent event name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Subs.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._handler" ><strong>TASK_CAPTURE_DISPATCHER:_handler(EventName, ...)</strong></a></h2>
+</div>
+    
+<p>Handler.</p>
+
+<div id= "#Functions##_handler" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>EventName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Arguments.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._isendstate" ><strong>TASK_CAPTURE_DISPATCHER:_isendstate(Current)</strong></a></h2>
+</div>
+    
+<p>Is end state.</p>
+
+<div id= "#Functions##_isendstate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Current</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Current state name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>FSM parent.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Event name.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._submap" ><strong>TASK_CAPTURE_DISPATCHER:_submap(subs, sub, name)</strong></a></h2>
+</div>
+    
+<p>Sub maps.</p>
+
+<div id= "#Functions##_submap" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>subs</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Subs.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>sub</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Sub.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name.  </p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).can" ><strong>TASK_CAPTURE_DISPATCHER:can(e)</strong></a></h2>
+</div>
+    
+<p>Check if can do an event.</p>
+
+<div id= "#Functions##can" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>e</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>If true, FSM can do the event.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>To state.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).cannot" ><strong>TASK_CAPTURE_DISPATCHER:cannot(e)</strong></a></h2>
+</div>
+    
+<p>Check if cannot do an event.</p>
+
+<div id= "#Functions##cannot" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>e</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM cannot do the event.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).is" ><strong>TASK_CAPTURE_DISPATCHER:is(State, state)</strong></a></h2>
+</div>
+    
+<p>Check if FSM is in state.</p>
+
+<div id= "#Functions##is" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>State</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>State name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>state</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, FSM is in this state.  </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="AI.AI_A2G_Dispatcher.html##(AI_A2G_DISPATCHER)">AI.AI_A2G_Dispatcher#AI_A2G_DISPATCHER</a>
+<a id="#(TASK_CAPTURE_DISPATCHER).AI_A2G_Dispatcher" ><strong>TASK_CAPTURE_DISPATCHER.AI_A2G_Dispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseAIA2GDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseAIA2GDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).DefenseTaskCaptureDispatcher" ><strong>TASK_CAPTURE_DISPATCHER.DefenseTaskCaptureDispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TASK_CAPTURE_DISPATCHER).FlashNewTask" ><strong>TASK_CAPTURE_DISPATCHER.FlashNewTask</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK_CAPTURE_DISPATCHER).Mission" ><strong>TASK_CAPTURE_DISPATCHER.Mission</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).ClearState" ><strong>TASK_CAPTURE_DISPATCHER:ClearState(Object, StateName)</strong></a></h2>
+</div>
+    
+<p>Clear the state of an object.</p>
+
+<div id= "#Functions##ClearState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>StateName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is should be cleared.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventBirth" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+</div>
+    
+<p>Creation of a Birth Event.</p>
+
+<div id= "#Functions##CreateEventBirth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>IniUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating unit name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>place</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>subplace</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventCrash" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventCrash" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventDead" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Dead Event.</p>
+
+<div id= "#Functions##CreateEventDead" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventPlayerEnterAircraft" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+</div>
+    
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+
+<div id= "#Functions##CreateEventPlayerEnterAircraft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit the player entered.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventRemoveUnit" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Remove Unit Event.</p>
+
+<div id= "#Functions##CreateEventRemoveUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventTakeoff" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Takeoff Event.</p>
+
+<div id= "#Functions##CreateEventTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).CreateEventUnitLost" ><strong>TASK_CAPTURE_DISPATCHER:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventUnitLost" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).E" ><strong>TASK_CAPTURE_DISPATCHER:E(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an exception which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##E" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).EventDispatcher" ><strong>TASK_CAPTURE_DISPATCHER:EventDispatcher()</strong></a></h2>
+</div>
+    
+<p>Returns the event dispatcher</p>
+
+<div id= "#Functions##EventDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).EventRemoveAll" ><strong>TASK_CAPTURE_DISPATCHER:EventRemoveAll()</strong></a></h2>
+</div>
+    
+<p>Remove all subscribed events</p>
+
+<div id= "#Functions##EventRemoveAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).F" ><strong>TASK_CAPTURE_DISPATCHER:F(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).F2" ><strong>TASK_CAPTURE_DISPATCHER:F2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 2.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).F3" ><strong>TASK_CAPTURE_DISPATCHER:F3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 3.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetClassID" ><strong>TASK_CAPTURE_DISPATCHER:GetClassID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassID of the class instance.</p>
+
+<div id= "#Functions##GetClassID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetClassName" ><strong>TASK_CAPTURE_DISPATCHER:GetClassName()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName of the class instance.</p>
+
+<div id= "#Functions##GetClassName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetClassNameAndID" ><strong>TASK_CAPTURE_DISPATCHER:GetClassNameAndID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName + ClassID of the class instance.</p>
+
+    
+<p>The ClassName + ClassID is formatted as '%s#%09d'. </p>
+
+<div id= "#Functions##GetClassNameAndID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName + ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetEventPriority" ><strong>TASK_CAPTURE_DISPATCHER:GetEventPriority()</strong></a></h2>
+</div>
+    
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##GetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetParent" ><strong>TASK_CAPTURE_DISPATCHER:GetParent(Child, FromClass)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to retrieve the Parent class.</p>
+
+    
+<p>Note that the Parent class must be passed to call the parent class method.</p>
+
+<pre><code>self:GetParent(self):ParentMethod()
+
+
+</code></pre>
+
+<div id= "#Functions##GetParent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>This is the Child class from which the Parent class needs to be retrieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>FromClass</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The class from which to get the parent.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).GetState" ><strong>TASK_CAPTURE_DISPATCHER:GetState(Object, Key)</strong></a></h2>
+</div>
+    
+<p>Get a Value given a Key from the Object.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##GetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used to retrieve the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value retrieved or nil if the Key was not found and thus the Value could not be retrieved.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).HandleEvent" ><strong>TASK_CAPTURE_DISPATCHER:HandleEvent(EventID, EventFunction)</strong></a></h2>
+</div>
+    
+<p>Subscribe to a DCS Event.</p>
+
+<div id= "#Functions##HandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>EventFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The function to be called when the event occurs for the unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).I" ><strong>TASK_CAPTURE_DISPATCHER:I(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an information which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##I" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).Inherit" ><strong>TASK_CAPTURE_DISPATCHER:Inherit(Child, Parent)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to inherit from a parent class.</p>
+
+<div id= "#Functions##Inherit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Child class that inherits.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Parent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Parent class that the Child inherits from.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Child</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).IsInstanceOf" ><strong>TASK_CAPTURE_DISPATCHER:IsInstanceOf(ClassName)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+
+    
+
+<h3>Examples:</h3>
+
+<ul>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( ZONE ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'ZONE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'zone' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'BASE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'GROUP' ) will return false</p></li>
+</ul>
+
+
+<div id= "#Functions##IsInstanceOf" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ClassName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the name of the class or the class itself to run the check against</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).IsTrace" ><strong>TASK_CAPTURE_DISPATCHER:IsTrace()</strong></a></h2>
+</div>
+    
+<p>Enquires if tracing is on (for the class).</p>
+
+<div id= "#Functions##IsTrace" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).New" ><strong>TASK_CAPTURE_DISPATCHER:New()</strong></a></h2>
+</div>
+    
+<p>BASE constructor.</p>
+
+    
+
+<p>This is an example how to use the BASE:New() constructor in a new class definition when inheriting from BASE.</p>
+
+<pre><code>function EVENT:New()
+  local self = BASE:Inherit( self, BASE:New() ) -- #EVENT
+  return self
+end
+  
+</code></pre>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -4045,6 +8145,862 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
               
 <p>The EventData structure.</p>
 
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).ScheduleOnce" ><strong>TASK_CAPTURE_DISPATCHER:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleOnce" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).ScheduleRepeat" ><strong>TASK_CAPTURE_DISPATCHER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleRepeat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).ScheduleStop" ><strong>TASK_CAPTURE_DISPATCHER:ScheduleStop(SchedulerFunction)</strong></a></h2>
+</div>
+    
+<p>Stops the Schedule.</p>
+
+<div id= "#Functions##ScheduleStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetEventPriority" ><strong>TASK_CAPTURE_DISPATCHER:SetEventPriority(EventPriority)</strong></a></h2>
+</div>
+    
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##SetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>EventPriority</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).SetState" ><strong>TASK_CAPTURE_DISPATCHER:SetState(Object, Key, Value)</strong></a></h2>
+</div>
+    
+<p>Set a state or property of the Object given a Key and a Value.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##SetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that will hold the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used as a reference of the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Value</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The value to is stored in the object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value set. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).T" ><strong>TASK_CAPTURE_DISPATCHER:T(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 1.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).T2" ><strong>TASK_CAPTURE_DISPATCHER:T2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 2.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).T3" ><strong>TASK_CAPTURE_DISPATCHER:T3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 3.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceAll" ><strong>TASK_CAPTURE_DISPATCHER:TraceAll(TraceAll)</strong></a></h2>
+</div>
+    
+<p>Trace all methods in MOOSE</p>
+
+<div id= "#Functions##TraceAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceAll</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>true = trace all methods in MOOSE.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceClass" ><strong>TASK_CAPTURE_DISPATCHER:TraceClass(Class)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a class</p>
+
+<div id= "#Functions##TraceClass" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceClassMethod" ><strong>TASK_CAPTURE_DISPATCHER:TraceClassMethod(Class, Method)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a specific method of  class</p>
+
+<div id= "#Functions##TraceClassMethod" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Method</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceLevel" ><strong>TASK_CAPTURE_DISPATCHER:TraceLevel(Level)</strong></a></h2>
+</div>
+    
+<p>Set trace level</p>
+
+<div id= "#Functions##TraceLevel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Level</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceOff" ><strong>TASK_CAPTURE_DISPATCHER:TraceOff()</strong></a></h2>
+</div>
+    
+<p>Set trace off.</p>
+
+<div id= "#Functions##TraceOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing Off
+BASE:TraceOff()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceOn" ><strong>TASK_CAPTURE_DISPATCHER:TraceOn()</strong></a></h2>
+</div>
+    
+<p>Set trace on.</p>
+
+<div id= "#Functions##TraceOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOn()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).TraceOnOff" ><strong>TASK_CAPTURE_DISPATCHER:TraceOnOff(TraceOnOff)</strong></a></h2>
+</div>
+    
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+
+    
+<p>So tracing must be switched on manually in your mission if you are using Moose statically.
+When moose is loading dynamically (for moose class development), tracing is switched on by default.</p>
+
+<div id= "#Functions##TraceOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceOnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch the tracing on or off.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOnOff( true )
+
+-- Switch the tracing Off
+BASE:TraceOnOff( false )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).UnHandleEvent" ><strong>TASK_CAPTURE_DISPATCHER:UnHandleEvent(EventID)</strong></a></h2>
+</div>
+    
+<p>UnSubscribe to a DCS event.</p>
+
+<div id= "#Functions##UnHandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._F" ><strong>TASK_CAPTURE_DISPATCHER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>This function is private.</p>
+
+<div id= "#Functions##_F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER)._T" ><strong>TASK_CAPTURE_DISPATCHER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic.</p>
+
+<div id= "#Functions##_T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CAPTURE_DISPATCHER).onEvent" ><strong>TASK_CAPTURE_DISPATCHER:onEvent(event)</strong></a></h2>
+</div>
+    
+
+
+    
+<p> TODO: Complete DCS#Event structure. <br/>
+- The main event handling function... This function captures all events generated for the class.
+ @param #BASE self
+ @param DCS#Event event</p>
+
+<div id= "#Functions##onEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>

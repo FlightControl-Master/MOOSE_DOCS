@@ -1674,6 +1674,338 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ZONE_CAPTURE_COALITION')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>ZONE_CAPTURE_COALITION</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Models the process to capture a Zone for a Coalition, which is guarded by another Coalition.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##ZONE_CAPTURE_COALITION" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(ZONE_CAPTURE_COALITION)">#ZONE_CAPTURE_COALITION</a>
+<a id="ZONE_CAPTURE_COALITION" ><strong>ZONE_CAPTURE_COALITION</strong></a>
+    
+<p>Models the process to capture a Zone for a Coalition, which is guarded by another Coalition.</p>
+
+    
+<p>This is a powerful concept that allows to create very dynamic missions based on the different state transitions of various zones.</p>
+
+<hr/>
+
+<p>In order to use ZONE_CAPTURE_COALITION, you need to:</p>
+
+<ul>
+    <li>Create a <a href="Zone.html">Zone</a> object from one of the ZONE_ classes. <br/>
+    Note that ZONE_POLYGON_ classes are not yet functional. <br/>
+    The only functional ZONE_ classses are those derived from a ZONE_RADIUS.</li>
+    <li>Set the state of the zone. Most of the time, Guarded would be the initial state.</li>
+    <li>Start the zone capturing <strong>monitoring process</strong>. <br/>
+    This will check the presence of friendly and/or enemy units within the zone and will transition the state of the zone when the tactical situation changed.
+    The frequency of the monitoring must not be real-time, a 30 second interval to execute the checks is sufficient. </li>
+</ul>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia5.JPG" alt="New"/></p>
+
+<h3>Important:</h3>
+
+<p>You must start the monitoring process within your code, or there won't be any state transition checks executed. <br/>
+See further the start/stop monitoring process.</p>
+
+<h3>Important:</h3>
+
+<p>Ensure that the object containing the ZONE_CAPTURE_COALITION object is persistent.
+Otherwise the garbage collector of lua will remove the object and the monitoring process will stop.
+This will result in your object to be destroyed (removed) from internal memory and there won't be any zone state transitions anymore detected!
+So use the <code>local</code> keyword in lua with thought! Most of the time, you can declare your object gobally.</p>
+
+
+
+<h1>Example:</h1>
+
+<pre><code>  -- Define a new ZONE object, which is based on the trigger zone `CaptureZone`, which is defined within the mission editor.
+  CaptureZone = ZONE:New( "CaptureZone" )
+
+  -- Here we create a new ZONE_CAPTURE_COALITION object, using the :New constructor.
+  ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED )
+
+  -- Set the zone to Guarding state.
+  ZoneCaptureCoalition:__Guard( 1 )
+
+  -- Start the zone monitoring process in 30 seconds and check every 30 seconds.
+  ZoneCaptureCoalition:Start( 30, 30 ) 
+</code></pre>
+
+
+<h1>Constructor:</h1>
+
+<p>Use the <a href="##(ZONE_CAPTURE_COALITION).New">ZONE_CAPTURE_COALITION.New</a>() constructor to create a new ZONE_CAPTURE_COALITION object.</p>
+
+<h1>ZONE_CAPTURE_COALITION is a finite state machine (FSM).</h1>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia4.JPG" alt="States"/></p>
+
+<h2>ZONE_CAPTURE_COALITION States</h2>
+
+<ul>
+    <li><strong>Captured</strong>: The Zone has been captured by an other coalition.</li>
+    <li><strong>Attacked</strong>: The Zone is currently intruded by an other coalition. There are units of the owning coalition and an other coalition in the Zone.</li>
+    <li><strong>Guarded</strong>: The Zone is guarded by the owning coalition. There is no other unit of an other coalition in the Zone.</li>
+    <li><strong>Empty</strong>: The Zone is empty. There is not valid unit in the Zone.</li>
+</ul>
+
+<h2>2.2 ZONE_CAPTURE_COALITION Events</h2>
+
+<ul>
+    <li><strong>Capture</strong>: The Zone has been captured by an other coalition.</li>
+    <li><strong>Attack</strong>: The Zone is currently intruded by an other coalition. There are units of the owning coalition and an other coalition in the Zone.</li>
+    <li><strong>Guard</strong>: The Zone is guarded by the owning coalition. There is no other unit of an other coalition in the Zone.</li>
+    <li><strong>Empty</strong>: The Zone is empty. There is not valid unit in the Zone.</li>
+</ul>
+
+<h1>"Script It"</h1>
+
+<p>ZONE_CAPTURE_COALITION allows to take action on the various state transitions and add your custom code and logic.</p>
+
+<h2>Take action using state- and event handlers.</h2>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia6.JPG" alt="States"/></p>
+
+<p>The most important to understand is how states and events can be tailored.
+Carefully study the diagram and the explanations.</p>
+
+<p><strong>State Handlers</strong> capture the moment:</p>
+
+<ul>
+    <li>On Leave from the old state. Return false to cancel the transition.</li>
+    <li>On Enter to the new state.</li>
+</ul>
+
+<p><strong>Event Handlers</strong> capture the moment:</p>
+
+<ul>
+    <li>On Before the event is triggered. Return false to cancel the transition.</li>
+    <li>On After the event is triggered.</li>
+</ul>
+
+<p><img src="..\Presentations\ZONE_CAPTURE_COALITION\Dia7.JPG" alt="States"/></p>
+
+<p>Each handler can receive optionally 3 parameters:</p>
+
+<ul>
+    <li><strong>From</strong>: A string containing the From State.</li>
+    <li><strong>Event</strong>: A string containing the Event.</li>
+    <li><strong>To</strong>: A string containing the To State.</li>
+</ul>
+
+<p>The mission designer can use these values to alter the logic.
+For example:</p>
+
+<pre><code>--- @param Functional.ZoneCaptureCoalition#ZONE_CAPTURE_COALITION self
+function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
+  if From ~= "Empty" then
+    -- Display a message
+  end
+end
+</code></pre>
+
+<p>This code checks that when the <strong>Guarded</strong> state has been reached, that if the <strong>From</strong> state was <strong>Empty</strong>, then display a message.</p>
+
+<h2>Example Event Handler.</h2>
+
+<pre><code>--- @param Functional.ZoneCaptureCoalition#ZONE_CAPTURE_COALITION self
+function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
+  if From ~= To then
+    local Coalition = self:GetCoalition()
+    self:E( { Coalition = Coalition } )
+    if Coalition == coalition.side.BLUE then
+      ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
+      US_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+      RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+    else
+      ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
+      RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+      US_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+    end
+  end
+end
+</code></pre>
+
+<h2>Stop and Start the zone monitoring process.</h2>
+
+<p>At regular intervals, the state of the zone needs to be monitored.
+The zone needs to be scanned for the presence of units within the zone boundaries.
+Depending on the owning coalition of the zone and the presence of units (of the owning and/or other coalition(s)), the zone will transition to another state.</p>
+
+<p>However, ... this scanning process is rather CPU intensive. Imagine you have 10 of these capture zone objects setup within your mission.
+That would mean that your mission would check 10 capture zones simultaneously, each checking for the presence of units.
+It would be highly <strong>CPU inefficient</strong>, as some of these zones are not required to be monitored (yet).</p>
+
+<p>Therefore, the mission designer is given 2 methods that allow to take control of the CPU utilization efficiency:</p>
+
+<ul>
+    <li><a href="##(ZONE_CAPTURE_COALITION).Start">ZONE_CAPTURE_COALITION.Start</a>(): This starts the monitoring process.</li>
+    <li><a href="##(ZONE_CAPTURE_COALITION).Stop">ZONE_CAPTURE_COALITION.Stop</a>(): This stops the monitoring process.</li>
+</ul>
+
+<h3>IMPORTANT</h3>
+
+<p><strong>Each capture zone object must have the monitoring process started specifically. The monitoring process is NOT started by default!</strong></p>
+
+
+<h1>Full Example</h1>
+
+<p>The following annotated code shows a real example of how ZONE_CAPTURE_COALITION can be applied.</p>
+
+<p>The concept is simple.</p>
+
+<p>The USA (US), blue coalition, needs to capture the Russian (RU), red coalition, zone, which is near groom lake.</p>
+
+<p>A capture zone has been setup that guards the presence of the troops.
+Troops are guarded by red forces. Blue is required to destroy the red forces and capture the zones.</p>
+
+<p>At first, we setup the Command Centers</p>
+
+<pre><code> do
+
+   RU_CC = COMMANDCENTER:New( GROUP:FindByName( "REDHQ" ), "Russia HQ" )
+   US_CC = COMMANDCENTER:New( GROUP:FindByName( "BLUEHQ" ), "USA HQ" )
+
+ end
+</code></pre>
+
+<p>Next, we define the mission, and add some scoring to it.</p>
+
+<pre><code> do -- Missions
+
+   US_Mission_EchoBay = MISSION:New( US_CC, "Echo Bay", "Primary",
+     "Welcome trainee. The airport Groom Lake in Echo Bay needs to be captured.\n" ..
+     "There are five random capture zones located at the airbase.\n" ..
+     "Move to one of the capture zones, destroy the fuel tanks in the capture zone, " ..
+     "and occupy each capture zone with a platoon.\n " .. 
+     "Your orders are to hold position until all capture zones are taken.\n" ..
+     "Use the map (F10) for a clear indication of the location of each capture zone.\n" ..
+     "Note that heavy resistance can be expected at the airbase!\n" ..
+     "Mission 'Echo Bay' is complete when all five capture zones are taken, and held for at least 5 minutes!"
+     , coalition.side.RED )
+
+   US_Mission_EchoBay:Start()
+
+ end
+</code></pre>
+
+
+<p>Now the real work starts.
+We define a <strong>CaptureZone</strong> object, which is a ZONE object.
+Within the mission, a trigger zone is created with the name <strong>CaptureZone</strong>, with the defined radius within the mission editor.</p>
+
+<pre><code> CaptureZone = ZONE:New( "CaptureZone" )
+</code></pre>
+
+<p>Next, we define the <strong>ZoneCaptureCoalition</strong> object, as explained above.</p>
+
+<pre><code> ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED ) 
+</code></pre>
+
+<p>Of course, we want to let the <strong>ZoneCaptureCoalition</strong> object do something when the state transitions.
+Do accomodate this, it is very simple, as explained above.
+We use <strong>Event Handlers</strong> to tailor the logic.</p>
+
+<p>Here we place an Event Handler at the Guarded event. So when the <strong>Guarded</strong> event is triggered, then this method is called!
+With the variables <strong>From</strong>, <strong>Event</strong>, <strong>To</strong>. Each of these variables containing a string.</p>
+
+<p>We check if the previous state wasn't Guarded also.
+If not, we retrieve the owning Coalition of the <strong>ZoneCaptureCoalition</strong>, using <code>self:GetCoalition()</code>.
+So <strong>Coalition</strong> will contain the current owning coalition of the zone.</p>
+
+<p>Depending on the zone ownership, different messages are sent.
+Note the methods <code>ZoneCaptureCoalition:GetZoneName()</code>.</p>
+
+<pre><code> --- @param Functional.ZoneCaptureCoalition#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterGuarded( From, Event, To )
+   if From ~= To then
+     local Coalition = self:GetCoalition()
+     self:E( { Coalition = Coalition } )
+     if Coalition == coalition.side.BLUE then
+       ZoneCaptureCoalition:Smoke( SMOKECOLOR.Blue )
+       US_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+       RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     else
+       ZoneCaptureCoalition:Smoke( SMOKECOLOR.Red )
+       RU_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+       US_CC:MessageTypeToCoalition( string.format( "%s is under protection of Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     end
+   end
+ end
+</code></pre>
+
+<p>As you can see, not a rocket science.
+Next is the Event Handler when the <strong>Empty</strong> state transition is triggered.
+Now we smoke the ZoneCaptureCoalition with a green color, using <code>self:Smoke( SMOKECOLOR.Green )</code>.</p>
+
+<pre><code> --- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterEmpty()
+   self:Smoke( SMOKECOLOR.Green )
+   US_CC:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   RU_CC:MessageTypeToCoalition( string.format( "%s is unprotected, and can be captured!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+ end
+</code></pre>
+
+<p>The next Event Handlers speak for itself.
+When the zone is Attacked, we smoke the zone white and send some messages to each coalition.     </p>
+
+<pre><code> --- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterAttacked()
+   ZoneCaptureCoalition:Smoke( SMOKECOLOR.White )
+   local Coalition = self:GetCoalition()
+   self:E({Coalition = Coalition})
+   if Coalition == coalition.side.BLUE then
+     US_CC:MessageTypeToCoalition( string.format( "%s is under attack by Russia", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     RU_CC:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   else
+     RU_CC:MessageTypeToCoalition( string.format( "%s is under attack by the USA", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     US_CC:MessageTypeToCoalition( string.format( "We are attacking %s", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   end
+ end
+</code></pre>
+
+<p>When the zone is Captured, we send some victory or loss messages to the correct coalition.
+And we add some score.</p>
+
+<pre><code> --- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+ function ZoneCaptureCoalition:OnEnterCaptured()
+   local Coalition = self:GetCoalition()
+   self:E({Coalition = Coalition})
+   if Coalition == coalition.side.BLUE then
+     RU_CC:MessageTypeToCoalition( string.format( "%s is captured by the USA, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     US_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   else
+     US_CC:MessageTypeToCoalition( string.format( "%s is captured by Russia, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+     RU_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+   end
+
+   self:__Guard( 30 )
+ end
+</code></pre>
+
+<p>And this call is the most important of all!
+In the context of the mission, we need to start the zone capture monitoring process.
+Or nothing will be monitored and the zone won't change states.
+We start the monitoring after 5 seconds, and will repeat every 30 seconds a check.</p>
+
+<pre><code> ZoneCaptureCoalition:Start( 5, 30 )
+</code></pre>
+
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(ZONE_CAPTURE_COALITION)">Type <strong>ZONE_CAPTURE_COALITION</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1738,6 +2070,36 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsAttacked">ZONE_CAPTURE_COALITION:IsAttacked()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if zone is "Attacked", i.e.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsCaptured">ZONE_CAPTURE_COALITION:IsCaptured()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if zone is "Captured", i.e.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsEmpty">ZONE_CAPTURE_COALITION:IsEmpty()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if zone is "Empty".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsGuarded">ZONE_CAPTURE_COALITION:IsGuarded()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if zone is "Guarded", i.e.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Mark">ZONE_CAPTURE_COALITION:Mark()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update Mark on F10 map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).MarkBlue">ZONE_CAPTURE_COALITION.MarkBlue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>ID of blue F10 mark.</p>
@@ -1753,6 +2115,12 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).MarkRed">ZONE_CAPTURE_COALITION.MarkRed</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>ID of red F10 mark.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).New">ZONE_CAPTURE_COALITION:New(Zone, Coalition, UnitCategories, ObjectCategories)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>ZONE_CAPTURE_COALITION Constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1804,15 +2172,63 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).OnEventHit">ZONE_CAPTURE_COALITION:OnEventHit(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Monitor hit events.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).RepeatInterval">ZONE_CAPTURE_COALITION.RepeatInterval</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Time in seconds after which the zone status is updated.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).ScheduleStatusZone">ZONE_CAPTURE_COALITION.ScheduleStatusZone</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetMarkZone">ZONE_CAPTURE_COALITION:SetMarkZone(Switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set whether marks on the F10 map are shown, which display the current zone status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetMonitorHits">ZONE_CAPTURE_COALITION:SetMonitorHits(Switch, TimeAttackOver)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set whether hit events of defending units are monitored and trigger "Attack" events.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SmokeScheduler">ZONE_CAPTURE_COALITION.SmokeScheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Start">ZONE_CAPTURE_COALITION:Start(StartInterval, RepeatInterval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Starts the zone capturing monitoring process.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).StartInterval">ZONE_CAPTURE_COALITION.StartInterval</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Time in seconds after the status monitor is started.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).StatusZone">ZONE_CAPTURE_COALITION:StatusZone()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check status Coalition ownership.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Stop">ZONE_CAPTURE_COALITION:Stop()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the zone capturing monitoring process.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1839,6 +2255,36 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <p>Guard Asynchronous Trigger for ZONE_CAPTURE_COALITION</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).onafterGuard">ZONE_CAPTURE_COALITION:onafterGuard()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Guard" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).onenterAttacked">ZONE_CAPTURE_COALITION:onenterAttacked()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On enter "Attacked" state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).onenterCaptured">ZONE_CAPTURE_COALITION:onenterCaptured()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On enter "Captured" state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).onenterEmpty">ZONE_CAPTURE_COALITION:onenterEmpty()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On enter "Empty" state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).onenterGuarded">ZONE_CAPTURE_COALITION:onenterGuarded()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On enter "Guarded" state.</p>
+</td>
+          </tr>
         </table>
         </div>
         <div class="w3-card w3-margin">
@@ -1860,6 +2306,30 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetCoalition">ZONE_CAPTURE_COALITION:GetCoalition()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the owning coalition of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetCoalitionName">ZONE_CAPTURE_COALITION:GetCoalitionName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the owning coalition name of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetPreviousCoalition">ZONE_CAPTURE_COALITION:GetPreviousCoalition()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the previous coaliton, i.e.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).New">ZONE_CAPTURE_COALITION:New(Zone, Coalition, UnitCategories)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>ZONE_GOAL_COALITION Constructor.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).ObjectCategories">ZONE_CAPTURE_COALITION.ObjectCategories</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table of object categories that are able to hold a zone. Default is UNITS and STATICS.</p>
@@ -1869,6 +2339,36 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).PreviousCoalition">ZONE_CAPTURE_COALITION.PreviousCoalition</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The previous owner of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetCoalition">ZONE_CAPTURE_COALITION:SetCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the owning coalition of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetObjectCategories">ZONE_CAPTURE_COALITION:SetObjectCategories(ObjectCategories)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the owning coalition of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetUnitCategories">ZONE_CAPTURE_COALITION:SetUnitCategories(UnitCategories)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the owning coalition of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).States">ZONE_CAPTURE_COALITION.States</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).StatusZone">ZONE_CAPTURE_COALITION:StatusZone()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check status Coalition ownership.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1898,15 +2398,57 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Flare">ZONE_CAPTURE_COALITION:Flare(FlareColor)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Flare the zone boundary.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetZone">ZONE_CAPTURE_COALITION:GetZone()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetZoneName">ZONE_CAPTURE_COALITION:GetZoneName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the name of the Zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Goal">ZONE_CAPTURE_COALITION.Goal</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The goal object.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).MonitorDestroyedUnits">ZONE_CAPTURE_COALITION:MonitorDestroyedUnits()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Activate the event UnitDestroyed to be fired when a unit is destroyed in the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).New">ZONE_CAPTURE_COALITION:New(Zone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>ZONE_GOAL Constructor.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).OnAfterDestroyedUnit">ZONE_CAPTURE_COALITION:OnAfterDestroyedUnit(From, Event, To, DestroyedUnit, PlayerName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>DestroyedUnit Handler OnAfter for ZONE_GOAL</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetSmokeZone">ZONE_CAPTURE_COALITION:SetSmokeZone(switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Activate smoking of zone with the color or the current owner.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Smoke">ZONE_CAPTURE_COALITION:Smoke(SmokeColor)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the smoke color.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1934,9 +2476,27 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).StatusSmoke">ZONE_CAPTURE_COALITION:StatusSmoke()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check status Smoke.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).__Destroyed">ZONE_CAPTURE_COALITION:__Destroyed(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).__DestroyedUnit">ZONE_CAPTURE_COALITION:__DestroyedUnit(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>DestroyedUnit delayed event</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).onafterGuard">ZONE_CAPTURE_COALITION:onafterGuard()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>When started, check the Smoke and the Zone status.</p>
 </td>
           </tr>
         </table>
@@ -1948,9 +2508,237 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).BoundZone">ZONE_CAPTURE_COALITION:BoundZone(Points, CountryID, UnBound)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Bounds the zone with tires.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).CheckScannedCoalition">ZONE_CAPTURE_COALITION:CheckScannedCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if a certain coalition is inside a scanned zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).CountScannedCoalitions">ZONE_CAPTURE_COALITION:CountScannedCoalitions()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Count the number of different coalitions inside the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).DrawID">ZONE_CAPTURE_COALITION.DrawID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).DrawZone">ZONE_CAPTURE_COALITION:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Draw the zone circle on the F10 map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).FlareZone">ZONE_CAPTURE_COALITION:FlareZone(FlareColor, Points, Azimuth, AddHeight)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Flares the zone boundaries in a color.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetRadius">ZONE_CAPTURE_COALITION:GetRadius()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the radius of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetRandomCoordinate">ZONE_CAPTURE_COALITION:GetRandomCoordinate(inner, outer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a> object reflecting a random 3D location within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetRandomPointVec2">ZONE_CAPTURE_COALITION:GetRandomPointVec2(inner, outer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a <a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a> object reflecting a random 2D location within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetRandomPointVec3">ZONE_CAPTURE_COALITION:GetRandomPointVec3(inner, outer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a <a href="Core.Point.html##(POINT_VEC3)">Core.Point#POINT_VEC3</a> object reflecting a random 3D location within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetRandomVec2">ZONE_CAPTURE_COALITION:GetRandomVec2(inner, outer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns a random Vec2 location within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetRandomVec3">ZONE_CAPTURE_COALITION:GetRandomVec3(inner, outer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns Returns a random Vec3 location within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetScannedCoalition">ZONE_CAPTURE_COALITION:GetScannedCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get Coalitions of the units in the Zone, or Check if there are units of the given Coalition in the Zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetScannedScenery">ZONE_CAPTURE_COALITION:GetScannedScenery()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get scanned scenery table</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetScannedSceneryType">ZONE_CAPTURE_COALITION:GetScannedSceneryType(SceneryType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get scanned scenery type</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetScannedSetGroup">ZONE_CAPTURE_COALITION:GetScannedSetGroup()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a set of scanned units.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetScannedSetUnit">ZONE_CAPTURE_COALITION:GetScannedSetUnit()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a set of scanned units.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetScannedUnits">ZONE_CAPTURE_COALITION:GetScannedUnits()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Count the number of different coalitions inside the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetVec2">ZONE_CAPTURE_COALITION:GetVec2()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the <a href="DCS.html##(Vec2)">DCS#Vec2</a> of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).GetVec3">ZONE_CAPTURE_COALITION:GetVec3(Height)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the <a href="DCS.html##(Vec3)">DCS#Vec3</a> of the ZONE_RADIUS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsAllInZoneOfCoalition">ZONE_CAPTURE_COALITION:IsAllInZoneOfCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is All in Zone of Coalition?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsAllInZoneOfOtherCoalition">ZONE_CAPTURE_COALITION:IsAllInZoneOfOtherCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is All in Zone of Other Coalition?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsNoneInZone">ZONE_CAPTURE_COALITION:IsNoneInZone()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is None in Zone?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsNoneInZoneOfCoalition">ZONE_CAPTURE_COALITION:IsNoneInZoneOfCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is None in Zone of Coalition?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsSomeInZoneOfCoalition">ZONE_CAPTURE_COALITION:IsSomeInZoneOfCoalition(Coalition)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is Some in Zone of Coalition?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsVec2InZone">ZONE_CAPTURE_COALITION:IsVec2InZone(Vec2)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns if a location is within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).IsVec3InZone">ZONE_CAPTURE_COALITION:IsVec3InZone(Vec3)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns if a point is within the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).MarkZone">ZONE_CAPTURE_COALITION:MarkZone(Points)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Mark the zone with markers on the F10 map.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).New">ZONE_CAPTURE_COALITION:New(ZoneName, Vec2, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Constructor of <a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>, taking the zone name, the zone location and a radius.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Radius">ZONE_CAPTURE_COALITION.Radius</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The radius of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).Scan">ZONE_CAPTURE_COALITION:Scan(ObjectCategories, UnitCategories)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Scan the zone for the presence of units of the given ObjectCategories.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).ScanData">ZONE_CAPTURE_COALITION.ScanData</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).ScanSetGroup">ZONE_CAPTURE_COALITION.ScanSetGroup</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SearchZone">ZONE_CAPTURE_COALITION:SearchZone(ObjectCategories, EvaluateFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Searches the zone</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetRadius">ZONE_CAPTURE_COALITION:SetRadius(Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the radius of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SetVec2">ZONE_CAPTURE_COALITION:SetVec2(Vec2)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the <a href="DCS.html##(Vec2)">DCS#Vec2</a> of the zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).SmokeZone">ZONE_CAPTURE_COALITION:SmokeZone(SmokeColor, Points, AddHeight, AddOffSet, AngleOffset)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Smokes the zone boundaries in a color.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).UpdateFromVec2">ZONE_CAPTURE_COALITION:UpdateFromVec2(Vec2, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update zone from a 2D vector.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ZONE_CAPTURE_COALITION).UpdateFromVec3">ZONE_CAPTURE_COALITION:UpdateFromVec3(Vec3, Radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Update zone from a 2D vector.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2065,6 +2853,31 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(ZONE_CAPTURE_COALITION).ScheduleStatusZone" ><strong>ZONE_CAPTURE_COALITION.ScheduleStatusZone</strong></a>
+    
+
+
+    
+<p> Start Status scheduler.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_CAPTURE_COALITION).SmokeScheduler" ><strong>ZONE_CAPTURE_COALITION.SmokeScheduler</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ZONE_CAPTURE_COALITION).StartInterval" ><strong>ZONE_CAPTURE_COALITION.StartInterval</strong></a>
     
@@ -2147,6 +2960,245 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
    <div class="w3-margin-left">
 <p>ZONE_CAPTURE_COALITION</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsAttacked" ><strong>ZONE_CAPTURE_COALITION:IsAttacked()</strong></a></h2>
+</div>
+    
+<p>Check if zone is "Attacked", i.e.</p>
+
+    
+<p>another coaliton entered the zone.</p>
+
+<div id= "#Functions##IsAttacked" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self:IsSomeInZoneOfCoalition( self.Coalition )</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsCaptured" ><strong>ZONE_CAPTURE_COALITION:IsCaptured()</strong></a></h2>
+</div>
+    
+<p>Check if zone is "Captured", i.e.</p>
+
+    
+<p>another coalition took control over the zone and is the only one present.</p>
+
+<div id= "#Functions##IsCaptured" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self:IsAllInZoneOfOtherCoalition( self.Coalition )</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsEmpty" ><strong>ZONE_CAPTURE_COALITION:IsEmpty()</strong></a></h2>
+</div>
+    
+<p>Check if zone is "Empty".</p>
+
+<div id= "#Functions##IsEmpty" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self:IsNoneInZone()</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsGuarded" ><strong>ZONE_CAPTURE_COALITION:IsGuarded()</strong></a></h2>
+</div>
+    
+<p>Check if zone is "Guarded", i.e.</p>
+
+    
+<p>only one (the defending) coaliton is present inside the zone.</p>
+
+<div id= "#Functions##IsGuarded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self:IsAllInZoneOfCoalition( self.Coalition )</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).Mark" ><strong>ZONE_CAPTURE_COALITION:Mark()</strong></a></h2>
+</div>
+    
+<p>Update Mark on F10 map.</p>
+
+<div id= "#Functions##Mark" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).New" ><strong>ZONE_CAPTURE_COALITION:New(Zone, Coalition, UnitCategories, ObjectCategories)</strong></a></h2>
+</div>
+    
+<p>ZONE_CAPTURE_COALITION Constructor.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A <a href="Zone.html">Zone</a> object with the goal to be achieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCSCoalition.DCSCoalition.html##(coalition)">DCSCoalition.DCSCoalition#coalition</a>
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initial coalition owning the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>UnitCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of unit categories. See <a href="https://wiki.hoggitworld.com/view/DCS_Class_Unit">DCS Class Unit</a>. Default {Unit.Category.GROUND_UNIT}.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>ObjectCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of unit categories. See <a href="https://wiki.hoggitworld.com/view/DCS_Class_Object">DCS Class Object</a>. Default {Object.Category.UNIT, Object.Category.STATIC}, i.e. all UNITS and STATICS.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_CAPTURE_COALITION)">#ZONE_CAPTURE_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>
+ AttackZone = ZONE:New( "AttackZone" )
+
+ ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( AttackZone, coalition.side.RED, {UNITS ) -- Create a new ZONE_CAPTURE_COALITION object of zone AttackZone with ownership RED coalition.
+ ZoneCaptureCoalition:__Guard( 1 ) -- Start the Guarding of the AttackZone.
+ </code></pre>
+
 </div>
 
 </div>
@@ -2623,6 +3675,293 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).OnEventHit" ><strong>ZONE_CAPTURE_COALITION:OnEventHit(EventData)</strong></a></h2>
+</div>
+    
+<p>Monitor hit events.</p>
+
+<div id= "#Functions##OnEventHit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event data.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetMarkZone" ><strong>ZONE_CAPTURE_COALITION:SetMarkZone(Switch)</strong></a></h2>
+</div>
+    
+<p>Set whether marks on the F10 map are shown, which display the current zone status.</p>
+
+<div id= "#Functions##SetMarkZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <em>true</em> or <em>nil</em>, marks are shown. If <em>false</em>, marks are not displayed.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_CAPTURE_COALITION)">#ZONE_CAPTURE_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetMonitorHits" ><strong>ZONE_CAPTURE_COALITION:SetMonitorHits(Switch, TimeAttackOver)</strong></a></h2>
+</div>
+    
+<p>Set whether hit events of defending units are monitored and trigger "Attack" events.</p>
+
+<div id= "#Functions##SetMonitorHits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <em>true</em>, hit events are monitored. If <em>false</em> or <em>nil</em>, hit events are not monitored.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>TimeAttackOver</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Time in seconds after an attack is over after the last hit and the zone state goes to "Guarded". Default is 300 sec = 5 min.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_CAPTURE_COALITION)">#ZONE_CAPTURE_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).Start" ><strong>ZONE_CAPTURE_COALITION:Start(StartInterval, RepeatInterval)</strong></a></h2>
+</div>
+    
+<p>Starts the zone capturing monitoring process.</p>
+
+    
+<p>This process can be CPU intensive, ensure that you specify reasonable time intervals for the monitoring process.
+Note that the monitoring process is NOT started automatically during the <code>:New()</code> constructor.
+It is advised that the zone monitoring process is only started when the monitoring is of relevance in context of the current mission goals.
+When the zone is of no relevance, it is advised NOT to start the monitoring process, or to stop the monitoring process to save CPU resources.
+Therefore, the mission designer will need to use the <code>:Start()</code> method within his script to start the monitoring process specifically.  </p>
+
+<div id= "#Functions##Start" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>StartInterval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Specifies the start time interval in seconds when the zone state will be checked for the first time.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RepeatInterval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Specifies the repeat time interval in seconds when the zone state will be checked repeatedly.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_CAPTURE_COALITION)">#ZONE_CAPTURE_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>
+-- Setup the zone.
+CaptureZone = ZONE:New( "CaptureZone" )
+ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED )
+
+-- This starts the monitoring process within 15 seconds, repeating every 15 seconds.
+ZoneCaptureCoalition:Start() 
+     
+-- This starts the monitoring process immediately, but repeats every 30 seconds.
+ZoneCaptureCoalition:Start( 0, 30 ) 
+</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).StatusZone" ><strong>ZONE_CAPTURE_COALITION:StatusZone()</strong></a></h2>
+</div>
+    
+<p>Check status Coalition ownership.</p>
+
+<div id= "#Functions##StatusZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).Stop" ><strong>ZONE_CAPTURE_COALITION:Stop()</strong></a></h2>
+</div>
+    
+<p>Stops the zone capturing monitoring process.</p>
+
+    
+<p>When the zone capturing monitor process is stopped, there won't be any changes anymore in the state and the owning coalition of the zone.
+This method becomes really useful when the zone is of no relevance anymore within a long lasting mission.
+In this case, it is advised to stop the monitoring process, not to consume unnecessary the CPU intensive scanning of units presence within the zone.</p>
+
+<div id= "#Functions##Stop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+      <h2><strong>Usages:</strong></h2>
+    <ul>
+      <li><pre class="example"><code>
+-- Setup the zone.
+CaptureZone = ZONE:New( "CaptureZone" )
+ZoneCaptureCoalition = ZONE_CAPTURE_COALITION:New( CaptureZone, coalition.side.RED )
+
+-- This starts the monitoring process within 15 seconds, repeating every 15 seconds.
+ZoneCaptureCoalition:Start() 
+
+-- When the zone capturing is of no relevance anymore, stop the monitoring!
+ZoneCaptureCoalition:Stop()
+</code></pre></li>
+      <li><pre class="example"><code>-- For example, one could stop the monitoring when the zone was captured!
+--- @param Functional.Protect#ZONE_CAPTURE_COALITION self
+function ZoneCaptureCoalition:OnEnterCaptured()
+  local Coalition = self:GetCoalition()
+  self:E({Coalition = Coalition})
+  if Coalition == coalition.side.BLUE then
+    RU_CC:MessageTypeToCoalition( string.format( "%s is captured by the USA, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+    US_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+  else
+    US_CC:MessageTypeToCoalition( string.format( "%s is captured by Russia, we lost it!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+    RU_CC:MessageTypeToCoalition( string.format( "We captured %s, Excellent job!", ZoneCaptureCoalition:GetZoneName() ), MESSAGE.Type.Information )
+  end
+ 
+  self:AddScore( "Captured", "Zone captured: Extra points granted.", 200 )    
+ 
+  self:Stop()
+end
+</code></pre></li>
+    </ul>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ZONE_CAPTURE_COALITION).__Attack" ><strong>ZONE_CAPTURE_COALITION:__Attack(Delay)</strong></a></h2>
 </div>
     
@@ -2744,6 +4083,101 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).onafterGuard" ><strong>ZONE_CAPTURE_COALITION:onafterGuard()</strong></a></h2>
+</div>
+    
+<p>On after "Guard" event.</p>
+
+<div id= "#Functions##onafterGuard" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).onenterAttacked" ><strong>ZONE_CAPTURE_COALITION:onenterAttacked()</strong></a></h2>
+</div>
+    
+<p>On enter "Attacked" state.</p>
+
+<div id= "#Functions##onenterAttacked" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).onenterCaptured" ><strong>ZONE_CAPTURE_COALITION:onenterCaptured()</strong></a></h2>
+</div>
+    
+<p>On enter "Captured" state.</p>
+
+<div id= "#Functions##onenterCaptured" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).onenterEmpty" ><strong>ZONE_CAPTURE_COALITION:onenterEmpty()</strong></a></h2>
+</div>
+    
+<p>On enter "Empty" state.</p>
+
+<div id= "#Functions##onenterEmpty" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).onenterGuarded" ><strong>ZONE_CAPTURE_COALITION:onenterGuarded()</strong></a></h2>
+</div>
+    
+<p>On enter "Guarded" state.</p>
+
+<div id= "#Functions##onenterGuarded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ZONE_CAPTURE_COALITION</p>
+</div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -2831,6 +4265,31 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <a id="#(ZONE_CAPTURE_COALITION).RepeatInterval" ><strong>ZONE_CAPTURE_COALITION.RepeatInterval</strong></a>
     
 <p>Time in seconds after which the zone status is updated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_CAPTURE_COALITION).ScheduleStatusZone" ><strong>ZONE_CAPTURE_COALITION.ScheduleStatusZone</strong></a>
+    
+
+
+    
+<p> Start Status scheduler.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_CAPTURE_COALITION).SmokeScheduler" ><strong>ZONE_CAPTURE_COALITION.SmokeScheduler</strong></a>
+    
+
 
 </div>
 
@@ -2849,6 +4308,331 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetCoalition" ><strong>ZONE_CAPTURE_COALITION:GetCoalition()</strong></a></h2>
+</div>
+    
+<p>Get the owning coalition of the zone.</p>
+
+<div id= "#Functions##GetCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCSCoalition.DCSCoalition.html##(coalition)">DCSCoalition.DCSCoalition#coalition</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Coalition.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetCoalitionName" ><strong>ZONE_CAPTURE_COALITION:GetCoalitionName()</strong></a></h2>
+</div>
+    
+<p>Get the owning coalition name of the zone.</p>
+
+<div id= "#Functions##GetCoalitionName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Coalition name.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetPreviousCoalition" ><strong>ZONE_CAPTURE_COALITION:GetPreviousCoalition()</strong></a></h2>
+</div>
+    
+<p>Get the previous coaliton, i.e.</p>
+
+    
+<p>the one owning the zone before the current one. </p>
+
+<div id= "#Functions##GetPreviousCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCSCoalition.DCSCoalition.html##(coalition)">DCSCoalition.DCSCoalition#coalition</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Coalition.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).New" ><strong>ZONE_CAPTURE_COALITION:New(Zone, Coalition, UnitCategories)</strong></a></h2>
+</div>
+    
+<p>ZONE_GOAL_COALITION Constructor.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A <a href="Zone.html">Zone</a> object with the goal to be achieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCSCoalition.DCSCoalition.html##(coalition)">DCSCoalition.DCSCoalition#coalition</a>
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initial coalition owning the zone. Default coalition.side.NEUTRAL.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>UnitCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of unit categories. See <a href="https://wiki.hoggitworld.com/view/DCS_Class_Unit">DCS Class Unit</a>. Default {Unit.Category.GROUND_UNIT}.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL_COALITION)">#ZONE_GOAL_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetCoalition" ><strong>ZONE_CAPTURE_COALITION:SetCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Set the owning coalition of the zone.</p>
+
+<div id= "#Functions##SetCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCSCoalition.DCSCoalition.html##(coalition)">DCSCoalition.DCSCoalition#coalition</a>
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coalition ID, e.g. <em>coalition.side.RED</em>.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL_COALITION)">#ZONE_GOAL_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetObjectCategories" ><strong>ZONE_CAPTURE_COALITION:SetObjectCategories(ObjectCategories)</strong></a></h2>
+</div>
+    
+<p>Set the owning coalition of the zone.</p>
+
+<div id= "#Functions##SetObjectCategories" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>ObjectCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of unit categories. See <a href="https://wiki.hoggitworld.com/view/DCS_Class_Object">DCS Class Object</a>. Default {Object.Category.UNIT, Object.Category.STATIC}, i.e. all UNITS and STATICS.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL_COALITION)">#ZONE_GOAL_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetUnitCategories" ><strong>ZONE_CAPTURE_COALITION:SetUnitCategories(UnitCategories)</strong></a></h2>
+</div>
+    
+<p>Set the owning coalition of the zone.</p>
+
+<div id= "#Functions##SetUnitCategories" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>UnitCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of unit categories. See <a href="https://wiki.hoggitworld.com/view/DCS_Class_Unit">DCS Class Unit</a>. Default {Unit.Category.GROUND_UNIT}.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL_COALITION)">#ZONE_GOAL_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).StatusZone" ><strong>ZONE_CAPTURE_COALITION:StatusZone()</strong></a></h2>
+</div>
+    
+<p>Check status Coalition ownership.</p>
+
+<div id= "#Functions##StatusZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoalCoalition.html##(ZONE_GOAL_COALITION)">Functional.ZoneGoalCoalition#ZONE_GOAL_COALITION</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL_COALITION)">#ZONE_GOAL_COALITION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -2936,6 +4720,31 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <a id="#(ZONE_CAPTURE_COALITION).RepeatInterval" ><strong>ZONE_CAPTURE_COALITION.RepeatInterval</strong></a>
     
 <p>Time in seconds after which the zone status is updated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_CAPTURE_COALITION).ScheduleStatusZone" ><strong>ZONE_CAPTURE_COALITION.ScheduleStatusZone</strong></a>
+    
+
+
+    
+<p> Start Status scheduler.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_CAPTURE_COALITION).SmokeScheduler" ><strong>ZONE_CAPTURE_COALITION.SmokeScheduler</strong></a>
+    
+
 
 </div>
 
@@ -2968,6 +4777,160 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
    <div class="w3-margin-left">
 <p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).Flare" ><strong>ZONE_CAPTURE_COALITION:Flare(FlareColor)</strong></a></h2>
+</div>
+    
+<p>Flare the zone boundary.</p>
+
+<div id= "#Functions##Flare" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(SMOKECOLOR.Color)">DCS#SMOKECOLOR.Color</a>
+            <strong><strong>FlareColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetZone" ><strong>ZONE_CAPTURE_COALITION:GetZone()</strong></a></h2>
+</div>
+    
+<p>Get the Zone.</p>
+
+<div id= "#Functions##GetZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL)">#ZONE_GOAL</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetZoneName" ><strong>ZONE_CAPTURE_COALITION:GetZoneName()</strong></a></h2>
+</div>
+    
+<p>Get the name of the Zone.</p>
+
+<div id= "#Functions##GetZoneName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).MonitorDestroyedUnits" ><strong>ZONE_CAPTURE_COALITION:MonitorDestroyedUnits()</strong></a></h2>
+</div>
+    
+<p>Activate the event UnitDestroyed to be fired when a unit is destroyed in the zone.</p>
+
+<div id= "#Functions##MonitorDestroyedUnits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).New" ><strong>ZONE_CAPTURE_COALITION:New(Zone)</strong></a></h2>
+</div>
+    
+<p>ZONE_GOAL Constructor.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A <a href="Zone.html">Zone</a> object with the goal to be achieved.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL)">#ZONE_GOAL</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -3055,6 +5018,133 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetSmokeZone" ><strong>ZONE_CAPTURE_COALITION:SetSmokeZone(switch)</strong></a></h2>
+</div>
+    
+<p>Activate smoking of zone with the color or the current owner.</p>
+
+<div id= "#Functions##SetSmokeZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <em>true</em> or <em>nil</em> activate smoke. If <em>false</em> or <em>nil</em>, no smoke.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_GOAL)">#ZONE_GOAL</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).Smoke" ><strong>ZONE_CAPTURE_COALITION:Smoke(SmokeColor)</strong></a></h2>
+</div>
+    
+<p>Set the smoke color.</p>
+
+<div id= "#Functions##Smoke" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(SMOKECOLOR.Color)">DCS#SMOKECOLOR.Color</a>
+            <strong><strong>SmokeColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).StatusSmoke" ><strong>ZONE_CAPTURE_COALITION:StatusSmoke()</strong></a></h2>
+</div>
+    
+<p>Check status Smoke.</p>
+
+<div id= "#Functions##StatusSmoke" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).__Destroyed" ><strong>ZONE_CAPTURE_COALITION:__Destroyed(EventData)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##__Destroyed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event data table.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ZONE_CAPTURE_COALITION).__DestroyedUnit" ><strong>ZONE_CAPTURE_COALITION:__DestroyedUnit(delay)</strong></a></h2>
 </div>
     
@@ -3080,6 +5170,25 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).onafterGuard" ><strong>ZONE_CAPTURE_COALITION:onafterGuard()</strong></a></h2>
+</div>
+    
+<p>When started, check the Smoke and the Zone status.</p>
+
+<div id= "#Functions##onafterGuard" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Functional.ZoneGoal.html##(ZONE_GOAL)">Functional.ZoneGoal#ZONE_GOAL</a></p>
+</div>
 </div>
 
 </div>
@@ -3179,6 +5288,31 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(ZONE_CAPTURE_COALITION).ScheduleStatusZone" ><strong>ZONE_CAPTURE_COALITION.ScheduleStatusZone</strong></a>
+    
+
+
+    
+<p> Start Status scheduler.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ZONE_CAPTURE_COALITION).SmokeScheduler" ><strong>ZONE_CAPTURE_COALITION.SmokeScheduler</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ZONE_CAPTURE_COALITION).StartInterval" ><strong>ZONE_CAPTURE_COALITION.StartInterval</strong></a>
     
@@ -3190,6 +5324,1794 @@ Otherwise no monitoring will be active and the zone will stay in the current sta
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).BoundZone" ><strong>ZONE_CAPTURE_COALITION:BoundZone(Points, CountryID, UnBound)</strong></a></h2>
+</div>
+    
+<p>Bounds the zone with tires.</p>
+
+<div id= "#Functions##BoundZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Points</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The amount of points in the circle. Default 360.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(country.id)">DCS#country.id</a>
+            <strong><strong>CountryID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The country id of the tire objects, e.g. country.id.USA for blue or country.id.RUSSIA for red.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>UnBound</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) If true the tyres will be destroyed.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).CheckScannedCoalition" ><strong>ZONE_CAPTURE_COALITION:CheckScannedCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Check if a certain coalition is inside a scanned zone.</p>
+
+<div id= "#Functions##CheckScannedCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coalition id, e.g. coalition.side.BLUE.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If true, the coalition is inside the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).CountScannedCoalitions" ><strong>ZONE_CAPTURE_COALITION:CountScannedCoalitions()</strong></a></h2>
+</div>
+    
+<p>Count the number of different coalitions inside the zone.</p>
+
+<div id= "#Functions##CountScannedCoalitions" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Counted coalitions.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).DrawZone" ><strong>ZONE_CAPTURE_COALITION:DrawZone(Coalition, Color, Alpha, FillColor, FillAlpha, LineType, ReadOnly)</strong></a></h2>
+</div>
+    
+<p>Draw the zone circle on the F10 map.</p>
+
+<div id= "#Functions##DrawZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition: All=-1, Neutral=0, Red=1, Blue=2. Default -1=All.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Color</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Alpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>FillColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>RGB color table {r, g, b}, e.g. {1,0,0} for red. Default is same as <code>Color</code> value.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>FillAlpha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transparency [0,1]. Default 0.15.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LineType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Line type: 0=No line, 1=Solid, 2=Dashed, 3=Dotted, 4=Dot dash, 5=Long dash, 6=Two dash. Default 1=Solid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ReadOnly</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Mark is readonly and cannot be removed by users. Default false.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).FlareZone" ><strong>ZONE_CAPTURE_COALITION:FlareZone(FlareColor, Points, Azimuth, AddHeight)</strong></a></h2>
+</div>
+    
+<p>Flares the zone boundaries in a color.</p>
+
+<div id= "#Functions##FlareZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Utilities.Utils.html##(FLARECOLOR)">Utilities.Utils#FLARECOLOR</a>
+            <strong><strong>FlareColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The flare color.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Points</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The amount of points in the circle.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Azimuth)">DCS#Azimuth</a>
+            <strong><strong>Azimuth</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Azimuth The azimuth of the flare.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>AddHeight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The height to be added for the smoke.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetRadius" ><strong>ZONE_CAPTURE_COALITION:GetRadius()</strong></a></h2>
+</div>
+    
+<p>Returns the radius of the zone.</p>
+
+<div id= "#Functions##GetRadius" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Distance)">DCS#Distance</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The radius of the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetRandomCoordinate" ><strong>ZONE_CAPTURE_COALITION:GetRandomCoordinate(inner, outer)</strong></a></h2>
+</div>
+    
+<p>Returns a <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a> object reflecting a random 3D location within the zone.</p>
+
+<div id= "#Functions##GetRandomCoordinate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>inner</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Minimal distance from the center of the zone. Default is 0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>outer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Maximal distance from the outer edge of the zone. Default is the radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetRandomPointVec2" ><strong>ZONE_CAPTURE_COALITION:GetRandomPointVec2(inner, outer)</strong></a></h2>
+</div>
+    
+<p>Returns a <a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a> object reflecting a random 2D location within the zone.</p>
+
+<div id= "#Functions##GetRandomPointVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>inner</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Minimal distance from the center of the zone. Default is 0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>outer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Maximal distance from the outer edge of the zone. Default is the radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Core.Point.html##(POINT_VEC2)">Core.Point#POINT_VEC2</a> object reflecting the random 3D location within the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetRandomPointVec3" ><strong>ZONE_CAPTURE_COALITION:GetRandomPointVec3(inner, outer)</strong></a></h2>
+</div>
+    
+<p>Returns a <a href="Core.Point.html##(POINT_VEC3)">Core.Point#POINT_VEC3</a> object reflecting a random 3D location within the zone.</p>
+
+<div id= "#Functions##GetRandomPointVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>inner</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Minimal distance from the center of the zone. Default is 0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>outer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Maximal distance from the outer edge of the zone. Default is the radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Point.html##(POINT_VEC3)">Core.Point#POINT_VEC3</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Core.Point.html##(POINT_VEC3)">Core.Point#POINT_VEC3</a> object reflecting the random 3D location within the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetRandomVec2" ><strong>ZONE_CAPTURE_COALITION:GetRandomVec2(inner, outer)</strong></a></h2>
+</div>
+    
+<p>Returns a random Vec2 location within the zone.</p>
+
+<div id= "#Functions##GetRandomVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>inner</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Minimal distance from the center of the zone. Default is 0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>outer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Maximal distance from the outer edge of the zone. Default is the radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec2)">DCS#Vec2</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The random location within the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetRandomVec3" ><strong>ZONE_CAPTURE_COALITION:GetRandomVec3(inner, outer)</strong></a></h2>
+</div>
+    
+<p>Returns Returns a random Vec3 location within the zone.</p>
+
+<div id= "#Functions##GetRandomVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>inner</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Minimal distance from the center of the zone. Default is 0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>outer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Maximal distance from the outer edge of the zone. Default is the radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec3)">DCS#Vec3</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The random location within the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetScannedCoalition" ><strong>ZONE_CAPTURE_COALITION:GetScannedCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Get Coalitions of the units in the Zone, or Check if there are units of the given Coalition in the Zone.</p>
+
+    
+<p>Returns nil if there are none to two Coalitions in the zone!
+Returns one Coalition if there are only Units of one Coalition in the Zone.
+Returns the Coalition for the given Coalition if there are units of the Coalition in the Zone.</p>
+
+<div id= "#Functions##GetScannedCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetScannedScenery" ><strong>ZONE_CAPTURE_COALITION:GetScannedScenery()</strong></a></h2>
+</div>
+    
+<p>Get scanned scenery table</p>
+
+<div id= "#Functions##GetScannedScenery" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Table of DCS scenery objects.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetScannedSceneryType" ><strong>ZONE_CAPTURE_COALITION:GetScannedSceneryType(SceneryType)</strong></a></h2>
+</div>
+    
+<p>Get scanned scenery type</p>
+
+<div id= "#Functions##GetScannedSceneryType" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SceneryType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Table of DCS scenery type objects.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetScannedSetGroup" ><strong>ZONE_CAPTURE_COALITION:GetScannedSetGroup()</strong></a></h2>
+</div>
+    
+<p>Get a set of scanned units.</p>
+
+<div id= "#Functions##GetScannedSetGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set of groups.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetScannedSetUnit" ><strong>ZONE_CAPTURE_COALITION:GetScannedSetUnit()</strong></a></h2>
+</div>
+    
+<p>Get a set of scanned units.</p>
+
+<div id= "#Functions##GetScannedSetUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_UNIT)">Core.Set#SET_UNIT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set of units and statics inside the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetScannedUnits" ><strong>ZONE_CAPTURE_COALITION:GetScannedUnits()</strong></a></h2>
+</div>
+    
+<p>Count the number of different coalitions inside the zone.</p>
+
+<div id= "#Functions##GetScannedUnits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Table of DCS units and DCS statics inside the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetVec2" ><strong>ZONE_CAPTURE_COALITION:GetVec2()</strong></a></h2>
+</div>
+    
+<p>Returns the <a href="DCS.html##(Vec2)">DCS#Vec2</a> of the zone.</p>
+
+<div id= "#Functions##GetVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec2)">DCS#Vec2</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The location of the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).GetVec3" ><strong>ZONE_CAPTURE_COALITION:GetVec3(Height)</strong></a></h2>
+</div>
+    
+<p>Returns the <a href="DCS.html##(Vec3)">DCS#Vec3</a> of the ZONE_RADIUS.</p>
+
+<div id= "#Functions##GetVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Height</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The height to add to the land height where the center of the zone is located.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec3)">DCS#Vec3</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The point of the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsAllInZoneOfCoalition" ><strong>ZONE_CAPTURE_COALITION:IsAllInZoneOfCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Is All in Zone of Coalition?</p>
+
+    
+<p>Check if only the specifed coalition is inside the zone and noone else.</p>
+
+<div id= "#Functions##IsAllInZoneOfCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition ID of the coalition which is checked to be the only one in the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True, if <strong>only</strong> that coalition is inside the zone and no one else.</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>   self.Zone:Scan()
+   local IsGuarded = self.Zone:IsAllInZoneOfCoalition( self.Coalition )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsAllInZoneOfOtherCoalition" ><strong>ZONE_CAPTURE_COALITION:IsAllInZoneOfOtherCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Is All in Zone of Other Coalition?</p>
+
+    
+<p>Check if only one coalition is inside the zone and the specified coalition is not the one.
+You first need to use the <a href="##(ZONE_RADIUS).Scan">ZONE_RADIUS.Scan</a> method to scan the zone before it can be evaluated!
+Note that once a zone has been scanned, multiple evaluations can be done on the scan result set.</p>
+
+<div id= "#Functions##IsAllInZoneOfOtherCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition ID of the coalition which is not supposed to be in the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True, if and only if only one coalition is inside the zone and the specified coalition is not it.</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>   self.Zone:Scan()
+   local IsCaptured = self.Zone:IsAllInZoneOfOtherCoalition( self.Coalition )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsNoneInZone" ><strong>ZONE_CAPTURE_COALITION:IsNoneInZone()</strong></a></h2>
+</div>
+    
+<p>Is None in Zone?</p>
+
+    
+<p>You first need to use the <a href="##(ZONE_RADIUS).Scan">ZONE_RADIUS.Scan</a> method to scan the zone before it can be evaluated!
+Note that once a zone has been scanned, multiple evaluations can be done on the scan result set.</p>
+
+<div id= "#Functions##IsNoneInZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>   self.Zone:Scan()
+   local IsEmpty = self.Zone:IsNoneInZone()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsNoneInZoneOfCoalition" ><strong>ZONE_CAPTURE_COALITION:IsNoneInZoneOfCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Is None in Zone of Coalition?</p>
+
+    
+<p>You first need to use the <a href="##(ZONE_RADIUS).Scan">ZONE_RADIUS.Scan</a> method to scan the zone before it can be evaluated!
+Note that once a zone has been scanned, multiple evaluations can be done on the scan result set.</p>
+
+<div id= "#Functions##IsNoneInZoneOfCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>   self.Zone:Scan()
+   local IsOccupied = self.Zone:IsNoneInZoneOfCoalition( self.Coalition )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsSomeInZoneOfCoalition" ><strong>ZONE_CAPTURE_COALITION:IsSomeInZoneOfCoalition(Coalition)</strong></a></h2>
+</div>
+    
+<p>Is Some in Zone of Coalition?</p>
+
+    
+<p>Check if more than one coaltion is inside the zone and the specifed coalition is one of them.
+You first need to use the <a href="##(ZONE_RADIUS).Scan">ZONE_RADIUS.Scan</a> method to scan the zone before it can be evaluated!
+Note that once a zone has been scanned, multiple evaluations can be done on the scan result set.</p>
+
+<div id= "#Functions##IsSomeInZoneOfCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>ID of the coaliton which is checked to be inside the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True if more than one coalition is inside the zone and the specified coalition is one of them.</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>   self.Zone:Scan()
+   local IsAttacked = self.Zone:IsSomeInZoneOfCoalition( self.Coalition )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsVec2InZone" ><strong>ZONE_CAPTURE_COALITION:IsVec2InZone(Vec2)</strong></a></h2>
+</div>
+    
+<p>Returns if a location is within the zone.</p>
+
+<div id= "#Functions##IsVec2InZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec2)">DCS#Vec2</a>
+            <strong><strong>Vec2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location to test.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>true if the location is within the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).IsVec3InZone" ><strong>ZONE_CAPTURE_COALITION:IsVec3InZone(Vec3)</strong></a></h2>
+</div>
+    
+<p>Returns if a point is within the zone.</p>
+
+<div id= "#Functions##IsVec3InZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>Vec3</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The point to test.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>true if the point is within the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).MarkZone" ><strong>ZONE_CAPTURE_COALITION:MarkZone(Points)</strong></a></h2>
+</div>
+    
+<p>Mark the zone with markers on the F10 map.</p>
+
+<div id= "#Functions##MarkZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Points</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The amount of points in the circle. Default 360.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).New" ><strong>ZONE_CAPTURE_COALITION:New(ZoneName, Vec2, Radius)</strong></a></h2>
+</div>
+    
+<p>Constructor of <a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>, taking the zone name, the zone location and a radius.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ZoneName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec2)">DCS#Vec2</a>
+            <strong><strong>Vec2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).Scan" ><strong>ZONE_CAPTURE_COALITION:Scan(ObjectCategories, UnitCategories)</strong></a></h2>
+</div>
+    
+<p>Scan the zone for the presence of units of the given ObjectCategories.</p>
+
+    
+<p>Note that after a zone has been scanned, the zone can be evaluated by:</p>
+
+<ul>
+    <li><a href="ZONE_RADIUS.IsAllInZoneOfCoalition.html">ZONE_RADIUS.IsAllInZoneOfCoalition</a>(): Scan the presence of units in the zone of a coalition.</li>
+    <li><a href="ZONE_RADIUS.IsAllInZoneOfOtherCoalition.html">ZONE_RADIUS.IsAllInZoneOfOtherCoalition</a>(): Scan the presence of units in the zone of an other coalition.</li>
+    <li><a href="ZONE_RADIUS.IsSomeInZoneOfCoalition.html">ZONE_RADIUS.IsSomeInZoneOfCoalition</a>(): Scan if there is some presence of units in the zone of the given coalition.</li>
+    <li><a href="ZONE_RADIUS.IsNoneInZoneOfCoalition.html">ZONE_RADIUS.IsNoneInZoneOfCoalition</a>(): Scan if there isn't any presence of units in the zone of an other coalition than the given one.</li>
+    <li><a href="ZONE_RADIUS.IsNoneInZone.html">ZONE_RADIUS.IsNoneInZone</a>(): Scan if the zone is empty.
+    @{#ZONE_RADIUS.</li>
+</ul>
+
+<div id= "#Functions##Scan" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ObjectCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>An array of categories of the objects to find in the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>UnitCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>An array of unit categories of the objects to find in the zone.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>   self.Zone:Scan()
+   local IsAttacked = self.Zone:IsSomeInZoneOfCoalition( self.Coalition )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SearchZone" ><strong>ZONE_CAPTURE_COALITION:SearchZone(ObjectCategories, EvaluateFunction)</strong></a></h2>
+</div>
+    
+<p>Searches the zone</p>
+
+<div id= "#Functions##SearchZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ObjectCategories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A list of categories, which are members of Object.Category</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>EvaluateFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetRadius" ><strong>ZONE_CAPTURE_COALITION:SetRadius(Radius)</strong></a></h2>
+</div>
+    
+<p>Sets the radius of the zone.</p>
+
+<div id= "#Functions##SetRadius" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Distance)">DCS#Distance</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The radius of the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SetVec2" ><strong>ZONE_CAPTURE_COALITION:SetVec2(Vec2)</strong></a></h2>
+</div>
+    
+<p>Sets the <a href="DCS.html##(Vec2)">DCS#Vec2</a> of the zone.</p>
+
+<div id= "#Functions##SetVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec2)">DCS#Vec2</a>
+            <strong><strong>Vec2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The new location of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="DCS.html##(Vec2)">DCS#Vec2</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The new location of the zone.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).SmokeZone" ><strong>ZONE_CAPTURE_COALITION:SmokeZone(SmokeColor, Points, AddHeight, AddOffSet, AngleOffset)</strong></a></h2>
+</div>
+    
+<p>Smokes the zone boundaries in a color.</p>
+
+<div id= "#Functions##SmokeZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Utilities.Utils.html##(SMOKECOLOR)">Utilities.Utils#SMOKECOLOR</a>
+            <strong><strong>SmokeColor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The smoke color.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Points</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The amount of points in the circle.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>AddHeight</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The height to be added for the smoke.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>AddOffSet</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The angle to be added for the smoking start position.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>AngleOffset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).UpdateFromVec2" ><strong>ZONE_CAPTURE_COALITION:UpdateFromVec2(Vec2, Radius)</strong></a></h2>
+</div>
+    
+<p>Update zone from a 2D vector.</p>
+
+<div id= "#Functions##UpdateFromVec2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec2)">DCS#Vec2</a>
+            <strong><strong>Vec2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ZONE_CAPTURE_COALITION).UpdateFromVec3" ><strong>ZONE_CAPTURE_COALITION:UpdateFromVec3(Vec3, Radius)</strong></a></h2>
+</div>
+    
+<p>Update zone from a 2D vector.</p>
+
+<div id= "#Functions##UpdateFromVec3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Vec3)">DCS#Vec3</a>
+            <strong><strong>Vec3</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The location of the zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Distance)">DCS#Distance</a>
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The radius of the zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ZONE_RADIUS)">#ZONE_RADIUS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 </div>
 
         </div>

@@ -1641,6 +1641,137 @@ Controls a network of short range air/missile defense groups.</p>
 <h3>Author: <strong>funkyfranky</strong></h3>
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TIMER')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>TIMER</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p><em>Better three hours too soon than a minute too late.</em> - William Shakespeare</p>
+
+<hr/>
+
+<p><img src="..\Presentations\Timer\TIMER_Main.jpg" alt="Banner Image"/></p>
+
+<h1>The TIMER Concept</h1>
+
+<p>The TIMER class is the little sister of the <a href="Core.Scheduler.html##(SCHEDULER)">Core.Scheduler#SCHEDULER</a> class.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##TIMER" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(TIMER)">#TIMER</a>
+<a id="TIMER" ><strong>TIMER</strong></a>
+    
+<p><em>Better three hours too soon than a minute too late.</em> - William Shakespeare</p>
+
+<hr/>
+
+<p><img src="..\Presentations\Timer\TIMER_Main.jpg" alt="Banner Image"/></p>
+
+<h1>The TIMER Concept</h1>
+
+<p>The TIMER class is the little sister of the <a href="Core.Scheduler.html##(SCHEDULER)">Core.Scheduler#SCHEDULER</a> class.</p>
+
+    
+<p>It does the same thing but is a bit easier to use and has less overhead. It should be sufficient in many cases.</p>
+
+<p>It provides an easy interface to the DCS <a href="https://wiki.hoggitworld.com/view/DCS_func_scheduleFunction">timer.scheduleFunction</a>.</p>
+
+<h1>Construction</h1>
+
+<p>A new TIMER is created by the <a href="##(TIMER).New">TIMER.New</a>(<em>func</em>, <em>...</em>) function</p>
+
+<pre><code>local mytimer=TIMER:New(myfunction, a, b)
+</code></pre>
+
+<p>The first parameter <em>func</em> is the function that is called followed by the necessary comma separeted parameters that are passed to that function.</p>
+
+<h2>Starting the Timer</h2>
+
+<p>The timer is started by the <a href="##(TIMER).Start">TIMER.Start</a>(<em>Tstart</em>, <em>dT</em>, <em>Duration</em>) function</p>
+
+<pre><code>mytimer:Start(5, 1, 20)
+</code></pre>
+
+<p>where</p>
+
+<ul>
+    <li><em>Tstart</em> is the relative start time in seconds. In the example, the first function call happens after 5 sec.</li>
+    <li><em>dT</em> is the time interval between function calls in seconds. Above, the function is called once per second.</li>
+    <li><em>Duration</em> is the duration in seconds after which the timer is stopped. This is relative to the start time. Here, the timer will run for 20 seconds.</li>
+</ul>
+
+<p>Note that</p>
+
+<ul>
+    <li>if <em>Tstart</em> is not specified (<em>nil</em>), the first function call happens immediately, i.e. after one millisecond.</li>
+    <li>if <em>dT</em> is not specified (<em>nil</em>), the function is called only once.</li>
+    <li>if <em>Duration</em> is not specified (<em>nil</em>), the timer runs forever or until stopped manually or until the max function calls are reached (see below).</li>
+</ul>
+
+<p>For example,</p>
+
+<pre><code>mytimer:Start(3)            -- Will call the function once after 3 seconds.
+mytimer:Start(nil, 0.5)     -- Will call right now and then every 0.5 sec until all eternity.
+mytimer:Start(nil, 2.0, 20) -- Will call right now and then every 2.0 sec for 20 sec.
+mytimer:Start(1.0, nil, 10) -- Does not make sense as the function is only called once anyway. 
+</code></pre>
+
+<h2>Stopping the Timer</h2>
+
+<p>The timer can be stopped manually by the <a href="##(TIMER).Stop">TIMER.Stop</a>(<em>Delay</em>) function</p>
+
+<pre><code>mytimer:Stop()
+</code></pre>
+
+<p>If the optional paramter <em>Delay</em> is specified, the timer is stopped after <em>delay</em> seconds.</p>
+
+<h2>Limit Function Calls</h2>
+
+<p>The timer can be stopped after a certain amount of function calles with the <a href="##(TIMER).SetMaxFunctionCalls">TIMER.SetMaxFunctionCalls</a>(<em>Nmax</em>) function</p>
+
+<pre><code>mytimer:SetMaxFunctionCalls(20)
+</code></pre>
+
+<p>where <em>Nmax</em> is the number of calls after which the timer is stopped, here 20.</p>
+
+<p>For example,</p>
+
+<pre><code>mytimer:SetMaxFunctionCalls(66):Start(1.0, 0.1)
+</code></pre>
+
+<p>will start the timer after one second and call the function every 0.1 seconds. Once the function has been called 66 times, the timer is stopped.</p>
+
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##_TIMERID')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>_TIMERID</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Timer ID.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##_TIMERID" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="_TIMERID" ><strong>_TIMERID</strong></a>
+    
+<p>Timer ID.</p>
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TIMER)">Type <strong>TIMER</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1660,6 +1791,36 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).IsRunning">TIMER:IsRunning()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if the timer has been started and was not stopped.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).New">TIMER:New(Function, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a new TIMER object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).SetMaxFunctionCalls">TIMER:SetMaxFunctionCalls(Nmax)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set max number of function calls.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Start">TIMER:Start(Tstart, dT, Duration)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a new TIMER object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Stop">TIMER:Stop(Delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stop the timer by removing the timer function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Tstart">TIMER.Tstart</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Relative start time in seconds.</p>
@@ -1669,6 +1830,12 @@ Controls a network of short range air/missile defense groups.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Tstop">TIMER.Tstop</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Relative stop time in seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._Function">TIMER:_Function(time)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Call timer function.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1725,6 +1892,12 @@ Controls a network of short range air/missile defense groups.</p>
 <p>Unique ID of the timer.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).version">TIMER.version</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>TIMER class version.</p>
+</td>
+          </tr>
         </table>
         </div>
         <div class="w3-card w3-margin">
@@ -1749,6 +1922,162 @@ Controls a network of short range air/missile defense groups.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClassNameAndID">TIMER.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ClearState">TIMER:ClearState(Object, StateName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clear the state of an object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventBirth">TIMER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Birth Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventCrash">TIMER:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventDead">TIMER:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Dead Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventPlayerEnterAircraft">TIMER:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventRemoveUnit">TIMER:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Remove Unit Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventTakeoff">TIMER:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Takeoff Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).CreateEventUnitLost">TIMER:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).E">TIMER:E(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an exception which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).EventDispatcher">TIMER:EventDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the event dispatcher</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).EventRemoveAll">TIMER:EventRemoveAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove all subscribed events</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).F">TIMER:F(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).F2">TIMER:F2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).F3">TIMER:F3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetClassID">TIMER:GetClassID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetClassName">TIMER:GetClassName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetClassNameAndID">TIMER:GetClassNameAndID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName + ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetEventPriority">TIMER:GetEventPriority()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetParent">TIMER:GetParent(Child, FromClass)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to retrieve the Parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).GetState">TIMER:GetState(Object, Key)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a Value given a Key from the Object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).HandleEvent">TIMER:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Subscribe to a DCS Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).I">TIMER:I(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an information which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Inherit">TIMER:Inherit(Child, Parent)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to inherit from a parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).IsInstanceOf">TIMER:IsInstanceOf(ClassName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).IsTrace">TIMER:IsTrace()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enquires if tracing is on (for the class).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).New">TIMER:New()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1970,6 +2299,140 @@ place: Object that the unit landed on.</p>
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ScheduleOnce">TIMER:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ScheduleRepeat">TIMER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).ScheduleStop">TIMER:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the Schedule.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).Scheduler">TIMER.Scheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).SetEventPriority">TIMER:SetEventPriority(EventPriority)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).SetState">TIMER:SetState(Object, Key, Value)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a state or property of the Object given a Key and a Value.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).T">TIMER:T(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 1.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).T2">TIMER:T2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).T3">TIMER:T3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceAll">TIMER:TraceAll(TraceAll)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace all methods in MOOSE</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceClass">TIMER:TraceClass(Class)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceClassMethod">TIMER:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a specific method of  class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceLevel">TIMER:TraceLevel(Level)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace level</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceOff">TIMER:TraceOff()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceOn">TIMER:TraceOn()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).TraceOnOff">TIMER:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).UnHandleEvent">TIMER:UnHandleEvent(EventID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnSubscribe to a DCS event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._">TIMER._</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._F">TIMER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER)._T">TIMER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).__">TIMER.__</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TIMER).onEvent">TIMER:onEvent(event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
         </table>
         </div>
 
@@ -2120,9 +2583,311 @@ place: Object that the unit landed on.</p>
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(TIMER).version" ><strong>TIMER.version</strong></a>
+    
+<p>TIMER class version.</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).IsRunning" ><strong>TIMER:IsRunning()</strong></a></h2>
+</div>
+    
+<p>Check if the timer has been started and was not stopped.</p>
+
+<div id= "#Functions##IsRunning" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TIMER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If <code>true</code>, the timer is running.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).New" ><strong>TIMER:New(Function, ...)</strong></a></h2>
+</div>
+    
+<p>Create a new TIMER object.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TIMER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>Function</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The function to call.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Parameters passed to the function if any.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).SetMaxFunctionCalls" ><strong>TIMER:SetMaxFunctionCalls(Nmax)</strong></a></h2>
+</div>
+    
+<p>Set max number of function calls.</p>
+
+    
+<p>When the function has been called this many times, the TIMER is stopped.</p>
+
+<div id= "#Functions##SetMaxFunctionCalls" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TIMER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Nmax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Set number of max function calls.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).Start" ><strong>TIMER:Start(Tstart, dT, Duration)</strong></a></h2>
+</div>
+    
+<p>Create a new TIMER object.</p>
+
+<div id= "#Functions##Start" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TIMER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Tstart</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Relative start time in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>dT</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Interval between function calls in seconds. If not specified <code>nil</code>, the function is called only once.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Duration</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Time in seconds for how long the timer is running. If not specified <code>nil</code>, the timer runs forever or until stopped manually by the <code>TIMER:Stop()</code> function.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).Stop" ><strong>TIMER:Stop(Delay)</strong></a></h2>
+</div>
+    
+<p>Stop the timer by removing the timer function.</p>
+
+<div id= "#Functions##Stop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TIMER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Delay in seconds, before the timer is stopped.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TIMER)">#TIMER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER)._Function" ><strong>TIMER:_Function(time)</strong></a></h2>
+</div>
+    
+<p>Call timer function.</p>
+
+<div id= "#Functions##_Function" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TIMER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>time</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>DCS model time in seconds.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Time when the function is called again or <code>nil</code> if the timer is stopped.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -2258,9 +3023,1130 @@ place: Object that the unit landed on.</p>
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(TIMER).version" ><strong>TIMER.version</strong></a>
+    
+<p>TIMER class version.</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).ClearState" ><strong>TIMER:ClearState(Object, StateName)</strong></a></h2>
+</div>
+    
+<p>Clear the state of an object.</p>
+
+<div id= "#Functions##ClearState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>StateName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is should be cleared.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventBirth" ><strong>TIMER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+</div>
+    
+<p>Creation of a Birth Event.</p>
+
+<div id= "#Functions##CreateEventBirth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>IniUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating unit name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>place</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>subplace</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventCrash" ><strong>TIMER:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventCrash" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventDead" ><strong>TIMER:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Dead Event.</p>
+
+<div id= "#Functions##CreateEventDead" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventPlayerEnterAircraft" ><strong>TIMER:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+</div>
+    
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+
+<div id= "#Functions##CreateEventPlayerEnterAircraft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit the player entered.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventRemoveUnit" ><strong>TIMER:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Remove Unit Event.</p>
+
+<div id= "#Functions##CreateEventRemoveUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventTakeoff" ><strong>TIMER:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Takeoff Event.</p>
+
+<div id= "#Functions##CreateEventTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).CreateEventUnitLost" ><strong>TIMER:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventUnitLost" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).E" ><strong>TIMER:E(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an exception which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##E" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).EventDispatcher" ><strong>TIMER:EventDispatcher()</strong></a></h2>
+</div>
+    
+<p>Returns the event dispatcher</p>
+
+<div id= "#Functions##EventDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).EventRemoveAll" ><strong>TIMER:EventRemoveAll()</strong></a></h2>
+</div>
+    
+<p>Remove all subscribed events</p>
+
+<div id= "#Functions##EventRemoveAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).F" ><strong>TIMER:F(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).F2" ><strong>TIMER:F2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 2.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).F3" ><strong>TIMER:F3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 3.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).GetClassID" ><strong>TIMER:GetClassID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassID of the class instance.</p>
+
+<div id= "#Functions##GetClassID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).GetClassName" ><strong>TIMER:GetClassName()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName of the class instance.</p>
+
+<div id= "#Functions##GetClassName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).GetClassNameAndID" ><strong>TIMER:GetClassNameAndID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName + ClassID of the class instance.</p>
+
+    
+<p>The ClassName + ClassID is formatted as '%s#%09d'. </p>
+
+<div id= "#Functions##GetClassNameAndID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName + ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).GetEventPriority" ><strong>TIMER:GetEventPriority()</strong></a></h2>
+</div>
+    
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##GetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).GetParent" ><strong>TIMER:GetParent(Child, FromClass)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to retrieve the Parent class.</p>
+
+    
+<p>Note that the Parent class must be passed to call the parent class method.</p>
+
+<pre><code>self:GetParent(self):ParentMethod()
+
+
+</code></pre>
+
+<div id= "#Functions##GetParent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>This is the Child class from which the Parent class needs to be retrieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>FromClass</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The class from which to get the parent.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).GetState" ><strong>TIMER:GetState(Object, Key)</strong></a></h2>
+</div>
+    
+<p>Get a Value given a Key from the Object.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##GetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used to retrieve the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value retrieved or nil if the Key was not found and thus the Value could not be retrieved.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).HandleEvent" ><strong>TIMER:HandleEvent(EventID, EventFunction)</strong></a></h2>
+</div>
+    
+<p>Subscribe to a DCS Event.</p>
+
+<div id= "#Functions##HandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>EventFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The function to be called when the event occurs for the unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).I" ><strong>TIMER:I(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an information which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##I" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).Inherit" ><strong>TIMER:Inherit(Child, Parent)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to inherit from a parent class.</p>
+
+<div id= "#Functions##Inherit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Child class that inherits.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Parent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Parent class that the Child inherits from.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Child</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).IsInstanceOf" ><strong>TIMER:IsInstanceOf(ClassName)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+
+    
+
+<h3>Examples:</h3>
+
+<ul>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( ZONE ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'ZONE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'zone' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'BASE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'GROUP' ) will return false</p></li>
+</ul>
+
+
+<div id= "#Functions##IsInstanceOf" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ClassName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the name of the class or the class itself to run the check against</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).IsTrace" ><strong>TIMER:IsTrace()</strong></a></h2>
+</div>
+    
+<p>Enquires if tracing is on (for the class).</p>
+
+<div id= "#Functions##IsTrace" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).New" ><strong>TIMER:New()</strong></a></h2>
+</div>
+    
+<p>BASE constructor.</p>
+
+    
+
+<p>This is an example how to use the BASE:New() constructor in a new class definition when inheriting from BASE.</p>
+
+<pre><code>function EVENT:New()
+  local self = BASE:Inherit( self, BASE:New() ) -- #EVENT
+  return self
+end
+  
+</code></pre>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -3564,6 +5450,862 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
               
 <p>The EventData structure.</p>
 
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).ScheduleOnce" ><strong>TIMER:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleOnce" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).ScheduleRepeat" ><strong>TIMER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleRepeat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).ScheduleStop" ><strong>TIMER:ScheduleStop(SchedulerFunction)</strong></a></h2>
+</div>
+    
+<p>Stops the Schedule.</p>
+
+<div id= "#Functions##ScheduleStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).SetEventPriority" ><strong>TIMER:SetEventPriority(EventPriority)</strong></a></h2>
+</div>
+    
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##SetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>EventPriority</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).SetState" ><strong>TIMER:SetState(Object, Key, Value)</strong></a></h2>
+</div>
+    
+<p>Set a state or property of the Object given a Key and a Value.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##SetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that will hold the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used as a reference of the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Value</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The value to is stored in the object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value set. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).T" ><strong>TIMER:T(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 1.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).T2" ><strong>TIMER:T2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 2.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).T3" ><strong>TIMER:T3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 3.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceAll" ><strong>TIMER:TraceAll(TraceAll)</strong></a></h2>
+</div>
+    
+<p>Trace all methods in MOOSE</p>
+
+<div id= "#Functions##TraceAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceAll</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>true = trace all methods in MOOSE.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceClass" ><strong>TIMER:TraceClass(Class)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a class</p>
+
+<div id= "#Functions##TraceClass" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceClassMethod" ><strong>TIMER:TraceClassMethod(Class, Method)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a specific method of  class</p>
+
+<div id= "#Functions##TraceClassMethod" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Method</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceLevel" ><strong>TIMER:TraceLevel(Level)</strong></a></h2>
+</div>
+    
+<p>Set trace level</p>
+
+<div id= "#Functions##TraceLevel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Level</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceOff" ><strong>TIMER:TraceOff()</strong></a></h2>
+</div>
+    
+<p>Set trace off.</p>
+
+<div id= "#Functions##TraceOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing Off
+BASE:TraceOff()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceOn" ><strong>TIMER:TraceOn()</strong></a></h2>
+</div>
+    
+<p>Set trace on.</p>
+
+<div id= "#Functions##TraceOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOn()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).TraceOnOff" ><strong>TIMER:TraceOnOff(TraceOnOff)</strong></a></h2>
+</div>
+    
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+
+    
+<p>So tracing must be switched on manually in your mission if you are using Moose statically.
+When moose is loading dynamically (for moose class development), tracing is switched on by default.</p>
+
+<div id= "#Functions##TraceOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceOnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch the tracing on or off.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOnOff( true )
+
+-- Switch the tracing Off
+BASE:TraceOnOff( false )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).UnHandleEvent" ><strong>TIMER:UnHandleEvent(EventID)</strong></a></h2>
+</div>
+    
+<p>UnSubscribe to a DCS event.</p>
+
+<div id= "#Functions##UnHandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER)._F" ><strong>TIMER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>This function is private.</p>
+
+<div id= "#Functions##_F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER)._T" ><strong>TIMER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic.</p>
+
+<div id= "#Functions##_T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TIMER).onEvent" ><strong>TIMER:onEvent(event)</strong></a></h2>
+</div>
+    
+
+
+    
+<p> TODO: Complete DCS#Event structure. <br/>
+- The main event handling function... This function captures all events generated for the class.
+ @param #BASE self
+ @param DCS#Event event</p>
+
+<div id= "#Functions##onEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>

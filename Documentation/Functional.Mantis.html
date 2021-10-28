@@ -1647,6 +1647,141 @@ Leverage attack range setup added by DCS in 11/20</p>
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MANTIS')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MANTIS</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p><em>The worst thing that can happen to a good cause is, not to be skillfully attacked, but to be ineptly defended.</em> - Frédéric Bastiat</p>
+
+<p>Simple Class for a more intelligent Air Defense System</p>
+
+<h1>MANTIS</h1>
+<p>Moose derived  Modular, Automatic and Network capable Targeting and Interception System.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MANTIS" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(MANTIS)">#MANTIS</a>
+<a id="MANTIS" ><strong>MANTIS</strong></a>
+    
+<p><em>The worst thing that can happen to a good cause is, not to be skillfully attacked, but to be ineptly defended.</em> - Frédéric Bastiat</p>
+
+<p>Simple Class for a more intelligent Air Defense System</p>
+
+<h1>MANTIS</h1>
+<p>Moose derived  Modular, Automatic and Network capable Targeting and Interception System.</p>
+
+    
+<p>Controls a network of SAM sites. Use detection to switch on the AA site closest to the enemy.
+Leverage evasiveness from <a href="Functional.Sead.html##(SEAD)">Functional.Sead#SEAD</a>.
+Leverage attack range setup added by DCS in 11/20.</p>
+
+<p>Set up your SAM sites in the mission editor. Name the groups with common prefix like "Red SAM".
+Set up your EWR system in the mission editor. Name the groups with common prefix like "Red EWR". Can be e.g. AWACS or a combination of AWACS and Search Radars like e.g. EWR 1L13 etc.
+[optional] Set up your HQ. Can be any group, e.g. a command vehicle.</p>
+
+<h1>1. Basic tactical considerations when setting up your SAM sites</h1>
+
+<h2>1.1 Radar systems and AWACS</h2>
+
+<p> Typically, your setup should consist of EWR (early warning) radars to detect and track targets, accompanied by AWACS if your scenario forsees that. Ensure that your EWR radars have a good coverage of the area you want to track.
+ <strong>Location</strong> is of highest importantance here. Whilst AWACS in DCS has almost the "all seeing eye", EWR don't have that. Choose your location wisely, against a mountain backdrop or inside a valley even the best EWR system
+ doesn't work well. Prefer higher-up locations with a good view; use F7 in-game to check where you actually placed your EWR and have a look around. Apart from the obvious choice, do also consider other radar units
+ for this role, most have "SR" (search radar) or "STR" (search and track radar) in their names, use the encyclopedia to see what they actually do.</p>
+
+<h2>1.2 SAM sites</h2>
+
+<p>Typically your SAM should cover all attack ranges. The closer the enemy gets, the more systems you will need to deploy to defend your location. Use a combination of long-range systems like the SA-10/11, midrange like SA-6 and short-range like
+SA-2 for defense (Patriot, Hawk, Gepard, Blindfire for the blue side). For close-up defense and defense against HARMs or low-flying aircraft, helicopters it is also advisable to deploy SA-15 TOR systems, Shilka, Strela and Tunguska units, as well as manpads (Think Gepard, Avenger, Chaparral,
+Linebacker, Roland systems for the blue side). If possible, overlap ranges for mutual coverage.</p>
+
+<h2>1.3 Typical problems</h2>
+
+<p>Often times, people complain because the detection cannot "see" oncoming targets and/or Mantis switches on too late. Three typial problems here are</p>
+
+<ul>
+    <li>bad placement of radar units,</li>
+    <li>overestimation how far units can "see" and</li>
+    <li>not taking into account that a SAM site will take (e.g for a SA-6) 30-40 seconds between switching to RED, acquiring the target and firing.</li>
+</ul>
+
+<p>An attacker doing 350knots will cover ca 180meters/second or thus more than 6km until the SA-6 fires. Use triggers zones and the ruler in the missione editor to understand distances and zones. Take into account that the ranges given by the circles
+in the mission editor are absolute maximum ranges; in-game this is rather 50-75% of that depending on the system. Fiddle with placement and options to see what works best for your scenario, and remember <strong>everything in here is in meters</strong>.</p>
+
+<h1>2. Start up your MANTIS with a basic setting</h1>
+
+<p>   <code>myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)</code>
+   <code>myredmantis:Start()</code></p>
+
+<p>[optional] Use</p>
+
+<ul>
+    <li><code>MANTIS:SetEWRGrouping(radius)</code></li>
+    <li><code>MANTIS:SetEWRRange(radius)</code></li>
+    <li><code>MANTIS:SetSAMRadius(radius)</code></li>
+    <li><code>MANTIS:SetDetectInterval(interval)</code></li>
+    <li><code>MANTIS:SetAutoRelocate(hq, ewr)</code></li>
+</ul>
+
+<p>before starting #MANTIS to fine-tune your setup.</p>
+
+<p>If you want to use a separate AWACS unit (default detection range: 250km) to support your EWR system, use e.g. the following setup:</p>
+
+<p>   <code>mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")</code>
+   <code>mybluemantis:Start()</code></p>
+
+<h1>3. Default settings</h1>
+
+<p>By default, the following settings are active:</p>
+
+<ul>
+    <li>SAM_Templates_Prefix = "Red SAM" - SAM site group names in the mission editor begin with "Red SAM"</li>
+    <li>EWR_Templates_Prefix = "Red EWR" - EWR group names in the mission editor begin with "Red EWR" - can also be combined with an AWACS unit</li>
+    <li>checkradius = 25000 (meters) - SAMs will engage enemy flights, if they are within a 25km around each SAM site - <code>MANTIS:SetSAMRadius(radius)</code></li>
+    <li>grouping = 5000 (meters) - Detection (EWR) will group enemy flights to areas of 5km for tracking - <code>MANTIS:SetEWRGrouping(radius)</code></li>
+    <li>acceptrange = 80000 (meters) - Detection (EWR) will on consider flights inside a 80km radius - <code>MANTIS:SetEWRRange(radius)</code></li>
+    <li>detectinterval = 30 (seconds) - MANTIS will decide every 30 seconds which SAM to activate - <code>MANTIS:SetDetectInterval(interval)</code></li>
+    <li>engagerange = 85 (percent) - SAMs will only fire if flights are inside of a 85% radius of their max firerange - <code>MANTIS:SetSAMRange(range)</code></li>
+    <li>dynamic = false - Group filtering is set to once, i.e. newly added groups will not be part of the setup by default - <code>MANTIS:New(name,samprefix,ewrprefix,hq,coaltion,dynamic)</code></li>
+    <li>autorelocate = false - HQ and (mobile) EWR system will not relocate in random intervals between 30mins and 1 hour - <code>MANTIS:SetAutoRelocate(hq, ewr)</code></li>
+    <li>debug = false - Debugging reports on screen are set to off - <code>MANTIS:Debug(onoff)</code></li>
+</ul>
+
+<h1>4. Advanced Mode</h1>
+
+<p> Advanced mode will <em>decrease</em> reactivity of MANTIS, if HQ and/or EWR  network dies.  Awacs is counted as one EWR unit. It will set SAMs to RED state if both are dead.  Requires usage of an <strong>HQ</strong> object and the <strong>dynamic</strong> option.</p>
+
+<p> E.g.        <code>mymantis:SetAdvancedMode( true, 90 )</code></p>
+
+<p> Use this option if you want to make use of or allow advanced SEAD tactics.</p>
+
+<h1>5. Integrate SHORAD</h1>
+
+<p> You can also choose to integrate Mantis with <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a> for protection against HARMs and AGMs. When SHORAD detects a missile fired at one of MANTIS' SAM sites, it will activate SHORAD systems in
+ the given defense checkradius around that SAM site. Create a SHORAD object first, then integrate with MANTIS like so:</p>
+
+<pre><code> `local SamSet = SET_GROUP:New():FilterPrefixes("Blue SAM"):FilterCoalitions("blue"):FilterStart()`
+ `myshorad = SHORAD:New("BlueShorad", "Blue SHORAD", SamSet, 22000, 600, "blue")`
+ `-- now set up MANTIS`
+ `mymantis = MANTIS:New("BlueMantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")`
+ `mymantis:AddShorad(myshorad,720)`
+ `mymantis:Start()`
+</code></pre>
+
+<p> and (optionally) remove the link later on with</p>
+
+<pre><code>   `mymantis:RemoveShorad()`
+</code></pre>
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(MANTIS)">Type <strong>MANTIS</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1666,15 +1801,63 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AWACS_Prefix">MANTIS.AWACS_Prefix</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AddShorad">MANTIS:AddShorad(Shorad, Shoradtime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to link up #MANTIS with a #SHORAD installation</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Adv_EWR_Group">MANTIS.Adv_EWR_Group</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The EWR #SET_GROUP used for advanced mode</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AdvancedState">MANTIS.AdvancedState</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CheckObjectInZone">MANTIS:CheckObjectInZone(dectset, samcoordinate)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to check if any object is in the given SAM zone</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ClassName">MANTIS.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Coalition">MANTIS.Coalition</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).DLTimeStamp">MANTIS.DLTimeStamp</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).DLink">MANTIS.DLink</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Debug">MANTIS:Debug(onoff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set switch-on/off the debug state</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1696,6 +1879,12 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetCommandCenter">MANTIS:GetCommandCenter()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to get the HQ object for further use</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).HQ_CC">MANTIS.HQ_CC</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The #GROUP object of the HQ</p>
@@ -1705,6 +1894,12 @@ Leverage attack range setup added by DCS in 11/20</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).HQ_Template_CC">MANTIS.HQ_Template_CC</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The ME name of the HQ object</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).New">MANTIS:New(name, samprefix, ewrprefix, hq, coaltion, dynamic, awacs, EmOnOff, Padding)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p> Function to instantiate a new object of class MANTIS</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1738,6 +1933,18 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Padding">MANTIS.Padding</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).RemoveShorad">MANTIS:RemoveShorad()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to unlink #MANTIS from a #SHORAD installation</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAM_Group">MANTIS.SAM_Group</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The SAM #SET_GROUP</p>
@@ -1753,6 +1960,96 @@ Leverage attack range setup added by DCS in 11/20</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAM_Templates_Prefix">MANTIS.SAM_Templates_Prefix</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Prefix to build the #SET_GROUP for SAM sites</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SamStateTracker">MANTIS.SamStateTracker</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAdvancedMode">MANTIS:SetAdvancedMode(onoff, ratio)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set Advanded Mode</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAutoRelocate">MANTIS:SetAutoRelocate(hq, ewr)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set autorelocation for HQ and EWR objects.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAwacs">MANTIS:SetAwacs(prefix)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set separate AWACS detection instance</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetAwacsRange">MANTIS:SetAwacsRange(range)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set AWACS detection range.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetCommandCenter">MANTIS:SetCommandCenter(group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set the HQ object for further use</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetDetectInterval">MANTIS:SetDetectInterval(interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set the detection interval</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetEWRGrouping">MANTIS:SetEWRGrouping(radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set the grouping radius of the detection in meters</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetEWRRange">MANTIS:SetEWRRange(radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set the detection radius of the EWR in meters</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetNewSAMRangeWhileRunning">MANTIS:SetNewSAMRangeWhileRunning(range)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set a new SAM firing engage range, use this method to adjust range while running MANTIS, e.g.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetSAMRadius">MANTIS:SetSAMRadius(radius)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set switch-on/off zone for the SAM sites in meters</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetSAMRange">MANTIS:SetSAMRange(range)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set SAM firing engage range, 0-100 percent, e.g.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetSAMStartState">MANTIS:SetSAMStartState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to set the SAM start state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetUsingDLink">MANTIS:SetUsingDLink(DLink)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set using an #INTEL_DLINK object instead of #DETECTION</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetUsingEmOnOff">MANTIS:SetUsingEmOnOff(switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set using Emissions on/off instead of changing alarm state</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1786,15 +2083,99 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartAwacsDetection">MANTIS:StartAwacsDetection()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to start the detection via AWACS if defined as separate</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartDetection">MANTIS:StartDetection()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to start the detection via EWR groups</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Status">MANTIS:Status()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Status".</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TimeStamp">MANTIS.TimeStamp</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).UseEmOnOff">MANTIS.UseEmOnOff</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Decide if we are using Emissions on/off (true) or AlarmState red/green (default)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CalcAdvState">MANTIS:_CalcAdvState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to determine state of the advanced mode</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._Check">MANTIS:_Check(detection)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Check detection function</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckAdvState">MANTIS:_CheckAdvState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Check advanced state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckDLinkState">MANTIS:_CheckDLinkState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Check DLink state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckEWRState">MANTIS:_CheckEWRState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to check if EWR is (at least partially) alive</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckHQState">MANTIS:_CheckHQState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to check if HQ is alive</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._GetSAMTable">MANTIS:_GetSAMTable()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to get the self.SAM_Table</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._RefreshSAMTable">MANTIS:_RefreshSAMTable()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to update SAM table and SEAD state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._Relocate">MANTIS:_Relocate()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Relocation relay function</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._RelocateGroups">MANTIS:_RelocateGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to execute the relocation</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._SetSAMTable">MANTIS:_SetSAMTable(table)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to set the self.SAM_Table</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1852,6 +2233,12 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).autorelocateunits">MANTIS.autorelocateunits</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).awacsrange">MANTIS.awacsrange</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Detection range of an optional Awacs unit</p>
@@ -1876,6 +2263,12 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).dynamic">MANTIS.dynamic</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).engagerange">MANTIS.engagerange</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Firing engage range of the SAMs, see [https://wiki.hoggitworld.com/view/DCS_option_engagementRange]</p>
@@ -1894,15 +2287,93 @@ Leverage attack range setup added by DCS in 11/20</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).mysead">MANTIS.mysead</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).name">MANTIS.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of this Mantis</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterAdvStateChange">MANTIS:onafterAdvStateChange(From, Event, To, Oldstate, Newstate, Interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function triggered by Event AdvStateChange</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterGreenState">MANTIS:onafterGreenState(From, Event, To, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function triggered by Event GreenState</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterRedState">MANTIS:onafterRedState(From, Event, To, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function triggered by Event RedState</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterRelocating">MANTIS:onafterRelocating(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function triggered by Event Relocating</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterShoradActivated">MANTIS:onafterShoradActivated(From, Event, To, Name, Radius, Ontime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function triggered by Event ShoradActivated</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterStart">MANTIS:onafterStart(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to set start state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterStatus">MANTIS:onafterStatus(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Status function for MANTIS</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onafterStop">MANTIS:onafterStop(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to stop MANTIS</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onbeforeStatus">MANTIS:onbeforeStatus(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Before status function for MANTIS</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).relointerval">MANTIS.relointerval</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).state2flag">MANTIS.state2flag</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).verbose">MANTIS.verbose</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Switch on extra logging</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).version">MANTIS.version</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
         </table>
@@ -1929,6 +2400,162 @@ Leverage attack range setup added by DCS in 11/20</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ClassNameAndID">MANTIS.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ClearState">MANTIS:ClearState(Object, StateName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clear the state of an object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventBirth">MANTIS:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Birth Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventCrash">MANTIS:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventDead">MANTIS:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Dead Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventPlayerEnterAircraft">MANTIS:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventRemoveUnit">MANTIS:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Remove Unit Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventTakeoff">MANTIS:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Takeoff Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CreateEventUnitLost">MANTIS:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).E">MANTIS:E(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an exception which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).EventDispatcher">MANTIS:EventDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the event dispatcher</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).EventRemoveAll">MANTIS:EventRemoveAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove all subscribed events</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).F">MANTIS:F(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).F2">MANTIS:F2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).F3">MANTIS:F3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetClassID">MANTIS:GetClassID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetClassName">MANTIS:GetClassName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetClassNameAndID">MANTIS:GetClassNameAndID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName + ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetEventPriority">MANTIS:GetEventPriority()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetParent">MANTIS:GetParent(Child, FromClass)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to retrieve the Parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetState">MANTIS:GetState(Object, Key)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a Value given a Key from the Object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).HandleEvent">MANTIS:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Subscribe to a DCS Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).I">MANTIS:I(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an information which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Inherit">MANTIS:Inherit(Child, Parent)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to inherit from a parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).IsInstanceOf">MANTIS:IsInstanceOf(ClassName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).IsTrace">MANTIS:IsTrace()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enquires if tracing is on (for the class).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).New">MANTIS:New()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2150,6 +2777,171 @@ place: Object that the unit landed on.</p>
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ScheduleOnce">MANTIS:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ScheduleRepeat">MANTIS:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ScheduleStop">MANTIS:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the Schedule.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Scheduler">MANTIS.Scheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetEventPriority">MANTIS:SetEventPriority(EventPriority)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetState">MANTIS:SetState(Object, Key, Value)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a state or property of the Object given a Key and a Value.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).T">MANTIS:T(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 1.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).T2">MANTIS:T2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).T3">MANTIS:T3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceAll">MANTIS:TraceAll(TraceAll)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace all methods in MOOSE</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceClass">MANTIS:TraceClass(Class)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceClassMethod">MANTIS:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a specific method of  class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceLevel">MANTIS:TraceLevel(Level)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace level</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceOff">MANTIS:TraceOff()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceOn">MANTIS:TraceOn()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).TraceOnOff">MANTIS:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).UnHandleEvent">MANTIS:UnHandleEvent(EventID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnSubscribe to a DCS event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._">MANTIS._</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._F">MANTIS:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._T">MANTIS:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).__">MANTIS.__</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).onEvent">MANTIS:onEvent(event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(MANTIS.AdvancedState)">Type <strong>MANTIS.AdvancedState</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(MANTIS.AdvancedState)">MANTIS.AdvancedState</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from MANTIS.AdvancedState</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS.AdvancedState).AMBER">MANTIS.AdvancedState.AMBER</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS.AdvancedState).GREEN">MANTIS.AdvancedState.GREEN</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS.AdvancedState).RED">MANTIS.AdvancedState.RED</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
         </table>
         </div>
 
@@ -2195,8 +2987,41 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(MANTIS.AdvancedState)">#MANTIS.AdvancedState</a>
+<a id="#(MANTIS).AdvancedState" ><strong>MANTIS.AdvancedState</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(MANTIS).ClassName" ><strong>MANTIS.ClassName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).DLTimeStamp" ><strong>MANTIS.DLTimeStamp</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).DLink" ><strong>MANTIS.DLink</strong></a>
     
 
 
@@ -2294,6 +3119,20 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).SamStateTracker" ><strong>MANTIS.SamStateTracker</strong></a>
+    
+
+
+    
+<p> table to hold alert states, so we don't trigger state changes twice in adv mode</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a>
 <a id="#(MANTIS).Shorad" ><strong>MANTIS.Shorad</strong></a>
     
@@ -2331,6 +3170,17 @@ place: Object that the unit landed on.</p>
 <a id="#(MANTIS).ShoradTime" ><strong>MANTIS.ShoradTime</strong></a>
     
 <p>Timer in seconds, how long #SHORAD will be active after a detection inside of the defense range</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).TimeStamp" ><strong>MANTIS.TimeStamp</strong></a>
+    
+
 
 </div>
 
@@ -2415,6 +3265,17 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).autorelocateunits" ><strong>MANTIS.autorelocateunits</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MANTIS).awacsrange" ><strong>MANTIS.awacsrange</strong></a>
     
@@ -2492,10 +3353,49 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(MANTIS).name" ><strong>MANTIS.name</strong></a>
     
 <p>Name of this Mantis</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).relointerval" ><strong>MANTIS.relointerval</strong></a>
+    
+
+
+    
+<p> random between 30 and 60 mins</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
+    
+
+
+    
+<p> switch alarm state RED</p>
 
 </div>
 
@@ -2511,9 +3411,367 @@ place: Object that the unit landed on.</p>
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MANTIS).version" ><strong>MANTIS.version</strong></a>
+    
+
+
+    
+<p> @field #string version</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).AddShorad" ><strong>MANTIS:AddShorad(Shorad, Shoradtime)</strong></a></h2>
+</div>
+    
+<p>Function to link up #MANTIS with a #SHORAD installation</p>
+
+<div id= "#Functions##AddShorad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a>
+            <strong><strong>Shorad</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The #SHORAD object</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Shoradtime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of seconds #SHORAD stays active post wake-up</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CheckObjectInZone" ><strong>MANTIS:CheckObjectInZone(dectset, samcoordinate)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to check if any object is in the given SAM zone</p>
+
+<div id= "#Functions##CheckObjectInZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>dectset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of coordinates of detected items</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>samcoordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coordinate object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>True if in any zone, else false</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Distance Target distance in meters or zero when no object is in zone</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).Debug" ><strong>MANTIS:Debug(onoff)</strong></a></h2>
+</div>
+    
+<p>Function to set switch-on/off the debug state</p>
+
+<div id= "#Functions##Debug" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>onoff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Set true to switch on</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetCommandCenter" ><strong>MANTIS:GetCommandCenter()</strong></a></h2>
+</div>
+    
+<p>Function to get the HQ object for further use</p>
+
+<div id= "#Functions##GetCommandCenter" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.GROUP.html##(GROUP)">Wrapper.GROUP#GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The HQ #GROUP object or <em>nil</em> if it doesn't exist</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).New" ><strong>MANTIS:New(name, samprefix, ewrprefix, hq, coaltion, dynamic, awacs, EmOnOff, Padding)</strong></a></h2>
+</div>
+    
+<p> Function to instantiate a new object of class MANTIS</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of this MANTIS for reporting</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>samprefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Prefixes for the SAM groups from the ME, e.g. all groups starting with "Red Sam..."</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ewrprefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Prefixes for the EWR groups from the ME, e.g. all groups starting with "Red EWR..."</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>hq</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group name of your HQ (optional)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>coaltion</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition side of your setup, e.g. "blue", "red" or "neutral"</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>dynamic</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Use constant (true) filtering or just filter once (false, default) (optional)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>awacs</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group name of your Awacs (optional)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>EmOnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Make MANTIS switch Emissions on and off instead of changing the alarm state between RED and GREEN (optional)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Padding</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>For #SEAD - Extra number of seconds to add to radar switch-back-on time (optional)</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Start up your MANTIS with a basic setting
+
+    `myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)`
+    `myredmantis:Start()`
+
+ [optional] Use
+
+  * `MANTIS:SetEWRGrouping(radius)`
+  * `MANTIS:SetEWRRange(radius)`
+  * `MANTIS:SetSAMRadius(radius)`
+  * `MANTIS:SetDetectInterval(interval)`
+  * `MANTIS:SetAutoRelocate(hq, ewr)`
+
+ before starting #MANTIS to fine-tune your setup.
+
+ If you want to use a separate AWACS unit (default detection range: 250km) to support your EWR system, use e.g. the following setup:
+
+    `mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")`
+    `mybluemantis:Start()`
+</code></pre>
+
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -2975,6 +4233,526 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS).RemoveShorad" ><strong>MANTIS:RemoveShorad()</strong></a></h2>
+</div>
+    
+<p>Function to unlink #MANTIS from a #SHORAD installation</p>
+
+<div id= "#Functions##RemoveShorad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetAdvancedMode" ><strong>MANTIS:SetAdvancedMode(onoff, ratio)</strong></a></h2>
+</div>
+    
+<p>Function to set Advanded Mode</p>
+
+<div id= "#Functions##SetAdvancedMode" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>onoff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, will activate Advanced Mode</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ratio</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>[optional] Percentage to use for advanced mode, defaults to 100%</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Advanced mode will *decrease* reactivity of MANTIS, if HQ and/or EWR network dies.  Set SAMs to RED state if both are dead.  Requires usage of an **HQ** object and the **dynamic** option.
+E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetAutoRelocate" ><strong>MANTIS:SetAutoRelocate(hq, ewr)</strong></a></h2>
+</div>
+    
+<p>Function to set autorelocation for HQ and EWR objects.</p>
+
+    
+<p>Note: Units must be actually mobile in DCS!</p>
+
+<div id= "#Functions##SetAutoRelocate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>hq</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, will relocate HQ object</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ewr</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, will relocate  EWR objects</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetAwacs" ><strong>MANTIS:SetAwacs(prefix)</strong></a></h2>
+</div>
+    
+<p>Function to set separate AWACS detection instance</p>
+
+<div id= "#Functions##SetAwacs" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>prefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the AWACS group in the mission editor</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetAwacsRange" ><strong>MANTIS:SetAwacsRange(range)</strong></a></h2>
+</div>
+    
+<p>Function to set AWACS detection range.</p>
+
+    
+<p>Defaults to 250.000m (250km) - use <strong>before</strong> starting your Mantis!</p>
+
+<div id= "#Functions##SetAwacsRange" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>range</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Detection range of the AWACS group</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetCommandCenter" ><strong>MANTIS:SetCommandCenter(group)</strong></a></h2>
+</div>
+    
+<p>Function to set the HQ object for further use</p>
+
+<div id= "#Functions##SetCommandCenter" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.GROUP.html##(GROUP)">Wrapper.GROUP#GROUP</a>
+            <strong><strong>group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The #GROUP object to be set as HQ</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetDetectInterval" ><strong>MANTIS:SetDetectInterval(interval)</strong></a></h2>
+</div>
+    
+<p>Function to set the detection interval</p>
+
+<div id= "#Functions##SetDetectInterval" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The interval in seconds</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetEWRGrouping" ><strong>MANTIS:SetEWRGrouping(radius)</strong></a></h2>
+</div>
+    
+<p>Function to set the grouping radius of the detection in meters</p>
+
+<div id= "#Functions##SetEWRGrouping" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius upon which detected objects will be grouped</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetEWRRange" ><strong>MANTIS:SetEWRRange(radius)</strong></a></h2>
+</div>
+    
+<p>Function to set the detection radius of the EWR in meters</p>
+
+<div id= "#Functions##SetEWRRange" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius of the EWR detection zone</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetNewSAMRangeWhileRunning" ><strong>MANTIS:SetNewSAMRangeWhileRunning(range)</strong></a></h2>
+</div>
+    
+<p>Function to set a new SAM firing engage range, use this method to adjust range while running MANTIS, e.g.</p>
+
+    
+<p>for different setups day and night</p>
+
+<div id= "#Functions##SetNewSAMRangeWhileRunning" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>range</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Percent of the max fire range</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetSAMRadius" ><strong>MANTIS:SetSAMRadius(radius)</strong></a></h2>
+</div>
+    
+<p>Function to set switch-on/off zone for the SAM sites in meters</p>
+
+<div id= "#Functions##SetSAMRadius" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius of the firing zone</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetSAMRange" ><strong>MANTIS:SetSAMRange(range)</strong></a></h2>
+</div>
+    
+<p>Function to set SAM firing engage range, 0-100 percent, e.g.</p>
+
+    
+<p>75</p>
+
+<div id= "#Functions##SetSAMRange" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>range</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Percent of the max fire range</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetSAMStartState" ><strong>MANTIS:SetSAMStartState()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to set the SAM start state</p>
+
+<div id= "#Functions##SetSAMStartState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetUsingDLink" ><strong>MANTIS:SetUsingDLink(DLink)</strong></a></h2>
+</div>
+    
+<p>Set using an #INTEL_DLINK object instead of #DETECTION</p>
+
+<div id= "#Functions##SetUsingDLink" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.Intelligence.html##(INTEL_DLINK)">Ops.Intelligence#INTEL_DLINK</a>
+            <strong><strong>DLink</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The data link object to be used.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetUsingEmOnOff" ><strong>MANTIS:SetUsingEmOnOff(switch)</strong></a></h2>
+</div>
+    
+<p>Set using Emissions on/off instead of changing alarm state</p>
+
+<div id= "#Functions##SetUsingEmOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Decide if we are changing alarm state or Emission state</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS).Start" ><strong>MANTIS:Start()</strong></a></h2>
 </div>
     
@@ -2997,6 +4775,66 @@ place: Object that the unit landed on.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS).StartAwacsDetection" ><strong>MANTIS:StartAwacsDetection()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to start the detection via AWACS if defined as separate</p>
+
+<div id= "#Functions##StartAwacsDetection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The running detection set</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).StartDetection" ><strong>MANTIS:StartDetection()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to start the detection via EWR groups</p>
+
+<div id= "#Functions##StartDetection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The running detection set</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS).Status" ><strong>MANTIS:Status()</strong></a></h2>
 </div>
     
@@ -3008,6 +4846,358 @@ place: Object that the unit landed on.</p>
    <div class="w3-margin-left">
 <p>MANTIS</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CalcAdvState" ><strong>MANTIS:_CalcAdvState()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to determine state of the advanced mode</p>
+
+<div id= "#Functions##_CalcAdvState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Newly calculated interval</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Previous state for tracking 0, 1, or 2</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._Check" ><strong>MANTIS:_Check(detection)</strong></a></h2>
+</div>
+    
+<p>[Internal] Check detection function</p>
+
+<div id= "#Functions##_Check" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>
+            <strong><strong>detection</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Detection object</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckAdvState" ><strong>MANTIS:_CheckAdvState()</strong></a></h2>
+</div>
+    
+<p>[Internal] Check advanced state</p>
+
+<div id= "#Functions##_CheckAdvState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckDLinkState" ><strong>MANTIS:_CheckDLinkState()</strong></a></h2>
+</div>
+    
+<p>[Internal] Check DLink state</p>
+
+<div id= "#Functions##_CheckDLinkState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckEWRState" ><strong>MANTIS:_CheckEWRState()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to check if EWR is (at least partially) alive</p>
+
+<div id= "#Functions##_CheckEWRState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True if EWR is alive, else false</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckHQState" ><strong>MANTIS:_CheckHQState()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to check if HQ is alive</p>
+
+<div id= "#Functions##_CheckHQState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True if HQ is alive, else false</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._GetSAMTable" ><strong>MANTIS:_GetSAMTable()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to get the self.SAM_Table</p>
+
+<div id= "#Functions##_GetSAMTable" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>table</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._RefreshSAMTable" ><strong>MANTIS:_RefreshSAMTable()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to update SAM table and SEAD state</p>
+
+<div id= "#Functions##_RefreshSAMTable" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._Relocate" ><strong>MANTIS:_Relocate()</strong></a></h2>
+</div>
+    
+<p>[Internal] Relocation relay function</p>
+
+<div id= "#Functions##_Relocate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._RelocateGroups" ><strong>MANTIS:_RelocateGroups()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to execute the relocation</p>
+
+<div id= "#Functions##_RelocateGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._SetSAMTable" ><strong>MANTIS:_SetSAMTable(table)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to set the self.SAM_Table</p>
+
+<div id= "#Functions##_SetSAMTable" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>table</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -3118,6 +5308,729 @@ place: Object that the unit landed on.</p>
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterAdvStateChange" ><strong>MANTIS:onafterAdvStateChange(From, Event, To, Oldstate, Newstate, Interval)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function triggered by Event AdvStateChange</p>
+
+<div id= "#Functions##onafterAdvStateChange" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Oldstate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Old state - 0 = green, 1 = amber, 2 = red</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Newstate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>New state - 0 = green, 1 = amber, 2 = red</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Calculated detection interval based on state and advanced feature setting</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterGreenState" ><strong>MANTIS:onafterGreenState(From, Event, To, Group)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function triggered by Event GreenState</p>
+
+<div id= "#Functions##onafterGreenState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The GROUP object whose state was changed</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterRedState" ><strong>MANTIS:onafterRedState(From, Event, To, Group)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function triggered by Event RedState</p>
+
+<div id= "#Functions##onafterRedState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The GROUP object whose state was changed</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterRelocating" ><strong>MANTIS:onafterRelocating(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function triggered by Event Relocating</p>
+
+<div id= "#Functions##onafterRelocating" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterShoradActivated" ><strong>MANTIS:onafterShoradActivated(From, Event, To, Name, Radius, Ontime)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function triggered by Event ShoradActivated</p>
+
+<div id= "#Functions##onafterShoradActivated" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the GROUP which SHORAD shall protect</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius around the named group to find SHORAD groups</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Ontime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Seconds the SHORAD will stay active</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterStart" ><strong>MANTIS:onafterStart(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to set start state</p>
+
+<div id= "#Functions##onafterStart" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterStatus" ><strong>MANTIS:onafterStatus(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>[Internal] Status function for MANTIS</p>
+
+<div id= "#Functions##onafterStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onafterStop" ><strong>MANTIS:onafterStop(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to stop MANTIS</p>
+
+<div id= "#Functions##onafterStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onbeforeStatus" ><strong>MANTIS:onbeforeStatus(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>[Internal] Before status function for MANTIS</p>
+
+<div id= "#Functions##onbeforeStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The From State</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Event</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The To State</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -3146,8 +6059,41 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(MANTIS.AdvancedState)">#MANTIS.AdvancedState</a>
+<a id="#(MANTIS).AdvancedState" ><strong>MANTIS.AdvancedState</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(MANTIS).ClassName" ><strong>MANTIS.ClassName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).DLTimeStamp" ><strong>MANTIS.DLTimeStamp</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).DLink" ><strong>MANTIS.DLink</strong></a>
     
 
 
@@ -3245,6 +6191,20 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).SamStateTracker" ><strong>MANTIS.SamStateTracker</strong></a>
+    
+
+
+    
+<p> table to hold alert states, so we don't trigger state changes twice in adv mode</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a>
 <a id="#(MANTIS).Shorad" ><strong>MANTIS.Shorad</strong></a>
     
@@ -3282,6 +6242,17 @@ place: Object that the unit landed on.</p>
 <a id="#(MANTIS).ShoradTime" ><strong>MANTIS.ShoradTime</strong></a>
     
 <p>Timer in seconds, how long #SHORAD will be active after a detection inside of the defense range</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).TimeStamp" ><strong>MANTIS.TimeStamp</strong></a>
+    
+
 
 </div>
 
@@ -3366,6 +6337,17 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).autorelocateunits" ><strong>MANTIS.autorelocateunits</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MANTIS).awacsrange" ><strong>MANTIS.awacsrange</strong></a>
     
@@ -3443,10 +6425,49 @@ place: Object that the unit landed on.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(MANTIS).name" ><strong>MANTIS.name</strong></a>
     
 <p>Name of this Mantis</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).relointerval" ><strong>MANTIS.relointerval</strong></a>
+    
+
+
+    
+<p> random between 30 and 60 mins</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
+    
+
+
+    
+<p> switch alarm state RED</p>
 
 </div>
 
@@ -3462,9 +6483,1133 @@ place: Object that the unit landed on.</p>
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MANTIS).version" ><strong>MANTIS.version</strong></a>
+    
+
+
+    
+<p> @field #string version</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).ClearState" ><strong>MANTIS:ClearState(Object, StateName)</strong></a></h2>
+</div>
+    
+<p>Clear the state of an object.</p>
+
+<div id= "#Functions##ClearState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>StateName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is should be cleared.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventBirth" ><strong>MANTIS:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+</div>
+    
+<p>Creation of a Birth Event.</p>
+
+<div id= "#Functions##CreateEventBirth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>IniUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating unit name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>place</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>subplace</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventCrash" ><strong>MANTIS:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventCrash" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventDead" ><strong>MANTIS:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Dead Event.</p>
+
+<div id= "#Functions##CreateEventDead" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventPlayerEnterAircraft" ><strong>MANTIS:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+</div>
+    
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+
+<div id= "#Functions##CreateEventPlayerEnterAircraft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit the player entered.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventRemoveUnit" ><strong>MANTIS:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Remove Unit Event.</p>
+
+<div id= "#Functions##CreateEventRemoveUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventTakeoff" ><strong>MANTIS:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Takeoff Event.</p>
+
+<div id= "#Functions##CreateEventTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).CreateEventUnitLost" ><strong>MANTIS:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventUnitLost" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).E" ><strong>MANTIS:E(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an exception which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##E" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).EventDispatcher" ><strong>MANTIS:EventDispatcher()</strong></a></h2>
+</div>
+    
+<p>Returns the event dispatcher</p>
+
+<div id= "#Functions##EventDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).EventRemoveAll" ><strong>MANTIS:EventRemoveAll()</strong></a></h2>
+</div>
+    
+<p>Remove all subscribed events</p>
+
+<div id= "#Functions##EventRemoveAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).F" ><strong>MANTIS:F(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).F2" ><strong>MANTIS:F2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 2.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).F3" ><strong>MANTIS:F3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 3.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetClassID" ><strong>MANTIS:GetClassID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassID of the class instance.</p>
+
+<div id= "#Functions##GetClassID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetClassName" ><strong>MANTIS:GetClassName()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName of the class instance.</p>
+
+<div id= "#Functions##GetClassName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetClassNameAndID" ><strong>MANTIS:GetClassNameAndID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName + ClassID of the class instance.</p>
+
+    
+<p>The ClassName + ClassID is formatted as '%s#%09d'. </p>
+
+<div id= "#Functions##GetClassNameAndID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName + ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetEventPriority" ><strong>MANTIS:GetEventPriority()</strong></a></h2>
+</div>
+    
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##GetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetParent" ><strong>MANTIS:GetParent(Child, FromClass)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to retrieve the Parent class.</p>
+
+    
+<p>Note that the Parent class must be passed to call the parent class method.</p>
+
+<pre><code>self:GetParent(self):ParentMethod()
+
+
+</code></pre>
+
+<div id= "#Functions##GetParent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>This is the Child class from which the Parent class needs to be retrieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>FromClass</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The class from which to get the parent.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).GetState" ><strong>MANTIS:GetState(Object, Key)</strong></a></h2>
+</div>
+    
+<p>Get a Value given a Key from the Object.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##GetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used to retrieve the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value retrieved or nil if the Key was not found and thus the Value could not be retrieved.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).HandleEvent" ><strong>MANTIS:HandleEvent(EventID, EventFunction)</strong></a></h2>
+</div>
+    
+<p>Subscribe to a DCS Event.</p>
+
+<div id= "#Functions##HandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>EventFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The function to be called when the event occurs for the unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).I" ><strong>MANTIS:I(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an information which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##I" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).Inherit" ><strong>MANTIS:Inherit(Child, Parent)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to inherit from a parent class.</p>
+
+<div id= "#Functions##Inherit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Child class that inherits.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Parent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Parent class that the Child inherits from.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Child</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).IsInstanceOf" ><strong>MANTIS:IsInstanceOf(ClassName)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+
+    
+
+<h3>Examples:</h3>
+
+<ul>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( ZONE ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'ZONE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'zone' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'BASE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'GROUP' ) will return false</p></li>
+</ul>
+
+
+<div id= "#Functions##IsInstanceOf" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ClassName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the name of the class or the class itself to run the check against</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).IsTrace" ><strong>MANTIS:IsTrace()</strong></a></h2>
+</div>
+    
+<p>Enquires if tracing is on (for the class).</p>
+
+<div id= "#Functions##IsTrace" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).New" ><strong>MANTIS:New()</strong></a></h2>
+</div>
+    
+<p>BASE constructor.</p>
+
+    
+
+<p>This is an example how to use the BASE:New() constructor in a new class definition when inheriting from BASE.</p>
+
+<pre><code>function EVENT:New()
+  local self = BASE:Inherit( self, BASE:New() ) -- #EVENT
+  return self
+end
+  
+</code></pre>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -4775,6 +8920,910 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).ScheduleOnce" ><strong>MANTIS:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleOnce" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).ScheduleRepeat" ><strong>MANTIS:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleRepeat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).ScheduleStop" ><strong>MANTIS:ScheduleStop(SchedulerFunction)</strong></a></h2>
+</div>
+    
+<p>Stops the Schedule.</p>
+
+<div id= "#Functions##ScheduleStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetEventPriority" ><strong>MANTIS:SetEventPriority(EventPriority)</strong></a></h2>
+</div>
+    
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##SetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>EventPriority</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetState" ><strong>MANTIS:SetState(Object, Key, Value)</strong></a></h2>
+</div>
+    
+<p>Set a state or property of the Object given a Key and a Value.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##SetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that will hold the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used as a reference of the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Value</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The value to is stored in the object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value set. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).T" ><strong>MANTIS:T(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 1.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).T2" ><strong>MANTIS:T2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 2.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).T3" ><strong>MANTIS:T3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 3.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceAll" ><strong>MANTIS:TraceAll(TraceAll)</strong></a></h2>
+</div>
+    
+<p>Trace all methods in MOOSE</p>
+
+<div id= "#Functions##TraceAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceAll</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>true = trace all methods in MOOSE.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceClass" ><strong>MANTIS:TraceClass(Class)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a class</p>
+
+<div id= "#Functions##TraceClass" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceClassMethod" ><strong>MANTIS:TraceClassMethod(Class, Method)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a specific method of  class</p>
+
+<div id= "#Functions##TraceClassMethod" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Method</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceLevel" ><strong>MANTIS:TraceLevel(Level)</strong></a></h2>
+</div>
+    
+<p>Set trace level</p>
+
+<div id= "#Functions##TraceLevel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Level</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceOff" ><strong>MANTIS:TraceOff()</strong></a></h2>
+</div>
+    
+<p>Set trace off.</p>
+
+<div id= "#Functions##TraceOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing Off
+BASE:TraceOff()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceOn" ><strong>MANTIS:TraceOn()</strong></a></h2>
+</div>
+    
+<p>Set trace on.</p>
+
+<div id= "#Functions##TraceOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOn()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).TraceOnOff" ><strong>MANTIS:TraceOnOff(TraceOnOff)</strong></a></h2>
+</div>
+    
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+
+    
+<p>So tracing must be switched on manually in your mission if you are using Moose statically.
+When moose is loading dynamically (for moose class development), tracing is switched on by default.</p>
+
+<div id= "#Functions##TraceOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceOnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch the tracing on or off.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOnOff( true )
+
+-- Switch the tracing Off
+BASE:TraceOnOff( false )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).UnHandleEvent" ><strong>MANTIS:UnHandleEvent(EventID)</strong></a></h2>
+</div>
+    
+<p>UnSubscribe to a DCS event.</p>
+
+<div id= "#Functions##UnHandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._F" ><strong>MANTIS:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>This function is private.</p>
+
+<div id= "#Functions##_F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._T" ><strong>MANTIS:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic.</p>
+
+<div id= "#Functions##_T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).onEvent" ><strong>MANTIS:onEvent(event)</strong></a></h2>
+</div>
+    
+
+
+    
+<p> TODO: Complete DCS#Event structure. <br/>
+- The main event handling function... This function captures all events generated for the class.
+ @param #BASE self
+ @param DCS#Event event</p>
+
+<div id= "#Functions##onEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##MANTIS.AdvancedState')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(MANTIS.AdvancedState)">Type <strong>MANTIS.AdvancedState</strong></a></h2></div>
+        <div id= "#Types##MANTIS.AdvancedState" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Advanced state enumerator</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS.AdvancedState).AMBER" ><strong>MANTIS.AdvancedState.AMBER</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS.AdvancedState).GREEN" ><strong>MANTIS.AdvancedState.GREEN</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS.AdvancedState).RED" ><strong>MANTIS.AdvancedState.RED</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>

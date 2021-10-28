@@ -1673,6 +1673,189 @@ Controls a network of short range air/missile defense groups.</p>
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SCHEDULER')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>SCHEDULER</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Creates and handles schedules over time, which allow to execute code at specific time intervals with randomization.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##SCHEDULER" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(SCHEDULER)">#SCHEDULER</a>
+<a id="SCHEDULER" ><strong>SCHEDULER</strong></a>
+    
+<p>Creates and handles schedules over time, which allow to execute code at specific time intervals with randomization.</p>
+
+    
+
+<p>A SCHEDULER can manage <strong>multiple</strong> (repeating) schedules. Each planned or executing schedule has a unique <strong>ScheduleID</strong>.
+The ScheduleID is returned when the method <a href="##(SCHEDULER).Schedule">SCHEDULER.Schedule</a>() is called.
+It is recommended to store the ScheduleID in a variable, as it is used in the methods <a href="SCHEDULER.Start.html">SCHEDULER.Start</a>() and <a href="SCHEDULER.Stop.html">SCHEDULER.Stop</a>(),
+which can start and stop specific repeating schedules respectively within a SCHEDULER object.</p>
+
+<h2>SCHEDULER constructor</h2>
+
+<p>The SCHEDULER class is quite easy to use, but note that the New constructor has variable parameters:</p>
+
+<p>The <a href="##(SCHEDULER).New">SCHEDULER.New</a>() method returns 2 variables:</p>
+
+<ol>
+    <li>The SCHEDULER object reference.</li>
+    <li>The first schedule planned in the SCHEDULER object.</li>
+</ol>
+
+<p>To clarify the different appliances, lets have a look at the following examples: </p>
+
+<h3>Construct a SCHEDULER object without a persistent schedule.</h3>
+
+<ul>
+    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil ): Setup a new SCHEDULER object, which is persistently executed after garbage collection.</p>
+    
+    <p>MasterObject = SCHEDULER:New()
+    SchedulerID = MasterObject:Schedule( nil, ScheduleFunction, {} )</p></li>
+</ul>
+
+<p>The above example creates a new MasterObject, but does not schedule anything.
+A separate schedule is created by using the MasterObject using the method :Schedule..., which returns a ScheduleID</p>
+
+<h3>Construct a SCHEDULER object without a volatile schedule, but volatile to the Object existence...</h3>
+
+<ul>
+    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object ): Setup a new SCHEDULER object, which is linked to the Object. When the Object is nillified or destroyed, the SCHEDULER object will also be destroyed and stopped after garbage collection.</p>
+    
+    <p>ZoneObject = ZONE:New( "ZoneName" )
+    MasterObject = SCHEDULER:New( ZoneObject )
+    SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {} )
+    ...
+    ZoneObject = nil
+    garbagecollect()</p></li>
+</ul>
+
+<p>The above example creates a new MasterObject, but does not schedule anything, and is bound to the existence of ZoneObject, which is a ZONE.
+A separate schedule is created by using the MasterObject using the method :Schedule()..., which returns a ScheduleID
+Later in the logic, the ZoneObject is put to nil, and garbage is collected.
+As a result, the MasterObject will cancel any planned schedule.</p>
+
+<h3>Construct a SCHEDULER object with a persistent schedule.</h3>
+
+<ul>
+    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( nil, Function, FunctionArguments, Start, ... ): Setup a new persistent SCHEDULER object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
+    
+    <p>MasterObject, SchedulerID = SCHEDULER:New( nil, ScheduleFunction, {} )</p></li>
+</ul>
+
+<p>The above example creates a new MasterObject, and does schedule the first schedule as part of the call.
+Note that 2 variables are returned here: MasterObject, ScheduleID...</p>
+
+<h3>Construct a SCHEDULER object without a schedule, but volatile to the Object existence...</h3>
+
+<ul>
+    <li><p><a href="##(SCHEDULER).New">SCHEDULER.New</a>( Object, Function, FunctionArguments, Start, ... ): Setup a new SCHEDULER object, linked to Object, and start a new schedule for the Function with the defined FunctionArguments according the Start and sequent parameters.</p>
+    
+    <p>ZoneObject = ZONE:New( "ZoneName" )
+    MasterObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
+    SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {} )
+    ...
+    ZoneObject = nil
+    garbagecollect()</p></li>
+</ul>
+
+<p>The above example creates a new MasterObject, and schedules a method call (ScheduleFunction), 
+and is bound to the existence of ZoneObject, which is a ZONE object (ZoneObject).
+Both a MasterObject and a SchedulerID variable are returned.
+Later in the logic, the ZoneObject is put to nil, and garbage is collected.
+As a result, the MasterObject will cancel the planned schedule.</p>
+
+<h2>SCHEDULER timer stopping and (re-)starting.</h2>
+
+<p>The SCHEDULER can be stopped and restarted with the following methods:</p>
+
+<ul>
+    <li><p><a href="##(SCHEDULER).Start">SCHEDULER.Start</a>(): (Re-)Start the schedules within the SCHEDULER object. If a CallID is provided to :Start(), only the schedule referenced by CallID will be (re-)started.</p></li>
+    <li><p><a href="##(SCHEDULER).Stop">SCHEDULER.Stop</a>(): Stop the schedules within the SCHEDULER object. If a CallID is provided to :Stop(), then only the schedule referenced by CallID will be stopped.</p>
+    
+    <p>ZoneObject = ZONE:New( "ZoneName" )
+    MasterObject, SchedulerID = SCHEDULER:New( ZoneObject, ScheduleFunction, {} )
+    SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 10 )
+    ...
+    MasterObject:Stop( SchedulerID )
+    ...
+    MasterObject:Start( SchedulerID )</p></li>
+</ul>
+
+<p>The above example creates a new MasterObject, and does schedule the first schedule as part of the call.
+Note that 2 variables are returned here: MasterObject, ScheduleID... <br/>
+Later in the logic, the repeating schedule with SchedulerID is stopped. <br/>
+A bit later, the repeating schedule with SchedulerId is (re)-started.  </p>
+
+<h2>Create a new schedule</h2>
+
+<p>With the method <a href="##(SCHEDULER).Schedule">SCHEDULER.Schedule</a>() a new time event can be scheduled. 
+This method is used by the :New() constructor when a new schedule is planned.</p>
+
+<p>Consider the following code fragment of the SCHEDULER object creation.</p>
+
+<pre><code>ZoneObject = ZONE:New( "ZoneName" )
+MasterObject = SCHEDULER:New( ZoneObject )
+</code></pre>
+
+<p>Several parameters can be specified that influence the behaviour of a Schedule.</p>
+
+<h3>A single schedule, immediately executed</h3>
+
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {} )
+</code></pre>
+
+<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within milleseconds ...</p>
+
+<h3>A single schedule, planned over time</h3>
+
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10 )
+</code></pre>
+
+<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds ...</p>
+
+<h3>A schedule with a repeating time interval, planned over time</h3>
+
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60 )
+</code></pre>
+
+<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
+and repeating 60 every seconds ...</p>
+
+<h3>A schedule with a repeating time interval, planned over time, with time interval randomization</h3>
+
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5 )
+</code></pre>
+
+<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
+and repeating 60 seconds, with a 50% time interval randomization ...
+So the repeating time interval will be randomized using the <strong>0.5</strong>, <br/>
+and will calculate between <strong>60 - ( 60 * 0.5 )</strong> and <strong>60 + ( 60 * 0.5 )</strong> for each repeat, 
+which is in this example between <strong>30</strong> and <strong>90</strong> seconds.</p>
+
+<h3>A schedule with a repeating time interval, planned over time, with time interval randomization, and stop after a time interval</h3>
+
+<pre><code>SchedulerID = MasterObject:Schedule( ZoneObject, ScheduleFunction, {}, 10, 60, 0.5, 300 )
+</code></pre>
+
+<p>The above example schedules a new ScheduleFunction call to be executed asynchronously, within 10 seconds, 
+The schedule will repeat every 60 seconds.
+So the repeating time interval will be randomized using the <strong>0.5</strong>, <br/>
+and will calculate between <strong>60 - ( 60 * 0.5 )</strong> and <strong>60 + ( 60 * 0.5 )</strong> for each repeat, 
+which is in this example between <strong>30</strong> and <strong>90</strong> seconds.
+The schedule will stop after <strong>300</strong> seconds.</p>
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SCHEDULER)">Type <strong>SCHEDULER</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1686,9 +1869,39 @@ Controls a network of short range air/missile defense groups.</p>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Clear">SCHEDULER:Clear()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clears all pending schedules.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).MasterObject">SCHEDULER.MasterObject</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Master object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).New">SCHEDULER:New(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>SCHEDULER constructor.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).NoTrace">SCHEDULER:NoTrace()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>No tracing for this scheduler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Remove">SCHEDULER:Remove(ScheduleID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Removes a specific schedule if a valid ScheduleID is provided.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Schedule">SCHEDULER:Schedule(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1701,6 +1914,18 @@ Controls a network of short range air/missile defense groups.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ShowTrace">SCHEDULER.ShowTrace</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace info if true.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Start">SCHEDULER:Start(ScheduleID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Re-)Starts the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Stop">SCHEDULER:Stop(ScheduleID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the schedules or a specific schedule if a valid ScheduleID is provided.</p>
 </td>
           </tr>
         </table>
@@ -1727,6 +1952,162 @@ Controls a network of short range air/missile defense groups.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ClassNameAndID">SCHEDULER.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ClearState">SCHEDULER:ClearState(Object, StateName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clear the state of an object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventBirth">SCHEDULER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Birth Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventCrash">SCHEDULER:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventDead">SCHEDULER:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Dead Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventPlayerEnterAircraft">SCHEDULER:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventRemoveUnit">SCHEDULER:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Remove Unit Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventTakeoff">SCHEDULER:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Takeoff Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).CreateEventUnitLost">SCHEDULER:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).E">SCHEDULER:E(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an exception which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).EventDispatcher">SCHEDULER:EventDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the event dispatcher</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).EventRemoveAll">SCHEDULER:EventRemoveAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove all subscribed events</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).F">SCHEDULER:F(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).F2">SCHEDULER:F2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).F3">SCHEDULER:F3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetClassID">SCHEDULER:GetClassID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetClassName">SCHEDULER:GetClassName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetClassNameAndID">SCHEDULER:GetClassNameAndID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName + ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetEventPriority">SCHEDULER:GetEventPriority()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetParent">SCHEDULER:GetParent(Child, FromClass)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to retrieve the Parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).GetState">SCHEDULER:GetState(Object, Key)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a Value given a Key from the Object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).HandleEvent">SCHEDULER:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Subscribe to a DCS Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).I">SCHEDULER:I(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an information which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Inherit">SCHEDULER:Inherit(Child, Parent)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to inherit from a parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).IsInstanceOf">SCHEDULER:IsInstanceOf(ClassName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).IsTrace">SCHEDULER:IsTrace()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enquires if tracing is on (for the class).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).New">SCHEDULER:New()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1948,6 +2329,140 @@ place: Object that the unit landed on.</p>
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleOnce">SCHEDULER:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleRepeat">SCHEDULER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).ScheduleStop">SCHEDULER:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the Schedule.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).Scheduler">SCHEDULER.Scheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).SetEventPriority">SCHEDULER:SetEventPriority(EventPriority)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).SetState">SCHEDULER:SetState(Object, Key, Value)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a state or property of the Object given a Key and a Value.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).T">SCHEDULER:T(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 1.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).T2">SCHEDULER:T2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).T3">SCHEDULER:T3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceAll">SCHEDULER:TraceAll(TraceAll)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace all methods in MOOSE</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceClass">SCHEDULER:TraceClass(Class)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceClassMethod">SCHEDULER:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a specific method of  class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceLevel">SCHEDULER:TraceLevel(Level)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace level</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceOff">SCHEDULER:TraceOff()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceOn">SCHEDULER:TraceOn()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).TraceOnOff">SCHEDULER:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).UnHandleEvent">SCHEDULER:UnHandleEvent(EventID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnSubscribe to a DCS event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER)._">SCHEDULER._</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER)._F">SCHEDULER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER)._T">SCHEDULER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).__">SCHEDULER.__</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCHEDULER).onEvent">SCHEDULER:onEvent(event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
         </table>
         </div>
 
@@ -2002,6 +2517,424 @@ place: Object that the unit landed on.</p>
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).Clear" ><strong>SCHEDULER:Clear()</strong></a></h2>
+</div>
+    
+<p>Clears all pending schedules.</p>
+
+<div id= "#Functions##Clear" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop)</strong></a></h2>
+</div>
+    
+<p>SCHEDULER constructor.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>MasterObject</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specified for which Moose object the timer is setup. If a value of nil is provided, a scheduler will be setup without an object reference.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SchedulerArguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p><a href="##(SCHEDULER)">#SCHEDULER</a>:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>self.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>The ScheduleID of the planned schedule.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).NoTrace" ><strong>SCHEDULER:NoTrace()</strong></a></h2>
+</div>
+    
+<p>No tracing for this scheduler.</p>
+
+<div id= "#Functions##NoTrace" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).Remove" ><strong>SCHEDULER:Remove(ScheduleID)</strong></a></h2>
+</div>
+    
+<p>Removes a specific schedule if a valid ScheduleID is provided.</p>
+
+<div id= "#Functions##Remove" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScheduleID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The ScheduleID of the planned (repeating) schedule.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).Schedule" ><strong>SCHEDULER:Schedule(MasterObject, SchedulerFunction, SchedulerArguments, Start, Repeat, RandomizeFactor, Stop, TraceLevel, Fsm)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##Schedule" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>MasterObject</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specified for which Moose object the timer is setup. If a value of nil is provided, a scheduler will be setup without an object reference.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SchedulerArguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the time interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Time interval in seconds after which the scheduler will be stoppe.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>TraceLevel</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Trace level [0,3]. Default 3.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Fsm.html##(FSM)">Core.Fsm#FSM</a>
+            <strong><strong>Fsm</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Finite state model.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).Start" ><strong>SCHEDULER:Start(ScheduleID)</strong></a></h2>
+</div>
+    
+<p>(Re-)Starts the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+
+<div id= "#Functions##Start" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScheduleID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The ScheduleID of the planned (repeating) schedule.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).Stop" ><strong>SCHEDULER:Stop(ScheduleID)</strong></a></h2>
+</div>
+    
+<p>Stops the schedules or a specific schedule if a valid ScheduleID is provided.</p>
+
+<div id= "#Functions##Stop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCHEDULER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScheduleID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The ScheduleID of the planned (repeating) schedule.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -2041,6 +2974,1116 @@ place: Object that the unit landed on.</p>
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).ClearState" ><strong>SCHEDULER:ClearState(Object, StateName)</strong></a></h2>
+</div>
+    
+<p>Clear the state of an object.</p>
+
+<div id= "#Functions##ClearState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>StateName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is should be cleared.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventBirth" ><strong>SCHEDULER:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+</div>
+    
+<p>Creation of a Birth Event.</p>
+
+<div id= "#Functions##CreateEventBirth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>IniUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating unit name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>place</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>subplace</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventCrash" ><strong>SCHEDULER:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventCrash" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventDead" ><strong>SCHEDULER:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Dead Event.</p>
+
+<div id= "#Functions##CreateEventDead" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventPlayerEnterAircraft" ><strong>SCHEDULER:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+</div>
+    
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+
+<div id= "#Functions##CreateEventPlayerEnterAircraft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit the player entered.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventRemoveUnit" ><strong>SCHEDULER:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Remove Unit Event.</p>
+
+<div id= "#Functions##CreateEventRemoveUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventTakeoff" ><strong>SCHEDULER:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Takeoff Event.</p>
+
+<div id= "#Functions##CreateEventTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).CreateEventUnitLost" ><strong>SCHEDULER:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventUnitLost" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).E" ><strong>SCHEDULER:E(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an exception which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##E" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).EventDispatcher" ><strong>SCHEDULER:EventDispatcher()</strong></a></h2>
+</div>
+    
+<p>Returns the event dispatcher</p>
+
+<div id= "#Functions##EventDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).EventRemoveAll" ><strong>SCHEDULER:EventRemoveAll()</strong></a></h2>
+</div>
+    
+<p>Remove all subscribed events</p>
+
+<div id= "#Functions##EventRemoveAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).F" ><strong>SCHEDULER:F(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).F2" ><strong>SCHEDULER:F2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 2.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).F3" ><strong>SCHEDULER:F3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 3.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).GetClassID" ><strong>SCHEDULER:GetClassID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassID of the class instance.</p>
+
+<div id= "#Functions##GetClassID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).GetClassName" ><strong>SCHEDULER:GetClassName()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName of the class instance.</p>
+
+<div id= "#Functions##GetClassName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).GetClassNameAndID" ><strong>SCHEDULER:GetClassNameAndID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName + ClassID of the class instance.</p>
+
+    
+<p>The ClassName + ClassID is formatted as '%s#%09d'. </p>
+
+<div id= "#Functions##GetClassNameAndID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName + ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).GetEventPriority" ><strong>SCHEDULER:GetEventPriority()</strong></a></h2>
+</div>
+    
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##GetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).GetParent" ><strong>SCHEDULER:GetParent(Child, FromClass)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to retrieve the Parent class.</p>
+
+    
+<p>Note that the Parent class must be passed to call the parent class method.</p>
+
+<pre><code>self:GetParent(self):ParentMethod()
+
+
+</code></pre>
+
+<div id= "#Functions##GetParent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>This is the Child class from which the Parent class needs to be retrieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>FromClass</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The class from which to get the parent.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).GetState" ><strong>SCHEDULER:GetState(Object, Key)</strong></a></h2>
+</div>
+    
+<p>Get a Value given a Key from the Object.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##GetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used to retrieve the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value retrieved or nil if the Key was not found and thus the Value could not be retrieved.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).HandleEvent" ><strong>SCHEDULER:HandleEvent(EventID, EventFunction)</strong></a></h2>
+</div>
+    
+<p>Subscribe to a DCS Event.</p>
+
+<div id= "#Functions##HandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>EventFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The function to be called when the event occurs for the unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).I" ><strong>SCHEDULER:I(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an information which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##I" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).Inherit" ><strong>SCHEDULER:Inherit(Child, Parent)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to inherit from a parent class.</p>
+
+<div id= "#Functions##Inherit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Child class that inherits.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Parent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Parent class that the Child inherits from.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Child</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).IsInstanceOf" ><strong>SCHEDULER:IsInstanceOf(ClassName)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+
+    
+
+<h3>Examples:</h3>
+
+<ul>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( ZONE ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'ZONE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'zone' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'BASE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'GROUP' ) will return false</p></li>
+</ul>
+
+
+<div id= "#Functions##IsInstanceOf" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ClassName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the name of the class or the class itself to run the check against</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).IsTrace" ><strong>SCHEDULER:IsTrace()</strong></a></h2>
+</div>
+    
+<p>Enquires if tracing is on (for the class).</p>
+
+<div id= "#Functions##IsTrace" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).New" ><strong>SCHEDULER:New()</strong></a></h2>
+</div>
+    
+<p>BASE constructor.</p>
+
+    
+
+<p>This is an example how to use the BASE:New() constructor in a new class definition when inheriting from BASE.</p>
+
+<pre><code>function EVENT:New()
+  local self = BASE:Inherit( self, BASE:New() ) -- #EVENT
+  return self
+end
+  
+</code></pre>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -3344,6 +5387,862 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
               
 <p>The EventData structure.</p>
 
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).ScheduleOnce" ><strong>SCHEDULER:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleOnce" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).ScheduleRepeat" ><strong>SCHEDULER:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleRepeat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).ScheduleStop" ><strong>SCHEDULER:ScheduleStop(SchedulerFunction)</strong></a></h2>
+</div>
+    
+<p>Stops the Schedule.</p>
+
+<div id= "#Functions##ScheduleStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).SetEventPriority" ><strong>SCHEDULER:SetEventPriority(EventPriority)</strong></a></h2>
+</div>
+    
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##SetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>EventPriority</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).SetState" ><strong>SCHEDULER:SetState(Object, Key, Value)</strong></a></h2>
+</div>
+    
+<p>Set a state or property of the Object given a Key and a Value.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##SetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that will hold the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used as a reference of the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Value</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The value to is stored in the object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value set. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).T" ><strong>SCHEDULER:T(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 1.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).T2" ><strong>SCHEDULER:T2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 2.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).T3" ><strong>SCHEDULER:T3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 3.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceAll" ><strong>SCHEDULER:TraceAll(TraceAll)</strong></a></h2>
+</div>
+    
+<p>Trace all methods in MOOSE</p>
+
+<div id= "#Functions##TraceAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceAll</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>true = trace all methods in MOOSE.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceClass" ><strong>SCHEDULER:TraceClass(Class)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a class</p>
+
+<div id= "#Functions##TraceClass" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceClassMethod" ><strong>SCHEDULER:TraceClassMethod(Class, Method)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a specific method of  class</p>
+
+<div id= "#Functions##TraceClassMethod" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Method</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceLevel" ><strong>SCHEDULER:TraceLevel(Level)</strong></a></h2>
+</div>
+    
+<p>Set trace level</p>
+
+<div id= "#Functions##TraceLevel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Level</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceOff" ><strong>SCHEDULER:TraceOff()</strong></a></h2>
+</div>
+    
+<p>Set trace off.</p>
+
+<div id= "#Functions##TraceOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing Off
+BASE:TraceOff()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceOn" ><strong>SCHEDULER:TraceOn()</strong></a></h2>
+</div>
+    
+<p>Set trace on.</p>
+
+<div id= "#Functions##TraceOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOn()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).TraceOnOff" ><strong>SCHEDULER:TraceOnOff(TraceOnOff)</strong></a></h2>
+</div>
+    
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+
+    
+<p>So tracing must be switched on manually in your mission if you are using Moose statically.
+When moose is loading dynamically (for moose class development), tracing is switched on by default.</p>
+
+<div id= "#Functions##TraceOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceOnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch the tracing on or off.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOnOff( true )
+
+-- Switch the tracing Off
+BASE:TraceOnOff( false )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).UnHandleEvent" ><strong>SCHEDULER:UnHandleEvent(EventID)</strong></a></h2>
+</div>
+    
+<p>UnSubscribe to a DCS event.</p>
+
+<div id= "#Functions##UnHandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER)._F" ><strong>SCHEDULER:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>This function is private.</p>
+
+<div id= "#Functions##_F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER)._T" ><strong>SCHEDULER:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic.</p>
+
+<div id= "#Functions##_T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCHEDULER).onEvent" ><strong>SCHEDULER:onEvent(event)</strong></a></h2>
+</div>
+    
+
+
+    
+<p> TODO: Complete DCS#Event structure. <br/>
+- The main event handling function... This function captures all events generated for the class.
+ @param #BASE self
+ @param DCS#Event event</p>
+
+<div id= "#Functions##onEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>

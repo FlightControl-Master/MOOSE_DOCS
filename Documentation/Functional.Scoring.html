@@ -1720,6 +1720,244 @@ Scores can be reported for your user, or an overall score can be reported of all
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SCORING')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>SCORING</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>SCORING class</p>
+
+<h1>Constructor:</h1>
+
+<pre><code> local Scoring = SCORING:New( "Scoring File" )
+</code></pre>
+
+
+<h1>Set the destroy score or penalty scale:</h1>
+
+<p>Score scales can be set for scores granted when enemies or friendlies are destroyed.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##SCORING" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(SCORING)">#SCORING</a>
+<a id="SCORING" ><strong>SCORING</strong></a>
+    
+<p>SCORING class</p>
+
+<h1>Constructor:</h1>
+
+<pre><code> local Scoring = SCORING:New( "Scoring File" )
+</code></pre>
+
+
+<h1>Set the destroy score or penalty scale:</h1>
+
+<p>Score scales can be set for scores granted when enemies or friendlies are destroyed.</p>
+
+    
+<p>Use the method <a href="##(SCORING).SetScaleDestroyScore">SCORING.SetScaleDestroyScore</a>() to set the scale of enemy destroys (positive destroys). 
+Use the method <a href="##(SCORING).SetScaleDestroyPenalty">SCORING.SetScaleDestroyPenalty</a>() to set the scale of friendly destroys (negative destroys).</p>
+
+<pre><code> local Scoring = SCORING:New( "Scoring File" )
+ Scoring:SetScaleDestroyScore( 10 )
+ Scoring:SetScaleDestroyPenalty( 40 )
+</code></pre>
+
+<p>The above sets the scale for valid scores to 10. So scores will be given in a scale from 0 to 10.
+The penalties will be given in a scale from 0 to 40.</p>
+
+<h1>Define special targets that will give extra scores:</h1>
+
+<p>Special targets can be set that will give extra scores to the players when these are destroyed.
+Use the methods <a href="##(SCORING).AddUnitScore">SCORING.AddUnitScore</a>() and <a href="##(SCORING).RemoveUnitScore">SCORING.RemoveUnitScore</a>() to specify a special additional score for a specific <a href="Wrapper.Unit.html">Wrapper.Unit</a>s. <br/>
+Use the methods <a href="##(SCORING).AddStaticScore">SCORING.AddStaticScore</a>() and <a href="##(SCORING).RemoveStaticScore">SCORING.RemoveStaticScore</a>() to specify a special additional score for a specific <a href="Static.html">Static</a>s. <br/>
+Use the method <a href="##(SCORING).SetGroupGroup">SCORING.SetGroupGroup</a>() to specify a special additional score for a specific <a href="Wrapper.Group.html">Wrapper.Group</a>s.  </p>
+
+<pre><code> local Scoring = SCORING:New( "Scoring File" )
+ Scoring:AddUnitScore( UNIT:FindByName( "Unit #001" ), 200 )
+ Scoring:AddStaticScore( STATIC:FindByName( "Static #1" ), 100 )
+</code></pre>
+
+<p>The above grants an additional score of 200 points for Unit #001 and an additional 100 points of Static #1 if these are destroyed.
+Note that later in the mission, one can remove these scores set, for example, when the a goal achievement time limit is over.
+For example, this can be done as follows:</p>
+
+<pre><code> Scoring:RemoveUnitScore( UNIT:FindByName( "Unit #001" ) )
+</code></pre>
+
+<h1>Define destruction zones that will give extra scores:</h1>
+
+<p>Define zones of destruction. Any object destroyed within the zone of the given category will give extra points.
+Use the method <a href="##(SCORING).AddZoneScore">SCORING.AddZoneScore</a>() to add a <a href="Zone.html">Zone</a> for additional scoring. <br/>
+Use the method <a href="##(SCORING).RemoveZoneScore">SCORING.RemoveZoneScore</a>() to remove a <a href="Zone.html">Zone</a> for additional scoring. <br/>
+There are interesting variations that can be achieved with this functionality. For example, if the <a href="Zone.html">Zone</a> is a <a href="Core.Zone.html##(ZONE_UNIT)">Core.Zone#ZONE_UNIT</a>, 
+then the zone is a moving zone, and anything destroyed within that <a href="Zone.html">Zone</a> will generate points.
+The other implementation could be to designate a scenery target (a building) in the mission editor surrounded by a <a href="Zone.html">Zone</a>, 
+just large enough around that building.</p>
+
+<h1>Add extra Goal scores upon an event or a condition:</h1>
+
+<p>A mission has goals and achievements. The scoring system provides an API to set additional scores when a goal or achievement event happens.
+Use the method <a href="##(SCORING).AddGoalScore">SCORING.AddGoalScore</a>() to add a score for a Player at any time in your mission.</p>
+
+<h1>(Decommissioned) Configure fratricide level.</h1>
+
+<p><strong>This functionality is decomissioned until the DCS bug concerning Unit:destroy() not being functional in multi player for player units has been fixed by ED</strong>.</p>
+
+<p>When a player commits too much damage to friendlies, his penalty score will reach a certain level.
+Use the method <a href="##(SCORING).SetFratricide">SCORING.SetFratricide</a>() to define the level when a player gets kicked. <br/>
+By default, the fratricide level is the default penalty mutiplier * 2 for the penalty score.</p>
+
+<h1>Penalty score when a player changes the coalition.</h1>
+
+<p>When a player changes the coalition, he can receive a penalty score.
+Use the method <a href="##(SCORING).SetCoalitionChangePenalty">SCORING.SetCoalitionChangePenalty</a>() to define the penalty when a player changes coalition.
+By default, the penalty for changing coalition is the default penalty scale.  </p>
+
+<h1>Define output CSV files.</h1>
+
+<p>The CSV file is given the name of the string given in the <a href="##(SCORING).New">SCORING.New</a>{} constructor, followed by the .csv extension.
+The file is incrementally saved in the **<User>\Saved Games\DCS\Logs** folder, and has a time stamp indicating each mission run.
+See the following example:</p>
+
+<pre><code>local ScoringFirstMission = SCORING:New( "FirstMission" )
+local ScoringSecondMission = SCORING:New( "SecondMission" )
+</code></pre>
+
+<p>The above documents that 2 Scoring objects are created, ScoringFirstMission and ScoringSecondMission. </p>
+
+<h3><em>*IMPORTANT!!!</em></h3>
+<p>In order to allow DCS world to write CSV files, you need to adapt a configuration file in your DCS world installation <strong>on the server</strong>.
+For this, browse to the <strong>missionscripting.lua</strong> file in your DCS world installation folder.
+For me, this installation folder is in <em>D:\Program Files\Eagle Dynamics\DCS World\Scripts</em>.</p>
+
+<p>Edit a few code lines in the MissionScripting.lua file. Comment out the lines <strong>os</strong>, <strong>io</strong> and <strong>lfs</strong>:</p>
+
+<pre><code>   do
+     --sanitizeModule('os')
+     --sanitizeModule('io')
+     --sanitizeModule('lfs')
+     require = nil
+     loadlib = nil
+   end
+</code></pre>
+
+<p>When these lines are not sanitized, functions become available to check the time, and to write files to your system at the above specified location. <br/>
+Note that the MissionScripting.lua file provides a warning. So please beware of this warning as outlined by Eagle Dynamics!</p>
+
+<pre><code>   --Sanitize Mission Scripting environment
+   --This makes unavailable some unsecure functions. 
+   --Mission downloaded from server to client may contain potentialy harmful lua code that may use these functions.
+   --You can remove the code below and make availble these functions at your own risk.
+</code></pre>
+
+<p>The MOOSE designer cannot take any responsibility of any damage inflicted as a result of the de-sanitization.
+That being said, I hope that the SCORING class provides you with a great add-on to score your squad mates achievements.</p>
+
+<h1>Configure messages.</h1>
+
+<p>When players hit or destroy targets, messages are sent.
+Various methods exist to configure:</p>
+
+<ul>
+    <li>Which messages are sent upon the event.</li>
+    <li>Which audience receives the message.</li>
+</ul>
+
+<h2>Configure the messages sent upon the event.</h2>
+
+<p>Use the following methods to configure when to send messages. By default, all messages are sent.</p>
+
+<ul>
+    <li><a href="##(SCORING).SetMessagesHit">SCORING.SetMessagesHit</a>(): Configure to send messages after a target has been hit.</li>
+    <li><a href="##(SCORING).SetMessagesDestroy">SCORING.SetMessagesDestroy</a>(): Configure to send messages after a target has been destroyed.</li>
+    <li><a href="##(SCORING).SetMessagesAddon">SCORING.SetMessagesAddon</a>(): Configure to send messages for additional score, after a target has been destroyed.</li>
+    <li><a href="##(SCORING).SetMessagesZone">SCORING.SetMessagesZone</a>(): Configure to send messages for additional score, after a target has been destroyed within a given zone.</li>
+</ul>
+
+<h2>Configure the audience of the messages.</h2>
+
+<p>Use the following methods to configure the audience of the messages. By default, the messages are sent to all players in the mission.</p>
+
+<ul>
+    <li><a href="##(SCORING).SetMessagesToAll">SCORING.SetMessagesToAll</a>(): Configure to send messages to all players.</li>
+    <li><a href="##(SCORING).SetMessagesToCoalition">SCORING.SetMessagesToCoalition</a>(): Configure to send messages to only those players within the same coalition as the player.</li>
+</ul>
+
+<hr/>
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##nHours')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>nHours</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##nHours" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="nHours" ><strong>nHours</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##nMins')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>nMins</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##nMins" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="nMins" ><strong>nMins</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##nSecs')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>nSecs</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##nSecs" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="nSecs" ><strong>nSecs</strong></a>
+    
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SCORING)">Type <strong>SCORING</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1733,9 +1971,393 @@ Scores can be reported for your user, or an overall score can be reported of all
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddGoalScore">SCORING:AddGoalScore(PlayerUnit, GoalTag, Text, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a goal score for a player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddGoalScorePlayer">SCORING:AddGoalScorePlayer(PlayerName, GoalTag, Text, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a goal score for a player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddScoreGroup">SCORING:AddScoreGroup(ScoreGroup, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Specify a special additional score for a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddStaticScore">SCORING:AddStaticScore(ScoreStatic, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a <a href="Static.html">Static</a> for additional scoring when the <a href="Static.html">Static</a> is destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddUnitScore">SCORING:AddUnitScore(ScoreUnit, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a <a href="Wrapper.Unit.html">Wrapper.Unit</a> for additional scoring when the <a href="Wrapper.Unit.html">Wrapper.Unit</a> is destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddZoneScore">SCORING:AddZoneScore(ScoreZone, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a <a href="Zone.html">Zone</a> to define additional scoring when any object is destroyed in that zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CloseCSV">SCORING:CloseCSV()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CoalitionChangePenalty">SCORING.CoalitionChangePenalty</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).DisplayMessagePrefix">SCORING.DisplayMessagePrefix</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).Fratricide">SCORING.Fratricide</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GameName">SCORING.GameName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IfMessagesDestroy">SCORING:IfMessagesDestroy()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If to send messages after a target has been destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IfMessagesHit">SCORING:IfMessagesHit()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If to send messages after a target has been hit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IfMessagesScore">SCORING:IfMessagesScore()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If to send messages after a target has been destroyed and receives additional scores.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IfMessagesToAll">SCORING:IfMessagesToAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If to send messages to all players.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IfMessagesToCoalition">SCORING:IfMessagesToCoalition()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If to send messages to only those players within the same coalition as the player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IfMessagesZone">SCORING:IfMessagesZone()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If to send messages after a target has been hit in a zone, and additional score is received.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).MessagesAudience">SCORING.MessagesAudience</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).MessagesDestroy">SCORING.MessagesDestroy</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).MessagesHit">SCORING.MessagesHit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).MessagesScore">SCORING.MessagesScore</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).MessagesZone">SCORING.MessagesZone</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).New">SCORING:New(GameName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creates a new SCORING object to administer the scoring achieved by players.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OnEventBirth">SCORING:OnEventBirth(Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Handles the OnBirth event for the scoring.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OnEventPlayerLeaveUnit">SCORING:OnEventPlayerLeaveUnit(Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Handles the OnPlayerLeaveUnit event for the scoring.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OpenCSV">SCORING:OpenCSV(ScoringCSV)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Opens a score CSV file to log the scores.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).Players">SCORING.Players</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>A collection of the current players that have joined the game.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).RemoveStaticScore">SCORING:RemoveStaticScore(ScoreStatic)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Removes a <a href="Static.html">Static</a> for additional scoring when the <a href="Static.html">Static</a> is destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).RemoveUnitScore">SCORING:RemoveUnitScore(ScoreUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Removes a <a href="Wrapper.Unit.html">Wrapper.Unit</a> for additional scoring when the <a href="Wrapper.Unit.html">Wrapper.Unit</a> is destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).RemoveZoneScore">SCORING:RemoveZoneScore(ScoreZone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove a <a href="Zone.html">Zone</a> for additional scoring.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportDetailedPlayerCoalitionChanges">SCORING:ReportDetailedPlayerCoalitionChanges(PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Produce detailed report of player penalty scores because of changing the coalition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportDetailedPlayerDestroys">SCORING:ReportDetailedPlayerDestroys(PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Produce detailed report of player destroy scores.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportDetailedPlayerGoals">SCORING:ReportDetailedPlayerGoals(PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Produce detailed report of player goal scores.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportDetailedPlayerHits">SCORING:ReportDetailedPlayerHits(PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Produce detailed report of player hit scores.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportDetailedPlayerMissions">SCORING:ReportDetailedPlayerMissions(PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Produce detailed report of player penalty scores because of changing the coalition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportScoreAllSummary">SCORING:ReportScoreAllSummary(PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report all players score</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportScoreGroupDetailed">SCORING:ReportScoreGroupDetailed(PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report Group Score Detailed</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ReportScoreGroupSummary">SCORING:ReportScoreGroupSummary(PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report Group Score Summary</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).RunTime">SCORING.RunTime</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScaleDestroyPenalty">SCORING.ScaleDestroyPenalty</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScaleDestroyScore">SCORING.ScaleDestroyScore</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScoreCSV">SCORING:ScoreCSV(PlayerName, TargetPlayerName, ScoreType, ScoreTimes, ScoreAmount, PlayerUnitName, PlayerUnitCoalition, PlayerUnitCategory, PlayerUnitType, TargetUnitName, TargetUnitCoalition, TargetUnitCategory, TargetUnitType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Registers a score for a player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScoringCSV">SCORING.ScoringCSV</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScoringObjects">SCORING.ScoringObjects</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScoringPlayerScan">SCORING.ScoringPlayerScan</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScoringZones">SCORING.ScoringZones</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SecondsToClock">SCORING:SecondsToClock(sSeconds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetCoalitionChangePenalty">SCORING:SetCoalitionChangePenalty(CoalitionChangePenalty)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>When a player changes the coalition, he can receive a penalty score.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetDisplayMessagePrefix">SCORING:SetDisplayMessagePrefix(DisplayMessagePrefix)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a prefix string that will be displayed at each scoring message sent.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetFratricide">SCORING:SetFratricide(Fratricide)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>When a player commits too much damage to friendlies, his penalty score will reach a certain level.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetMessagesDestroy">SCORING:SetMessagesDestroy(OnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure to send messages after a target has been destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetMessagesHit">SCORING:SetMessagesHit(OnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure to send messages after a target has been hit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetMessagesScore">SCORING:SetMessagesScore(OnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure to send messages after a target has been destroyed and receives additional scores.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetMessagesToAll">SCORING:SetMessagesToAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure to send messages to all players.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetMessagesToCoalition">SCORING:SetMessagesToCoalition()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure to send messages to only those players within the same coalition as the player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetMessagesZone">SCORING:SetMessagesZone(OnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure to send messages after a target has been hit in a zone, and additional score is received.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetScaleDestroyPenalty">SCORING:SetScaleDestroyPenalty(Scale)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the scale for scoring penalty destroys (friendly destroys).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetScaleDestroyScore">SCORING:SetScaleDestroyScore(Scale)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the scale for scoring valid destroys (enemy destroys).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetScoringMenu">SCORING:SetScoringMenu(ScoringGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the scoring menu.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._AddMissionGoalScore">SCORING:_AddMissionGoalScore(Mission, PlayerName, Text, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Registers Scores the players completing a Mission Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._AddMissionScore">SCORING:_AddMissionScore(Mission, PlayerUnit, Text, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Registers Mission Scores for possible multiple players that contributed in the Mission.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._AddMissionTaskScore">SCORING:_AddMissionTaskScore(Mission, PlayerUnit, Text, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Registers Scores the players completing a Mission Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._AddPlayerFromUnit">SCORING:_AddPlayerFromUnit(UnitData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a new player entering a Unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._EventOnDeadOrCrash">SCORING:_EventOnDeadOrCrash(Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Track  DEAD or CRASH events for the scoring.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._EventOnHit">SCORING:_EventOnHit(Event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Handles the OnHit event for the scoring.</p>
 </td>
           </tr>
         </table>
@@ -1762,6 +2384,162 @@ Scores can be reported for your user, or an overall score can be reported of all
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ClassNameAndID">SCORING.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ClearState">SCORING:ClearState(Object, StateName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clear the state of an object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventBirth">SCORING:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Birth Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventCrash">SCORING:CreateEventCrash(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventDead">SCORING:CreateEventDead(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Dead Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventPlayerEnterAircraft">SCORING:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventRemoveUnit">SCORING:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Remove Unit Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventTakeoff">SCORING:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Takeoff Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).CreateEventUnitLost">SCORING:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creation of a Crash Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).E">SCORING:E(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an exception which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).EventDispatcher">SCORING:EventDispatcher()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the event dispatcher</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).EventRemoveAll">SCORING:EventRemoveAll()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove all subscribed events</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).F">SCORING:F(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).F2">SCORING:F2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).F3">SCORING:F3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GetClassID">SCORING:GetClassID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GetClassName">SCORING:GetClassName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GetClassNameAndID">SCORING:GetClassNameAndID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the ClassName + ClassID of the class instance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GetEventPriority">SCORING:GetEventPriority()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GetParent">SCORING:GetParent(Child, FromClass)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to retrieve the Parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).GetState">SCORING:GetState(Object, Key)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get a Value given a Key from the Object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).HandleEvent">SCORING:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Subscribe to a DCS Event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).I">SCORING:I(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Log an information which will be traced always.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).Inherit">SCORING:Inherit(Child, Parent)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to inherit from a parent class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IsInstanceOf">SCORING:IsInstanceOf(ClassName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).IsTrace">SCORING:IsTrace()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enquires if tracing is on (for the class).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).New">SCORING:New()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1983,6 +2761,140 @@ place: Object that the unit landed on.</p>
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScheduleOnce">SCORING:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScheduleRepeat">SCORING:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Schedule a new time event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).ScheduleStop">SCORING:ScheduleStop(SchedulerFunction)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stops the Schedule.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).Scheduler">SCORING.Scheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetEventPriority">SCORING:SetEventPriority(EventPriority)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).SetState">SCORING:SetState(Object, Key, Value)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a state or property of the Object given a Key and a Value.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).T">SCORING:T(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 1.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).T2">SCORING:T2(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 2.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).T3">SCORING:T3(Arguments)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic level 3.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceAll">SCORING:TraceAll(TraceAll)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace all methods in MOOSE</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceClass">SCORING:TraceClass(Class)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceClassMethod">SCORING:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set tracing for a specific method of  class</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceLevel">SCORING:TraceLevel(Level)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace level</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceOff">SCORING:TraceOff()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceOn">SCORING:TraceOn()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).TraceOnOff">SCORING:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).UnHandleEvent">SCORING:UnHandleEvent(EventID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnSubscribe to a DCS event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._">SCORING._</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._F">SCORING:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function call.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING)._T">SCORING:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Trace a function logic.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).__">SCORING.__</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).onEvent">SCORING:onEvent(event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
         </table>
         </div>
 
@@ -1998,15 +2910,3705 @@ place: Object that the unit landed on.</p>
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).CoalitionChangePenalty" ><strong>SCORING.CoalitionChangePenalty</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).Fratricide" ><strong>SCORING.Fratricide</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).GameName" ><strong>SCORING.GameName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SCORING).MessagesAudience" ><strong>SCORING.MessagesAudience</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesDestroy" ><strong>SCORING.MessagesDestroy</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesHit" ><strong>SCORING.MessagesHit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesScore" ><strong>SCORING.MessagesScore</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesZone" ><strong>SCORING.MessagesZone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).RunTime" ><strong>SCORING.RunTime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScaleDestroyPenalty" ><strong>SCORING.ScaleDestroyPenalty</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScaleDestroyScore" ><strong>SCORING.ScaleDestroyScore</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScoringCSV" ><strong>SCORING.ScoringCSV</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SCORING).ScoringObjects" ><strong>SCORING.ScoringObjects</strong></a>
+    
+
+
+    
+<p> Additional Object scores</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScoringPlayerScan" ><strong>SCORING.ScoringPlayerScan</strong></a>
+    
+
+
+    
+<p> During mission startup, especially for single player, 
+ iterate the database for the player that has joined, and add him to the scoring, and set the menu.
+ But this can only be started one second after the mission has started, so i need to schedule this ...</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SCORING).ScoringZones" ><strong>SCORING.ScoringZones</strong></a>
+    
+
+
+    
+<p> Additional Zone scores.</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddGoalScore" ><strong>SCORING:AddGoalScore(PlayerUnit, GoalTag, Text, Score)</strong></a></h2>
+</div>
+    
+<p>Add a goal score for a player.</p>
+
+    
+<p>The method takes the PlayerUnit for which the Goal score needs to be set.
+The GoalTag is a string or identifier that is taken into the CSV file scoring log to identify the goal.
+A free text can be given that is shown to the players.
+The Score can be both positive and negative.</p>
+
+<div id= "#Functions##AddGoalScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> of the Player. Other Properties for the scoring are taken from this PlayerUnit, like coalition, type etc. </p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>GoalTag</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The string or identifier that is used in the CSV file to identify the goal (sort or group later in Excel).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Text</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A free text that is shown to the players.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The score can be both positive or negative ( Penalty ).</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddGoalScorePlayer" ><strong>SCORING:AddGoalScorePlayer(PlayerName, GoalTag, Text, Score)</strong></a></h2>
+</div>
+    
+<p>Add a goal score for a player.</p>
+
+    
+<p>The method takes the Player name for which the Goal score needs to be set.
+The GoalTag is a string or identifier that is taken into the CSV file scoring log to identify the goal.
+A free text can be given that is shown to the players.
+The Score can be both positive and negative.</p>
+
+<div id= "#Functions##AddGoalScorePlayer" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the Player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>GoalTag</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The string or identifier that is used in the CSV file to identify the goal (sort or group later in Excel).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Text</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A free text that is shown to the players.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The score can be both positive or negative ( Penalty ).</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddScoreGroup" ><strong>SCORING:AddScoreGroup(ScoreGroup, Score)</strong></a></h2>
+</div>
+    
+<p>Specify a special additional score for a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+
+<div id= "#Functions##AddScoreGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>ScoreGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Group.html">Wrapper.Group</a> for which each <a href="Wrapper.Unit.html">Wrapper.Unit</a> a Score is given.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Score value.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddStaticScore" ><strong>SCORING:AddStaticScore(ScoreStatic, Score)</strong></a></h2>
+</div>
+    
+<p>Add a <a href="Static.html">Static</a> for additional scoring when the <a href="Static.html">Static</a> is destroyed.</p>
+
+    
+<p>Note that if there was already a <a href="Static.html">Static</a> declared within the scoring with the same name, 
+then the old <a href="Static.html">Static</a>  will be replaced with the new <a href="Static.html">Static</a>.</p>
+
+<div id= "#Functions##AddStaticScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Static.html##(UNIT)">Wrapper.Static#UNIT</a>
+            <strong><strong>ScoreStatic</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Static.html">Static</a> for which the Score needs to be given.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Score value.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddUnitScore" ><strong>SCORING:AddUnitScore(ScoreUnit, Score)</strong></a></h2>
+</div>
+    
+<p>Add a <a href="Wrapper.Unit.html">Wrapper.Unit</a> for additional scoring when the <a href="Wrapper.Unit.html">Wrapper.Unit</a> is destroyed.</p>
+
+    
+<p>Note that if there was already a <a href="Wrapper.Unit.html">Wrapper.Unit</a> declared within the scoring with the same name, 
+then the old <a href="Wrapper.Unit.html">Wrapper.Unit</a>  will be replaced with the new <a href="Wrapper.Unit.html">Wrapper.Unit</a>.</p>
+
+<div id= "#Functions##AddUnitScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>ScoreUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> for which the Score needs to be given.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Score value.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddZoneScore" ><strong>SCORING:AddZoneScore(ScoreZone, Score)</strong></a></h2>
+</div>
+    
+<p>Add a <a href="Zone.html">Zone</a> to define additional scoring when any object is destroyed in that zone.</p>
+
+    
+<p>Note that if a <a href="Zone.html">Zone</a> with the same name is already within the scoring added, the <a href="Zone.html">Zone</a> (type) and Score will be replaced!
+This allows for a dynamic destruction zone evolution within your mission.</p>
+
+<div id= "#Functions##AddZoneScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
+            <strong><strong>ScoreZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Zone.html">Zone</a> which defines the destruction score perimeters. 
+Note that a zone can be a polygon or a moving zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Score value.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CloseCSV" ><strong>SCORING:CloseCSV()</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##CloseCSV" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IfMessagesDestroy" ><strong>SCORING:IfMessagesDestroy()</strong></a></h2>
+</div>
+    
+<p>If to send messages after a target has been destroyed.</p>
+
+<div id= "#Functions##IfMessagesDestroy" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IfMessagesHit" ><strong>SCORING:IfMessagesHit()</strong></a></h2>
+</div>
+    
+<p>If to send messages after a target has been hit.</p>
+
+<div id= "#Functions##IfMessagesHit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IfMessagesScore" ><strong>SCORING:IfMessagesScore()</strong></a></h2>
+</div>
+    
+<p>If to send messages after a target has been destroyed and receives additional scores.</p>
+
+<div id= "#Functions##IfMessagesScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IfMessagesToAll" ><strong>SCORING:IfMessagesToAll()</strong></a></h2>
+</div>
+    
+<p>If to send messages to all players.</p>
+
+<div id= "#Functions##IfMessagesToAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IfMessagesToCoalition" ><strong>SCORING:IfMessagesToCoalition()</strong></a></h2>
+</div>
+    
+<p>If to send messages to only those players within the same coalition as the player.</p>
+
+<div id= "#Functions##IfMessagesToCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IfMessagesZone" ><strong>SCORING:IfMessagesZone()</strong></a></h2>
+</div>
+    
+<p>If to send messages after a target has been hit in a zone, and additional score is received.</p>
+
+<div id= "#Functions##IfMessagesZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).New" ><strong>SCORING:New(GameName)</strong></a></h2>
+</div>
+    
+<p>Creates a new SCORING object to administer the scoring achieved by players.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>GameName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the game. This name is also logged in the CSV score file.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>
+-- Define a new scoring object for the mission Gori Valley.
+ScoringObject = SCORING:New( "Gori Valley" )
+</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).OnEventBirth" ><strong>SCORING:OnEventBirth(Event)</strong></a></h2>
+</div>
+    
+<p>Handles the OnBirth event for the scoring.</p>
+
+<div id= "#Functions##OnEventBirth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).OnEventPlayerLeaveUnit" ><strong>SCORING:OnEventPlayerLeaveUnit(Event)</strong></a></h2>
+</div>
+    
+<p>Handles the OnPlayerLeaveUnit event for the scoring.</p>
+
+<div id= "#Functions##OnEventPlayerLeaveUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).OpenCSV" ><strong>SCORING:OpenCSV(ScoringCSV)</strong></a></h2>
+</div>
+    
+<p>Opens a score CSV file to log the scores.</p>
+
+<div id= "#Functions##OpenCSV" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScoringCSV</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Open a new CSV file to log the scores of the game Gori Valley. Let the name of the CSV file begin with "Player Scores".
+ScoringObject = SCORING:New( "Gori Valley" )
+ScoringObject:OpenCSV( "Player Scores" )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).RemoveStaticScore" ><strong>SCORING:RemoveStaticScore(ScoreStatic)</strong></a></h2>
+</div>
+    
+<p>Removes a <a href="Static.html">Static</a> for additional scoring when the <a href="Static.html">Static</a> is destroyed.</p>
+
+<div id= "#Functions##RemoveStaticScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Static.html##(UNIT)">Wrapper.Static#UNIT</a>
+            <strong><strong>ScoreStatic</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Static.html">Static</a> for which the Score needs to be given.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).RemoveUnitScore" ><strong>SCORING:RemoveUnitScore(ScoreUnit)</strong></a></h2>
+</div>
+    
+<p>Removes a <a href="Wrapper.Unit.html">Wrapper.Unit</a> for additional scoring when the <a href="Wrapper.Unit.html">Wrapper.Unit</a> is destroyed.</p>
+
+<div id= "#Functions##RemoveUnitScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>ScoreUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> for which the Score needs to be given.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).RemoveZoneScore" ><strong>SCORING:RemoveZoneScore(ScoreZone)</strong></a></h2>
+</div>
+    
+<p>Remove a <a href="Zone.html">Zone</a> for additional scoring.</p>
+
+    
+<p>The scoring will search if any <a href="Zone.html">Zone</a> is added with the given name, and will remove that zone from the scoring.
+This allows for a dynamic destruction zone evolution within your mission.</p>
+
+<div id= "#Functions##RemoveZoneScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
+            <strong><strong>ScoreZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Zone.html">Zone</a> which defines the destruction score perimeters. 
+Note that a zone can be a polygon or a moving zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportDetailedPlayerCoalitionChanges" ><strong>SCORING:ReportDetailedPlayerCoalitionChanges(PlayerName)</strong></a></h2>
+</div>
+    
+<p>Produce detailed report of player penalty scores because of changing the coalition.</p>
+
+<div id= "#Functions##ReportDetailedPlayerCoalitionChanges" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The report.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportDetailedPlayerDestroys" ><strong>SCORING:ReportDetailedPlayerDestroys(PlayerName)</strong></a></h2>
+</div>
+    
+<p>Produce detailed report of player destroy scores.</p>
+
+<div id= "#Functions##ReportDetailedPlayerDestroys" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The report.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportDetailedPlayerGoals" ><strong>SCORING:ReportDetailedPlayerGoals(PlayerName)</strong></a></h2>
+</div>
+    
+<p>Produce detailed report of player goal scores.</p>
+
+<div id= "#Functions##ReportDetailedPlayerGoals" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The report.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportDetailedPlayerHits" ><strong>SCORING:ReportDetailedPlayerHits(PlayerName)</strong></a></h2>
+</div>
+    
+<p>Produce detailed report of player hit scores.</p>
+
+<div id= "#Functions##ReportDetailedPlayerHits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The report.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportDetailedPlayerMissions" ><strong>SCORING:ReportDetailedPlayerMissions(PlayerName)</strong></a></h2>
+</div>
+    
+<p>Produce detailed report of player penalty scores because of changing the coalition.</p>
+
+<div id= "#Functions##ReportDetailedPlayerMissions" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The report.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportScoreAllSummary" ><strong>SCORING:ReportScoreAllSummary(PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>Report all players score</p>
+
+<div id= "#Functions##ReportScoreAllSummary" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The player group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportScoreGroupDetailed" ><strong>SCORING:ReportScoreGroupDetailed(PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>Report Group Score Detailed</p>
+
+<div id= "#Functions##ReportScoreGroupDetailed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The player group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ReportScoreGroupSummary" ><strong>SCORING:ReportScoreGroupSummary(PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>Report Group Score Summary</p>
+
+<div id= "#Functions##ReportScoreGroupSummary" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The player group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ScoreCSV" ><strong>SCORING:ScoreCSV(PlayerName, TargetPlayerName, ScoreType, ScoreTimes, ScoreAmount, PlayerUnitName, PlayerUnitCoalition, PlayerUnitCategory, PlayerUnitType, TargetUnitName, TargetUnitCoalition, TargetUnitCategory, TargetUnitType)</strong></a></h2>
+</div>
+    
+<p>Registers a score for a player.</p>
+
+<div id= "#Functions##ScoreCSV" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetPlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the target player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScoreType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The type of the score.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScoreTimes</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The amount of scores achieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ScoreAmount</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The score given.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The unit name of the player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerUnitCoalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coalition of the player unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerUnitCategory</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The category of the player unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerUnitType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The type of the player unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the target unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetUnitCoalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coalition of the target unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetUnitCategory</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The category of the target unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetUnitType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The type of the target unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SecondsToClock" ><strong>SCORING:SecondsToClock(sSeconds)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##SecondsToClock" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>sSeconds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetCoalitionChangePenalty" ><strong>SCORING:SetCoalitionChangePenalty(CoalitionChangePenalty)</strong></a></h2>
+</div>
+    
+<p>When a player changes the coalition, he can receive a penalty score.</p>
+
+    
+<p>Use the method <a href="##(SCORING).SetCoalitionChangePenalty">SCORING.SetCoalitionChangePenalty</a>() to define the penalty when a player changes coalition.
+By default, the penalty for changing coalition is the default penalty scale.  </p>
+
+<div id= "#Functions##SetCoalitionChangePenalty" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>CoalitionChangePenalty</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The amount of penalty that is given. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetDisplayMessagePrefix" ><strong>SCORING:SetDisplayMessagePrefix(DisplayMessagePrefix)</strong></a></h2>
+</div>
+    
+<p>Set a prefix string that will be displayed at each scoring message sent.</p>
+
+<div id= "#Functions##SetDisplayMessagePrefix" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>DisplayMessagePrefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Default="Scoring: ") The scoring prefix string.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetFratricide" ><strong>SCORING:SetFratricide(Fratricide)</strong></a></h2>
+</div>
+    
+<p>When a player commits too much damage to friendlies, his penalty score will reach a certain level.</p>
+
+    
+<p>Use this method to define the level when a player gets kicked. <br/>
+By default, the fratricide level is the default penalty mutiplier * 2 for the penalty score.</p>
+
+<div id= "#Functions##SetFratricide" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Fratricide</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The amount of maximum penalty that may be inflicted by a friendly player before he gets kicked. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetMessagesDestroy" ><strong>SCORING:SetMessagesDestroy(OnOff)</strong></a></h2>
+</div>
+    
+<p>Configure to send messages after a target has been destroyed.</p>
+
+<div id= "#Functions##SetMessagesDestroy" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>OnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true is given, the messages are sent. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetMessagesHit" ><strong>SCORING:SetMessagesHit(OnOff)</strong></a></h2>
+</div>
+    
+<p>Configure to send messages after a target has been hit.</p>
+
+<div id= "#Functions##SetMessagesHit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>OnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true is given, the messages are sent. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetMessagesScore" ><strong>SCORING:SetMessagesScore(OnOff)</strong></a></h2>
+</div>
+    
+<p>Configure to send messages after a target has been destroyed and receives additional scores.</p>
+
+<div id= "#Functions##SetMessagesScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>OnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true is given, the messages are sent. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetMessagesToAll" ><strong>SCORING:SetMessagesToAll()</strong></a></h2>
+</div>
+    
+<p>Configure to send messages to all players.</p>
+
+<div id= "#Functions##SetMessagesToAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetMessagesToCoalition" ><strong>SCORING:SetMessagesToCoalition()</strong></a></h2>
+</div>
+    
+<p>Configure to send messages to only those players within the same coalition as the player.</p>
+
+<div id= "#Functions##SetMessagesToCoalition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetMessagesZone" ><strong>SCORING:SetMessagesZone(OnOff)</strong></a></h2>
+</div>
+    
+<p>Configure to send messages after a target has been hit in a zone, and additional score is received.</p>
+
+<div id= "#Functions##SetMessagesZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>OnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true is given, the messages are sent. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetScaleDestroyPenalty" ><strong>SCORING:SetScaleDestroyPenalty(Scale)</strong></a></h2>
+</div>
+    
+<p>Set the scale for scoring penalty destroys (friendly destroys).</p>
+
+    
+<p>A default calculated penalty is a value between 1 and 10.
+The scale magnifies the scores given to the players.</p>
+
+<div id= "#Functions##SetScaleDestroyPenalty" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Scale</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The scale of the score given.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetScaleDestroyScore" ><strong>SCORING:SetScaleDestroyScore(Scale)</strong></a></h2>
+</div>
+    
+<p>Set the scale for scoring valid destroys (enemy destroys).</p>
+
+    
+<p>A default calculated score is a value between 1 and 10.
+The scale magnifies the scores given to the players.</p>
+
+<div id= "#Functions##SetScaleDestroyScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Scale</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The scale of the score given.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetScoringMenu" ><strong>SCORING:SetScoringMenu(ScoringGroup)</strong></a></h2>
+</div>
+    
+<p>Sets the scoring menu.</p>
+
+<div id= "#Functions##SetScoringMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ScoringGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._AddMissionGoalScore" ><strong>SCORING:_AddMissionGoalScore(Mission, PlayerName, Text, Score)</strong></a></h2>
+</div>
+    
+<p>Registers Scores the players completing a Mission Task.</p>
+
+<div id= "#Functions##_AddMissionGoalScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
+            <strong><strong>Mission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Text</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._AddMissionScore" ><strong>SCORING:_AddMissionScore(Mission, PlayerUnit, Text, Score)</strong></a></h2>
+</div>
+    
+<p>Registers Mission Scores for possible multiple players that contributed in the Mission.</p>
+
+<div id= "#Functions##_AddMissionScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
+            <strong><strong>Mission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Text</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._AddMissionTaskScore" ><strong>SCORING:_AddMissionTaskScore(Mission, PlayerUnit, Text, Score)</strong></a></h2>
+</div>
+    
+<p>Registers Scores the players completing a Mission Task.</p>
+
+<div id= "#Functions##_AddMissionTaskScore" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
+            <strong><strong>Mission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Text</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._AddPlayerFromUnit" ><strong>SCORING:_AddPlayerFromUnit(UnitData)</strong></a></h2>
+</div>
+    
+<p>Add a new player entering a Unit.</p>
+
+<div id= "#Functions##_AddPlayerFromUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>UnitData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._EventOnDeadOrCrash" ><strong>SCORING:_EventOnDeadOrCrash(Event)</strong></a></h2>
+</div>
+    
+<p>Track  DEAD or CRASH events for the scoring.</p>
+
+<div id= "#Functions##_EventOnDeadOrCrash" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._EventOnHit" ><strong>SCORING:_EventOnHit(Event)</strong></a></h2>
+</div>
+    
+<p>Handles the OnHit event for the scoring.</p>
+
+<div id= "#Functions##_EventOnHit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).CoalitionChangePenalty" ><strong>SCORING.CoalitionChangePenalty</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).Fratricide" ><strong>SCORING.Fratricide</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).GameName" ><strong>SCORING.GameName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(SCORING).MessagesAudience" ><strong>SCORING.MessagesAudience</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesDestroy" ><strong>SCORING.MessagesDestroy</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesHit" ><strong>SCORING.MessagesHit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesScore" ><strong>SCORING.MessagesScore</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).MessagesZone" ><strong>SCORING.MessagesZone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).RunTime" ><strong>SCORING.RunTime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScaleDestroyPenalty" ><strong>SCORING.ScaleDestroyPenalty</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScaleDestroyScore" ><strong>SCORING.ScaleDestroyScore</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScoringCSV" ><strong>SCORING.ScoringCSV</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SCORING).ScoringObjects" ><strong>SCORING.ScoringObjects</strong></a>
+    
+
+
+    
+<p> Additional Object scores</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SCORING).ScoringPlayerScan" ><strong>SCORING.ScoringPlayerScan</strong></a>
+    
+
+
+    
+<p> During mission startup, especially for single player, 
+ iterate the database for the player that has joined, and add him to the scoring, and set the menu.
+ But this can only be started one second after the mission has started, so i need to schedule this ...</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(SCORING).ScoringZones" ><strong>SCORING.ScoringZones</strong></a>
+    
+
+
+    
+<p> Additional Zone scores.</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ClearState" ><strong>SCORING:ClearState(Object, StateName)</strong></a></h2>
+</div>
+    
+<p>Clear the state of an object.</p>
+
+<div id= "#Functions##ClearState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>StateName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is should be cleared.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventBirth" ><strong>SCORING:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+</div>
+    
+<p>Creation of a Birth Event.</p>
+
+<div id= "#Functions##CreateEventBirth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>IniUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating unit name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>place</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>subplace</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventCrash" ><strong>SCORING:CreateEventCrash(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventCrash" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventDead" ><strong>SCORING:CreateEventDead(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Dead Event.</p>
+
+<div id= "#Functions##CreateEventDead" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventPlayerEnterAircraft" ><strong>SCORING:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+</div>
+    
+<p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
+
+<div id= "#Functions##CreateEventPlayerEnterAircraft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit the player entered.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventRemoveUnit" ><strong>SCORING:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Remove Unit Event.</p>
+
+<div id= "#Functions##CreateEventRemoveUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventTakeoff" ><strong>SCORING:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Takeoff Event.</p>
+
+<div id= "#Functions##CreateEventTakeoff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).CreateEventUnitLost" ><strong>SCORING:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+</div>
+    
+<p>Creation of a Crash Event.</p>
+
+<div id= "#Functions##CreateEventUnitLost" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Time)">DCS#Time</a>
+            <strong><strong>EventTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time stamp of the event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Object)">DCS#Object</a>
+            <strong><strong>Initiator</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The initiating object of the event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).E" ><strong>SCORING:E(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an exception which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##E" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).EventDispatcher" ><strong>SCORING:EventDispatcher()</strong></a></h2>
+</div>
+    
+<p>Returns the event dispatcher</p>
+
+<div id= "#Functions##EventDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).EventRemoveAll" ><strong>SCORING:EventRemoveAll()</strong></a></h2>
+</div>
+    
+<p>Remove all subscribed events</p>
+
+<div id= "#Functions##EventRemoveAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).F" ><strong>SCORING:F(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).F2" ><strong>SCORING:F2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 2.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).F3" ><strong>SCORING:F3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function call level 3.</p>
+
+    
+<p>Must be at the beginning of the function logic.</p>
+
+<div id= "#Functions##F3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).GetClassID" ><strong>SCORING:GetClassID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassID of the class instance.</p>
+
+<div id= "#Functions##GetClassID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).GetClassName" ><strong>SCORING:GetClassName()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName of the class instance.</p>
+
+<div id= "#Functions##GetClassName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).GetClassNameAndID" ><strong>SCORING:GetClassNameAndID()</strong></a></h2>
+</div>
+    
+<p>Get the ClassName + ClassID of the class instance.</p>
+
+    
+<p>The ClassName + ClassID is formatted as '%s#%09d'. </p>
+
+<div id= "#Functions##GetClassNameAndID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ClassName + ClassID of the class instance.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).GetEventPriority" ><strong>SCORING:GetEventPriority()</strong></a></h2>
+</div>
+    
+<p>Get the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##GetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).GetParent" ><strong>SCORING:GetParent(Child, FromClass)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to retrieve the Parent class.</p>
+
+    
+<p>Note that the Parent class must be passed to call the parent class method.</p>
+
+<pre><code>self:GetParent(self):ParentMethod()
+
+
+</code></pre>
+
+<div id= "#Functions##GetParent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>This is the Child class from which the Parent class needs to be retrieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>FromClass</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The class from which to get the parent.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).GetState" ><strong>SCORING:GetState(Object, Key)</strong></a></h2>
+</div>
+    
+<p>Get a Value given a Key from the Object.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##GetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that holds the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used to retrieve the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value retrieved or nil if the Key was not found and thus the Value could not be retrieved.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).HandleEvent" ><strong>SCORING:HandleEvent(EventID, EventFunction)</strong></a></h2>
+</div>
+    
+<p>Subscribe to a DCS Event.</p>
+
+<div id= "#Functions##HandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>EventFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) The function to be called when the event occurs for the unit.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).I" ><strong>SCORING:I(Arguments)</strong></a></h2>
+</div>
+    
+<p>Log an information which will be traced always.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##I" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).Inherit" ><strong>SCORING:Inherit(Child, Parent)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to inherit from a parent class.</p>
+
+<div id= "#Functions##Inherit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Child</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Child class that inherits.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(BASE)">#BASE</a>
+            <strong><strong>Parent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the Parent class that the Child inherits from.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Child</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IsInstanceOf" ><strong>SCORING:IsInstanceOf(ClassName)</strong></a></h2>
+</div>
+    
+<p>This is the worker method to check if an object is an (sub)instance of a class.</p>
+
+    
+
+<h3>Examples:</h3>
+
+<ul>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( ZONE ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'ZONE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'zone' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'BASE' ) will return true</p></li>
+    <li><p>ZONE:New( 'some zone' ):IsInstanceOf( 'GROUP' ) will return false</p></li>
+</ul>
+
+
+<div id= "#Functions##IsInstanceOf" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ClassName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>is the name of the class or the class itself to run the check against</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).IsTrace" ><strong>SCORING:IsTrace()</strong></a></h2>
+</div>
+    
+<p>Enquires if tracing is on (for the class).</p>
+
+<div id= "#Functions##IsTrace" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).New" ><strong>SCORING:New()</strong></a></h2>
+</div>
+    
+<p>BASE constructor.</p>
+
+    
+
+<p>This is an example how to use the BASE:New() constructor in a new class definition when inheriting from BASE.</p>
+
+<pre><code>function EVENT:New()
+  local self = BASE:Inherit( self, BASE:New() ) -- #EVENT
+  return self
+end
+  
+</code></pre>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
@@ -3310,6 +7912,862 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
               
 <p>The EventData structure.</p>
 
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ScheduleOnce" ><strong>SCORING:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleOnce" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ScheduleRepeat" ><strong>SCORING:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+</div>
+    
+<p>Schedule a new time event.</p>
+
+    
+<p>Note that the schedule will only take place if the scheduler is <em>started</em>. Even for a single schedule event, the scheduler needs to be started also.</p>
+
+<div id= "#Functions##ScheduleRepeat" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Start</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds that will be waited before the scheduling is started, and the event function is called.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Repeat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the interval in seconds when the scheduler will call the event function.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>RandomizeFactor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies a randomization factor between 0 and 1 to randomize the Repeat.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Stop</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specifies the amount of seconds when the scheduler will be stopped.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional arguments that can be given as part of scheduler. The arguments need to be given as a table { param1, param 2, ... }.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The ScheduleID of the planned schedule.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).ScheduleStop" ><strong>SCORING:ScheduleStop(SchedulerFunction)</strong></a></h2>
+</div>
+    
+<p>Stops the Schedule.</p>
+
+<div id= "#Functions##ScheduleStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>SchedulerFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The event function to be called when a timer event occurs. The event function needs to accept the parameters specified in SchedulerArguments.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetEventPriority" ><strong>SCORING:SetEventPriority(EventPriority)</strong></a></h2>
+</div>
+    
+<p>Set the Class <a href="Event.html">Event</a> processing Priority.</p>
+
+    
+<p>The Event processing Priority is a number from 1 to 10, 
+reflecting the order of the classes subscribed to the Event to be processed.</p>
+
+<div id= "#Functions##SetEventPriority" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>EventPriority</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Event.html">Event</a> processing Priority.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).SetState" ><strong>SCORING:SetState(Object, Key, Value)</strong></a></h2>
+</div>
+    
+<p>Set a state or property of the Object given a Key and a Value.</p>
+
+    
+<p>Note that if the Object is destroyed, nillified or garbage collected, then the Values and Keys will also be gone.</p>
+
+<div id= "#Functions##SetState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object that will hold the Value set by the Key.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Key</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The key that is used as a reference of the value. Note that the key can be a #string, but it can also be any other type!</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Value</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The value to is stored in the object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>The Value set. </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).T" ><strong>SCORING:T(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 1.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).T2" ><strong>SCORING:T2(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 2.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T2" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).T3" ><strong>SCORING:T3(Arguments)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic level 3.</p>
+
+    
+<p>Can be anywhere within the function logic.</p>
+
+<div id= "#Functions##T3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceAll" ><strong>SCORING:TraceAll(TraceAll)</strong></a></h2>
+</div>
+    
+<p>Trace all methods in MOOSE</p>
+
+<div id= "#Functions##TraceAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceAll</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>true = trace all methods in MOOSE.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceClass" ><strong>SCORING:TraceClass(Class)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a class</p>
+
+<div id= "#Functions##TraceClass" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceClassMethod" ><strong>SCORING:TraceClassMethod(Class, Method)</strong></a></h2>
+</div>
+    
+<p>Set tracing for a specific method of  class</p>
+
+<div id= "#Functions##TraceClassMethod" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Class</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Method</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceLevel" ><strong>SCORING:TraceLevel(Level)</strong></a></h2>
+</div>
+    
+<p>Set trace level</p>
+
+<div id= "#Functions##TraceLevel" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Level</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceOff" ><strong>SCORING:TraceOff()</strong></a></h2>
+</div>
+    
+<p>Set trace off.</p>
+
+<div id= "#Functions##TraceOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing Off
+BASE:TraceOff()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceOn" ><strong>SCORING:TraceOn()</strong></a></h2>
+</div>
+    
+<p>Set trace on.</p>
+
+<div id= "#Functions##TraceOn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOn()</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).TraceOnOff" ><strong>SCORING:TraceOnOff(TraceOnOff)</strong></a></h2>
+</div>
+    
+<p>Set trace on or off
+Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
+When Moose is loaded statically, (as one file), tracing is switched off by default.</p>
+
+    
+<p>So tracing must be switched on manually in your mission if you are using Moose statically.
+When moose is loading dynamically (for moose class development), tracing is switched on by default.</p>
+
+<div id= "#Functions##TraceOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TraceOnOff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Switch the tracing on or off.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Switch the tracing On
+BASE:TraceOnOff( true )
+
+-- Switch the tracing Off
+BASE:TraceOnOff( false )</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).UnHandleEvent" ><strong>SCORING:UnHandleEvent(EventID)</strong></a></h2>
+</div>
+    
+<p>UnSubscribe to a DCS event.</p>
+
+<div id= "#Functions##UnHandleEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTS)">Core.Event#EVENTS</a>
+            <strong><strong>EventID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event ID.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BASE)">#BASE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._F" ><strong>SCORING:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function call.</p>
+
+    
+<p>This function is private.</p>
+
+<div id= "#Functions##_F" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING)._T" ><strong>SCORING:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+</div>
+    
+<p>Trace a function logic.</p>
+
+<div id= "#Functions##_T" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Arguments</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A #table or any field.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoCurrentParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DebugInfoFromParam</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).onEvent" ><strong>SCORING:onEvent(event)</strong></a></h2>
+</div>
+    
+
+
+    
+<p> TODO: Complete DCS#Event structure. <br/>
+- The main event handling function... This function captures all events generated for the class.
+ @param #BASE self
+ @param DCS#Event event</p>
+
+<div id= "#Functions##onEvent" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>

@@ -1688,13 +1688,507 @@ FC</p>
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TASK_CARGO_TRANSPORT')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>TASK_CARGO_TRANSPORT</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Orchestrates the task for players to transport cargo to or between deployment zones.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##TASK_CARGO_TRANSPORT" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(TASK_CARGO_TRANSPORT)">#TASK_CARGO_TRANSPORT</a>
+<a id="TASK_CARGO_TRANSPORT" ><strong>TASK_CARGO_TRANSPORT</strong></a>
+    
+<p>Orchestrates the task for players to transport cargo to or between deployment zones.</p>
+
+    
+
+<p>Transport tasks are suited to govern the process of transporting cargo to specific deployment zones.
+Typically, this task is executed by helicopter pilots, but it can also be executed by ground forces!</p>
+
+<hr/>
+
+<p>A transport task can be created manually.</p>
+
+<h1>1) Create a transport task manually (code it).</h1>
+
+<p>Although it is recommended to use the dispatcher, you can create a transport task yourself as a mission designer.
+It is easy, as it works just like any other task setup.</p>
+
+<h2>1.1) Create a command center.</h2>
+
+<p>First you need to create a command center using the Tasking.CommandCenter#COMMANDCENTER.New constructor.</p>
+
+<pre><code>local CommandCenter = COMMANDCENTER
+   :New( HQ, "Lima" ) -- Create the CommandCenter.
+</code></pre>
+
+<h2>1.2) Create a mission.</h2>
+
+<p>Tasks work in a mission, which groups these tasks to achieve a joint mission goal.
+A command center can govern multiple missions.
+Create a new mission, using the Tasking.Mission#MISSION.New constructor.</p>
+
+<pre><code>-- Declare the Mission for the Command Center.
+local Mission = MISSION
+  :New( CommandCenter, 
+        "Overlord", 
+        "High", 
+        "Transport the cargo to the deploy zones.", 
+        coalition.side.RED 
+      ) 
+</code></pre>
+
+<h2>1.3) Create the transport cargo task.</h2>
+
+<p>So, now that we have a command center and a mission, we now create the transport task.
+We create the transport task using the #TASK_CARGO_TRANSPORT.New constructor.</p>
+
+<p>Because a transport task will not generate the cargo itself, you'll need to create it first.
+The cargo in this case will be the downed pilot!</p>
+
+<pre><code>-- Here we define the "cargo set", which is a collection of cargo objects.
+-- The cargo set will be the input for the cargo transportation task.
+-- So a transportation object is handling a cargo set, which is automatically refreshed when new cargo is added/deleted.
+local CargoSet = SET_CARGO:New():FilterTypes( "Cargo" ):FilterStart()
+
+-- Now we add cargo into the battle scene.
+local PilotGroup = GROUP:FindByName( "Engineers" )
+
+-- CARGO_GROUP can be used to setup cargo with a GROUP object underneath.
+-- We name this group Engineers.
+-- Note that the name of the cargo is "Engineers".
+-- The cargoset "CargoSet" will embed all defined cargo of type "Pilots" (prefix) into its set.
+local CargoGroup = CARGO_GROUP:New( PilotGroup, "Cargo", "Engineer Team 1", 500 )
+</code></pre>
+
+<p>What is also needed, is to have a set of Core.Groups defined that contains the clients of the players.</p>
+
+<pre><code>-- Allocate the Transport, which are the helicopter to retrieve the pilot, that can be manned by players.
+local GroupSet = SET_GROUP:New():FilterPrefixes( "Transport" ):FilterStart()
+</code></pre>
+
+<p>Now that we have a CargoSet and a GroupSet, we can now create the TransportTask manually.</p>
+
+<pre><code>-- Declare the transport task.
+local TransportTask = TASK_CARGO_TRANSPORT
+  :New( Mission, 
+        GroupSet, 
+        "Transport Engineers", 
+        CargoSet, 
+        "Fly behind enemy lines, and retrieve the downed pilot." 
+      )
+</code></pre>
+
+<p>So you can see, setting up a transport task manually is a lot of work.
+It is better you use the cargo dispatcher to create transport tasks and it will work as it is intended.
+By doing this, cargo transport tasking will become a dynamic experience.</p>
+
+
+<h1>2) Create a task using the Tasking.Task_Cargo_Dispatcher module.</h1>
+
+<p>Actually, it is better to <strong>GENERATE</strong> these tasks using the Tasking.Task_Cargo_Dispatcher module.
+Using the dispatcher module, transport tasks can be created easier.</p>
+
+<p>Find below an example how to use the TASK_CARGO_DISPATCHER class:</p>
+
+
+<pre><code>   -- Find the HQ group.
+   HQ = GROUP:FindByName( "HQ", "Bravo" )
+
+   -- Create the command center with the name "Lima".
+   CommandCenter = COMMANDCENTER
+     :New( HQ, "Lima" )
+
+   -- Create the mission, for the command center, with the name "Operation Cargo Fun", a "Tactical" mission, with the mission briefing "Transport Cargo", for the BLUE coalition.
+   Mission = MISSION
+     :New( CommandCenter, "Operation Cargo Fun", "Tactical", "Transport Cargo", coalition.side.BLUE )
+
+   -- Create the SET of GROUPs containing clients (players) that will transport the cargo.
+   -- These are have a name that start with "Transport" and are of the "blue" coalition.
+   TransportGroups = SET_GROUP:New():FilterCoalitions( "blue" ):FilterPrefixes( "Transport" ):FilterStart()
+
+
+   -- Here we create the TASK_CARGO_DISPATCHER object! This is where we assign the dispatcher to generate tasks in the Mission for the TransportGroups.
+   TaskDispatcher = TASK_CARGO_DISPATCHER:New( Mission, TransportGroups )
+
+
+   -- Here we declare the SET of CARGOs called "Workmaterials".
+   local CargoSetWorkmaterials = SET_CARGO:New():FilterTypes( "Workmaterials" ):FilterStart()
+
+   -- Here we declare (add) CARGO_GROUP objects of various types, that are filtered and added in the CargoSetworkmaterials cargo set.
+   -- These cargo objects have the type "Workmaterials" which is exactly the type of cargo the CargoSetworkmaterials is filtering on.
+   local EngineerCargoGroup = CARGO_GROUP:New( GROUP:FindByName( "Engineers" ), "Workmaterials", "Engineers", 250 )
+   local ConcreteCargo = CARGO_SLINGLOAD:New( STATIC:FindByName( "Concrete" ), "Workmaterials", "Concrete", 150, 50 )
+   local CrateCargo = CARGO_CRATE:New( STATIC:FindByName( "Crate" ), "Workmaterials", "Crate", 150, 50 )
+   local EnginesCargo = CARGO_CRATE:New( STATIC:FindByName( "Engines" ), "Workmaterials", "Engines", 150, 50 )
+   local MetalCargo = CARGO_CRATE:New( STATIC:FindByName( "Metal" ), "Workmaterials", "Metal", 150, 50 )
+
+     -- And here we create a new WorkplaceTask, using the :AddTransportTask method of the TaskDispatcher.
+     local WorkplaceTask = TaskDispatcher:AddTransportTask( "Build a Workplace", CargoSetWorkmaterials, "Transport the workers, engineers and the equipment near the Workplace." )
+     TaskDispatcher:SetTransportDeployZone( WorkplaceTask, ZONE:New( "Workplace" ) )
+</code></pre>
+
+<h1>3) Handle cargo task events.</h1>
+
+<p>When a player is picking up and deploying cargo using his carrier, events are generated by the tasks. These events can be captured and tailored with your own code.</p>
+
+<p>In order to properly capture the events and avoid mistakes using the documentation, it is advised that you execute the following actions:</p>
+
+<ul>
+    <li><strong>Copy / Paste</strong> the code section into your script.</li>
+    <li><strong>Change</strong> the "myclass" literal to the task object name you have in your script.</li>
+    <li>Within the function, you can now <strong>write your own code</strong>!</li>
+    <li><strong>IntelliSense</strong> will recognize the type of the variables provided by the function. Note: the From, Event and To variables can be safely ignored, 
+    but you need to declare them as they are automatically provided by the event handling system of MOOSE.</li>
+</ul>
+
+<p>You can send messages or fire off any other events within the code section. The sky is the limit!</p>
+
+
+<h2>3.1) Handle the CargoPickedUp event.</h2>
+
+<p>Find below an example how to tailor the <strong>CargoPickedUp</strong> event, generated by the WorkplaceTask:</p>
+
+<pre><code> function WorkplaceTask:OnAfterCargoPickedUp( From, Event, To, TaskUnit, Cargo )
+
+   MESSAGE:NewType( "Unit " .. TaskUnit:GetName().. " has picked up cargo.", MESSAGE.Type.Information ):ToAll()
+
+ end
+</code></pre>
+
+<p>If you want to code your own event handler, use this code fragment to tailor the event when a player carrier has picked up a cargo object in the CarrierGroup.
+You can use this event handler to post messages to players, or provide status updates etc.</p>
+
+<pre><code> --- CargoPickedUp event handler OnAfter for "myclass".
+ -- @param #string From A string that contains the "*from state name*" when the event was triggered.
+ -- @param #string Event A string that contains the "*event name*" when the event was triggered.
+ -- @param #string To A string that contains the "*to state name*" when the event was triggered.
+ -- @param Wrapper.Unit#UNIT TaskUnit The unit (client) of the player that has picked up the cargo.
+ -- @param Cargo.Cargo#CARGO Cargo The cargo object that has been picked up. Note that this can be a CARGO_GROUP, CARGO_CRATE or CARGO_SLINGLOAD object!
+ function myclass:OnAfterCargoPickedUp( From, Event, To, TaskUnit, Cargo )
+
+   -- Write here your own code.
+
+ end
+</code></pre>
+
+
+<h2>3.2) Handle the CargoDeployed event.</h2>
+
+<p>Find below an example how to tailor the <strong>CargoDeployed</strong> event, generated by the WorkplaceTask:</p>
+
+<pre><code> function WorkplaceTask:OnAfterCargoDeployed( From, Event, To, TaskUnit, Cargo, DeployZone )
+
+   MESSAGE:NewType( "Unit " .. TaskUnit:GetName().. " has deployed cargo at zone " .. DeployZone:GetName(), MESSAGE.Type.Information ):ToAll()
+
+   Helos[ math.random(1,#Helos) ]:Spawn()
+   EnemyHelos[ math.random(1,#EnemyHelos) ]:Spawn()
+ end
+</code></pre>
+
+<p>If you want to code your own event handler, use this code fragment to tailor the event when a player carrier has deployed a cargo object from the CarrierGroup.
+You can use this event handler to post messages to players, or provide status updates etc.</p>
+
+
+<pre><code> --- CargoDeployed event handler OnAfter foR "myclass".
+ -- @param #string From A string that contains the "*from state name*" when the event was triggered.
+ -- @param #string Event A string that contains the "*event name*" when the event was triggered.
+ -- @param #string To A string that contains the "*to state name*" when the event was triggered.
+ -- @param Wrapper.Unit#UNIT TaskUnit The unit (client) of the player that has deployed the cargo.
+ -- @param Cargo.Cargo#CARGO Cargo The cargo object that has been deployed. Note that this can be a CARGO_GROUP, CARGO_CRATE or CARGO_SLINGLOAD object!
+ -- @param Core.Zone#ZONE DeployZone The zone wherein the cargo is deployed. This can be any zone type, like a ZONE, ZONE_GROUP, ZONE_AIRBASE.
+ function myclass:OnAfterCargoDeployed( From, Event, To, TaskUnit, Cargo, DeployZone )
+
+   -- Write here your own code.
+
+ end
+</code></pre>
+
+
+
+<hr/>
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CARGO_TRANSPORT)">Type <strong>TASK_CARGO_TRANSPORT</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(TASK_CARGO_TRANSPORT)">TASK_CARGO_TRANSPORT</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from TASK_CARGO_TRANSPORT</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_TRANSPORT).IsAllCargoTransported">TASK_CARGO_TRANSPORT:IsAllCargoTransported()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_TRANSPORT).New">TASK_CARGO_TRANSPORT:New(Mission, SetGroup, TaskName, SetCargo, TaskBriefing)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Instantiates a new TASK_CARGO_TRANSPORT.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_TRANSPORT).ReportOrder">TASK_CARGO_TRANSPORT:ReportOrder(ReportGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_TRANSPORT).onafterGoal">TASK_CARGO_TRANSPORT:onafterGoal(TaskUnit, From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+
     <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Tasking.Task_Cargo_Transport)" >Type <strong>Tasking.Task_Cargo_Transport</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
+      <div onclick="myFunction('#Types##TASK_CARGO_TRANSPORT')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CARGO_TRANSPORT)">Type <strong>TASK_CARGO_TRANSPORT</strong></a></h2></div>
+        <div id= "#Types##TASK_CARGO_TRANSPORT" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CARGO_TRANSPORT).IsAllCargoTransported" ><strong>TASK_CARGO_TRANSPORT:IsAllCargoTransported()</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##IsAllCargoTransported" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CARGO_TRANSPORT</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CARGO_TRANSPORT).New" ><strong>TASK_CARGO_TRANSPORT:New(Mission, SetGroup, TaskName, SetCargo, TaskBriefing)</strong></a></h2>
+</div>
+    
+<p>Instantiates a new TASK_CARGO_TRANSPORT.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CARGO_TRANSPORT</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
+            <strong><strong>Mission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>SetGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The set of groups for which the Task can be assigned.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the Task.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>
+            <strong><strong>SetCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The scope of the cargo to be transported.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskBriefing</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Cargo Task briefing.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK_CARGO_TRANSPORT)">#TASK_CARGO_TRANSPORT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CARGO_TRANSPORT).ReportOrder" ><strong>TASK_CARGO_TRANSPORT:ReportOrder(ReportGroup)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ReportOrder" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CARGO_TRANSPORT</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ReportGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK_CARGO_TRANSPORT).onafterGoal" ><strong>TASK_CARGO_TRANSPORT:onafterGoal(TaskUnit, From, Event, To)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##onafterGoal" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK_CARGO_TRANSPORT</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+        </div>
 </div>
 <script>
 function myLoadFunction() {

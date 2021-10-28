@@ -1846,6 +1846,140 @@ A success could mean a positive score to be given, while a failure could mean a 
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TASK')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>TASK</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Governs the main engine to administer human taskings.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##TASK" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(TASK)">#TASK</a>
+<a id="TASK" ><strong>TASK</strong></a>
+    
+<p>Governs the main engine to administer human taskings.</p>
+
+    
+
+<p>A task is governed by a <a href="Tasking.Mission.html">Tasking.Mission</a> object. Tasks are of different types.
+The <a href="##(TASK)">#TASK</a> object is used or derived by more detailed tasking classes that will implement the task execution mechanisms
+and goals. </p>
+
+<h1>1) Derived task classes.</h1>
+
+<p>The following TASK_ classes are derived from <a href="##(TASK)">#TASK</a>.</p>
+
+<pre><code> TASK
+   TASK_A2A
+     TASK_A2A_ENGAGE
+     TASK_A2A_INTERCEPT
+     TASK_A2A_SWEEP
+   TASK_A2G
+     TASK_A2G_SEAD
+     TASK_A2G_CAS
+     TASK_A2G_BAI
+   TASK_CARGO
+     TASK_CARGO_TRANSPORT
+     TASK_CARGO_CSAR
+</code></pre>
+
+<h2>1.1) A2A Tasks</h2>
+
+<ul>
+    <li><a href="Tasking.Task_A2A.html##(TASK_A2A_ENGAGE)">Tasking.Task_A2A#TASK_A2A_ENGAGE</a> - Models an A2A engage task of a target group of airborne intruders mid-air.</li>
+    <li><a href="Tasking.Task_A2A.html##(TASK_A2A_INTERCEPT)">Tasking.Task_A2A#TASK_A2A_INTERCEPT</a> - Models an A2A ground intercept task of a target group of airborne intruders mid-air.</li>
+    <li><a href="Tasking.Task_A2A.html##(TASK_A2A_SWEEP)">Tasking.Task_A2A#TASK_A2A_SWEEP</a> - Models an A2A sweep task to clean an area of previously detected intruders mid-air.</li>
+</ul>
+
+<h2>1.2) A2G Tasks</h2>
+
+<ul>
+    <li><a href="Tasking.Task_A2G.html##(TASK_A2G_SEAD)">Tasking.Task_A2G#TASK_A2G_SEAD</a> - Models an A2G Suppression or Extermination of Air Defenses task to clean an area of air to ground defense threats.</li>
+    <li><a href="Tasking.Task_A2G.html##(TASK_A2G_CAS)">Tasking.Task_A2G#TASK_A2G_CAS</a> - Models an A2G Close Air Support task to provide air support to nearby friendlies near the front-line.</li>
+    <li><a href="Tasking.Task_A2G.html##(TASK_A2G_BAI)">Tasking.Task_A2G#TASK_A2G_BAI</a> - Models an A2G Battlefield Air Interdiction task to provide air support to nearby friendlies near the front-line.</li>
+</ul>
+
+<h2>1.3) Cargo Tasks</h2>
+
+<ul>
+    <li><a href="Tasking.Task_Cargo.html##(TASK_CARGO_TRANSPORT)">Tasking.Task_Cargo#TASK_CARGO_TRANSPORT</a> - Models the transportation of cargo to deployment zones. </li>
+    <li><a href="Tasking.Task_Cargo.html##(TASK_CARGO_CSAR)">Tasking.Task_Cargo#TASK_CARGO_CSAR</a> - Models the rescue of downed friendly pilots from behind enemy lines.    </li>
+</ul>
+
+
+<h1>2) Task status events.</h1>
+
+<p>The task statuses can be set by using the following methods:</p>
+
+<ul>
+    <li><a href="##(TASK).Success">TASK.Success</a>() - Set the task to <strong>Success</strong> state.</li>
+    <li><a href="##(TASK).Fail">TASK.Fail</a>() - Set the task to <strong>Failed</strong> state.</li>
+    <li><a href="##(TASK).Hold">TASK.Hold</a>() - Set the task to <strong>Hold</strong> state.</li>
+    <li><a href="##(TASK).Abort">TASK.Abort</a>() - Set the task to <strong>Aborted</strong> state, aborting the task. The task may be replanned.</li>
+    <li><a href="##(TASK).Cancel">TASK.Cancel</a>() - Set the task to <strong>Cancelled</strong> state, cancelling the task.</li>
+</ul>
+
+<p>The mentioned derived TASK_ classes are implementing the task status transitions out of the box.
+So no extra logic needs to be written.</p>
+
+<h1>3) Goal conditions for a task.</h1>
+
+<p>Every 30 seconds, a <a href="##(Task).Goal">Task.Goal</a> trigger method is fired. 
+You as a mission designer, can capture the <strong>Goal</strong> event trigger to check your own task goal conditions and take action!</p>
+
+<h2>3.1) Goal event handler <code>OnAfterGoal()</code>.</h2>
+
+<p>And this is a really great feature! Imagine a task which has <strong>several conditions to check</strong> before the task can move into <strong>Success</strong> state.
+You can do this with the OnAfterGoal method.</p>
+
+<p>The following code provides an example of such a goal condition check implementation.</p>
+
+<pre><code> function Task:OnAfterGoal()
+   if condition == true then
+     self:Success() -- This will flag the task to Succcess when the condition is true.
+   else
+     if condition2 == true and condition3 == true then
+       self:Fail() -- This will flag the task to Failed, when condition2 and condition3 would be true.
+     end
+   end
+ end
+</code></pre>
+
+<p>So the <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would be called every 30 seconds automatically, 
+and within this method, you can now check the conditions and take respective action.</p>
+
+<h2>3.2) Goal event trigger <code>Goal()</code>.</h2>
+
+<p>If you would need to check a goal at your own defined event timing, then just call the <a href="##(TASK).Goal">TASK.Goal</a>() method within your logic.
+The <a href="##(TASK).OnAfterGoal">TASK.OnAfterGoal</a>() event handler would then directly be called and would execute the logic. 
+Note that you can also delay the goal check by using the delayed event trigger syntax <code>:__Goal( Delay )</code>. </p>
+
+
+<h1>4) Score task completion.</h1>
+
+<p>Upon reaching a certain task status in a task, additional scoring can be given. If the Mission has a scoring system attached, the scores will be added to the mission scoring.
+Use the method <a href="##(TASK).AddScore">TASK.AddScore</a>() to add scores when a status is reached.</p>
+
+<h1>5) Task briefing.</h1>
+
+<p>A task briefing is a text that is shown to the player when he is assigned to the task.
+The briefing is broadcasted by the command center owning the mission.</p>
+
+<p>The briefing is part of the parameters in the <a href="##(TASK).New">TASK.New</a>() constructor, 
+but can separately be modified later in your mission using the
+<a href="##(TASK).SetBriefing">TASK.SetBriefing</a>() method.</p>
+
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK)">Type <strong>TASK</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1866,13 +2000,73 @@ A success could mean a positive score to be given, while a failure could mean a 
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).AbortGroup">TASK:AbortGroup(PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>A group aborting the task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).AddGroups">TASK:AddGroups(GroupSet)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the SET_GROUP assigned to the TASK.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).AddProgress">TASK:AddProgress(PlayerName, ProgressText, ProgressTime, ProgressPoints)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add Task Progress for a Player Name</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).AssignToGroup">TASK:AssignToGroup(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Assign the <a href="Task.html">Task</a> to a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).AssignToUnit">TASK:AssignToUnit(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Assign the <a href="Task.html">Task</a> to an alive <a href="Wrapper.Unit.html">Wrapper.Unit</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Cancel">TASK:Cancel()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Cancel synchronous event function for TASK.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).ClearGroupAssignment">TASK:ClearGroupAssignment(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Clear the <a href="Wrapper.Group.html">Wrapper.Group</a> assignment from the <a href="Task.html">Task</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).CommandCenter">TASK.CommandCenter</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).CrashGroup">TASK:CrashGroup(PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>A group crashing and thus aborting from the task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).DetectedItem">TASK.DetectedItem</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Detection">TASK.Detection</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Dispatcher">TASK.Dispatcher</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -1884,9 +2078,147 @@ A success could mean a positive score to be given, while a failure could mean a 
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).FailProcesses">TASK:FailProcesses(TaskUnitName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).FlashTaskScheduleID">TASK.FlashTaskScheduleID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).FlashTaskScheduler">TASK.FlashTaskScheduler</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).FlashTaskStatus">TASK.FlashTaskStatus</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).FsmTemplate">TASK.FsmTemplate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetBriefing">TASK:GetBriefing()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the <a href="Task.html">Task</a> briefing.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetGoal">TASK:GetGoal()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get goal of a task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetGroups">TASK:GetGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the SET_GROUP assigned to the TASK.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetID">TASK:GetID()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the ID of the Task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetMission">TASK:GetMission()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the Mission to where the TASK belongs.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetName">TASK:GetName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the Name of the Task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetPlayerCount">TASK:GetPlayerCount()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a count of the players in the Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetPlayerNames">TASK:GetPlayerNames()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a list of the players in the Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetPlayerProgress">TASK:GetPlayerProgress(PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetProcessTemplate">TASK:GetProcessTemplate(ProcessName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the default or currently assigned <a href="Process.html">Process</a> template with key ProcessName.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetScoring">TASK:GetScoring()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the Scoring of the task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetStateMachine">TASK:GetStateMachine(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the FiniteStateMachine of <a href="Task.html">Task</a> with key Task<a href="Wrapper.Unit.html">Wrapper.Unit</a></p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetStateString">TASK:GetStateString()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the <a href="Task.html">Task</a> status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetTaskBriefing">TASK:GetTaskBriefing()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the <a href="Task.html">Task</a> briefing.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetTaskControlMenu">TASK:GetTaskControlMenu(TaskUnit, TaskName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get Task Control Menu</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetTaskIndex">TASK:GetTaskIndex()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the Task Index, which is a combination of the Task type, the Task name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetTaskName">TASK:GetTaskName()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns the <a href="Task.html">Task</a> name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetType">TASK:GetType()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gets the Type of the Task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).GetUnitProcess">TASK:GetUnitProcess(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the Task FSM Process Template</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1896,9 +2228,147 @@ A success could mean a positive score to be given, while a failure could mean a 
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).HasAliveUnits">TASK:HasAliveUnits()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns if the <a href="Task.html">Task</a> has still alive and assigned Units.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).HasGroup">TASK:HasGroup(FindGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).HasStateMachine">TASK:HasStateMachine(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Checks if there is a FiniteStateMachine assigned to Task<a href="Wrapper.Unit.html">Wrapper.Unit</a> for <a href="Task.html">Task</a></p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).InitTaskControlMenu">TASK:InitTaskControlMenu(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Init Task Control Menu</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsGroupAssigned">TASK:IsGroupAssigned(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Returns if the <a href="Task.html">Task</a> is assigned to the Group.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateAborted">TASK:IsStateAborted()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Aborted</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateAssigned">TASK:IsStateAssigned()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Assigned</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateCancelled">TASK:IsStateCancelled()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Cancelled</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateFailed">TASK:IsStateFailed()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Failed</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateHold">TASK:IsStateHold()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Hold</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStatePlanned">TASK:IsStatePlanned()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Planned</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateReplanned">TASK:IsStateReplanned()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Replanned</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).IsStateSuccess">TASK:IsStateSuccess()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Is the <a href="Task.html">Task</a> status <strong>Success</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).JoinUnit">TASK:JoinUnit(PlayerUnit, PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a PlayerUnit to join the Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuAssignToGroup">TASK:MenuAssignToGroup(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuAssigned">TASK.MenuAssigned</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuFlashTaskStatus">TASK:MenuFlashTaskStatus(TaskGroup, Flash)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report the task status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuMarkToGroup">TASK:MenuMarkToGroup(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuPlanned">TASK.MenuPlanned</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuTaskAbort">TASK:MenuTaskAbort(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report the task status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MenuTaskStatus">TASK:MenuTaskStatus(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Report the task status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).MessageToGroups">TASK:MessageToGroups(Message)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Send a message of the <a href="Task.html">Task</a> to the assigned <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Mission">TASK.Mission</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).New">TASK:New(Mission, SetGroupAssign, TaskName, TaskType, TaskBriefing)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Instantiates a new TASK.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1932,9 +2402,111 @@ A success could mean a positive score to be given, while a failure could mean a 
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RefreshMenus">TASK:RefreshMenus(TaskGroup, MenuTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove the menu option of the <a href="Task.html">Task</a> for a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RefreshTaskControlMenu">TASK:RefreshTaskControlMenu(TaskUnit, MenuTime, MenuTag)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Refresh Task Control Menu</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RejectGroup">TASK:RejectGroup(PlayerGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>A group rejecting a planned task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RemoveAssignedMenuForGroup">TASK:RemoveAssignedMenuForGroup(TaskGroup, MenuTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove the assigned menu option of the <a href="Task.html">Task</a> for a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RemoveMenu">TASK:RemoveMenu(MenuTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove the menu options of the <a href="Task.html">Task</a> to all the groups in the SetGroup.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RemoveStateMachine">TASK:RemoveStateMachine(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove FiniteStateMachines from <a href="Task.html">Task</a> with key Task<a href="Wrapper.Unit.html">Wrapper.Unit</a></p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).RemoveTaskControlMenu">TASK:RemoveTaskControlMenu(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Remove Task Control Menu</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Replan">TASK:Replan()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Replan synchronous event function for TASK.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).ReportDetails">TASK:ReportDetails(TaskGroup, ReportGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a detailed report of the Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).ReportOverview">TASK:ReportOverview(ReportGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create an overiew report of the Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).ReportSummary">TASK:ReportSummary(ReportGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a summary report of the Task.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SendBriefingToAssignedGroups">TASK:SendBriefingToAssignedGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Send the briefng message of the <a href="Task.html">Task</a> to the assigned <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetAssignMethod">TASK:SetAssignMethod(AcceptClass)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetAssignedMenuForGroup">TASK:SetAssignedMenuForGroup(TaskGroup, MenuTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the assigned menu options of the <a href="Task.html">Task</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetBriefing">TASK:SetBriefing(TaskBriefing)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> briefing.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetDetection">TASK:SetDetection(Detection, DetectedItem)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set detection of a task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetDispatcher">TASK:SetDispatcher(Dispatcher)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set dispatcher of a task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetGoal">TASK:SetGoal(Goal)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set goal of a task</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1944,9 +2516,159 @@ A success could mean a positive score to be given, while a failure could mean a 
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetGroupAssigned">TASK:SetGroupAssigned(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set <a href="Wrapper.Group.html">Wrapper.Group</a> assigned to the <a href="Task.html">Task</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetID">TASK:SetID(TaskID)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the ID of the Task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetMenu">TASK:SetMenu(MenuTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the menu options of the <a href="Task.html">Task</a> to all the groups in the SetGroup.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetMenuForGroup">TASK:SetMenuForGroup(MenuTime, TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the Menu for a Group</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetName">TASK:SetName(TaskName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the Name of the Task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetPlannedMenuForGroup">TASK:SetPlannedMenuForGroup(TaskGroup, MenuText, MenuTime)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the planned menu option of the <a href="Task.html">Task</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetScoreOnFail">TASK:SetScoreOnFail(PlayerName, Penalty, TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a penalty when the A2A attack has failed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetScoreOnProgress">TASK:SetScoreOnProgress(PlayerName, Score, TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a score when progress has been made by the player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetScoreOnSuccess">TASK:SetScoreOnSuccess(PlayerName, Score, TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set a score when all the targets in scope of the A2A attack, have been destroyed.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetStateMachine">TASK:SetStateMachine(TaskUnit, Fsm)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add a FiniteStateMachine to <a href="Task.html">Task</a> with key Task<a href="Wrapper.Unit.html">Wrapper.Unit</a></p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetTimeOut">TASK:SetTimeOut(Timer)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the TimeOut for the <a href="Task.html">Task</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetType">TASK:SetType(TaskType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the Type of the Task</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).SetUnitProcess">TASK:SetUnitProcess(Core, FsmTemplate)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets the Task FSM Process Template</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateAborted">TASK:StateAborted()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Aborted</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateAssigned">TASK:StateAssigned()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Assigned</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateCancelled">TASK:StateCancelled()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Cancelled</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateFailed">TASK:StateFailed()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Failed</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateHold">TASK:StateHold()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Hold</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StatePlanned">TASK:StatePlanned()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Planned</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateReplanned">TASK:StateReplanned()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Replanned</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).StateSuccess">TASK:StateSuccess()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Success</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Success">TASK:Success()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Success synchronous event function for TASK.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskBriefing">TASK.TaskBriefing</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskControlMenu">TASK.TaskControlMenu</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskControlMenuTime">TASK.TaskControlMenuTime</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskID">TASK.TaskID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -1956,9 +2678,51 @@ A success could mean a positive score to be given, while a failure could mean a 
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskName">TASK.TaskName</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskProgress">TASK.TaskProgress</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskScheduler">TASK.TaskScheduler</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TaskType">TASK.TaskType</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).TimeOut">TASK.TimeOut</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).UnAssignFromGroup">TASK:UnAssignFromGroup(TaskGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnAssign the <a href="Task.html">Task</a> from a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).UnAssignFromGroups">TASK:UnAssignFromGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnAssign the <a href="Task.html">Task</a> from the <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).UnAssignFromUnit">TASK:UnAssignFromUnit(TaskUnit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>UnAssign the <a href="Task.html">Task</a> from an alive <a href="Wrapper.Unit.html">Wrapper.Unit</a>.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1997,6 +2761,60 @@ A success could mean a positive score to be given, while a failure could mean a 
 <p>FSM Success asynchronous event function for TASK.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onafterReplan">TASK:onafterReplan(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onbeforeTimeOut">TASK:onbeforeTimeOut(Event, From, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onenterAborted">TASK:onenterAborted(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onenterAssigned">TASK:onenterAssigned(Event, From, To, PlayerUnit, PlayerName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onenterCancelled">TASK:onenterCancelled(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onenterFailed">TASK:onenterFailed(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onenterPlanned">TASK:onenterPlanned(Event, From, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onenterSuccess">TASK:onenterSuccess(Event, From, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).onstatechange">TASK:onstatechange(Event, From, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM function for a TASK</p>
+</td>
+          </tr>
         </table>
         </div>
         <div class="w3-card w3-margin">
@@ -2006,7 +2824,19 @@ A success could mean a positive score to be given, while a failure could mean a 
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).New">TASK:New(TaskName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Creates a new FSM_TASK object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK).Task">TASK.Task</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK)._call_handler">TASK:_call_handler(step, trigger, params, EventName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2031,6 +2861,50 @@ A success could mean a positive score to be given, while a failure could mean a 
 
     <a href="Tasking.CommandCenter.html##(COMMANDCENTER)">Tasking.CommandCenter#COMMANDCENTER</a>
 <a id="#(TASK).CommandCenter" ><strong>TASK.CommandCenter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).DetectedItem" ><strong>TASK.DetectedItem</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).Detection" ><strong>TASK.Detection</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).Dispatcher" ><strong>TASK.Dispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).FlashTaskStatus" ><strong>TASK.FlashTaskStatus</strong></a>
     
 
 
@@ -2073,6 +2947,39 @@ A success could mean a positive score to be given, while a failure could mean a 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(TASK).TaskBriefing" ><strong>TASK.TaskBriefing</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskControlMenuTime" ><strong>TASK.TaskControlMenuTime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskID" ><strong>TASK.TaskID</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Tasking.TaskInfo.html##(TASKINFO)">Tasking.TaskInfo#TASKINFO</a>
 <a id="#(TASK).TaskInfo" ><strong>TASK.TaskInfo</strong></a>
     
@@ -2084,8 +2991,41 @@ A success could mean a positive score to be given, while a failure could mean a 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(TASK).TaskName" ><strong>TASK.TaskName</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Scheduler.html##(SCHEDULER)">Core.Scheduler#SCHEDULER</a>
 <a id="#(TASK).TaskScheduler" ><strong>TASK.TaskScheduler</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskType" ><strong>TASK.TaskType</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TimeOut" ><strong>TASK.TimeOut</strong></a>
     
 
 
@@ -2120,6 +3060,256 @@ A success could mean a positive score to be given, while a failure could mean a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(TASK).AbortGroup" ><strong>TASK:AbortGroup(PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>A group aborting the task.</p>
+
+<div id= "#Functions##AbortGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The group aborting the task.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).AddGroups" ><strong>TASK:AddGroups(GroupSet)</strong></a></h2>
+</div>
+    
+<p>Gets the SET_GROUP assigned to the TASK.</p>
+
+<div id= "#Functions##AddGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>GroupSet</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).AddProgress" ><strong>TASK:AddProgress(PlayerName, ProgressText, ProgressTime, ProgressPoints)</strong></a></h2>
+</div>
+    
+<p>Add Task Progress for a Player Name</p>
+
+<div id= "#Functions##AddProgress" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ProgressText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The text that explains the Progress achieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ProgressTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The time the progress was achieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ProgressPoints</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).AssignToGroup" ><strong>TASK:AssignToGroup(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Assign the <a href="Task.html">Task</a> to a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+
+<div id= "#Functions##AssignToGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).AssignToUnit" ><strong>TASK:AssignToUnit(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Assign the <a href="Task.html">Task</a> to an alive <a href="Wrapper.Unit.html">Wrapper.Unit</a>.</p>
+
+<div id= "#Functions##AssignToUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(TASK).Cancel" ><strong>TASK:Cancel()</strong></a></h2>
 </div>
     
@@ -2142,6 +3332,92 @@ A success could mean a positive score to be given, while a failure could mean a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(TASK).ClearGroupAssignment" ><strong>TASK:ClearGroupAssignment(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Clear the <a href="Wrapper.Group.html">Wrapper.Group</a> assignment from the <a href="Task.html">Task</a>.</p>
+
+<div id= "#Functions##ClearGroupAssignment" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).CrashGroup" ><strong>TASK:CrashGroup(PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>A group crashing and thus aborting from the task.</p>
+
+<div id= "#Functions##CrashGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The group aborting the task.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(TASK).Fail" ><strong>TASK:Fail()</strong></a></h2>
 </div>
     
@@ -2156,6 +3432,661 @@ A success could mean a positive score to be given, while a failure could mean a 
    <div class="w3-margin-left">
 <p>TASK</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).FailProcesses" ><strong>TASK:FailProcesses(TaskUnitName)</strong></a></h2>
+</div>
+    
+
+
+    
+<p> TODO: Obscolete?
+- Fail processes from <a href="Task.html">Task</a> with key <a href="Wrapper.Unit.html">Wrapper.Unit</a>
+ @param #TASK self
+ @param #string TaskUnitName
+ @return #TASK self</p>
+
+<div id= "#Functions##FailProcesses" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskUnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetBriefing" ><strong>TASK:GetBriefing()</strong></a></h2>
+</div>
+    
+<p>Gets the <a href="Task.html">Task</a> briefing.</p>
+
+<div id= "#Functions##GetBriefing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The briefing text.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetGoal" ><strong>TASK:GetGoal()</strong></a></h2>
+</div>
+    
+<p>Get goal of a task</p>
+
+<div id= "#Functions##GetGoal" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Goal.html##(GOAL)">Core.Goal#GOAL</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The Goal</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetGroups" ><strong>TASK:GetGroups()</strong></a></h2>
+</div>
+    
+<p>Gets the SET_GROUP assigned to the TASK.</p>
+
+<div id= "#Functions##GetGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetID" ><strong>TASK:GetID()</strong></a></h2>
+</div>
+    
+<p>Gets the ID of the Task</p>
+
+<div id= "#Functions##GetID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>TaskID</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetMission" ><strong>TASK:GetMission()</strong></a></h2>
+</div>
+    
+<p>Gets the Mission to where the TASK belongs.</p>
+
+<div id= "#Functions##GetMission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetName" ><strong>TASK:GetName()</strong></a></h2>
+</div>
+    
+<p>Gets the Name of the Task</p>
+
+<div id= "#Functions##GetName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The Task Name</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetPlayerCount" ><strong>TASK:GetPlayerCount()</strong></a></h2>
+</div>
+    
+<p>Create a count of the players in the Task.</p>
+
+<div id= "#Functions##GetPlayerCount" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The total number of players in the task.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetPlayerNames" ><strong>TASK:GetPlayerNames()</strong></a></h2>
+</div>
+    
+<p>Create a list of the players in the Task.</p>
+
+<div id= "#Functions##GetPlayerNames" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#map&lt;#string,Wrapper.Group#GROUP&gt;:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>A map of the players</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetPlayerProgress" ><strong>TASK:GetPlayerProgress(PlayerName)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##GetPlayerProgress" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetProcessTemplate" ><strong>TASK:GetProcessTemplate(ProcessName)</strong></a></h2>
+</div>
+    
+<p>Get the default or currently assigned <a href="Process.html">Process</a> template with key ProcessName.</p>
+
+<div id= "#Functions##GetProcessTemplate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ProcessName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetScoring" ><strong>TASK:GetScoring()</strong></a></h2>
+</div>
+    
+<p>Gets the Scoring of the task</p>
+
+<div id= "#Functions##GetScoring" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Functional.Scoring.html##(SCORING)">Functional.Scoring#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Scoring</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetStateMachine" ><strong>TASK:GetStateMachine(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Gets the FiniteStateMachine of <a href="Task.html">Task</a> with key Task<a href="Wrapper.Unit.html">Wrapper.Unit</a></p>
+
+<div id= "#Functions##GetStateMachine" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetStateString" ><strong>TASK:GetStateString()</strong></a></h2>
+</div>
+    
+<p>Gets the <a href="Task.html">Task</a> status.</p>
+
+<div id= "#Functions##GetStateString" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetTaskBriefing" ><strong>TASK:GetTaskBriefing()</strong></a></h2>
+</div>
+    
+<p>Returns the <a href="Task.html">Task</a> briefing.</p>
+
+<div id= "#Functions##GetTaskBriefing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Task briefing.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetTaskControlMenu" ><strong>TASK:GetTaskControlMenu(TaskUnit, TaskName)</strong></a></h2>
+</div>
+    
+<p>Get Task Control Menu</p>
+
+<div id= "#Functions##GetTaskControlMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> that contains a player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Menu.html##(MENU_GROUP)">Core.Menu#MENU_GROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>TaskControlMenu The Task Control Menu</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetTaskIndex" ><strong>TASK:GetTaskIndex()</strong></a></h2>
+</div>
+    
+<p>Gets the Task Index, which is a combination of the Task type, the Task name.</p>
+
+<div id= "#Functions##GetTaskIndex" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The Task ID</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetTaskName" ><strong>TASK:GetTaskName()</strong></a></h2>
+</div>
+    
+<p>Returns the <a href="Task.html">Task</a> name.</p>
+
+<div id= "#Functions##GetTaskName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>TaskName</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetType" ><strong>TASK:GetType()</strong></a></h2>
+</div>
+    
+<p>Gets the Type of the Task</p>
+
+<div id= "#Functions##GetType" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>TaskType</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).GetUnitProcess" ><strong>TASK:GetUnitProcess(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Get the Task FSM Process Template</p>
+
+<div id= "#Functions##GetUnitProcess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2202,6 +4133,708 @@ A success could mean a positive score to be given, while a failure could mean a 
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).HasAliveUnits" ><strong>TASK:HasAliveUnits()</strong></a></h2>
+</div>
+    
+<p>Returns if the <a href="Task.html">Task</a> has still alive and assigned Units.</p>
+
+<div id= "#Functions##HasAliveUnits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).HasGroup" ><strong>TASK:HasGroup(FindGroup)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##HasGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>FindGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).HasStateMachine" ><strong>TASK:HasStateMachine(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Checks if there is a FiniteStateMachine assigned to Task<a href="Wrapper.Unit.html">Wrapper.Unit</a> for <a href="Task.html">Task</a></p>
+
+<div id= "#Functions##HasStateMachine" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).InitTaskControlMenu" ><strong>TASK:InitTaskControlMenu(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Init Task Control Menu</p>
+
+<div id= "#Functions##InitTaskControlMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> that contains a player.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>Task Control Menu Refresh ID</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsGroupAssigned" ><strong>TASK:IsGroupAssigned(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Returns if the <a href="Task.html">Task</a> is assigned to the Group.</p>
+
+<div id= "#Functions##IsGroupAssigned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateAborted" ><strong>TASK:IsStateAborted()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Aborted</strong>.</p>
+
+<div id= "#Functions##IsStateAborted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateAssigned" ><strong>TASK:IsStateAssigned()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Assigned</strong>.</p>
+
+<div id= "#Functions##IsStateAssigned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateCancelled" ><strong>TASK:IsStateCancelled()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Cancelled</strong>.</p>
+
+<div id= "#Functions##IsStateCancelled" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateFailed" ><strong>TASK:IsStateFailed()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Failed</strong>.</p>
+
+<div id= "#Functions##IsStateFailed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateHold" ><strong>TASK:IsStateHold()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Hold</strong>.</p>
+
+<div id= "#Functions##IsStateHold" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStatePlanned" ><strong>TASK:IsStatePlanned()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Planned</strong>.</p>
+
+<div id= "#Functions##IsStatePlanned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateReplanned" ><strong>TASK:IsStateReplanned()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Replanned</strong>.</p>
+
+<div id= "#Functions##IsStateReplanned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).IsStateSuccess" ><strong>TASK:IsStateSuccess()</strong></a></h2>
+</div>
+    
+<p>Is the <a href="Task.html">Task</a> status <strong>Success</strong>.</p>
+
+<div id= "#Functions##IsStateSuccess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).JoinUnit" ><strong>TASK:JoinUnit(PlayerUnit, PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>Add a PlayerUnit to join the Task.</p>
+
+    
+<p>For each Group within the Task, the Unit is checked if it can join the Task.
+If the Unit was not part of the Task, false is returned.
+If the Unit is part of the Task, true is returned.</p>
+
+<div id= "#Functions##JoinUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The CLIENT or UNIT of the Player joining the Mission.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The GROUP of the player joining the Mission.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>true if Unit is part of the Task.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).MenuAssignToGroup" ><strong>TASK:MenuAssignToGroup(TaskGroup)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##MenuAssignToGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).MenuFlashTaskStatus" ><strong>TASK:MenuFlashTaskStatus(TaskGroup, Flash)</strong></a></h2>
+</div>
+    
+<p>Report the task status.</p>
+
+<div id= "#Functions##MenuFlashTaskStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Flash</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).MenuMarkToGroup" ><strong>TASK:MenuMarkToGroup(TaskGroup)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##MenuMarkToGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).MenuTaskAbort" ><strong>TASK:MenuTaskAbort(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Report the task status.</p>
+
+<div id= "#Functions##MenuTaskAbort" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).MenuTaskStatus" ><strong>TASK:MenuTaskStatus(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Report the task status.</p>
+
+<div id= "#Functions##MenuTaskStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).MessageToGroups" ><strong>TASK:MessageToGroups(Message)</strong></a></h2>
+</div>
+    
+<p>Send a message of the <a href="Task.html">Task</a> to the assigned <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+
+<div id= "#Functions##MessageToGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).New" ><strong>TASK:New(Mission, SetGroupAssign, TaskName, TaskType, TaskBriefing)</strong></a></h2>
+</div>
+    
+<p>Instantiates a new TASK.</p>
+
+    
+<p>Should never be used. Interface Class.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
+            <strong><strong>Mission</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The mission wherein the Task is registered.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>SetGroupAssign</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The set of groups for which the Task can be assigned.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the Task</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The type of the Task</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskBriefing</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2517,6 +5150,330 @@ A success could mean a positive score to be given, while a failure could mean a 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(TASK).RefreshMenus" ><strong>TASK:RefreshMenus(TaskGroup, MenuTime)</strong></a></h2>
+</div>
+    
+<p>Remove the menu option of the <a href="Task.html">Task</a> for a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+
+<div id= "#Functions##RefreshMenus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).RefreshTaskControlMenu" ><strong>TASK:RefreshTaskControlMenu(TaskUnit, MenuTime, MenuTag)</strong></a></h2>
+</div>
+    
+<p>Refresh Task Control Menu</p>
+
+<div id= "#Functions##RefreshTaskControlMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> that contains a player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The refresh time that was used to refresh the Task Control Menu items.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MenuTag</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The tag.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).RejectGroup" ><strong>TASK:RejectGroup(PlayerGroup)</strong></a></h2>
+</div>
+    
+<p>A group rejecting a planned task.</p>
+
+<div id= "#Functions##RejectGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>PlayerGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The group rejecting the task.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).RemoveAssignedMenuForGroup" ><strong>TASK:RemoveAssignedMenuForGroup(TaskGroup, MenuTime)</strong></a></h2>
+</div>
+    
+<p>Remove the assigned menu option of the <a href="Task.html">Task</a> for a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+
+<div id= "#Functions##RemoveAssignedMenuForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).RemoveMenu" ><strong>TASK:RemoveMenu(MenuTime)</strong></a></h2>
+</div>
+    
+<p>Remove the menu options of the <a href="Task.html">Task</a> to all the groups in the SetGroup.</p>
+
+<div id= "#Functions##RemoveMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).RemoveStateMachine" ><strong>TASK:RemoveStateMachine(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Remove FiniteStateMachines from <a href="Task.html">Task</a> with key Task<a href="Wrapper.Unit.html">Wrapper.Unit</a></p>
+
+<div id= "#Functions##RemoveStateMachine" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).RemoveTaskControlMenu" ><strong>TASK:RemoveTaskControlMenu(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Remove Task Control Menu</p>
+
+<div id= "#Functions##RemoveTaskControlMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Wrapper.Unit.html">Wrapper.Unit</a> that contains a player.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(TASK).Replan" ><strong>TASK:Replan()</strong></a></h2>
 </div>
     
@@ -2526,6 +5483,1224 @@ A success could mean a positive score to be given, while a failure could mean a 
 <p>Use this event to Replan the Task.</p>
 
 <div id= "#Functions##Replan" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).ReportDetails" ><strong>TASK:ReportDetails(TaskGroup, ReportGroup)</strong></a></h2>
+</div>
+    
+<p>Create a detailed report of the Task.</p>
+
+    
+<p>List the Task Status, and the Players assigned to the Task.</p>
+
+<div id= "#Functions##ReportDetails" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ReportGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).ReportOverview" ><strong>TASK:ReportOverview(ReportGroup)</strong></a></h2>
+</div>
+    
+<p>Create an overiew report of the Task.</p>
+
+    
+<p>List the Task Name and Status</p>
+
+<div id= "#Functions##ReportOverview" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ReportGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).ReportSummary" ><strong>TASK:ReportSummary(ReportGroup)</strong></a></h2>
+</div>
+    
+<p>Create a summary report of the Task.</p>
+
+    
+<p>List the Task Name and Status</p>
+
+<div id= "#Functions##ReportSummary" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>ReportGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SendBriefingToAssignedGroups" ><strong>TASK:SendBriefingToAssignedGroups()</strong></a></h2>
+</div>
+    
+<p>Send the briefng message of the <a href="Task.html">Task</a> to the assigned <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+
+<div id= "#Functions##SendBriefingToAssignedGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetAssignMethod" ><strong>TASK:SetAssignMethod(AcceptClass)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##SetAssignMethod" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Actions.Act_Assign.html##(ACT_ASSIGN)">Actions.Act_Assign#ACT_ASSIGN</a>
+            <strong><strong>AcceptClass</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetAssignedMenuForGroup" ><strong>TASK:SetAssignedMenuForGroup(TaskGroup, MenuTime)</strong></a></h2>
+</div>
+    
+<p>Set the assigned menu options of the <a href="Task.html">Task</a>.</p>
+
+<div id= "#Functions##SetAssignedMenuForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetBriefing" ><strong>TASK:SetBriefing(TaskBriefing)</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> briefing.</p>
+
+<div id= "#Functions##SetBriefing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskBriefing</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetDetection" ><strong>TASK:SetDetection(Detection, DetectedItem)</strong></a></h2>
+</div>
+    
+<p>Set detection of a task</p>
+
+<div id= "#Functions##SetDetection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Function.Detection.html##(DETECTION_BASE)">Function.Detection#DETECTION_BASE</a>
+            <strong><strong>Detection</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>DetectedItem</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetDispatcher" ><strong>TASK:SetDispatcher(Dispatcher)</strong></a></h2>
+</div>
+    
+<p>Set dispatcher of a task</p>
+
+<div id= "#Functions##SetDispatcher" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Tasking.DetectionManager.html##(DETECTION_MANAGER)">Tasking.DetectionManager#DETECTION_MANAGER</a>
+            <strong><strong>Dispatcher</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetGoal" ><strong>TASK:SetGoal(Goal)</strong></a></h2>
+</div>
+    
+<p>Set goal of a task</p>
+
+<div id= "#Functions##SetGoal" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Goal.html##(GOAL)">Core.Goal#GOAL</a>
+            <strong><strong>Goal</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetGroupAssigned" ><strong>TASK:SetGroupAssigned(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Set <a href="Wrapper.Group.html">Wrapper.Group</a> assigned to the <a href="Task.html">Task</a>.</p>
+
+<div id= "#Functions##SetGroupAssigned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetID" ><strong>TASK:SetID(TaskID)</strong></a></h2>
+</div>
+    
+<p>Sets the ID of the Task</p>
+
+<div id= "#Functions##SetID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetMenu" ><strong>TASK:SetMenu(MenuTime)</strong></a></h2>
+</div>
+    
+<p>Set the menu options of the <a href="Task.html">Task</a> to all the groups in the SetGroup.</p>
+
+<div id= "#Functions##SetMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetMenuForGroup" ><strong>TASK:SetMenuForGroup(MenuTime, TaskGroup)</strong></a></h2>
+</div>
+    
+<p>Set the Menu for a Group</p>
+
+<div id= "#Functions##SetMenuForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetName" ><strong>TASK:SetName(TaskName)</strong></a></h2>
+</div>
+    
+<p>Sets the Name of the Task</p>
+
+<div id= "#Functions##SetName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetPlannedMenuForGroup" ><strong>TASK:SetPlannedMenuForGroup(TaskGroup, MenuText, MenuTime)</strong></a></h2>
+</div>
+    
+<p>Set the planned menu option of the <a href="Task.html">Task</a>.</p>
+
+<div id= "#Functions##SetPlannedMenuForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MenuText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The menu text.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MenuTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetScoreOnFail" ><strong>TASK:SetScoreOnFail(PlayerName, Penalty, TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Set a penalty when the A2A attack has failed.</p>
+
+<div id= "#Functions##SetScoreOnFail" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Penalty</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The penalty in points, must be a negative value!</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetScoreOnProgress" ><strong>TASK:SetScoreOnProgress(PlayerName, Score, TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Set a score when progress has been made by the player.</p>
+
+<div id= "#Functions##SetScoreOnProgress" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The score in points to be granted when task process has been achieved.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetScoreOnSuccess" ><strong>TASK:SetScoreOnSuccess(PlayerName, Score, TaskUnit)</strong></a></h2>
+</div>
+    
+<p>Set a score when all the targets in scope of the A2A attack, have been destroyed.</p>
+
+<div id= "#Functions##SetScoreOnSuccess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the player.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The score in points.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetStateMachine" ><strong>TASK:SetStateMachine(TaskUnit, Fsm)</strong></a></h2>
+</div>
+    
+<p>Add a FiniteStateMachine to <a href="Task.html">Task</a> with key Task<a href="Wrapper.Unit.html">Wrapper.Unit</a></p>
+
+<div id= "#Functions##SetStateMachine" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Fsm.html##(FSM_PROCESS)">Core.Fsm#FSM_PROCESS</a>
+            <strong><strong>Fsm</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetTimeOut" ><strong>TASK:SetTimeOut(Timer)</strong></a></h2>
+</div>
+    
+<p>Sets the TimeOut for the <a href="Task.html">Task</a>.</p>
+
+    
+<p>If <a href="Task.html">Task</a> stayed planned for longer than TimeOut, it gets into Cancelled status.</p>
+
+<div id= "#Functions##SetTimeOut" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(integer)">#integer</a>
+            <strong><strong>Timer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>in seconds</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetType" ><strong>TASK:SetType(TaskType)</strong></a></h2>
+</div>
+    
+<p>Sets the Type of the Task</p>
+
+<div id= "#Functions##SetType" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).SetUnitProcess" ><strong>TASK:SetUnitProcess(Core, FsmTemplate)</strong></a></h2>
+</div>
+    
+<p>Sets the Task FSM Process Template</p>
+
+<div id= "#Functions##SetUnitProcess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Core</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Fsm#FSM_PROCESS</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>FsmTemplate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateAborted" ><strong>TASK:StateAborted()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Aborted</strong>.</p>
+
+<div id= "#Functions##StateAborted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateAssigned" ><strong>TASK:StateAssigned()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Assigned</strong>.</p>
+
+<div id= "#Functions##StateAssigned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateCancelled" ><strong>TASK:StateCancelled()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Cancelled</strong>.</p>
+
+<div id= "#Functions##StateCancelled" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateFailed" ><strong>TASK:StateFailed()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Failed</strong>.</p>
+
+<div id= "#Functions##StateFailed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateHold" ><strong>TASK:StateHold()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Hold</strong>.</p>
+
+<div id= "#Functions##StateHold" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StatePlanned" ><strong>TASK:StatePlanned()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Planned</strong>.</p>
+
+<div id= "#Functions##StatePlanned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateReplanned" ><strong>TASK:StateReplanned()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Replanned</strong>.</p>
+
+<div id= "#Functions##StateReplanned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).StateSuccess" ><strong>TASK:StateSuccess()</strong></a></h2>
+</div>
+    
+<p>Sets a <a href="Task.html">Task</a> to status <strong>Success</strong>.</p>
+
+<div id= "#Functions##StateSuccess" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -2553,6 +6728,98 @@ A success could mean a positive score to be given, while a failure could mean a 
    <div class="w3-margin-left">
 <p>TASK</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).UnAssignFromGroup" ><strong>TASK:UnAssignFromGroup(TaskGroup)</strong></a></h2>
+</div>
+    
+<p>UnAssign the <a href="Task.html">Task</a> from a <a href="Wrapper.Group.html">Wrapper.Group</a>.</p>
+
+<div id= "#Functions##UnAssignFromGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>TaskGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).UnAssignFromGroups" ><strong>TASK:UnAssignFromGroups()</strong></a></h2>
+</div>
+    
+<p>UnAssign the <a href="Task.html">Task</a> from the <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+
+<div id= "#Functions##UnAssignFromGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).UnAssignFromUnit" ><strong>TASK:UnAssignFromUnit(TaskUnit)</strong></a></h2>
+</div>
+    
+<p>UnAssign the <a href="Task.html">Task</a> from an alive <a href="Wrapper.Unit.html">Wrapper.Unit</a>.</p>
+
+<div id= "#Functions##UnAssignFromUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>TaskUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(TASK)">#TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2725,6 +6992,503 @@ A success could mean a positive score to be given, while a failure could mean a 
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onafterReplan" ><strong>TASK:onafterReplan(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onafterReplan" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onbeforeTimeOut" ><strong>TASK:onbeforeTimeOut(Event, From, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onbeforeTimeOut" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onenterAborted" ><strong>TASK:onenterAborted(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onenterAborted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onenterAssigned" ><strong>TASK:onenterAssigned(Event, From, To, PlayerUnit, PlayerName)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onenterAssigned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>PlayerUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onenterCancelled" ><strong>TASK:onenterCancelled(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onenterCancelled" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onenterFailed" ><strong>TASK:onenterFailed(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onenterFailed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onenterPlanned" ><strong>TASK:onenterPlanned(Event, From, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onenterPlanned" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onenterSuccess" ><strong>TASK:onenterSuccess(Event, From, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onenterSuccess" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).onstatechange" ><strong>TASK:onstatechange(Event, From, To)</strong></a></h2>
+</div>
+    
+<p>FSM function for a TASK</p>
+
+<div id= "#Functions##onstatechange" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TASK</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -2733,6 +7497,50 @@ A success could mean a positive score to be given, while a failure could mean a 
 
     <a href="Tasking.CommandCenter.html##(COMMANDCENTER)">Tasking.CommandCenter#COMMANDCENTER</a>
 <a id="#(TASK).CommandCenter" ><strong>TASK.CommandCenter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).DetectedItem" ><strong>TASK.DetectedItem</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).Detection" ><strong>TASK.Detection</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).Dispatcher" ><strong>TASK.Dispatcher</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).FlashTaskStatus" ><strong>TASK.FlashTaskStatus</strong></a>
     
 
 
@@ -2775,8 +7583,52 @@ A success could mean a positive score to be given, while a failure could mean a 
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(TASK).TaskBriefing" ><strong>TASK.TaskBriefing</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskControlMenuTime" ><strong>TASK.TaskControlMenuTime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskID" ><strong>TASK.TaskID</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Tasking.TaskInfo.html##(TASKINFO)">Tasking.TaskInfo#TASKINFO</a>
 <a id="#(TASK).TaskInfo" ><strong>TASK.TaskInfo</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskName" ><strong>TASK.TaskName</strong></a>
     
 
 
@@ -2794,9 +7646,135 @@ A success could mean a positive score to be given, while a failure could mean a 
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TaskType" ><strong>TASK.TaskType</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(TASK).TimeOut" ><strong>TASK.TimeOut</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK).New" ><strong>TASK:New(TaskName)</strong></a></h2>
+</div>
+    
+<p>Creates a new FSM_TASK object.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM_TASK)">Core.Fsm#FSM_TASK</a></p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TaskName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The name of the task.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(FSM_TASK)">#FSM_TASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TASK)._call_handler" ><strong>TASK:_call_handler(step, trigger, params, EventName)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##_call_handler" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p><a href="Core.Fsm.html##(FSM_TASK)">Core.Fsm#FSM_TASK</a></p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>step</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>trigger</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>params</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>EventName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 </div>
 
         </div>

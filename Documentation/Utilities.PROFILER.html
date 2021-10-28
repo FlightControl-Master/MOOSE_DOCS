@@ -1635,6 +1635,109 @@ Controls a network of short range air/missile defense groups.</p>
 
 
   </div>
+  <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##PROFILER')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>PROFILER</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p><em>The emperor counsels simplicity.</em> *First principles.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##PROFILER" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(PROFILER)">#PROFILER</a>
+<a id="PROFILER" ><strong>PROFILER</strong></a>
+    
+<p><em>The emperor counsels simplicity.</em> *First principles.</p>
+
+    
+<p>Of each particular thing, ask: What is it in itself, in its own constitution? What is its causal nature?*</p>
+
+<hr/>
+
+<p><img src="..\Presentations\Utilities\PROFILER_Main.jpg" alt="Banner Image"/></p>
+
+<h1>The PROFILER Concept</h1>
+
+<p>Profile your lua code. This tells you, which functions are called very often and which consume most real time.
+With this information you can optimize the perfomance of your code.</p>
+
+<h1>Prerequisites</h1>
+
+<p>The modules <strong>os</strong>, <strong>io</strong> and <strong>lfs</strong> need to be desanizied. Comment out the lines</p>
+
+<pre><code>--sanitizeModule('os')
+--sanitizeModule('io')
+--sanitizeModule('lfs')
+</code></pre>
+
+<p>in your <em>"DCS World OpenBeta/Scripts/MissionScripting.lua"</em> file.</p>
+
+<p>But be aware that these changes can make you system vulnerable to attacks.</p>
+
+<h1>Disclaimer</h1>
+
+<p><strong>Profiling itself is CPU expensive!</strong> Don't use this when you want to fly or host a mission.</p>
+
+
+<h1>Start</h1>
+
+<p>The profiler can simply be started with the <a href="##(PROFILER).Start">PROFILER.Start</a>(<em>Delay, Duration</em>) function</p>
+
+<pre><code>PROFILER.Start()
+</code></pre>
+
+<p>The optional parameter <em>Delay</em> can be used to delay the start by a certain amount of seconds and the optional parameter <em>Duration</em> can be used to
+stop the profiler after a certain amount of seconds.</p>
+
+<h1>Stop</h1>
+
+<p>The profiler automatically stops when the mission ends. But it can be stopped any time with the <a href="##(PROFILER).Stop">PROFILER.Stop</a>(<em>Delay</em>) function</p>
+
+<pre><code>PROFILER.Stop()
+</code></pre>
+
+<p>The optional parameter <em>Delay</em> can be used to specify a delay after which the profiler is stopped.</p>
+
+<p>When the profiler is stopped, the output is written to a file.</p>
+
+<h1>Output</h1>
+
+<p>The profiler output is written to a file in your DCS home folder</p>
+
+<pre><code>X:\User\&lt;Your User Name&gt;\Saved Games\DCS OpenBeta\Logs
+</code></pre>
+
+<p>The default file name is "MooseProfiler.txt". If that file exists, the file name is "MooseProfiler-001.txt" etc.</p>
+
+<h2>Data</h2>
+
+<p>The data in the output file provides information on the functions that were called in the mission.</p>
+
+<p>It will tell you how many times a function was called in total, how many times per second, how much time in total and the percentage of time.</p>
+
+<p>If you only want output for functions that are called more than <em>X</em>  times per second, you can set</p>
+
+<pre><code>PROFILER.ThreshCPS=1.5
+</code></pre>
+
+<p>With this setting, only functions which are called more than 1.5 times per second are displayed. The default setting is PROFILER.ThreshCPS=0.0 (no threshold).</p>
+
+<p>Furthermore, you can limit the output for functions that consumed a certain amount of CPU time in total by</p>
+
+<pre><code>PROFILER.ThreshTtot=0.005
+</code></pre>
+
+<p>With this setting, which is also the default, only functions which in total used more than 5 milliseconds CPU time.</p>
+
+
+</div>
+
+  </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PROFILER)">Type <strong>PROFILER</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
@@ -1659,6 +1762,18 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).Start">PROFILER.Start(Delay, Duration)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Start profiler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).Stop">PROFILER.Stop(Delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Stop profiler.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).ThreshCPS">PROFILER.ThreshCPS</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Low calls per second threshold. Only write output if function has more calls per second than this value.</p>
@@ -1680,6 +1795,12 @@ Controls a network of short range air/missile defense groups.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).TstartOS">PROFILER.TstartOS</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>OS real start time os.clock.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER)._flog">PROFILER._flog(f, txt)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Write text to log file.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1719,9 +1840,45 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).getData">PROFILER.getData(func)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get data.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).getfilename">PROFILER.getfilename(ext)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Write info to output file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).hook">PROFILER.hook(event)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Debug hook.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).logUnknown">PROFILER.logUnknown</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log unknown functions. Default is off.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).printCSV">PROFILER.printCSV(data, runTimeGame)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Print csv file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).showInfo">PROFILER.showInfo(runTimeGame, runTimeOS)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Write info to output file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PROFILER).showTable">PROFILER.showTable(data, f, runTimeGame)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Show table.</p>
 </td>
           </tr>
         </table>
@@ -1931,6 +2088,427 @@ Controls a network of short range air/missile defense groups.</p>
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).Start" ><strong>PROFILER.Start(Delay, Duration)</strong></a></h2>
+</div>
+    
+<p>Start profiler.</p>
+
+<div id= "#Functions##Start" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds before profiler is stated. Default is immediately.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Duration</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Duration in (game) seconds before the profiler is stopped. Default is when mission ends.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).Stop" ><strong>PROFILER.Stop(Delay)</strong></a></h2>
+</div>
+    
+<p>Stop profiler.</p>
+
+<div id= "#Functions##Stop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay before stop in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER)._flog" ><strong>PROFILER._flog(f, txt)</strong></a></h2>
+</div>
+    
+<p>Write text to log file.</p>
+
+<div id= "#Functions##_flog" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>f</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The file.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>txt</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The text.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).getData" ><strong>PROFILER.getData(func)</strong></a></h2>
+</div>
+    
+<p>Get data.</p>
+
+<div id= "#Functions##getData" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>func</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Function.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Function name.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Source file name.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Line number.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Function time in seconds.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).getfilename" ><strong>PROFILER.getfilename(ext)</strong></a></h2>
+</div>
+    
+<p>Write info to output file.</p>
+
+<div id= "#Functions##getfilename" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ext</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Extension.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>File name.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).hook" ><strong>PROFILER.hook(event)</strong></a></h2>
+</div>
+    
+<p>Debug hook.</p>
+
+<div id= "#Functions##hook" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).printCSV" ><strong>PROFILER.printCSV(data, runTimeGame)</strong></a></h2>
+</div>
+    
+<p>Print csv file.</p>
+
+<div id= "#Functions##printCSV" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>data</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>runTimeGame</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Game run time in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).showInfo" ><strong>PROFILER.showInfo(runTimeGame, runTimeOS)</strong></a></h2>
+</div>
+    
+<p>Write info to output file.</p>
+
+<div id= "#Functions##showInfo" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>runTimeGame</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Game time in seconds.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>runTimeOS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>OS time in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PROFILER).showTable" ><strong>PROFILER.showTable(data, f, runTimeGame)</strong></a></h2>
+</div>
+    
+<p>Show table.</p>
+
+<div id= "#Functions##showTable" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PROFILER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>data</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>f</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The file.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>runTimeGame</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Game run time in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
 </div>
 
         </div>
