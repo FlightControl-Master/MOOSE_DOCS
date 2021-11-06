@@ -1561,7 +1561,10 @@ Controls a network of short range air/missile defense groups.</p>
 <ul>
     <li>Object oriented refactoring of Ciribob's fantastic CSAR script.</li>
     <li>No need for extra MIST loading. </li>
-    <li>Additional events to tailor your mission.</li>
+    <li>Additional events to tailor your mission.
+    <ul>
+        <li>Optional SpawnCASEVAC to create casualties without beacon (e.g. handling dead ground vehicles and create CASVAC requests).</li>
+    </ul></li>
 </ul>
 
 <h2>0. Prerequisites</h2>
@@ -1635,6 +1638,8 @@ Create a late-activated single infantry unit as template in the mission editor a
   self.SRSPath = "E:\\Progra~1\\DCS-SimpleRadio-Standalone\\" -- adjust your own path in your SRS installation -- server(!)
   self.SRSchannel = 300 -- radio channel
   self.SRSModulation = radio.modulation.AM -- modulation
+  --
+       self.csarUsePara = false -- If set to true, will use the LandingAfterEjection Event instead of Ejection --shagrat
 </code></pre>
 
 <h2>3. Results</h2>
@@ -1701,8 +1706,10 @@ Create a late-activated single infantry unit as template in the mission editor a
 
    -- Create downed "Pilot Wagner" in #ZONE "CSAR_Start_1" at a random point for the blue coalition
    my_csar:SpawnCSARAtZone( "CSAR_Start_1", coalition.side.BLUE, "Pilot Wagner", true )
-</code></pre>
 
+      --Create a casualty and CASEVAC request from a "Point" (VEC2) for the blue coalition --shagrat
+      my_csar:SpawnCASEVAC(Point, coalition.side.BLUE)  
+</code></pre>
 
 
 </div>
@@ -1803,6 +1810,12 @@ Create a late-activated single infantry unit as template in the mission editor a
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).SRSchannel">CSAR.SRSchannel</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).SpawnCASEVAC">CSAR:SpawnCASEVAC(Point, Coalition, Description, addBeacon, Nomessage, Unitname, Typename, Forcedesc)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to add a CSAR object into the scene at a zone coordinate.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2052,6 +2065,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._SpawnCASEVAC">CSAR:_SpawnCASEVAC(_Point, _coalition, _description, _nomessage, unitname, typename, forcedesc)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to add a CSAR object into the scene at a Point coordinate (VEC_2).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._SpawnCsarAtZone">CSAR:_SpawnCsarAtZone(_zone, _coalition, _description, _randomPoint, _nomessage, unitname, typename, forcedesc)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to add a CSAR object into the scene at a zone coordinate.</p>
@@ -2190,6 +2209,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).csarUsePara">CSAR.csarUsePara</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).downedPilots">CSAR.downedPilots</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2239,12 +2264,6 @@ Create a late-activated single infantry unit as template in the mission editor a
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).inTransitGroups">CSAR.inTransitGroups</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).index">CSAR.index</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3590,10 +3609,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).allheligroupset" ><strong>CSAR.allheligroupset</strong></a>
     
 
+
+    
+<p> GROUP_SET of all helis</p>
 
 </div>
 
@@ -3786,10 +3808,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
+
+    
+<p> table of CSAR unit names</p>
 
 </div>
 
@@ -3797,8 +3822,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).csarUsePara" ><strong>CSAR.csarUsePara</strong></a>
     
+
+
+    
+<p> shagrat set to true, will use the LandingAfterEjection Event instead of Ejection</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -3899,17 +3952,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -4870,6 +4912,139 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR).SpawnCASEVAC" ><strong>CSAR:SpawnCASEVAC(Point, Coalition, Description, addBeacon, Nomessage, Unitname, Typename, Forcedesc)</strong></a></h2>
+</div>
+    
+<p>Function to add a CSAR object into the scene at a zone coordinate.</p>
+
+    
+<p>For mission designers wanting to add e.g. PoWs to the scene.</p>
+
+<div id= "#Functions##SpawnCASEVAC" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Point</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>a POINT_VEC2.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Description</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Description.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>addBeacon</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) yes or no.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Nomessage</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) If true, don't send a message to SAR.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Name of the lost unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Typename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Type of plane.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Forcedesc</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Force to use the <strong>description passed only</strong> for the pilot track entry. Use to have fully custom names.</p>
+
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>If missions designers want to spawn downed pilots into the field, e.g. at mission begin, to give the helicopter guys work, they can do this like so:
+     
+       -- Create casualty  "CASEVAC" at Point #POINT_VEC2 for the blue coalition.
+       my_csar:SpawnCASEVAC( POINT_VEC2, coalition.side.BLUE )</code></pre>
+
 </div>
 
 </div>
@@ -6885,6 +7060,120 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR)._SpawnCASEVAC" ><strong>CSAR:_SpawnCASEVAC(_Point, _coalition, _description, _nomessage, unitname, typename, forcedesc)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to add a CSAR object into the scene at a Point coordinate (VEC_2).</p>
+
+    
+<p>For mission designers wanting to add e.g. casualties to the scene, that don't use beacons.</p>
+
+<div id= "#Functions##_SpawnCASEVAC" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_Point</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>a POINT_VEC2.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>_coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_description</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Description.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>_nomessage</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) If true, don't send a message to SAR.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Name of the lost unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>typename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Type of plane.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>forcedesc</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Force to use the description passed only for the pilot track entry. Use to have fully custom names.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR)._SpawnCsarAtZone" ><strong>CSAR:_SpawnCsarAtZone(_zone, _coalition, _description, _randomPoint, _nomessage, unitname, typename, forcedesc)</strong></a></h2>
 </div>
     
@@ -8046,10 +8335,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).allheligroupset" ><strong>CSAR.allheligroupset</strong></a>
     
 
+
+    
+<p> GROUP_SET of all helis</p>
 
 </div>
 
@@ -8242,10 +8534,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
+
+    
+<p> table of CSAR unit names</p>
 
 </div>
 
@@ -8253,8 +8548,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).csarUsePara" ><strong>CSAR.csarUsePara</strong></a>
     
+
+
+    
+<p> shagrat set to true, will use the LandingAfterEjection Event instead of Ejection</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -8355,17 +8678,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -10281,10 +10593,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).allheligroupset" ><strong>CSAR.allheligroupset</strong></a>
     
 
+
+    
+<p> GROUP_SET of all helis</p>
 
 </div>
 
@@ -10477,10 +10792,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
+
+    
+<p> table of CSAR unit names</p>
 
 </div>
 
@@ -10488,8 +10806,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).csarUsePara" ><strong>CSAR.csarUsePara</strong></a>
     
+
+
+    
+<p> shagrat set to true, will use the LandingAfterEjection Event instead of Ejection</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -10590,17 +10936,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
