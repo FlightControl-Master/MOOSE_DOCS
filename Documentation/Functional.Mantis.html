@@ -1778,6 +1778,30 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 <pre><code>   `mymantis:RemoveShorad()`
 </code></pre>
 
+<h1>6. Integrated SEAD</h1>
+
+<p> MANTIS is using <a href="Functional.Sead.html##(SEAD)">Functional.Sead#SEAD</a> internally to both detect and evade HARM attacks. No extra efforts needed to set this up! 
+ Once a HARM attack is detected, MANTIS (via SEAD) will shut down the radars of the attacked SAM site and take evasive action by moving the SAM
+ vehicles around (<em>if they are <strong>drivable</strong></em>, that is). There's a component of randomness in detection and evasion, which is based on the
+ skill set of the SAM set (the higher the skill, the more likely). When a missile is fired from far away, the SAM will stay active for a 
+ period of time to stay defensive, before it takes evasive actions.</p>
+
+<p> You can link into the SEAD driven events of MANTIS like so:</p>
+
+<pre><code>  `function mymantis:OnAfterSeadSuppressionPlanned(From, Event, To, Group, Name, SuppressionStartTime, SuppressionEndTime)`
+     -- your code here - SAM site shutdown and evasion planned, but not yet executed
+     -- Time entries relate to timer.getTime() 
+   end`
+
+   `function mymantis:OnAfterSeadSuppressionStart(From, Event, To, Group, Name)`
+     -- your code here - SAM site is emissions off and possibly moving
+   end`
+
+   `function mymantis:OnAfterSeadSuppressionEnd(From, Event, To, Group, Name)`
+     -- your code here - SAM site is back online
+   end`
+</code></pre>
+<p> </p>
 
 </div>
 
@@ -3018,17 +3042,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
     
@@ -3457,9 +3470,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
     
 
-
-    
-<p> switch alarm state RED</p>
 
 </div>
 
@@ -6683,17 +6693,6 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
     
@@ -7122,9 +7121,6 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
     
 
-
-    
-<p> switch alarm state RED</p>
 
 </div>
 
