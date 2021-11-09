@@ -1715,25 +1715,27 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 
 <h1>2. Start up your MANTIS with a basic setting</h1>
 
-<p>   <code>myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)</code>
-   <code>myredmantis:Start()</code></p>
+<pre><code>   myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)
+   myredmantis:Start()
+</code></pre>
 
 <p>[optional] Use</p>
 
 <ul>
-    <li><code>MANTIS:SetEWRGrouping(radius)</code></li>
-    <li><code>MANTIS:SetEWRRange(radius)</code></li>
-    <li><code>MANTIS:SetSAMRadius(radius)</code></li>
-    <li><code>MANTIS:SetDetectInterval(interval)</code></li>
-    <li><code>MANTIS:SetAutoRelocate(hq, ewr)</code></li>
+    <li>MANTIS:SetEWRGrouping(radius)</li>
+    <li>MANTIS:SetEWRRange(radius)</li>
+    <li>MANTIS:SetSAMRadius(radius)</li>
+    <li>MANTIS:SetDetectInterval(interval)</li>
+    <li>MANTIS:SetAutoRelocate(hq, ewr)</li>
 </ul>
 
 <p>before starting #MANTIS to fine-tune your setup.</p>
 
 <p>If you want to use a separate AWACS unit (default detection range: 250km) to support your EWR system, use e.g. the following setup:</p>
 
-<p>   <code>mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")</code>
-   <code>mybluemantis:Start()</code></p>
+<pre><code>   mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")
+   mybluemantis:Start()
+</code></pre>
 
 <h1>3. Default settings</h1>
 
@@ -1756,7 +1758,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 
 <p> Advanced mode will <em>decrease</em> reactivity of MANTIS, if HQ and/or EWR  network dies.  Awacs is counted as one EWR unit. It will set SAMs to RED state if both are dead.  Requires usage of an <strong>HQ</strong> object and the <strong>dynamic</strong> option.</p>
 
-<p> E.g.        <code>mymantis:SetAdvancedMode( true, 90 )</code></p>
+<p> E.g.        mymantis:SetAdvancedMode( true, 90 )</p>
 
 <p> Use this option if you want to make use of or allow advanced SEAD tactics.</p>
 
@@ -1765,17 +1767,17 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 <p> You can also choose to integrate Mantis with <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a> for protection against HARMs and AGMs. When SHORAD detects a missile fired at one of MANTIS' SAM sites, it will activate SHORAD systems in
  the given defense checkradius around that SAM site. Create a SHORAD object first, then integrate with MANTIS like so:</p>
 
-<pre><code> `local SamSet = SET_GROUP:New():FilterPrefixes("Blue SAM"):FilterCoalitions("blue"):FilterStart()`
- `myshorad = SHORAD:New("BlueShorad", "Blue SHORAD", SamSet, 22000, 600, "blue")`
- `-- now set up MANTIS`
- `mymantis = MANTIS:New("BlueMantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")`
- `mymantis:AddShorad(myshorad,720)`
- `mymantis:Start()`
+<pre><code>     local SamSet = SET_GROUP:New():FilterPrefixes("Blue SAM"):FilterCoalitions("blue"):FilterStart()
+     myshorad = SHORAD:New("BlueShorad", "Blue SHORAD", SamSet, 22000, 600, "blue")
+     -- now set up MANTIS
+     mymantis = MANTIS:New("BlueMantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")
+     mymantis:AddShorad(myshorad,720)
+     mymantis:Start()
 </code></pre>
 
 <p> and (optionally) remove the link later on with</p>
 
-<pre><code>   `mymantis:RemoveShorad()`
+<pre><code>     mymantis:RemoveShorad()
 </code></pre>
 
 <h1>6. Integrated SEAD</h1>
@@ -1788,18 +1790,18 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 
 <p> You can link into the SEAD driven events of MANTIS like so:</p>
 
-<pre><code>  `function mymantis:OnAfterSeadSuppressionPlanned(From, Event, To, Group, Name, SuppressionStartTime, SuppressionEndTime)`
+<pre><code>   function mymantis:OnAfterSeadSuppressionPlanned(From, Event, To, Group, Name, SuppressionStartTime, SuppressionEndTime)
      -- your code here - SAM site shutdown and evasion planned, but not yet executed
-     -- Time entries relate to timer.getTime() 
-   end`
+     -- Time entries relate to timer.getTime() - see https://wiki.hoggitworld.com/view/DCS_func_getTime
+   end
 
-   `function mymantis:OnAfterSeadSuppressionStart(From, Event, To, Group, Name)`
+   function mymantis:OnAfterSeadSuppressionStart(From, Event, To, Group, Name)
      -- your code here - SAM site is emissions off and possibly moving
-   end`
+   end
 
-   `function mymantis:OnAfterSeadSuppressionEnd(From, Event, To, Group, Name)`
+   function mymantis:OnAfterSeadSuppressionEnd(From, Event, To, Group, Name)
      -- your code here - SAM site is back online
-   end`
+   end
 </code></pre>
 <p> </p>
 
@@ -3822,23 +3824,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       <h2><strong>Usage:</strong></h2>
     <pre class="example"><code>Start up your MANTIS with a basic setting
 
-    `myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)`
-    `myredmantis:Start()`
+        myredmantis = MANTIS:New("myredmantis","Red SAM","Red EWR",nil,"red",false)
+        myredmantis:Start()
 
  [optional] Use
 
-  * `MANTIS:SetEWRGrouping(radius)`
-  * `MANTIS:SetEWRRange(radius)`
-  * `MANTIS:SetSAMRadius(radius)`
-  * `MANTIS:SetDetectInterval(interval)`
-  * `MANTIS:SetAutoRelocate(hq, ewr)`
+  * MANTIS:SetEWRGrouping(radius)
+  * MANTIS:SetEWRRange(radius)
+  * MANTIS:SetSAMRadius(radius)
+  * MANTIS:SetDetectInterval(interval)
+  * MANTIS:SetAutoRelocate(hq, ewr)
 
  before starting #MANTIS to fine-tune your setup.
 
  If you want to use a separate AWACS unit (default detection range: 250km) to support your EWR system, use e.g. the following setup:
 
-    `mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")`
-    `mybluemantis:Start()`
+        mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")
+        mybluemantis:Start()
 </code></pre>
 
 </div>
