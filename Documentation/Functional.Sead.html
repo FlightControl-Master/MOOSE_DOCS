@@ -1502,6 +1502,8 @@ Controls a network of short range air/missile defense groups.</p>
 <ul>
     <li>When SAM sites are being fired upon, the SAMs will take evasive action will reposition themselves when possible.</li>
     <li>When SAM sites are being fired upon, the SAMs will take defensive action by shutting down their radars.</li>
+    <li>SEAD calculates the time it takes for a HARM to reach the target - and will attempt to minimize the shut-down time.</li>
+    <li>Detection and evasion of shots has a random component based on the skill level of the SAM groups.</li>
 </ul>
 
 <hr/>
@@ -1514,7 +1516,7 @@ Controls a network of short range air/missile defense groups.</p>
 
 <h3>Authors: <strong>FlightControl</strong>, <strong>applevangelist</strong></h3>
 
-<p>Last Update: Aug 2021</p>
+<p>Last Update: Nov 2021</p>
 
 <hr/>
 
@@ -1541,7 +1543,11 @@ Controls a network of short range air/missile defense groups.</p>
 
     
 
-<p>This class is very easy to use. Just setup a SEAD object by using <a href="##(SEAD).New">SEAD.New</a>() and SAMs will evade and take defensive action when being fired upon.</p>
+<p>This class is very easy to use. Just setup a SEAD object by using <a href="##(SEAD).New">SEAD.New</a>() and SAMs will evade and take defensive action when being fired upon.
+Once a HARM attack is detected, SEAD will shut down the radars of the attacked SAM site and take evasive action by moving the SAM
+vehicles around (<em>if</em> they are drivable, that is). There's a component of randomness in detection and evasion, which is based on the
+skill set of the SAM set (the higher the skill, the more likely). When a missile is fired from far away, the SAM will stay active for a 
+period of time to stay defensive, before it takes evasive actions.</p>
 
 <h1>Constructor:</h1>
 
@@ -1567,15 +1573,27 @@ Controls a network of short range air/missile defense groups.</p>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).AddCallBack">SEAD:AddCallBack(Object)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add an object to call back when going evasive.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).CallBack">SEAD.CallBack</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).EngagementRange">SEAD.EngagementRange</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).HandleEventShot">SEAD.HandleEventShot(EventData, self)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).HandleEventShot">SEAD:HandleEventShot(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Detects if an SAM site was shot with an anti radiation missile.</p>
+<p>(Internal) Detects if an SAM site was shot with an anti radiation missile.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1615,15 +1633,33 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).SwitchEmissions">SEAD:SwitchEmissions(Switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set SEAD to use emissions on/off in addition to alarm state.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).UpdateSet">SEAD:UpdateSet(SEADGroupPrefixes)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Update the active SEAD Set</p>
+<p>Update the active SEAD Set (while running)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).UseCallBack">SEAD.UseCallBack</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD).UseEmissionsOnOff">SEAD.UseEmissionsOnOff</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SEAD)._CheckHarms">SEAD:_CheckHarms(WeaponName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if a known HARM was fired</p>
+<p>(Internal) Check if a known HARM was fired</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2180,6 +2216,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(SEAD).CallBack" ><strong>SEAD.CallBack</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(SEAD).EngagementRange" ><strong>SEAD.EngagementRange</strong></a>
     
 
@@ -2220,16 +2267,85 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </div>
 
 </div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SEAD).UseCallBack" ><strong>SEAD.UseCallBack</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SEAD).UseEmissionsOnOff" ><strong>SEAD.UseEmissionsOnOff</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SEAD).HandleEventShot" ><strong>SEAD.HandleEventShot(EventData, self)</strong></a></h2>
+<h2><a id="#(SEAD).AddCallBack" ><strong>SEAD:AddCallBack(Object)</strong></a></h2>
 </div>
     
-<p>Detects if an SAM site was shot with an anti radiation missile.</p>
+<p>Add an object to call back when going evasive.</p>
+
+<div id= "#Functions##AddCallBack" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SEAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Object</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The object to call. Needs to have object functions as follows:
+<code>:SeadSuppressionPlanned(Group, Name, SuppressionStartTime, SuppressionEndTime)</code> 
+<code>:SeadSuppressionStart(Group, Name)</code>, 
+<code>:SeadSuppressionEnd(Group, Name)</code>, </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SEAD)">#SEAD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SEAD).HandleEventShot" ><strong>SEAD:HandleEventShot(EventData)</strong></a></h2>
+</div>
+    
+<p>(Internal) Detects if an SAM site was shot with an anti radiation missile.</p>
 
     
 <p>In this case, take evasive actions based on the skill level set within the ME.</p>
@@ -2240,7 +2356,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>SEAD</p>
 </div>
-    <h2><strong>Parameters:</strong></h2>
+    <h2><strong>Parameter:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -2252,16 +2368,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
               <p></p>
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>self</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SEAD)">#SEAD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2315,10 +2432,11 @@ Chances are big that the missile will miss.</p>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
+        <p><a href="##(SEAD)">#SEAD</a>:</p>
       </div>
       <div class="w3-half">
         
-<p>SEAD</p>
+<p>self</p>
 
       </div>
     </div>
@@ -2359,13 +2477,14 @@ SEAD_RU_SAM_Defenses = SEAD:New( { 'RU SA-6 Kub', 'RU SA-6 Defenses', 'RU MI-26 
           </div>
           <div class="w3-half">
               
-<p>Set the engagement range in percent, e.g. 50</p>
+<p>Set the engagement range in percent, e.g. 55 (default 75)</p>
 
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
+        <p><a href="##(SEAD)">#SEAD</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -2402,10 +2521,65 @@ SEAD_RU_SAM_Defenses = SEAD:New( { 'RU SA-6 Kub', 'RU SA-6 Defenses', 'RU MI-26 
           </div>
           <div class="w3-half">
               
-<p>Extra number of seconds to add for the switch-on</p>
+<p>Extra number of seconds to add for the switch-on (default 10 seconds)</p>
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SEAD)">#SEAD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SEAD).SwitchEmissions" ><strong>SEAD:SwitchEmissions(Switch)</strong></a></h2>
+</div>
+    
+<p>Set SEAD to use emissions on/off in addition to alarm state.</p>
+
+<div id= "#Functions##SwitchEmissions" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SEAD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>True for on, false for off.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SEAD)">#SEAD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -2417,7 +2591,7 @@ SEAD_RU_SAM_Defenses = SEAD:New( { 'RU SA-6 Kub', 'RU SA-6 Defenses', 'RU MI-26 
 <h2><a id="#(SEAD).UpdateSet" ><strong>SEAD:UpdateSet(SEADGroupPrefixes)</strong></a></h2>
 </div>
     
-<p>Update the active SEAD Set</p>
+<p>Update the active SEAD Set (while running)</p>
 
 <div id= "#Functions##UpdateSet" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -2461,7 +2635,7 @@ SEAD_RU_SAM_Defenses = SEAD:New( { 'RU SA-6 Kub', 'RU SA-6 Defenses', 'RU MI-26 
 <h2><a id="#(SEAD)._CheckHarms" ><strong>SEAD:_CheckHarms(WeaponName)</strong></a></h2>
 </div>
     
-<p>Check if a known HARM was fired</p>
+<p>(Internal) Check if a known HARM was fired</p>
 
 <div id= "#Functions##_CheckHarms" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -2569,6 +2743,17 @@ SEAD_RU_SAM_Defenses = SEAD:New( { 'RU SA-6 Kub', 'RU SA-6 Defenses', 'RU MI-26 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(SEAD).CallBack" ><strong>SEAD.CallBack</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(SEAD).EngagementRange" ><strong>SEAD.EngagementRange</strong></a>
     
 
@@ -2603,6 +2788,28 @@ SEAD_RU_SAM_Defenses = SEAD:New( { 'RU SA-6 Kub', 'RU SA-6 Defenses', 'RU MI-26 
 
     
 <a id="#(SEAD).Padding" ><strong>SEAD.Padding</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(SEAD).UseCallBack" ><strong>SEAD.UseCallBack</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(SEAD).UseEmissionsOnOff" ><strong>SEAD.UseEmissionsOnOff</strong></a>
     
 
 
