@@ -1632,8 +1632,8 @@ Controls a network of SAM sites.</p>
 
     
 <p>Use detection to switch on the AA site closest to the enemy
-Leverage evasiveness from SEAD
-Leverage attack range setup added by DCS in 11/20</p>
+Automatic mode (default since 0.8) can set-up your SAM site network automatically for you
+Leverage evasiveness from SEAD, leverage attack range setting</p>
 
 <hr/>
 
@@ -1677,13 +1677,56 @@ Leverage attack range setup added by DCS in 11/20</p>
 <p>Moose derived  Modular, Automatic and Network capable Targeting and Interception System.</p>
 
     
-<p>Controls a network of SAM sites. Use detection to switch on the AA site closest to the enemy.
-Leverage evasiveness from <a href="Functional.Sead.html##(SEAD)">Functional.Sead#SEAD</a>.
-Leverage attack range setup added by DCS in 11/20.</p>
+<ul>
+    <li>Controls a network of SAM sites. Uses detection to switch on the SAM site closest to the enemy.</li>
+    <li><strong>Automatic mode</strong> (default since 0.8) can set-up your SAM site network automatically for you</li>
+    <li><strong>Classic mode</strong> behaves like before</li>
+    <li>Leverage evasiveness from SEAD, leverage attack range setting</li>
+</ul>
 
-<p>Set up your SAM sites in the mission editor. Name the groups with common prefix like "Red SAM".
-Set up your EWR system in the mission editor. Name the groups with common prefix like "Red EWR". Can be e.g. AWACS or a combination of AWACS and Search Radars like e.g. EWR 1L13 etc.
-[optional] Set up your HQ. Can be any group, e.g. a command vehicle.</p>
+<h1>0. Base considerations and naming conventions</h1>
+
+<p><strong>Before</strong> you start to set up your SAM sites in the mission editor, please think of naming conventions. This is especially critical to make
+eveything work as intended, also if you have both a blue and a red installation!</p>
+
+<p>You need three <strong>non-overlapping</strong> "name spaces" for everything to work properly:</p>
+
+<ul>
+    <li>SAM sites, e.g. each <strong>group name</strong> begins with "Red SAM"</li>
+    <li>EWR network and AWACS, e.g. each <strong>group name</strong> begins with "Red EWR" and <em>not</em> e.g. "Red SAM EWR" (overlap with  "Red SAM"), "Red EWR Awacs" will be found by "Red EWR"</li>
+    <li>SHORAD, e.g. each <strong>group name</strong> begins with "Red SHORAD" and *not" e.g. just "SHORAD" because you might also have "Blue SHORAD"</li>
+</ul>
+
+<p>It's important to get this right because of the nature of the filter-system in <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>. Filters are "greedy", that is they
+will match <em>any</em> string that contains the search string - hence we need to avoid that SAMs, EWR and SHORAD step on each other's toes.</p>
+
+<p>Second, for auto-mode to work, the SAMs need the <strong>SAM Type Name</strong> in their group name, as MANTIS will determine their capabilities from this.
+This is case-sensitive, so "sa-11" is not equal to "SA-11" is not equal to "Sa-11"!</p>
+
+<p>Known SAM types at the time of writing are:</p>
+
+<ul>
+    <li>Avenger</li>
+    <li>Chaparrel</li>
+    <li>Hawk</li>
+    <li>Linebacker</li>
+    <li>NASAMS</li>
+    <li>Patriot</li>
+    <li>Rapier</li>
+    <li>Roland</li>
+    <li>SA-2, SA-3, SA-5, SA-6, SA-7, SA-8, SA-9, SA-10, SA-11, SA-13, SA-15, SA-19</li>
+</ul>
+
+<p>Folowing the example started above, an SA-6 site group name should start with "Red SAM SA-6" then, or a blue Patriot installation with e.g. "Blue SAM Patriot"</p>
+
+<h1>0.1 Set-up in the mission editor</h1>
+
+<p>Set up your SAM sites in the mission editor. Name the groups as stated above.
+Set up your EWR system in the mission editor. Name the groups as stated above. Can be e.g. AWACS or a combination of AWACS and Search Radars like e.g. EWR 1L13 etc. 
+Search Radars usually have "SR" or "STR" in their names.
+Set up your SHORAD systems. They need to be close to the SAM sites to be effective. Use <strong>one</strong> group per SAM location. SA-15 TOR systems offer a good missile defense.</p>
+
+<p>[optional] Set up your HQ. Can be any group, e.g. a command vehicle.</p>
 
 <h1>1. Basic tactical considerations when setting up your SAM sites</h1>
 
@@ -1719,34 +1762,54 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
    myredmantis:Start()
 </code></pre>
 
-<p>[optional] Use</p>
+<p>Use</p>
 
 <ul>
-    <li>MANTIS:SetEWRGrouping(radius)</li>
-    <li>MANTIS:SetEWRRange(radius)</li>
-    <li>MANTIS:SetSAMRadius(radius)</li>
-    <li>MANTIS:SetDetectInterval(interval)</li>
-    <li>MANTIS:SetAutoRelocate(hq, ewr)</li>
+    <li>MANTIS:SetEWRGrouping(radius) [classic mode]</li>
+    <li>MANTIS:SetSAMRadius(radius) [classic mode]</li>
+    <li>MANTIS:SetDetectInterval(interval) [classic &amp; auto modes]</li>
+    <li>MANTIS:SetAutoRelocate(hq, ewr) [classic &amp; auto modes]</li>
 </ul>
 
 <p>before starting #MANTIS to fine-tune your setup.</p>
 
-<p>If you want to use a separate AWACS unit (default detection range: 250km) to support your EWR system, use e.g. the following setup:</p>
+<p>If you want to use a separate AWACS unit to support your EWR system, use e.g. the following setup:</p>
 
 <pre><code>   mybluemantis = MANTIS:New("bluemantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")
    mybluemantis:Start()
 </code></pre>
 
-<h1>3. Default settings</h1>
+<h1>2.1 Auto mode features</h1>
+
+<p>You can now add Accept- and Reject-Zones to your setup, e.g. to consider borders or de-militarized zones:</p>
+
+<pre><code>   -- paramters are tables of &lt;a href="Core.Zone.html##(ZONE)"&gt;Core.Zone#ZONE&lt;/a&gt; objects!
+   mybluemantis:AddZones(AcceptZones,RejectZones)
+</code></pre>
+
+<p>Change the number of long-, mid- and short-range systems going live on a detected target:</p>
+
+<pre><code>   -- parameters are numbers. Defaults are 1,2,2,6 respectively
+   mybluemantis:SetMaxActiveSAMs(Short,Mid,Long,Classic)
+</code></pre>
+
+<p>Advanced feature</p>
+
+<pre><code>   -- switch off auto mode **before** you start MANTIS
+   mybluemantis.automode = false
+   -- scale of the firing range, i.e. don't fire at the fringes of max range, default 90%
+   mybluemantis.radiusscale = 0.9
+</code></pre>
+
+<h1>3. Default settings [both modes unless stated otherwise]</h1>
 
 <p>By default, the following settings are active:</p>
 
 <ul>
     <li>SAM_Templates_Prefix = "Red SAM" - SAM site group names in the mission editor begin with "Red SAM"</li>
     <li>EWR_Templates_Prefix = "Red EWR" - EWR group names in the mission editor begin with "Red EWR" - can also be combined with an AWACS unit</li>
-    <li>checkradius = 25000 (meters) - SAMs will engage enemy flights, if they are within a 25km around each SAM site - <code>MANTIS:SetSAMRadius(radius)</code></li>
+    <li>[classic mode] checkradius = 25000 (meters) - SAMs will engage enemy flights, if they are within a 25km around each SAM site - <code>MANTIS:SetSAMRadius(radius)</code></li>
     <li>grouping = 5000 (meters) - Detection (EWR) will group enemy flights to areas of 5km for tracking - <code>MANTIS:SetEWRGrouping(radius)</code></li>
-    <li>acceptrange = 80000 (meters) - Detection (EWR) will on consider flights inside a 80km radius - <code>MANTIS:SetEWRRange(radius)</code></li>
     <li>detectinterval = 30 (seconds) - MANTIS will decide every 30 seconds which SAM to activate - <code>MANTIS:SetDetectInterval(interval)</code></li>
     <li>engagerange = 85 (percent) - SAMs will only fire if flights are inside of a 85% radius of their max firerange - <code>MANTIS:SetSAMRange(range)</code></li>
     <li>dynamic = false - Group filtering is set to once, i.e. newly added groups will not be part of the setup by default - <code>MANTIS:New(name,samprefix,ewrprefix,hq,coaltion,dynamic)</code></li>
@@ -1833,9 +1896,21 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AcceptZones">MANTIS.AcceptZones</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AddShorad">MANTIS:AddShorad(Shorad, Shoradtime)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to link up #MANTIS with a #SHORAD installation</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AddZones">MANTIS:AddZones(AcceptZones, RejectZones)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set accept and reject zones.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1848,12 +1923,6 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).AdvancedState">MANTIS.AdvancedState</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).CheckObjectInZone">MANTIS:CheckObjectInZone(dectset, samcoordinate)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[Internal] Function to check if any object is in the given SAM zone</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1983,9 +2052,21 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).RejectZones">MANTIS.RejectZones</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).RemoveShorad">MANTIS:RemoveShorad()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to unlink #MANTIS from a #SHORAD installation</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAMCheckRanges">MANTIS.SAMCheckRanges</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -1998,6 +2079,24 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAM_Table">MANTIS.SAM_Table</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table of SAM sites</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAM_Table_Long">MANTIS.SAM_Table_Long</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAM_Table_Medium">MANTIS.SAM_Table_Medium</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SAM_Table_Short">MANTIS.SAM_Table_Short</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2069,7 +2168,13 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetEWRRange">MANTIS:SetEWRRange(radius)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Function to set the detection radius of the EWR in meters</p>
+<p>Function to set the detection radius of the EWR in meters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetMaxActiveSAMs">MANTIS:SetMaxActiveSAMs(Short, Mid, Long, Classic)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set number of SAMs going active on a valid, detected thread</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2081,7 +2186,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetSAMRadius">MANTIS:SetSAMRadius(radius)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Function to set switch-on/off zone for the SAM sites in meters</p>
+<p>Function to set switch-on/off zone for the SAM sites in meters.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2099,7 +2204,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetUsingDLink">MANTIS:SetUsingDLink(DLink)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set using an #INTEL_DLINK object instead of #DETECTION</p>
+<p>Set using your own #INTEL_DLINK object instead of #DETECTION</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2141,13 +2246,19 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartAwacsDetection">MANTIS:StartAwacsDetection()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[Internal] Function to start the detection via AWACS if defined as separate</p>
+<p>[Internal] Function to start the detection via AWACS if defined as separate (classic)</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartDetection">MANTIS:StartDetection()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[Internal] Function to start the detection via EWR groups</p>
+<p>[Internal] Function to start the detection via EWR groups - if INTEL isn't available</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).StartIntelDetection">MANTIS:StartIntelDetection()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to start the detection with INTEL via EWR groups</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2181,7 +2292,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._Check">MANTIS:_Check(detection)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._Check">MANTIS:_Check(detection, dlink)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Check detection function</p>
 </td>
@@ -2190,6 +2301,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckAdvState">MANTIS:_CheckAdvState()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Check advanced state</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckCoordinateInZones">MANTIS:_CheckCoordinateInZones(coord)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to check accept and reject zones</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2211,9 +2328,39 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckLoop">MANTIS:_CheckLoop(samset, detset, dlink, limit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Check detection function</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._CheckObjectInZone">MANTIS:_CheckObjectInZone(dectset, samcoordinate, radius, height, dlink)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to check if any object is in the given SAM zone</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._GetSAMDataFromUnits">MANTIS:_GetSAMDataFromUnits(grpname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to get SAM firing data from units types.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._GetSAMRange">MANTIS:_GetSAMRange(grpname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to get SAM firing data</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._GetSAMTable">MANTIS:_GetSAMTable()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Function to get the self.SAM_Table</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._PreFilterHeight">MANTIS:_PreFilterHeight(height)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Function to prefilter height based</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2289,6 +2436,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).automode">MANTIS.automode</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).autorelocate">MANTIS.autorelocate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Relocate HQ and EWR groups in random intervals. Note: You need to select units for this which are <em>actually mobile</em></p>
@@ -2337,15 +2490,51 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ewr_templates">MANTIS.ewr_templates</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).grouping">MANTIS.grouping</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Radius to group detected objects</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).intelset">MANTIS.intelset</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).lid">MANTIS.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Prefix for logging</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).maxclassic">MANTIS.maxclassic</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).maxlongrange">MANTIS.maxlongrange</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).maxmidrange">MANTIS.maxmidrange</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).maxshortrange">MANTIS.maxshortrange</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2433,6 +2622,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).radiusscale">MANTIS.radiusscale</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).relointerval">MANTIS.relointerval</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2440,6 +2635,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).state2flag">MANTIS.state2flag</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).usezones">MANTIS.usezones</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3090,6 +3291,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS.SamData).Radar">MANTIS.SamData.Radar</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Radar typename on unit level</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS.SamData).Range">MANTIS.SamData.Range</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Max firing range in km</p>
@@ -3244,17 +3451,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
     
@@ -3365,6 +3561,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).SAMCheckRanges" ><strong>MANTIS.SAMCheckRanges</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).SAM_Group" ><strong>MANTIS.SAM_Group</strong></a>
     
@@ -3380,6 +3587,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).SAM_Table" ><strong>MANTIS.SAM_Table</strong></a>
     
 <p>Table of SAM sites</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS).SAM_Table_Long" ><strong>MANTIS.SAM_Table_Long</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS).SAM_Table_Medium" ><strong>MANTIS.SAM_Table_Medium</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS).SAM_Table_Short" ><strong>MANTIS.SAM_Table_Short</strong></a>
+    
+
 
 </div>
 
@@ -3567,6 +3807,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(MANTIS).automode" ><strong>MANTIS.automode</strong></a>
+    
+
+
+    
+<p> 0.8 additions</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(MANTIS).autorelocate" ><strong>MANTIS.autorelocate</strong></a>
     
 <p>Relocate HQ and EWR groups in random intervals. Note: You need to select units for this which are <em>actually mobile</em></p>
@@ -3643,6 +3897,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).ewr_templates" ><strong>MANTIS.ewr_templates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MANTIS).grouping" ><strong>MANTIS.grouping</strong></a>
     
@@ -3654,10 +3919,65 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).intelset" ><strong>MANTIS.intelset</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(MANTIS).lid" ><strong>MANTIS.lid</strong></a>
     
 <p>Prefix for logging</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxclassic" ><strong>MANTIS.maxclassic</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxlongrange" ><strong>MANTIS.maxlongrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxmidrange" ><strong>MANTIS.maxmidrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxshortrange" ><strong>MANTIS.maxshortrange</strong></a>
+    
+
 
 </div>
 
@@ -3687,6 +4007,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(MANTIS).radiusscale" ><strong>MANTIS.radiusscale</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(MANTIS).relointerval" ><strong>MANTIS.relointerval</strong></a>
     
@@ -3706,8 +4037,16 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).usezones" ><strong>MANTIS.usezones</strong></a>
     
-<p> switch alarm state RED</p>
+
 
 </div>
 
@@ -3789,12 +4128,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MANTIS).CheckObjectInZone" ><strong>MANTIS:CheckObjectInZone(dectset, samcoordinate)</strong></a></h2>
+<h2><a id="#(MANTIS).AddZones" ><strong>MANTIS:AddZones(AcceptZones, RejectZones)</strong></a></h2>
 </div>
     
-<p>[Internal] Function to check if any object is in the given SAM zone</p>
+<p>Function to set accept and reject zones.</p>
 
-<div id= "#Functions##CheckObjectInZone" class="w3-show w3-white">
+<div id= "#Functions##AddZones" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -3805,46 +4144,38 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 #table
-            <strong><strong>dectset</strong></strong>
+            <strong><strong>AcceptZones</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Table of coordinates of detected items</p>
+<p>Table of <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a> objects</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-            <strong><strong>samcoordinate</strong></strong>
+                #table
+            <strong><strong>RejectZones</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Coordinate object.</p>
+<p>Table of <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a> objects</p>
 
           </div>
         </div>
-    <h2><strong>Return values:</strong></h2>
+    <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>True if in any zone, else false</p>
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
-        </div>
-        <div class="w3-half">
-          <p>#number:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>Distance Target distance in meters or zero when no object is in zone</p>
-
-        </div>
+      </div>
     </div>
 </div>
 
@@ -4065,9 +4396,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
  [optional] Use
 
-  * MANTIS:SetEWRGrouping(radius)
-  * MANTIS:SetEWRRange(radius)
-  * MANTIS:SetSAMRadius(radius)
   * MANTIS:SetDetectInterval(interval)
   * MANTIS:SetAutoRelocate(hq, ewr)
 
@@ -5124,7 +5452,10 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <h2><a id="#(MANTIS).SetEWRRange" ><strong>MANTIS:SetEWRRange(radius)</strong></a></h2>
 </div>
     
-<p>Function to set the detection radius of the EWR in meters</p>
+<p>Function to set the detection radius of the EWR in meters.</p>
+
+    
+<p>(Deprecated, SAM range is used)</p>
 
 <div id= "#Functions##SetEWRRange" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5146,6 +5477,89 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetMaxActiveSAMs" ><strong>MANTIS:SetMaxActiveSAMs(Short, Mid, Long, Classic)</strong></a></h2>
+</div>
+    
+<p>Function to set number of SAMs going active on a valid, detected thread</p>
+
+<div id= "#Functions##SetMaxActiveSAMs" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Short</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of short-range systems activated, defaults to 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Mid</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of mid-range systems activated, defaults to 2.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Long</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of long-range systems activated, defaults to 2.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Classic</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(non-automode) Number of overall systems activated, defaults to 6.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -5193,7 +5607,10 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <h2><a id="#(MANTIS).SetSAMRadius" ><strong>MANTIS:SetSAMRadius(radius)</strong></a></h2>
 </div>
     
-<p>Function to set switch-on/off zone for the SAM sites in meters</p>
+<p>Function to set switch-on/off zone for the SAM sites in meters.</p>
+
+    
+<p>Overwritten per SAM in automode.</p>
 
 <div id= "#Functions##SetSAMRadius" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5211,7 +5628,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
           </div>
           <div class="w3-half">
               
-<p>Radius of the firing zone</p>
+<p>Radius of the firing zone in classic mode</p>
 
           </div>
         </div>
@@ -5229,7 +5646,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <p>Function to set SAM firing engage range, 0-100 percent, e.g.</p>
 
     
-<p>75</p>
+<p>85</p>
 
 <div id= "#Functions##SetSAMRange" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5292,7 +5709,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <h2><a id="#(MANTIS).SetUsingDLink" ><strong>MANTIS:SetUsingDLink(DLink)</strong></a></h2>
 </div>
     
-<p>Set using an #INTEL_DLINK object instead of #DETECTION</p>
+<p>Set using your own #INTEL_DLINK object instead of #DETECTION</p>
 
 <div id= "#Functions##SetUsingDLink" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5380,7 +5797,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <h2><a id="#(MANTIS).StartAwacsDetection" ><strong>MANTIS:StartAwacsDetection()</strong></a></h2>
 </div>
     
-<p>[Internal] Function to start the detection via AWACS if defined as separate</p>
+<p>[Internal] Function to start the detection via AWACS if defined as separate (classic)</p>
 
 <div id= "#Functions##StartAwacsDetection" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5410,7 +5827,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <h2><a id="#(MANTIS).StartDetection" ><strong>MANTIS:StartDetection()</strong></a></h2>
 </div>
     
-<p>[Internal] Function to start the detection via EWR groups</p>
+<p>[Internal] Function to start the detection via EWR groups - if INTEL isn't available</p>
 
 <div id= "#Functions##StartDetection" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5422,6 +5839,36 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
         <p><a href="Functional.Detection.html##(DETECTION_AREAS)">Functional.Detection#DETECTION_AREAS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The running detection set</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).StartIntelDetection" ><strong>MANTIS:StartIntelDetection()</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to start the detection with INTEL via EWR groups</p>
+
+<div id= "#Functions##StartIntelDetection" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Ops.Intel.html##(INTEL_DLINK)">Ops.Intel#INTEL_DLINK</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -5494,7 +5941,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MANTIS)._Check" ><strong>MANTIS:_Check(detection)</strong></a></h2>
+<h2><a id="#(MANTIS)._Check" ><strong>MANTIS:_Check(detection, dlink)</strong></a></h2>
 </div>
     
 <p>[Internal] Check detection function</p>
@@ -5505,7 +5952,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
    <div class="w3-margin-left">
 <p>MANTIS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -5517,6 +5964,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
               
 <p>Detection object</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>dlink</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -5557,6 +6015,50 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
       <div class="w3-half">
         
 <p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckCoordinateInZones" ><strong>MANTIS:_CheckCoordinateInZones(coord)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to check accept and reject zones</p>
+
+<div id= "#Functions##_CheckCoordinateInZones" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>coord</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coordinate to check</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>outcome</p>
 
       </div>
     </div>
@@ -5658,6 +6160,313 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckLoop" ><strong>MANTIS:_CheckLoop(samset, detset, dlink, limit)</strong></a></h2>
+</div>
+    
+<p>[Internal] Check detection function</p>
+
+<div id= "#Functions##_CheckLoop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>samset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of SAM data</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>detset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of COORDINATES</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>dlink</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Using DLINK</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(limit)">#limit</a>
+            <strong><strong>limit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>of SAM sites to go active on a contact</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._CheckObjectInZone" ><strong>MANTIS:_CheckObjectInZone(dectset, samcoordinate, radius, height, dlink)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to check if any object is in the given SAM zone</p>
+
+<div id= "#Functions##_CheckObjectInZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>dectset</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of coordinates of detected items</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>samcoordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coordinate object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius to check.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>height</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Height to check.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>dlink</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data from DLINK.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>True if in any zone, else false</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Distance Target distance in meters or zero when no object is in zone</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._GetSAMDataFromUnits" ><strong>MANTIS:_GetSAMDataFromUnits(grpname)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to get SAM firing data from units types.</p>
+
+<div id= "#Functions##_GetSAMDataFromUnits" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>grpname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the group</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>range Max firing range</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>height Max firing height</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>type Long, medium or short range</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._GetSAMRange" ><strong>MANTIS:_GetSAMRange(grpname)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to get SAM firing data</p>
+
+<div id= "#Functions##_GetSAMRange" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>grpname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the group</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>range Max firing range</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>height Max firing height</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>type Long, medium or short range</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS)._GetSAMTable" ><strong>MANTIS:_GetSAMTable()</strong></a></h2>
 </div>
     
@@ -5677,6 +6486,48 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
       <div class="w3-half">
         
 <p>table</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._PreFilterHeight" ><strong>MANTIS:_PreFilterHeight(height)</strong></a></h2>
+</div>
+    
+<p>[Internal] Function to prefilter height based</p>
+
+<div id= "#Functions##_PreFilterHeight" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>height</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>set</p>
 
       </div>
     </div>
@@ -5759,6 +6610,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
    <div class="w3-margin-left">
 <p>MANTIS</p>
 </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self </p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -6931,17 +7793,6 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).Adv_EWR_Group" ><strong>MANTIS.Adv_EWR_Group</strong></a>
     
@@ -7052,6 +7903,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).SAMCheckRanges" ><strong>MANTIS.SAMCheckRanges</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).SAM_Group" ><strong>MANTIS.SAM_Group</strong></a>
     
@@ -7067,6 +7929,39 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <a id="#(MANTIS).SAM_Table" ><strong>MANTIS.SAM_Table</strong></a>
     
 <p>Table of SAM sites</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS).SAM_Table_Long" ><strong>MANTIS.SAM_Table_Long</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS).SAM_Table_Medium" ><strong>MANTIS.SAM_Table_Medium</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS).SAM_Table_Short" ><strong>MANTIS.SAM_Table_Short</strong></a>
+    
+
 
 </div>
 
@@ -7254,6 +8149,20 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(MANTIS).automode" ><strong>MANTIS.automode</strong></a>
+    
+
+
+    
+<p> 0.8 additions</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(MANTIS).autorelocate" ><strong>MANTIS.autorelocate</strong></a>
     
 <p>Relocate HQ and EWR groups in random intervals. Note: You need to select units for this which are <em>actually mobile</em></p>
@@ -7330,6 +8239,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).ewr_templates" ><strong>MANTIS.ewr_templates</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MANTIS).grouping" ><strong>MANTIS.grouping</strong></a>
     
@@ -7341,10 +8261,65 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(MANTIS).intelset" ><strong>MANTIS.intelset</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(MANTIS).lid" ><strong>MANTIS.lid</strong></a>
     
 <p>Prefix for logging</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxclassic" ><strong>MANTIS.maxclassic</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxlongrange" ><strong>MANTIS.maxlongrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxmidrange" ><strong>MANTIS.maxmidrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxshortrange" ><strong>MANTIS.maxshortrange</strong></a>
+    
+
 
 </div>
 
@@ -7374,6 +8349,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(MANTIS).radiusscale" ><strong>MANTIS.radiusscale</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(MANTIS).relointerval" ><strong>MANTIS.relointerval</strong></a>
     
@@ -7393,8 +8379,16 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
     
 
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(MANTIS).usezones" ><strong>MANTIS.usezones</strong></a>
     
-<p> switch alarm state RED</p>
+
 
 </div>
 
@@ -10858,6 +11852,17 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(MANTIS.SamData).Patriot" ><strong>MANTIS.SamData.Patriot</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MANTIS.SamData).Radar" ><strong>MANTIS.SamData.Radar</strong></a>
+    
+<p>Radar typename on unit level</p>
 
 </div>
 
