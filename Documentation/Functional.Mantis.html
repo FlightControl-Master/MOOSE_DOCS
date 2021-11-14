@@ -1682,6 +1682,7 @@ Leverage evasiveness from SEAD, leverage attack range setting.   </p>
     <li><strong>Automatic mode</strong> (default since 0.8) can set-up your SAM site network automatically for you</li>
     <li><strong>Classic mode</strong> behaves like before</li>
     <li>Leverage evasiveness from SEAD, leverage attack range setting</li>
+    <li>Automatic setup of SHORAD based on groups of the class "short-range"</li>
 </ul>
 
 <h1>0. Base considerations and naming conventions</h1>
@@ -1795,26 +1796,28 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 
 <h1>2.1 Auto mode features</h1>
 
-<p>You can now add Accept- and Reject-Zones to your setup, e.g. to consider borders or de-militarized zones:</p>
-
-<pre><code>   -- parameters are tables of Core.Zone#ZONE objects!
-   mybluemantis:AddZones(AcceptZones,RejectZones)
-</code></pre>
-
-<p>Change the number of long-, mid- and short-range systems going live on a detected target:</p>
-
-<pre><code>   -- parameters are numbers. Defaults are 1,2,2,6 respectively
-   mybluemantis:SetMaxActiveSAMs(Short,Mid,Long,Classic)
-</code></pre>
-
-<p>Advanced feature</p>
-
-<pre><code>   -- switch off auto mode **before** you start MANTIS
-   mybluemantis.automode = false
-   -- scale of the activation range, i.e. don't activate at the fringes of max range, default 90%
-   -- also see engagerange below
-   mybluemantis.radiusscale = 0.9
-</code></pre>
+<ul>
+    <li><p>You can now add Accept- and Reject-Zones to your setup, e.g. to consider borders or de-militarized zones:   </p>
+    
+    <p>   -- parameters are tables of Core.Zone#ZONE objects!
+       mybluemantis:AddZones(AcceptZones,RejectZones)</p></li>
+    <li><p>Change the number of long-, mid- and short-range systems going live on a detected target:   </p>
+    
+    <p>   -- parameters are numbers. Defaults are 1,2,2,6 respectively
+       mybluemantis:SetMaxActiveSAMs(Short,Mid,Long,Classic)</p></li>
+    <li><p>SHORAD will automatically be added from SAM sites of type "short-range"   </p></li>
+    <li><p>Advanced features   </p>
+    
+    <p>   -- switch off auto mode <strong>before</strong> you start MANTIS. <br/>
+       mybluemantis.automode = false</p>
+    
+    <p>   -- switch off auto shorad <strong>before</strong> you start MANTIS. <br/>
+       mybluemantis.autoshorad = false</p>
+    
+    <p>   -- scale of the activation range, i.e. don't activate at the fringes of max range, default 90%. <br/>
+       -- also see engagerange below. <br/>
+       mybluemantis.radiusscale = 0.9</p></li>
+</ul>
 
 <h1>3. Default settings [both modes unless stated otherwise]</h1>
 
@@ -1840,7 +1843,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 
 <p> Use this option if you want to make use of or allow advanced SEAD tactics.</p>
 
-<h1>5. Integrate SHORAD</h1>
+<h1>5. Integrate SHORAD [classic mode]</h1>
 
 <p> You can also choose to integrate Mantis with <a href="Functional.Shorad.html##(SHORAD)">Functional.Shorad#SHORAD</a> for protection against HARMs and AGMs. When SHORAD detects a missile fired at one of MANTIS' SAM sites, it will activate SHORAD systems in
  the given defense checkradius around that SAM site. Create a SHORAD object first, then integrate with MANTIS like so:</p>
@@ -2249,6 +2252,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ShoradGroupSet">MANTIS.ShoradGroupSet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).ShoradLink">MANTIS.ShoradLink</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, #MANTIS has #SHORAD enabled</p>
@@ -2472,6 +2481,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).autorelocateunits">MANTIS.autorelocateunits</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).autoshorad">MANTIS.autoshorad</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3601,8 +3616,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
+    #table
+<a id="#(MANTIS).AcceptZones" ><strong>MANTIS.AcceptZones</strong></a>
     
 
 
@@ -3723,6 +3738,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(MANTIS).RejectZones" ><strong>MANTIS.RejectZones</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(MANTIS).SAMCheckRanges" ><strong>MANTIS.SAMCheckRanges</strong></a>
     
 
@@ -3755,7 +3781,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(MANTIS).SAM_Table_Long" ><strong>MANTIS.SAM_Table_Long</strong></a>
     
 
@@ -3766,7 +3792,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(MANTIS).SAM_Table_Medium" ><strong>MANTIS.SAM_Table_Medium</strong></a>
     
 
@@ -3777,7 +3803,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(MANTIS).SAM_Table_Short" ><strong>MANTIS.SAM_Table_Short</strong></a>
     
 
@@ -3861,6 +3887,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).ShoradActDistance" ><strong>MANTIS.ShoradActDistance</strong></a>
     
 <p>Distance of an attacker in meters from a Mantis SAM site, on which Shorad will be switched on. Useful to not give away Shorad sites too early. Default 15km. Should be smaller than checkradius.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(MANTIS).ShoradGroupSet" ><strong>MANTIS.ShoradGroupSet</strong></a>
+    
+
 
 </div>
 
@@ -4014,6 +4051,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(MANTIS).autoshorad" ><strong>MANTIS.autoshorad</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MANTIS).awacsrange" ><strong>MANTIS.awacsrange</strong></a>
     
@@ -4113,6 +4161,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(MANTIS).maxclassic" ><strong>MANTIS.maxclassic</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxlongrange" ><strong>MANTIS.maxlongrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxmidrange" ><strong>MANTIS.maxmidrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxshortrange" ><strong>MANTIS.maxshortrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
     
@@ -4164,9 +4256,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
     
 
-
-    
-<p> switch alarm state RED</p>
 
 </div>
 
@@ -7953,8 +8042,8 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(MANTIS).AWACS_Prefix" ><strong>MANTIS.AWACS_Prefix</strong></a>
+    #table
+<a id="#(MANTIS).AcceptZones" ><strong>MANTIS.AcceptZones</strong></a>
     
 
 
@@ -8075,6 +8164,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(MANTIS).RejectZones" ><strong>MANTIS.RejectZones</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(MANTIS).SAMCheckRanges" ><strong>MANTIS.SAMCheckRanges</strong></a>
     
 
@@ -8107,7 +8207,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(MANTIS).SAM_Table_Long" ><strong>MANTIS.SAM_Table_Long</strong></a>
     
 
@@ -8118,7 +8218,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(MANTIS).SAM_Table_Medium" ><strong>MANTIS.SAM_Table_Medium</strong></a>
     
 
@@ -8129,7 +8229,7 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(MANTIS).SAM_Table_Short" ><strong>MANTIS.SAM_Table_Short</strong></a>
     
 
@@ -8213,6 +8313,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <a id="#(MANTIS).ShoradActDistance" ><strong>MANTIS.ShoradActDistance</strong></a>
     
 <p>Distance of an attacker in meters from a Mantis SAM site, on which Shorad will be switched on. Useful to not give away Shorad sites too early. Default 15km. Should be smaller than checkradius.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+<a id="#(MANTIS).ShoradGroupSet" ><strong>MANTIS.ShoradGroupSet</strong></a>
+    
+
 
 </div>
 
@@ -8366,6 +8477,17 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(MANTIS).autoshorad" ><strong>MANTIS.autoshorad</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MANTIS).awacsrange" ><strong>MANTIS.awacsrange</strong></a>
     
@@ -8465,6 +8587,50 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(MANTIS).maxclassic" ><strong>MANTIS.maxclassic</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxlongrange" ><strong>MANTIS.maxlongrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxmidrange" ><strong>MANTIS.maxmidrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MANTIS).maxshortrange" ><strong>MANTIS.maxshortrange</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
     
@@ -8516,9 +8682,6 @@ E.g. `mymantis:SetAdvancedMode(true, 90)`</code></pre>
 <a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
     
 
-
-    
-<p> switch alarm state RED</p>
 
 </div>
 
