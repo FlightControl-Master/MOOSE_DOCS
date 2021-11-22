@@ -1974,12 +1974,6 @@ When a missile is detected, SHORAD will activate defense groups in the given rad
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).WakeUpShorad">SHORAD:WakeUpShorad(TargetGroup, Radius, ActiveTimer, TargetCat)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Wake up #SHORADs in a zone with diameter Radius for ActiveTimer seconds</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD)._CheckCoalition">SHORAD:_CheckCoalition(Coalition)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Check the coalition of the attacker</p>
@@ -2037,6 +2031,18 @@ When a missile is detected, SHORAD will activate defense groups in the given rad
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).name">SHORAD.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of this Shorad</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).onafterCalculateHitZone">SHORAD:onafterCalculateHitZone(SEADWeapon, pos0, height, SEADGroup, From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Calculate hit zone of an AGM-88</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SHORAD).onafterWakeUpShorad">SHORAD:onafterWakeUpShorad(TargetGroup, Radius, ActiveTimer, TargetCat, From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Wake up #SHORADs in a zone with diameter Radius for ActiveTimer seconds</p>
 </td>
           </tr>
         </table>
@@ -3235,88 +3241,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SHORAD).WakeUpShorad" ><strong>SHORAD:WakeUpShorad(TargetGroup, Radius, ActiveTimer, TargetCat)</strong></a></h2>
-</div>
-    
-<p>Wake up #SHORADs in a zone with diameter Radius for ActiveTimer seconds</p>
-
-<div id= "#Functions##WakeUpShorad" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>SHORAD</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>TargetGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Name of the target group used to build the #ZONE</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Radius</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Radius of the #ZONE</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>ActiveTimer</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Number of seconds to stay active</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>TargetCat</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional) Category, i.e. Object.Category.UNIT or Object.Category.STATIC</p>
-
-          </div>
-        </div>
-      <h2><strong>Usage:</strong></h2>
-    <pre class="example"><code>Use this function to integrate with other systems, example   
-
-local SamSet = SET_GROUP:New():FilterPrefixes("Blue SAM"):FilterCoalitions("blue"):FilterStart()
-myshorad = SHORAD:New("BlueShorad", "Blue SHORAD", SamSet, 22000, 600, "blue")
-myshorad:SwitchDebug(true)
-mymantis = MANTIS:New("BlueMantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")
-mymantis:AddShorad(myshorad,720)
-mymantis:Start()</code></pre>
-
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
 <h2><a id="#(SHORAD)._CheckCoalition" ><strong>SHORAD:_CheckCoalition(Coalition)</strong></a></h2>
 </div>
     
@@ -3574,6 +3498,231 @@ mymantis:Start()</code></pre>
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).onafterCalculateHitZone" ><strong>SHORAD:onafterCalculateHitZone(SEADWeapon, pos0, height, SEADGroup, From, Event, To)</strong></a></h2>
+</div>
+    
+<p>(Internal) Calculate hit zone of an AGM-88</p>
+
+<div id= "#Functions##onafterCalculateHitZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SEADWeapon</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>DCS.Weapon object</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>pos0</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Position of the plane when it fired</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>height</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Height when the missile was fired</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>SEADGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Attacker group</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SHORAD)">#SHORAD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self </p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SHORAD).onafterWakeUpShorad" ><strong>SHORAD:onafterWakeUpShorad(TargetGroup, Radius, ActiveTimer, TargetCat, From, Event, To)</strong></a></h2>
+</div>
+    
+<p>Wake up #SHORADs in a zone with diameter Radius for ActiveTimer seconds</p>
+
+<div id= "#Functions##onafterWakeUpShorad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SHORAD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the target group used to build the #ZONE</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Radius</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Radius of the #ZONE</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ActiveTimer</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of seconds to stay active</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>TargetCat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) Category, i.e. Object.Category.UNIT or Object.Category.STATIC</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Use this function to integrate with other systems, example   
+
+local SamSet = SET_GROUP:New():FilterPrefixes("Blue SAM"):FilterCoalitions("blue"):FilterStart()
+myshorad = SHORAD:New("BlueShorad", "Blue SHORAD", SamSet, 22000, 600, "blue")
+myshorad:SwitchDebug(true)
+mymantis = MANTIS:New("BlueMantis","Blue SAM","Blue EWR",nil,"blue",false,"Blue Awacs")
+mymantis:AddShorad(myshorad,720)
+mymantis:Start()</code></pre>
+
 </div>
 
 </div>
