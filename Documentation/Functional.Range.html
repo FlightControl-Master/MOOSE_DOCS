@@ -1515,7 +1515,7 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
     <li>Bomb, rocket and missile impact points can be marked by smoke.</li>
     <li>Direct hits on targets can trigger flares.</li>
     <li>Smoke and flare colors can be adjusted for each player via radio menu.</li>
-    <li>Range information and weather report at the range can be reported via radio menu.</li>
+    <li>Range information and weather at the range can be obtained via radio menu.</li>
     <li>Persistence: Bombing range results can be saved to disk and loaded the next time the mission is started.</li>
     <li>Range control voice overs (>40) for hit assessment.</li>
 </ul>
@@ -1609,12 +1609,12 @@ there should be an "On the Range" menu items in the "F10. Other..." menu.</p>
 <p>A strafe pit can be added to the range by the <a href="##(RANGE).AddStrafePit">RANGE.AddStrafePit</a>(<em>targetnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline</em>) function.</p>
 
 <ul>
-    <li>The first parameter <em>targetnames</em> defines the target or targets. This has to be given as a lua table which contains the names of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
+    <li>The first parameter <em>targetnames</em> defines the target or targets. This can be a single item or a Table with the name(s) of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
     <li>In order to perform a valid pass on the strafe pit, the pilot has to begin his run from the correct direction. Therefore, an "approach box" is defined in front
-    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box while the parameter <em>heading</em> defines its direction.
-    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading of the first target unit as defined in the ME.
-    The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is sometimes useful, since the default heading of strafe target units point in the
-    wrong/opposite direction.</li>
+    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box in meters, while the <em>heading</em> parameter defines the heading of the box FROM the target.
+    For example, if heading 120 is set, the approach box will start FROM the target and extend outwards on heading 120. A strafe run approach must then be flown apx. heading 300 TOWARDS the target.
+    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading set in the ME for the first target unit.</li>
+    <li>The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is useful when the default heading of strafe target units point in the wrong/opposite direction.</li>
     <li>The parameter <em>goodpass</em> defines the number of hits a pilot has to achieve during a run to be judged as a "good" pass.</li>
     <li>The last parameter <em>foulline</em> sets the distance from the pit targets to the foul line. Hit from closer than this line are not counted!</li>
 </ul>
@@ -1630,9 +1630,8 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
 <p>One ore multiple bombing targets can be added to the range by the <a href="##(RANGE).AddBombingTargets">RANGE.AddBombingTargets</a>(targetnames, goodhitrange, randommove) function.</p>
 
 <ul>
-    <li>The first parameter <em>targetnames</em> has to be a lua table, which contains the names of <a href="Wrapper.Unit.html">Wrapper.Unit</a> and/or <a href="Static.html">Static</a> objects defined in the mission editor.
-    Note that the <a href="Range.html">Range</a> logic <strong>automatically</strong> determines, if a name belongs to a <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> object now.</li>
-    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius around the target. If a bomb or rocket falls at a distance smaller than this number, the hit is considered to be "good".</li>
+    <li>The first parameter <em>targetnames</em> defines the target or targets. This can be a single item or a Table with the name(s) of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
+    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius in metres around the target within which a bomb/rocket hit is considered to be "good".</li>
     <li>If final (optional) parameter "<em>randommove</em>" can be enabled to create moving targets. If this parameter is set to true, the units of this bombing target will randomly move within the range zone.
     Note that there might be quirks since DCS units can get stuck in buildings etc. So it might be safer to manually define a route for the units in the mission editor if moving targets are desired.</li>
 </ul>
@@ -1671,7 +1670,7 @@ coordinate will still be a valid impact point. This can be done via the <a href=
 
 <p>The main range menu can be found at "F10. Other..." --> "F<em>X</em> . On the Range..." --> "F1. <Range Name>...".</p>
 
-<p>The range menu contains the following submenues:</p>
+<p>The range menu contains the following submenus:</p>
 
 <p><img src="..\Presentations\RANGE\Menu_Main.png" alt="Banner Image"/></p>
 
@@ -1740,9 +1739,9 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
  -- Note that this could also be done manually by simply measuring the distance between the target and the foul line in the ME.
  GoldwaterRange:GetFoullineDistance("GWR Strafe Pit Left 1", "GWR Foul Line Left")
 
- -- Add strafe pits. Each pit (left and right) consists of two targets.
- GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 20, fouldist)
- GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, fouldist)
+ -- Add strafe pits. Each pit (left and right) consists of two targets. Where "nil" is used as input, the default value is used.
+ GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 30, 500)
+ GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, 500)
 
  -- Add bombing targets. A good hit is if the bomb falls less then 50 m from the target.
  GoldwaterRange:AddBombingTargets(bombtargets, 50)
@@ -1850,7 +1849,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).Debug">RANGE.Debug</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2396,7 +2395,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._myname">RANGE:_myname(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns a string which consits of this callsign and the player name.</p>
+<p>Returns a string which consists of the player name.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2474,13 +2473,13 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).illuminationmaxalt">RANGE.illuminationmaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).illuminationminalt">RANGE.illuminationminalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2666,7 +2665,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).strafemaxalt">RANGE.strafemaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4160,7 +4159,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 
 </div>
 
@@ -4402,7 +4401,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -4413,7 +4412,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -4644,7 +4643,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 
 </div>
 
@@ -4958,7 +4957,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>Table containing names of unit or static objects serving as bomb targets.</p>
+<p>Single or multiple (Table) names of unit or static objects serving as bomb targets.</p>
 
           </div>
         </div>
@@ -5014,7 +5013,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p>For a strafe pit, hits from guns are counted. One pit can consist of several units.
-Note, an approach is only valid, if the player enters via a zone in front of the pit, which defined by boxlength and boxheading.
+A strafe run approach is only valid if the player enters via a zone in front of the pit, which is defined by boxlength, boxwidth, and heading.
 Furthermore, the player must not be too high and fly in the direction of the pit to make a valid target apporoach.</p>
 
 <div id= "#Functions##AddStrafePit" class="w3-show w3-white">
@@ -5033,7 +5032,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Table of unit or static names defining the strafe targets. The first target in the list determines the approach zone (heading and box).</p>
+<p>Single or multiple (Table) unit or static names defining the strafe targets. The first target in the list determines the approach box origin (heading and box).</p>
 
           </div>
         </div>
@@ -5072,7 +5071,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Approach heading in Degrees. Default is heading of the unit as defined in the mission editor.</p>
+<p>(Optional) Approach box heading in degrees (originating FROM the target). Default is the heading set in the ME for the first target unit</p>
 
           </div>
         </div>
@@ -5085,7 +5084,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Take inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
+<p>(Optional) Use inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
 
           </div>
         </div>
@@ -5111,7 +5110,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Foul line distance. Hits from closer than this distance are not counted. Default 610 m = 2000 ft. Set to 0 for no foul line.</p>
+<p>(Optional) Foul line distance. Hits from closer than this distance are not counted. Default is 610 m = 2000 ft. Set to 0 for no foul line.</p>
 
           </div>
         </div>
@@ -6238,7 +6237,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Maximum altitude AGL in meters. Default is 914 m= 3000 ft.</p>
+<p>Maximum altitude in meters AGL. Default is 914 m = 3000 ft.</p>
 
           </div>
         </div>
@@ -8444,7 +8443,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE)._myname" ><strong>RANGE:_myname(unitname)</strong></a></h2>
 </div>
     
-<p>Returns a string which consits of this callsign and the player name.</p>
+<p>Returns a string which consists of the player name.</p>
 
 <div id= "#Functions##_myname" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -9280,7 +9279,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 
 </div>
 
@@ -9522,7 +9521,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -9533,7 +9532,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -9764,7 +9763,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 
 </div>
 
@@ -11326,7 +11325,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 
 </div>
 
@@ -11568,7 +11567,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -11579,7 +11578,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -11810,7 +11809,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 
 </div>
 
