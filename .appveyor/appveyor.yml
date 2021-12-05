@@ -59,7 +59,19 @@ build_script:
       dir c:\Projects
       dir
       echo "Removing old Documentation"
-      del Documentation\*
+      $FolderName = ".\Documentation"
+      if (Test-Path $FolderName) {
+          Write-Host "Folder Exists - Deleting contents"
+          # Perform Delete file from folder operation
+          del Documentation\*
+      }
+      else
+      {
+          #PowerShell Create directory if not exists
+          New-Item $FolderName -ItemType Directory
+          Write-Host "Folder Created successfully"
+      }
+      #del Documentation\*
       echo "Documenting"
       lua5.1 c:\Projects\luadocumentor\luadocumentor.lua -d ./Documentation "c:/Projects/Moose/Moose Development/Moose"
       echo "Updating Files"
