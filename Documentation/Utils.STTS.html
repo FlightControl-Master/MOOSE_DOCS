@@ -1504,7 +1504,13 @@ Controls a network of short range air/missile defense groups.</p>
       <tr>
         <td class="style="width:40%;"><p><h2>Global <strong>STTS</strong></h2></p></td>
         <td class="style="width:60%;">
+<p>Simple Text-To-Speech</p>
 
+<p>Version 0.4 - Compatible with SRS version 1.9.6.0+</p>
+
+<h1>DCS Modification Required</h1>
+
+<p>You will need to edit MissionScripting.lua in DCS World/Scripts/MissionScripting.lua and remove the sanitization.</p>
 </td>
       </tr>
     </table>
@@ -1512,21 +1518,592 @@ Controls a network of short range air/missile defense groups.</p>
   <div id= "#Globals##STTS" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    <a href="##(STTS)">#STTS</a>
 <a id="STTS" ><strong>STTS</strong></a>
     
+<p>Simple Text-To-Speech</p>
+
+<p>Version 0.4 - Compatible with SRS version 1.9.6.0+</p>
+
+<h1>DCS Modification Required</h1>
+
+<p>You will need to edit MissionScripting.lua in DCS World/Scripts/MissionScripting.lua and remove the sanitization.</p>
+
+    
+<p>To do this remove all the code below the comment - the line starts "local function sanitizeModule(name)"
+Do this without DCS running to allow mission scripts to use os functions.</p>
+
+<p><em>You WILL HAVE TO REAPPLY AFTER EVERY DCS UPDATE</em></p>
+
+<h1>USAGE:</h1>
+
+<p>Add this script into the mission as a DO SCRIPT or DO SCRIPT FROM FILE to initialize it
+Make sure to edit the STTS.SRS_PORT and STTS.DIRECTORY to the correct values before adding to the mission.
+Then its as simple as calling the correct function in LUA as a DO SCRIPT or in your own scripts.</p>
+
+<p>Example calls:</p>
+
+<pre><code>STTS.TextToSpeech("Hello DCS WORLD","251","AM","1.0","SRS",2)
+</code></pre>
+
+<p>Arguments in order are:</p>
+
+<ul>
+    <li>Message to say, make sure not to use a newline (\n) !</li>
+    <li>Frequency in MHz</li>
+    <li>Modulation - AM/FM</li>
+    <li>Volume - 1.0 max, 0.5 half</li>
+    <li>Name of the transmitter - ATC, RockFM etc</li>
+    <li>Coalition - 0 spectator, 1 red 2 blue</li>
+    <li>OPTIONAL - Vec3 Point i.e Unit.getByName("A UNIT"):getPoint() - needs Vec3 for Height! OR null if not needed</li>
+    <li>OPTIONAL - Speed -10 to +10</li>
+    <li>OPTIONAL - Gender male, female or neuter</li>
+    <li>OPTIONAL - Culture - en-US, en-GB etc</li>
+    <li>OPTIONAL - Voice - a specific voice by name. Run DCS-SR-ExternalAudio.exe with --help to get the ones you can use on the command line</li>
+    <li>OPTIONAL - Google TTS - Switch to Google Text To Speech - Requires STTS.GOOGLE_CREDENTIALS path and Google project setup correctly</li>
+</ul>
+
+
+<h2>Example</h2>
+
+<p>This example will say the words "Hello DCS WORLD" on 251 MHz AM at maximum volume with a client called SRS and to the Blue coalition only</p>
+
+<pre><code>STTS.TextToSpeech("Hello DCS WORLD","251","AM","1.0","SRS",2,null,-5,"male","en-GB")
+</code></pre>
+
+<h2>Example</h2>
+
+<p>This example will say the words "Hello DCS WORLD" on 251 MHz AM at maximum volume with a client called SRS and to the Blue coalition only centered on the position of the Unit called "A UNIT"</p>
+
+<pre><code>STTS.TextToSpeech("Hello DCS WORLD","251","AM","1.0","SRS",2,Unit.getByName("A UNIT"):getPoint(),-5,"male","en-GB")
+</code></pre>
+
+<p>Arguments in order are:</p>
+
+<ul>
+    <li>FULL path to the MP3 OR OGG to play</li>
+    <li>Frequency in MHz - to use multiple separate with a comma - Number of frequencies MUST match number of Modulations</li>
+    <li>Modulation - AM/FM - to use multiple</li>
+    <li>Volume - 1.0 max, 0.5 half</li>
+    <li>Name of the transmitter - ATC, RockFM etc</li>
+    <li>Coalition - 0 spectator, 1 red 2 blue</li>
+</ul>
+
+<h2>Example</h2>
+
+<p>This will play that MP3 on 255MHz AM &amp; 31 FM at half volume with a client called "Multiple" and to Spectators only</p>
+
+<pre><code>STTS.PlayMP3("C:\\Users\\Ciaran\\Downloads\\PR-Music.mp3","255,31","AM,FM","0.5","Multiple",0)
+</code></pre>
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(STTS)">Type <strong>STTS</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(STTS)">STTS</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from STTS</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).DIRECTORY">STTS.DIRECTORY</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Path of the SRS directory.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).EXECUTABLE">STTS.EXECUTABLE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>DON'T CHANGE THIS UNLESS YOU KNOW WHAT YOU'RE DOING</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).GOOGLE_CREDENTIALS">STTS.GOOGLE_CREDENTIALS</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Google credentials file</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).PlayMP3">STTS.PlayMP3(pathToMP3, freqs, modulations, volume, name, coalition, point)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Play mp3 function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).SRS_PORT">STTS.SRS_PORT</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>LOCAL SRS PORT - DEFAULT IS 5002</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).TextToSpeech">STTS.TextToSpeech(message, freqs, modulations, volume, name, coalition, point, speed, gender, culture, voice, googleTTS)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Text to speech function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).getSpeechTime">STTS.getSpeechTime(length, speed, isGoogle)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function returns estimated speech time in seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).round">STTS.round(x, n)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Round a number.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STTS).uuid">STTS.uuid()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function for UUID.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
     <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Utils.STTS)" >Type <strong>Utils.STTS</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
+      <div onclick="myFunction('#Types##STTS')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(STTS)">Type <strong>STTS</strong></a></h2></div>
+        <div id= "#Types##STTS" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p><a href="https://wiki.hoggitworld.com/view/DCS_enum_world">DCS Enum world</a></p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STTS).DIRECTORY" ><strong>STTS.DIRECTORY</strong></a>
+    
+<p>Path of the SRS directory.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STTS).EXECUTABLE" ><strong>STTS.EXECUTABLE</strong></a>
+    
+<p>DON'T CHANGE THIS UNLESS YOU KNOW WHAT YOU'RE DOING</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STTS).GOOGLE_CREDENTIALS" ><strong>STTS.GOOGLE_CREDENTIALS</strong></a>
+    
+<p>Google credentials file</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STTS).SRS_PORT" ><strong>STTS.SRS_PORT</strong></a>
+    
+<p>LOCAL SRS PORT - DEFAULT IS 5002</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STTS).PlayMP3" ><strong>STTS.PlayMP3(pathToMP3, freqs, modulations, volume, name, coalition, point)</strong></a></h2>
+</div>
+    
+<p>Play mp3 function.</p>
+
+<div id= "#Functions##PlayMP3" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STTS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>pathToMP3</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path to the sound file.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>freqs</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Frequencies, e.g. "305, 256".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>modulations</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Modulations, e.g. "AM, FM".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>volume</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Volume, e.g. "0.5".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>point</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STTS).TextToSpeech" ><strong>STTS.TextToSpeech(message, freqs, modulations, volume, name, coalition, point, speed, gender, culture, voice, googleTTS)</strong></a></h2>
+</div>
+    
+<p>Text to speech function.</p>
+
+<div id= "#Functions##TextToSpeech" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STTS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>freqs</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>modulations</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>volume</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>point</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>gender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>culture</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>googleTTS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STTS).getSpeechTime" ><strong>STTS.getSpeechTime(length, speed, isGoogle)</strong></a></h2>
+</div>
+    
+<p>Function returns estimated speech time in seconds.</p>
+
+    
+<p>Assumptions for time calc: 100 Words per min, average of 5 letters for english word so</p>
+
+<ul>
+    <li>5 chars * 100wpm = 500 characters per min = 8.3 chars per second</li>
+</ul>
+
+<p>So length of msg / 8.3 = number of seconds needed to read it. rounded down to 8 chars per sec map function:</p>
+
+<ul>
+    <li>(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min</li>
+</ul>
+
+
+<div id= "#Functions##getSpeechTime" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STTS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>length</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>isGoogle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STTS).round" ><strong>STTS.round(x, n)</strong></a></h2>
+</div>
+    
+<p>Round a number.</p>
+
+<div id= "#Functions##round" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STTS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>x</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>n</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Precision.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STTS).uuid" ><strong>STTS.uuid()</strong></a></h2>
+</div>
+    
+<p>Function for UUID.</p>
+
+<div id= "#Functions##uuid" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STTS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+        </div>
 </div>
 <script>
 function myLoadFunction() {

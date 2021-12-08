@@ -1746,7 +1746,7 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
  -- Add bombing targets. A good hit is if the bomb falls less then 50 m from the target.
  GoldwaterRange:AddBombingTargets(bombtargets, 50)
 
- -- Start range.
+ -- Start Range.
  GoldwaterRange:Start()
 </code></pre>
 
@@ -2579,7 +2579,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).onbeforeLoad">RANGE:onbeforeLoad(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Function called before save event.</p>
+<p>Function called before load event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4785,12 +4785,14 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     <pre class="example"><code>
   -- Setup a Range
   RangeOne = RANGE:New( "Range One" )
-  -- Find the STATIC target object as setup in the ME
-  RangeOneBombTarget = STATIC:FindByName( "RangeOneBombTarget" ):
-  -- Add the coordinate of the STATIC target object as a bomb target (thus keeping the bomb function active, even if the STATIC target is destroyed)
+  -- Find the STATIC target object as setup in the ME.
+  RangeOneBombTarget = STATIC:FindByName( "RangeOneBombTarget" )
+  -- Add the coordinate of the STATIC target object as a bomb target (thus keeping the bomb function active, even if the STATIC target is destroyed).
   RangeOne:AddBombingTargetCoordinate( RangeOneBombTarget:GetCoordinate(), "RangeOneBombTarget", 50)
-  -- Or, add the coordinate of the STATIC target object as a bomb target using default values (name will be "Bomb Target", goodhitrange will be 25 m)
+  -- Or, add the coordinate of the STATIC target object as a bomb target using default values (name will be "Bomb Target", goodhitrange will be 25 m).
   RangeOne:AddBombingTargetCoordinate( RangeOneBombTarget:GetCoordinate() )
+  -- Start Range.
+  RangeOne:Start()
 </code></pre>
 
 </div>
@@ -5440,6 +5442,18 @@ Furthermore, the player must not be too high and fly in the direction of the pit
 
       </div>
     </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>
+  -- Setup a Range
+  RangeOne = RANGE:New( "Range One" )
+  -- Get distance between strafe target objext and foul line distance marker object.
+  RangeOneFoulDistance = RangeOne:GetFoullineDistance( "RangeOneStrafeTarget" , "RangeOneFoulLineObject" )
+  -- Add a strafe pit using the measured foul line distance. Where nil is used, strafe pit default values will be used - adjust as required.
+  RangeOne:AddStrafePit( "RangeOneStrafeTarget", nil, nil, nil, nil, nil, RangeOneFoulDistance )
+  -- Start Range.
+  RangeOne:Start()
+</code></pre>
+
 </div>
 
 </div>
@@ -6741,7 +6755,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
           </div>
           <div class="w3-half">
               
-<p>Path for sound files. Default "ATIS Soundfiles/". Mind the slash "/" at the end!</p>
+<p>Path for sound files. Default "Range Soundfiles/". Mind the slash "/" at the end!</p>
 
           </div>
         </div>
@@ -9124,7 +9138,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE).onbeforeLoad" ><strong>RANGE:onbeforeLoad(From, Event, To)</strong></a></h2>
 </div>
     
-<p>Function called before save event.</p>
+<p>Function called before load event.</p>
 
     
 <p>Checks that io and lfs are desanitized.</p>
