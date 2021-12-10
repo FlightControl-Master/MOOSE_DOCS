@@ -1844,6 +1844,12 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BRIGADE).LoadBackAssetInPosition">BRIGADE:LoadBackAssetInPosition(Templatename, Position)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[ GROUND ] Function to load back an asset in the field that has been filed before.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(BRIGADE).New">BRIGADE:New(WarehouseName, BrigadeName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new BRIGADE class object.</p>
@@ -5585,6 +5591,94 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(BRIGADE).LoadBackAssetInPosition" ><strong>BRIGADE:LoadBackAssetInPosition(Templatename, Position)</strong></a></h2>
+</div>
+    
+<p>[ GROUND ] Function to load back an asset in the field that has been filed before.</p>
+
+<div id= "#Functions##LoadBackAssetInPosition" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>BRIGADE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Templatename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>e.g."1 PzDv LogRg I_AID-976" - that's the alias (name) of an platoon spawned as <code>"platoon - alias"_AID-"asset-ID"</code></p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Position</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>where to spawn the platoon</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(BRIGADE)">#BRIGADE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>Prerequisites:
+Save the assets spawned by BRIGADE/CHIEF regularly (~every 5 mins) into a file, e.g. like this: 
+  
+             local Path = FilePath or "C:\\Users\\&lt;yourname&gt;\\Saved Games\\DCS\\Missions\\" -- example path
+             local BlueOpsFilename = BlueFileName or "ExamplePlatoonSave.csv" -- example filename 
+             local BlueSaveOps = SET_GROUP:New():FilterCoalitions("blue"):FilterPrefixes("AID"):FilterCategoryGround():FilterOnce()
+             UTILS.SaveSetOfGroups(BlueSaveOps,Path,BlueOpsFilename)
+         
+where Path and Filename are strings, as chosen by you.
+You can then load back the assets at the start of your next mission run. Be aware that it takes a couple of seconds for the 
+platoon data to arrive in brigade, so make this an action after ~20 seconds, e.g. like so:
+
+           function LoadBackAssets()
+             local Path = FilePath or "C:\\Users\\&lt;yourname&gt;\\Saved Games\\DCS\\Missions\\" -- example path
+             local BlueOpsFilename = BlueFileName or "ExamplePlatoonSave.csv" -- example filename  
+             if UTILS.CheckFileExists(Path,BlueOpsFilename) then
+               local loadback = UTILS.LoadSetOfGroups(Path,BlueOpsFilename,false)
+               for _,_platoondata in pairs (loadback) do
+                 local groupname = _platoondata.groupname -- #string
+                 local coordinate = _platoondata.coordinate -- Core.Point#COORDINATE
+                 Your_Brigade:LoadBackAssetInPosition(groupname,coordinate)
+               end
+             end
+           end
+ 
+           local AssetLoader = TIMER:New(LoadBackAssets)
+           AssetLoader:Start(20)
+
+The assets loaded back into the mission will be considered for AUFTRAG type missions from CHIEF and BRIGADE.</code></pre>
+
 </div>
 
 </div>
