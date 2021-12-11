@@ -1889,7 +1889,9 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
      my_ctld.cratecountry = country.id.GERMANY -- ID of crates. Will default to country.id.RUSSIA for RED coalition setups.
      my_ctld.allowcratepickupagain = true  -- allow re-pickup crates that were dropped.
      my_ctld.enableslingload = false -- allow cargos to be slingloaded - might not work for all cargo types
-     my_ctld.pilotmustopendoors = false -- -- force opening of doors
+     my_ctld.pilotmustopendoors = false -- force opening of doors
+     my_ctld.SmokeColor = SMOKECOLOR.Red -- color to use when dropping smoke from heli 
+     my_ctld.FlareColor = FLARECOLOR.Red -- color to use when flaring from heli
 </code></pre>
 
 <h2>2.1 User functions</h2>
@@ -2045,7 +2047,7 @@ Create the late-activated troops, vehicles (no statics at this point!) that will
 
 <h2>4.1 Manage Crates</h2>
 
-<p>Use this entry to get, load, list nearby, drop, build and repair crates. Also @see options.</p>
+<p>Use this entry to get, load, list nearby, drop, build and repair crates. Also see options.</p>
 
 <h2>4.2 Manage Troops</h2>
 
@@ -2056,7 +2058,7 @@ Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> t
 
 <p>Lists what you have loaded. Shows load capabilities for number of crates and number of seats for troops.</p>
 
-<h2>4.4 Smoke &amp; Flare zones nearby</h2>
+<h2>4.4 Smoke &amp; Flare zones nearby or drop smoke or flare from Heli</h2>
 
 <p>Does what it says.</p>
 
@@ -2388,6 +2390,12 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FlareColor">CTLD.FlareColor</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FreeFMFrequencies">CTLD.FreeFMFrequencies</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2640,9 +2648,21 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SmokeColor">CTLD.SmokeColor</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SmokePositionNow">CTLD:SmokePositionNow(Unit, Flare)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User function - Drop a smoke or flare at current location.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SmokeZoneNearBy">CTLD:SmokeZoneNearBy(Unit, Flare)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>User function - Start smoke in a zone close to the Unit.</p>
+<p>User function - Start smoke/flare in a zone close to the Unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5759,17 +5779,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).CargoCounter" ><strong>CTLD.CargoCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD).CargoType" ><strong>CTLD.CargoType</strong></a>
     
@@ -5964,6 +5973,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD).FlareColor" ><strong>CTLD.FlareColor</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
@@ -6119,10 +6139,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -6148,6 +6171,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).SmokeColor" ><strong>CTLD.SmokeColor</strong></a>
+    
+
+
+    
+<p> Smokes and Flares</p>
 
 </div>
 
@@ -9329,10 +9366,56 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).SmokePositionNow" ><strong>CTLD:SmokePositionNow(Unit, Flare)</strong></a></h2>
+</div>
+    
+<p>User function - Drop a smoke or flare at current location.</p>
+
+<div id= "#Functions##SmokePositionNow" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Flare</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, flare instead.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).SmokeZoneNearBy" ><strong>CTLD:SmokeZoneNearBy(Unit, Flare)</strong></a></h2>
 </div>
     
-<p>User function - Start smoke in a zone close to the Unit.</p>
+<p>User function - Start smoke/flare in a zone close to the Unit.</p>
 
 <div id= "#Functions##SmokeZoneNearBy" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12862,17 +12945,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).CargoCounter" ><strong>CTLD.CargoCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD).CargoType" ><strong>CTLD.CargoType</strong></a>
     
@@ -13067,6 +13139,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD).FlareColor" ><strong>CTLD.FlareColor</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
@@ -13222,10 +13305,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -13251,6 +13337,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).SmokeColor" ><strong>CTLD.SmokeColor</strong></a>
+    
+
+
+    
+<p> Smokes and Flares</p>
 
 </div>
 
@@ -15179,17 +15279,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).CargoCounter" ><strong>CTLD.CargoCounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="##(CTLD_CARGO.Enum)">#CTLD_CARGO.Enum</a>
 <a id="#(CTLD).CargoType" ><strong>CTLD.CargoType</strong></a>
     
@@ -15384,6 +15473,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD).FlareColor" ><strong>CTLD.FlareColor</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
@@ -15539,10 +15639,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -15568,6 +15671,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> radio beacons</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).SmokeColor" ><strong>CTLD.SmokeColor</strong></a>
+    
+
+
+    
+<p> Smokes and Flares</p>
 
 </div>
 
@@ -19845,6 +19962,17 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD.UnitCapabilities).length" ><strong>CTLD.UnitCapabilities.length</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD.UnitCapabilities).trooplimit" ><strong>CTLD.UnitCapabilities.trooplimit</strong></a>
     
 <p>Number of troop units transportable.</p>
@@ -23646,6 +23774,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD_ENGINEERING).lid" ><strong>CTLD_ENGINEERING.lid</strong></a>
     
@@ -24290,6 +24429,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #string
 <a id="#(CTLD_ENGINEERING).Version" ><strong>CTLD_ENGINEERING.Version</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
     
 
 
