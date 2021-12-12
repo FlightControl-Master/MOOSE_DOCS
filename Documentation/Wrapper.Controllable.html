@@ -2655,7 +2655,7 @@ The method <a href="##(CONTROLLABLE).SetTaskWaypoint">CONTROLLABLE.SetTaskWaypoi
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).GetBoundingRadius">CONTROLLABLE:GetBoundingRadius(mindist)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).GetBoundingRadius">CONTROLLABLE:GetBoundingRadius(MinDist)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the bounding radius of the underlying POSITIONABLE DCS Object.</p>
 </td>
@@ -2681,13 +2681,13 @@ The method <a href="##(CONTROLLABLE).SetTaskWaypoint">CONTROLLABLE.SetTaskWaypoi
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).GetCoord">CONTROLLABLE:GetCoord()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns a COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
+<p>Returns a reference to a COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).GetCoordinate">CONTROLLABLE:GetCoordinate()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns a COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
+<p>Returns a new COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2811,7 +2811,7 @@ The method <a href="##(CONTROLLABLE).SetTaskWaypoint">CONTROLLABLE.SetTaskWaypoi
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).GetRelativeVelocity">CONTROLLABLE:GetRelativeVelocity(positionable)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).GetRelativeVelocity">CONTROLLABLE:GetRelativeVelocity(Positionable)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get relative velocity with respect to another POSITIONABLE.</p>
 </td>
@@ -12700,7 +12700,7 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CONTROLLABLE).GetBoundingRadius" ><strong>CONTROLLABLE:GetBoundingRadius(mindist)</strong></a></h2>
+<h2><a id="#(CONTROLLABLE).GetBoundingRadius" ><strong>CONTROLLABLE:GetBoundingRadius(MinDist)</strong></a></h2>
 </div>
     
 <p>Get the bounding radius of the underlying POSITIONABLE DCS Object.</p>
@@ -12716,12 +12716,12 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
           <div class="w3-half">
             <p>
                 #number
-            <strong><strong>mindist</strong></strong>
+            <strong><strong>MinDist</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>(Optional) If bounding box is smaller than this value, mindist is returned.</p>
+<p>(Optional) If bounding box is smaller than this value, MinDist is returned.</p>
 
           </div>
         </div>
@@ -12853,10 +12853,13 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
 <h2><a id="#(CONTROLLABLE).GetCoord" ><strong>CONTROLLABLE:GetCoord()</strong></a></h2>
 </div>
     
-<p>Returns a COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
+<p>Returns a reference to a COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
 
     
-<p>If the POSITIONABLE has a COORDINATE OBJECT set, it updates it. If not, it creates a new COORDINATE object.</p>
+<p>This function works similar to POSITIONABLE.GetCoordinate(), however, this function caches, updates and re-uses the same COORDINATE object stored
+within the POSITIONABLE. This has higher performance, but comes with all considerations associated with the possible referencing to the same COORDINATE object.
+This should only be used when performance is critical and there is sufficient awareness of the possible pitfalls. However, in most instances, GetCoordinate() is
+preferred as it will return a fresh new COORDINATE and thus avoid potentially unexpected issues.</p>
 
 <div id= "#Functions##GetCoord" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12871,8 +12874,7 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
       </div>
       <div class="w3-half">
         
-<p>The COORDINATE of the POSITIONABLE.
-TODO: Seems to have been introduced with Airboss. Should it be renamed to better reflect the difference to "GetCoordinate" (it is currently ambiguous)? Or perhaps just be a switch in the the GetCoordinate function; forceCoordinateUpate?</p>
+<p>A reference to the COORDINATE object of the POSITIONABLE.</p>
 
       </div>
     </div>
@@ -12887,7 +12889,7 @@ TODO: Seems to have been introduced with Airboss. Should it be renamed to better
 <h2><a id="#(CONTROLLABLE).GetCoordinate" ><strong>CONTROLLABLE:GetCoordinate()</strong></a></h2>
 </div>
     
-<p>Returns a COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
+<p>Returns a new COORDINATE object indicating the point in 3D of the POSITIONABLE within the mission.</p>
 
 <div id= "#Functions##GetCoordinate" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12902,7 +12904,7 @@ TODO: Seems to have been introduced with Airboss. Should it be renamed to better
       </div>
       <div class="w3-half">
         
-<p>The COORDINATE of the POSITIONABLE.</p>
+<p>A new COORDINATE object of the POSITIONABLE.</p>
 
       </div>
     </div>
@@ -13835,7 +13837,7 @@ Coordinates are dependent on the position of the maps origin.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CONTROLLABLE).GetRelativeVelocity" ><strong>CONTROLLABLE:GetRelativeVelocity(positionable)</strong></a></h2>
+<h2><a id="#(CONTROLLABLE).GetRelativeVelocity" ><strong>CONTROLLABLE:GetRelativeVelocity(Positionable)</strong></a></h2>
 </div>
     
 <p>Get relative velocity with respect to another POSITIONABLE.</p>
@@ -13851,7 +13853,7 @@ Coordinates are dependent on the position of the maps origin.</p>
           <div class="w3-half">
             <p>
                 <a href="##(POSITIONABLE)">#POSITIONABLE</a>
-            <strong><strong>positionable</strong></strong>
+            <strong><strong>Positionable</strong></strong>
             </p>
           </div>
           <div class="w3-half">
