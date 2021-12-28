@@ -1529,12 +1529,12 @@ in the correct processing order.</p>
 
 <p><img src="..\Presentations\EVENT\Dia5.JPG" alt="Objects"/></p>
 
-<p>There are 5 levels of kind of objects that the _EVENTDISPATCHER services:</p>
+<p>There are 5 types/levels of objects that the _EVENTDISPATCHER services:</p>
 
 <ul>
     <li>_DATABASE object: The core of the MOOSE objects. Any object that is created, deleted or updated, is done in this database.</li>
-    <li>SET_ derived classes: Subsets of the _DATABASE object. These subsets are updated by the _EVENTDISPATCHER as the second priority.</li>
-    <li>UNIT objects: UNIT objects can subscribe to DCS events. Each DCS event will be directly published to teh subscribed UNIT object.</li>
+    <li>SET_ derived classes: These are subsets of the _DATABASE object. These subsets are updated by the _EVENTDISPATCHER as the second priority.</li>
+    <li>UNIT objects: UNIT objects can subscribe to DCS events. Each DCS event will be directly published to the subscribed UNIT object.</li>
     <li>GROUP objects: GROUP objects can subscribe to DCS events. Each DCS event will be directly published to the subscribed GROUP object.</li>
     <li>Any other object: Various other objects can subscribe to DCS events. Each DCS event triggered will be published to each subscribed object.</li>
 </ul>
@@ -1629,21 +1629,24 @@ The Event Handler received the EVENTDATA object as a parameter, and can be used 
 There are basically 4 main categories of information stored in the EVENTDATA structure:</p>
 
 <ul>
-    <li><p>Initiator Unit data: Several fields documenting the initiator unit related to the event.</p></li>
-    <li><p>Target Unit data: Several fields documenting the target unit related to the event.</p></li>
-    <li><p>Weapon data: Certain events populate weapon information.</p></li>
-    <li><p>Place data: Certain events populate place information.</p>
-    
-    <p> --- This function is an Event Handling function that will be called when Tank1 is Dead.
-     -- EventData is an EVENTDATA structure.
-     -- We use the EventData.IniUnit to smoke the tank Green.
-     -- @param Wrapper.Unit#UNIT self
-     -- @param Core.Event#EVENTDATA EventData
-     function Tank1:OnEventDead( EventData )</p>
-    
-    <p>   EventData.IniUnit:SmokeGreen()
-     end</p></li>
+    <li>Initiator Unit data: Several fields documenting the initiator unit related to the event.</li>
+    <li>Target Unit data: Several fields documenting the target unit related to the event.</li>
+    <li>Weapon data: Certain events populate weapon information.</li>
+    <li>Place data: Certain events populate place information.</li>
 </ul>
+
+<p>Example code snippet:</p>
+
+<pre><code> --- This function is an Event Handling function that will be called when Tank1 is Dead.
+ -- EventData is an EVENTDATA structure.
+ -- We use the EventData.IniUnit to smoke the tank Green.
+ -- @param Wrapper.Unit#UNIT self
+ -- @param Core.Event#EVENTDATA EventData
+ function Tank1:OnEventDead( EventData )
+
+   EventData.IniUnit:SmokeGreen()
+ end
+</code></pre>
 
 <p>Find below an overview which events populate which information categories:</p>
 
@@ -1653,8 +1656,9 @@ There are basically 4 main categories of information stored in the EVENTDATA str
 In that case the initiator or target unit fields will refer to a STATIC object!
 In case a STATIC object is involved, the documentation indicates which fields will and won't not be populated.
 The fields <strong>IniObjectCategory</strong> and <strong>TgtObjectCategory</strong> contain the indicator which <strong>kind of object is involved</strong> in the event.
-You can use the enumerator <strong>Object.Category.UNIT</strong> and <strong>Object.Category.STATIC</strong> to check on IniObjectCategory and TgtObjectCategory.
-Example code snippet:</p>
+You can use the enumerator <strong>Object.Category.UNIT</strong> and <strong>Object.Category.STATIC</strong> to check on IniObjectCategory and TgtObjectCategory.</p>
+
+<p>Example code snippet:</p>
 
 <pre><code> if Event.IniObjectCategory == Object.Category.UNIT then
   ...
