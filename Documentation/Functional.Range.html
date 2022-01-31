@@ -2001,6 +2001,7 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
 
 <p>The <a href="http://www.476vfightergroup.com/downloads.php?do=file&amp;id=287">476th - Air Weapons Range Objects mod</a> is (implicitly) used in this example.</p>
 
+
 <h1>Debugging</h1>
 
 <p>In case you have problems, it is always a good idea to have a look at your DCS log file. You find it in your "Saved Games" folder, so for example in</p>
@@ -2498,6 +2499,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetTargetSheet">RANGE:SetTargetSheet(path, prefix)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enable saving of player's target sheets and specify an optional directory path.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).Sound">RANGE.Sound</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2753,6 +2760,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._SmokeStrafeTargets">RANGE:_SmokeStrafeTargets(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Mark strafing targets with smoke.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._TargetsheetOnOff">RANGE:_TargetsheetOnOff(_unitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Targetsheet saves if player on or off.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3071,6 +3084,24 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).strafemaxalt">RANGE.strafemaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).targetpath">RANGE.targetpath</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Path where to save the target sheets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).targetprefix">RANGE.targetprefix</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>File prefix for target sheet files.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).targetsheet">RANGE.targetsheet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4149,6 +4180,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.PlayerData).targeton">RANGE.PlayerData.targeton</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.PlayerData).unitname">RANGE.PlayerData.unitname</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of player aircraft unit.</p>
@@ -5092,6 +5129,39 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
 <p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetpath" ><strong>RANGE.targetpath</strong></a>
+    
+<p>Path where to save the target sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetprefix" ><strong>RANGE.targetprefix</strong></a>
+    
+<p>File prefix for target sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).targetsheet" ><strong>RANGE.targetsheet</strong></a>
+    
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 
 </div>
 
@@ -7301,6 +7371,63 @@ If a zone is not explicitly specified, the range zone is determined by its locat
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(RANGE).SetTargetSheet" ><strong>RANGE:SetTargetSheet(path, prefix)</strong></a></h2>
+</div>
+    
+<p>Enable saving of player's target sheets and specify an optional directory path.</p>
+
+<div id= "#Functions##SetTargetSheet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where to save the target sheets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>prefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Prefix for target sheet files. File name will be saved as *prefix_aircrafttype-0001.csv*, *prefix_aircrafttype-0002.csv*, etc.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RANGE)">#RANGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(RANGE).Start" ><strong>RANGE:Start()</strong></a></h2>
 </div>
     
@@ -8612,6 +8739,39 @@ If a zone is not explicitly specified, the range zone is determined by its locat
             <p>
                 #string
             <strong><strong>unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the player unit.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE)._TargetsheetOnOff" ><strong>RANGE:_TargetsheetOnOff(_unitname)</strong></a></h2>
+</div>
+    
+<p>Targetsheet saves if player on or off.</p>
+
+<div id= "#Functions##_TargetsheetOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitname</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -10252,6 +10412,39 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
 <p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetpath" ><strong>RANGE.targetpath</strong></a>
+    
+<p>Path where to save the target sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetprefix" ><strong>RANGE.targetprefix</strong></a>
+    
+<p>File prefix for target sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).targetsheet" ><strong>RANGE.targetsheet</strong></a>
+    
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 
 </div>
 
@@ -12294,6 +12487,39 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
 <p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetpath" ><strong>RANGE.targetpath</strong></a>
+    
+<p>Path where to save the target sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetprefix" ><strong>RANGE.targetprefix</strong></a>
+    
+<p>File prefix for target sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).targetsheet" ><strong>RANGE.targetsheet</strong></a>
+    
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 
 </div>
 
@@ -15812,13 +16038,13 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(RANGE.BombResult).roundsFired" ><strong>RANGE.BombResult.roundsFired</strong></a>
     
 
 
     
-<p>RANGEBOSS</p>
+<p>Rangeboss Edit</p>
 
 </div>
 
@@ -15826,13 +16052,13 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(RANGE.BombResult).roundsHit" ><strong>RANGE.BombResult.roundsHit</strong></a>
     
 
 
     
-<p>RANGEBOSS</p>
+<p>Rangeboss Edit</p>
 
 </div>
 
@@ -15840,13 +16066,13 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(RANGE.BombResult).roundsQuality" ><strong>RANGE.BombResult.roundsQuality</strong></a>
     
 
 
     
-<p>RANGEBOSS</p>
+<p>Rangeboss Edit</p>
 
 </div>
 
