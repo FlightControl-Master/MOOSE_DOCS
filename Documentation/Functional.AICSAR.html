@@ -782,6 +782,7 @@
     <li>Starting from a FARP or Airbase</li>
     <li>Dedicated MASH zone</li>
     <li>Some FSM functions to include in your mission scripts</li>
+    <li>Limit number of available helos</li>
 </ul>
 
 <hr/>
@@ -1750,6 +1751,7 @@ Controls a network of short range air/missile defense groups.</p>
     <li>Starting from a FARP or Airbase</li>
     <li>Dedicated MASH zone</li>
     <li>Some FSM functions to include in your mission scripts</li>
+    <li>Limit number of available helos</li>
 </ul>
 
 <hr/>
@@ -1828,7 +1830,9 @@ pilots are around.</p>
 <pre><code>       my_aicsar.maxdistance -- maximum operational distance in meters. Defaults to 50NM or 92.6km
        my_aicsar.rescuezoneradius -- landing zone around downed pilot. Defaults to 200m
        my_aicsar.autoonoff -- stop operations when human helicopter pilots are around. Defaults to true.
-       my_aicsar.verbose -- text messages coalition side about ongoing operations. Defaults to true.
+       my_aicsar.verbose -- text messages to own coalition about ongoing operations. Defaults to true.
+       my_aicsarlimithelos -- limit available number of helos going on mission (defaults to true)
+       my_aicsar.helonumber -- number of helos available (default: 3)
 </code></pre>
 
 <h2>Radio options</h2>
@@ -2103,6 +2107,12 @@ save your sound file inside of the .miz mission file.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR)._CountHelos">AICSAR:_CountHelos()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Count helos queue </p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR)._GetFlight">AICSAR:_GetFlight()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Get FlightGroup</p>
@@ -2157,6 +2167,12 @@ save your sound file inside of the .miz mission file.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR).helonumber">AICSAR.helonumber</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>number of helos available (default: 3)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR).helos">AICSAR.helos</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table of Ops.FlightGroup#FLIGHTGROUP objects</p>
@@ -2172,6 +2188,12 @@ save your sound file inside of the .miz mission file.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR).lid">AICSAR.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>LID for log entries.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR).limithelos">AICSAR.limithelos</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>limit available number of helos going on mission (defaults to true)</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2244,7 +2266,6 @@ save your sound file inside of the .miz mission file.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AICSAR).playerset">AICSAR.playerset</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Track if alive heli pilots are available.</p>
-
 </td>
           </tr>
           <tr class="w3-border">
@@ -3270,6 +3291,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AICSAR).helonumber" ><strong>AICSAR.helonumber</strong></a>
+    
+<p>number of helos available (default: 3)</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AICSAR).helos" ><strong>AICSAR.helos</strong></a>
     
@@ -3296,6 +3328,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AICSAR).lid" ><strong>AICSAR.lid</strong></a>
     
 <p>LID for log entries.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AICSAR).limithelos" ><strong>AICSAR.limithelos</strong></a>
+    
+<p>limit available number of helos going on mission (defaults to true)</p>
 
 </div>
 
@@ -3340,7 +3383,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AICSAR).playerset" ><strong>AICSAR.playerset</strong></a>
     
 <p>Track if alive heli pilots are available.</p>
-
 
 </div>
 
@@ -4333,6 +4375,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AICSAR)._CountHelos" ><strong>AICSAR:_CountHelos()</strong></a></h2>
+</div>
+    
+<p>[Internal] Count helos queue </p>
+
+<div id= "#Functions##_CountHelos" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AICSAR</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Number of helos on mission</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AICSAR)._GetFlight" ><strong>AICSAR:_GetFlight()</strong></a></h2>
 </div>
     
@@ -5242,6 +5314,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AICSAR).helonumber" ><strong>AICSAR.helonumber</strong></a>
+    
+<p>number of helos available (default: 3)</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AICSAR).helos" ><strong>AICSAR.helos</strong></a>
     
@@ -5268,6 +5351,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AICSAR).lid" ><strong>AICSAR.lid</strong></a>
     
 <p>LID for log entries.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AICSAR).limithelos" ><strong>AICSAR.limithelos</strong></a>
+    
+<p>limit available number of helos going on mission (defaults to true)</p>
 
 </div>
 
@@ -5312,7 +5406,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AICSAR).playerset" ><strong>AICSAR.playerset</strong></a>
     
 <p>Track if alive heli pilots are available.</p>
-
 
 </div>
 
@@ -6978,6 +7071,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AICSAR).helonumber" ><strong>AICSAR.helonumber</strong></a>
+    
+<p>number of helos available (default: 3)</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AICSAR).helos" ><strong>AICSAR.helos</strong></a>
     
@@ -7004,6 +7108,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AICSAR).lid" ><strong>AICSAR.lid</strong></a>
     
 <p>LID for log entries.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AICSAR).limithelos" ><strong>AICSAR.limithelos</strong></a>
+    
+<p>limit available number of helos going on mission (defaults to true)</p>
 
 </div>
 
@@ -7048,7 +7163,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AICSAR).playerset" ><strong>AICSAR.playerset</strong></a>
     
 <p>Track if alive heli pilots are available.</p>
-
 
 </div>
 
