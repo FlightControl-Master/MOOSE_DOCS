@@ -1515,7 +1515,7 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
     <li>Bomb, rocket and missile impact points can be marked by smoke.</li>
     <li>Direct hits on targets can trigger flares.</li>
     <li>Smoke and flare colors can be adjusted for each player via radio menu.</li>
-    <li>Range information and weather at the range can be obtained via radio menu.</li>
+    <li>Range information and weather report at the range can be reported via radio menu.</li>
     <li>Persistence: Bombing range results can be saved to disk and loaded the next time the mission is started.</li>
     <li>Range control voice overs (>40) for hit assessment.</li>
 </ul>
@@ -1599,7 +1599,7 @@ Each player can display his best results via a function in the radio menu or see
 
 <p>Due to a DCS bug, it is not possible to directly monitor when a player enters a plane. So in a mission with client slots, it is vital that
 a player first enters as spectator or hits ESC twice and <strong>after that</strong> jumps into the slot of his aircraft!
-If that is not done, the script is not started correctly. This can be checked by looking at the radio menus. If the mission was entered correctly,
+If that is not done, the script is not started correctly. This can be checked by looking at the radio menues. If the mission was entered correctly,
 there should be an "On the Range" menu items in the "F10. Other..." menu.</p>
 
 <h1>Strafe Pits</h1>
@@ -1609,12 +1609,12 @@ there should be an "On the Range" menu items in the "F10. Other..." menu.</p>
 <p>A strafe pit can be added to the range by the <a href="##(RANGE).AddStrafePit">RANGE.AddStrafePit</a>(<em>targetnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline</em>) function.</p>
 
 <ul>
-    <li>The first parameter <em>targetnames</em> defines the target or targets. This can be a single item or a Table with the name(s) of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
+    <li>The first parameter <em>targetnames</em> defines the target or targets. This has to be given as a lua table which contains the names of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
     <li>In order to perform a valid pass on the strafe pit, the pilot has to begin his run from the correct direction. Therefore, an "approach box" is defined in front
-    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box in meters, while the <em>heading</em> parameter defines the heading of the box FROM the target.
-    For example, if heading 120 is set, the approach box will start FROM the target and extend outwards on heading 120. A strafe run approach must then be flown apx. heading 300 TOWARDS the target.
-    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading set in the ME for the first target unit.</li>
-    <li>The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is useful when the default heading of strafe target units point in the wrong/opposite direction.</li>
+    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box while the parameter <em>heading</em> defines its direction.
+    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading of the first target unit as defined in the ME.
+    The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is sometimes useful, since the default heading of strafe target units point in the
+    wrong/opposite direction.</li>
     <li>The parameter <em>goodpass</em> defines the number of hits a pilot has to achieve during a run to be judged as a "good" pass.</li>
     <li>The last parameter <em>foulline</em> sets the distance from the pit targets to the foul line. Hit from closer than this line are not counted!</li>
 </ul>
@@ -1630,9 +1630,10 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
 <p>One ore multiple bombing targets can be added to the range by the <a href="##(RANGE).AddBombingTargets">RANGE.AddBombingTargets</a>(targetnames, goodhitrange, randommove) function.</p>
 
 <ul>
-    <li>The first parameter <em>targetnames</em> defines the target or targets. This can be a single item or a Table with the name(s) of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
-    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius in metres around the target within which a bomb/rocket hit is considered to be "good".</li>
-    <li>If final (optional) parameter <em>randommove</em> can be enabled to create moving targets. If this parameter is set to true, the units of this bombing target will randomly move within the range zone.
+    <li>The first parameter <em>targetnames</em> has to be a lua table, which contains the names of <a href="Wrapper.Unit.html">Wrapper.Unit</a> and/or <a href="Static.html">Static</a> objects defined in the mission editor.
+    Note that the <a href="Range.html">Range</a> logic <strong>automatically</strong> determines, if a name belongs to a <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> object now.</li>
+    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius around the target. If a bomb or rocket falls at a distance smaller than this number, the hit is considered to be "good".</li>
+    <li>If final (optional) parameter "<em>randommove</em>" can be enabled to create moving targets. If this parameter is set to true, the units of this bombing target will randomly move within the range zone.
     Note that there might be quirks since DCS units can get stuck in buildings etc. So it might be safer to manually define a route for the units in the mission editor if moving targets are desired.</li>
 </ul>
 
@@ -1670,7 +1671,7 @@ coordinate will still be a valid impact point. This can be done via the <a href=
 
 <p>The main range menu can be found at "F10. Other..." --> "F<em>X</em> . On the Range..." --> "F1. <Range Name>...".</p>
 
-<p>The range menu contains the following submenus:</p>
+<p>The range menu contains the following submenues:</p>
 
 <p><img src="..\Presentations\RANGE\Menu_Main.png" alt="Banner Image"/></p>
 
@@ -1739,18 +1740,19 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
  -- Note that this could also be done manually by simply measuring the distance between the target and the foul line in the ME.
  GoldwaterRange:GetFoullineDistance("GWR Strafe Pit Left 1", "GWR Foul Line Left")
 
- -- Add strafe pits. Each pit (left and right) consists of two targets. Where "nil" is used as input, the default value is used.
- GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 30, 500)
- GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, 500)
+ -- Add strafe pits. Each pit (left and right) consists of two targets.
+ GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 20, fouldist)
+ GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, fouldist)
 
  -- Add bombing targets. A good hit is if the bomb falls less then 50 m from the target.
  GoldwaterRange:AddBombingTargets(bombtargets, 50)
 
- -- Start Range.
+ -- Start range.
  GoldwaterRange:Start()
 </code></pre>
 
 <p>The <a href="http://www.476vfightergroup.com/downloads.php?do=file&amp;id=287">476th - Air Weapons Range Objects mod</a> is (implicitly) used in this example.</p>
+
 
 <h1>Debugging</h1>
 
@@ -1773,6 +1775,158 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
 <p>Note that it can happen that the RANGE radio menu is not shown. Check that the range object is defined as a <strong>global</strong> variable rather than a local one.
 The could avoid the lua garbage collection to accidentally/falsely deallocate the RANGE objects.</p>
 
+
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##StrafeAircraftType')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>StrafeAircraftType</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##StrafeAircraftType" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="StrafeAircraftType" ><strong>StrafeAircraftType</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Straferesult')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Straferesult</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Straferesult" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="Straferesult" ><strong>Straferesult</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##clientRollingIn')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>clientRollingIn</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##clientRollingIn" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="clientRollingIn" ><strong>clientRollingIn</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##clientStrafed')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>clientStrafed</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##clientStrafed" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="clientStrafed" ><strong>clientStrafed</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##hypemanStrafeRollIn')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>hypemanStrafeRollIn</strong></h2></p></td>
+        <td class="style="width:60%;">
+<p>Default range variables for RangeBoss/Hypeman tie in.</p>
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##hypemanStrafeRollIn" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="hypemanStrafeRollIn" ><strong>hypemanStrafeRollIn</strong></a>
+    
+<p>Default range variables for RangeBoss/Hypeman tie in.</p>
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##invalidStrafe')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>invalidStrafe</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##invalidStrafe" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="invalidStrafe" ><strong>invalidStrafe</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##unitheadingStrafe')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>unitheadingStrafe</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##unitheadingStrafe" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="unitheadingStrafe" ><strong>unitheadingStrafe</strong></a>
+    
+
+
+    
+<p>RangeBoss</p>
 
 </div>
 
@@ -1847,7 +2001,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).Debug">RANGE.Debug</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, debug info is sent as messages on the screen.</p>
+<p>If true, debug info is send as messages on the screen.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1883,7 +2037,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).GetFoullineDistance">RANGE:GetFoullineDistance(namepit, namefoulline)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns the foul line distance between strafe pit target and a foul line distance marker object.</p>
+<p>Measures the foule line distance between two unit or static objects.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2097,6 +2251,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetTargetSheet">RANGE:SetTargetSheet(path, prefix)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enable saving of player's target sheets and specify an optional directory path.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).Sound">RANGE.Sound</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2279,7 +2439,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._GetBombTargetCoordinate">RANGE:_GetBombTargetCoordinate(target)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get the coordinate of a Bomb target.</p>
+<p>Get the number of shells a unit currently has.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2319,6 +2479,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._SaveTargetSheet">RANGE:_SaveTargetSheet(_playername, result)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<h2>FSM Functions</h2>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._SmokeBombDelayOnOff">RANGE:_SmokeBombDelayOnOff(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Toggle status of time delay for smoking bomb impact points</p>
@@ -2346,6 +2512,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._SmokeStrafeTargets">RANGE:_SmokeStrafeTargets(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Mark strafing targets with smoke.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._TargetsheetOnOff">RANGE:_TargetsheetOnOff(_unitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Targetsheet saves if player on or off.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2393,7 +2565,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._myname">RANGE:_myname(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns a string which consists of the player name.</p>
+<p>Returns a string which consits of this callsign and the player name.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2471,13 +2643,13 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).illuminationmaxalt">RANGE.illuminationmaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).illuminationminalt">RANGE.illuminationminalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2489,7 +2661,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).instructorfreq">RANGE.instructorfreq</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2579,7 +2751,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).onbeforeLoad">RANGE:onbeforeLoad(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Function called before load event.</p>
+<p>Function called before save event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2603,7 +2775,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).rangecontrolfreq">RANGE.rangecontrolfreq</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2663,7 +2835,25 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).strafemaxalt">RANGE.strafemaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).targetpath">RANGE.targetpath</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Path where to save the target sheets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).targetprefix">RANGE.targetprefix</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>File prefix for target sheet files.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).targetsheet">RANGE.targetsheet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3540,6 +3730,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).heading">RANGE.BombResult.heading</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).name">RANGE.BombResult.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of closest target.</p>
@@ -3561,6 +3757,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).radial">RANGE.BombResult.radial</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Radial in degrees.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).rangename">RANGE.BombResult.rangename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).roundsFired">RANGE.BombResult.roundsFired</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).roundsHit">RANGE.BombResult.roundsHit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).roundsQuality">RANGE.BombResult.roundsQuality</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).strafeAccuracy">RANGE.BombResult.strafeAccuracy</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3695,6 +3921,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.PlayerData).smokecolor">RANGE.PlayerData.smokecolor</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Color of smoke.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.PlayerData).targeton">RANGE.PlayerData.targeton</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -4110,7 +4342,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div id= "#Types##RANGE" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
   
-<p>RANGE class</p>
+<ul>
+    <li>RANGE class</li>
+</ul>
 
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
@@ -4154,7 +4388,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is sent as messages on the screen.</p>
+<p>If true, debug info is send as messages on the screen.</p>
 
 </div>
 
@@ -4396,7 +4630,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -4407,7 +4641,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -4429,7 +4663,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).instructorfreq" ><strong>RANGE.instructorfreq</strong></a>
     
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 
 </div>
 
@@ -4528,7 +4762,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).rangecontrolfreq" ><strong>RANGE.rangecontrolfreq</strong></a>
     
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 
 </div>
 
@@ -4638,7 +4872,40 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetpath" ><strong>RANGE.targetpath</strong></a>
+    
+<p>Path where to save the target sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetprefix" ><strong>RANGE.targetprefix</strong></a>
+    
+<p>File prefix for target sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).targetsheet" ><strong>RANGE.targetsheet</strong></a>
+    
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 
 </div>
 
@@ -4652,7 +4919,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
+<p>SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
 
 </div>
 
@@ -4723,6 +4990,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 <p>Add a coordinate of a bombing target.</p>
 
+    
+<p>This</p>
+
 <div id= "#Functions##AddBombingTargetCoordinate" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -4752,7 +5022,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Name of target. Default is "Bomb Target".</p>
+<p>Name of target.</p>
 
           </div>
         </div>
@@ -4765,7 +5035,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Max hit distance from target unit in meters which is considered as a good hit. Default is 25 m.</p>
+<p>Max distance from unit which is considered as a good hit.</p>
 
           </div>
         </div>
@@ -4780,20 +5050,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
       </div>
     </div>
-      <h2><strong>Usage:</strong></h2>
-    <pre class="example"><code>
-  -- Setup a Range
-  RangeOne = RANGE:New( "Range One" )
-  -- Find the STATIC target object as setup in the ME.
-  RangeOneBombTarget = STATIC:FindByName( "RangeOneBombTarget" )
-  -- Add the coordinate of the STATIC target object as a bomb target (thus keeping the bomb function active, even if the STATIC target is destroyed).
-  RangeOne:AddBombingTargetCoordinate( RangeOneBombTarget:GetCoordinate(), "RangeOneBombTarget", 50)
-  -- Or, add the coordinate of the STATIC target object as a bomb target using default values (name will be "Bomb Target", goodhitrange will be 25 m).
-  RangeOne:AddBombingTargetCoordinate( RangeOneBombTarget:GetCoordinate() )
-  -- Start Range.
-  RangeOne:Start()
-</code></pre>
-
 </div>
 
 </div>
@@ -4836,7 +5092,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Max hit distance from target unit in meters which is considered as a good hit. Default is 25 m.</p>
+<p>Max distance from unit which is considered as a good hit.</p>
 
           </div>
         </div>
@@ -4849,7 +5105,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) If true, unit will move randomly within the range. Default is false.</p>
+<p>If true, unit will move randomly within the range. Default is false.</p>
 
           </div>
         </div>
@@ -4906,7 +5162,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Max hit distance from target unit in meters which is considered as a good hit. Default is 25 m.</p>
+<p>Max distance from unit which is considered as a good hit.</p>
 
           </div>
         </div>
@@ -4919,7 +5175,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) If true, unit will move randomly within the range. Default is false.</p>
+<p>If true, unit will move randomly within the range. Default is false.</p>
 
           </div>
         </div>
@@ -4963,7 +5219,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>Single or multiple (Table) names of unit or static objects serving as bomb targets.</p>
+<p>Table containing names of unit or static objects serving as bomb targets.</p>
 
           </div>
         </div>
@@ -4976,7 +5232,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Max hit distance from target unit in meters which is considered as a good hit. Default is 25 m.</p>
+<p>(Optional) Max distance from target unit (in meters) which is considered as a good hit. Default is 25 m.</p>
 
           </div>
         </div>
@@ -4989,7 +5245,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) If true, unit will move randomly within the range. Default is false.</p>
+<p>If true, unit will move randomly within the range. Default is false.</p>
 
           </div>
         </div>
@@ -5019,7 +5275,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p>For a strafe pit, hits from guns are counted. One pit can consist of several units.
-A strafe run approach is only valid if the player enters via a zone in front of the pit, which is defined by boxlength, boxwidth, and heading.
+Note, an approach is only valid, if the player enters via a zone in front of the pit, which defined by boxlength and boxheading.
 Furthermore, the player must not be too high and fly in the direction of the pit to make a valid target apporoach.</p>
 
 <div id= "#Functions##AddStrafePit" class="w3-show w3-white">
@@ -5038,7 +5294,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Single or multiple (Table) unit or static names defining the strafe targets. The first target in the list determines the approach box origin (heading and box).</p>
+<p>Table of unit or static names defining the strafe targets. The first target in the list determines the approach zone (heading and box).</p>
 
           </div>
         </div>
@@ -5077,7 +5333,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Approach box heading in degrees (originating FROM the target). Default is the heading set in the ME for the first target unit</p>
+<p>(Optional) Approach heading in Degrees. Default is heading of the unit as defined in the mission editor.</p>
 
           </div>
         </div>
@@ -5090,7 +5346,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Use inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
+<p>(Optional) Take inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
 
           </div>
         </div>
@@ -5116,7 +5372,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Foul line distance. Hits from closer than this distance are not counted. Default is 610 m = 2000 ft. Set to 0 for no foul line.</p>
+<p>(Optional) Foul line distance. Hits from closer than this distance are not counted. Default 610 m = 2000 ft. Set to 0 for no foul line.</p>
 
           </div>
         </div>
@@ -5217,7 +5473,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Use inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
+<p>(Optional) Take inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
 
           </div>
         </div>
@@ -5395,7 +5651,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
 <h2><a id="#(RANGE).GetFoullineDistance" ><strong>RANGE:GetFoullineDistance(namepit, namefoulline)</strong></a></h2>
 </div>
     
-<p>Returns the foul line distance between strafe pit target and a foul line distance marker object.</p>
+<p>Measures the foule line distance between two unit or static objects.</p>
 
 <div id= "#Functions##GetFoullineDistance" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5426,7 +5682,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Name of the foul line distance marker object.</p>
+<p>Name of the fould line distance marker object.</p>
 
           </div>
         </div>
@@ -5441,18 +5697,6 @@ Furthermore, the player must not be too high and fly in the direction of the pit
 
       </div>
     </div>
-      <h2><strong>Usage:</strong></h2>
-    <pre class="example"><code>
-  -- Setup a Range
-  RangeOne = RANGE:New( "Range One" )
-  -- Get distance between strafe target objext and foul line distance marker object.
-  RangeOneFoulDistance = RangeOne:GetFoullineDistance( "RangeOneStrafeTarget" , "RangeOneFoulLineObject" )
-  -- Add a strafe pit using the measured foul line distance. Where nil is used, strafe pit default values will be used - adjust as required.
-  RangeOne:AddStrafePit( "RangeOneStrafeTarget", nil, nil, nil, nil, nil, RangeOneFoulDistance )
-  -- Start Range.
-  RangeOne:Start()
-</code></pre>
-
 </div>
 
 </div>
@@ -6107,7 +6351,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) If true, impact points of bombs will be smoked. Default is true.</p>
+<p>If true nor nil default is to smoke impact points of bombs.</p>
 
           </div>
         </div>
@@ -6255,7 +6499,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Maximum altitude in meters AGL. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude AGL in meters. Default is 914 m= 3000 ft.</p>
 
           </div>
         </div>
@@ -6754,7 +6998,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
           </div>
           <div class="w3-half">
               
-<p>Path for sound files. Default "Range Soundfiles/". Mind the slash "/" at the end!</p>
+<p>Path for sound files. Default "ATIS Soundfiles/". Mind the slash "/" at the end!</p>
 
           </div>
         </div>
@@ -6849,6 +7093,63 @@ If a zone is not explicitly specified, the range zone is determined by its locat
           <div class="w3-half">
               
 <p>Color id. Default SMOKECOLOR.Green.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RANGE)">#RANGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).SetTargetSheet" ><strong>RANGE:SetTargetSheet(path, prefix)</strong></a></h2>
+</div>
+    
+<p>Enable saving of player's target sheets and specify an optional directory path.</p>
+
+<div id= "#Functions##SetTargetSheet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where to save the target sheets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>prefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Prefix for target sheet files. File name will be saved as *prefix_aircrafttype-0001.csv*, *prefix_aircrafttype-0002.csv*, etc.</p>
 
           </div>
         </div>
@@ -7238,7 +7539,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
       </div>
       <div class="w3-half">
         
-<p>Returns true if a static with this name exists. Returns false if a unit with this name exists. Returns nil if neither unit or static exist.</p>
+<p>Returns true if a static with this name exists. Retruns false if a unit with this name exists. Returns nil if neither unit or static exist.</p>
 
       </div>
     </div>
@@ -7714,7 +8015,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE)._GetBombTargetCoordinate" ><strong>RANGE:_GetBombTargetCoordinate(target)</strong></a></h2>
 </div>
     
-<p>Get the coordinate of a Bomb target.</p>
+<p>Get the number of shells a unit currently has.</p>
 
 <div id= "#Functions##_GetBombTargetCoordinate" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -7993,6 +8294,46 @@ If a zone is not explicitly specified, the range zone is determined by its locat
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(RANGE)._SaveTargetSheet" ><strong>RANGE:_SaveTargetSheet(_playername, result)</strong></a></h2>
+</div>
+    
+<h2>FSM Functions</h2>
+
+<div id= "#Functions##_SaveTargetSheet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>_playername</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>result</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(RANGE)._SmokeBombDelayOnOff" ><strong>RANGE:_SmokeBombDelayOnOff(unitname)</strong></a></h2>
 </div>
     
@@ -8142,6 +8483,39 @@ If a zone is not explicitly specified, the range zone is determined by its locat
             <p>
                 #string
             <strong><strong>unitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the player unit.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE)._TargetsheetOnOff" ><strong>RANGE:_TargetsheetOnOff(_unitname)</strong></a></h2>
+</div>
+    
+<p>Targetsheet saves if player on or off.</p>
+
+<div id= "#Functions##_TargetsheetOnOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>_unitname</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -8461,7 +8835,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE)._myname" ><strong>RANGE:_myname(unitname)</strong></a></h2>
 </div>
     
-<p>Returns a string which consists of the player name.</p>
+<p>Returns a string which consits of this callsign and the player name.</p>
 
 <div id= "#Functions##_myname" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -9137,7 +9511,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE).onbeforeLoad" ><strong>RANGE:onbeforeLoad(From, Event, To)</strong></a></h2>
 </div>
     
-<p>Function called before load event.</p>
+<p>Function called before save event.</p>
 
     
 <p>Checks that io and lfs are desanitized.</p>
@@ -9297,7 +9671,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is sent as messages on the screen.</p>
+<p>If true, debug info is send as messages on the screen.</p>
 
 </div>
 
@@ -9539,7 +9913,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -9550,7 +9924,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -9572,7 +9946,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).instructorfreq" ><strong>RANGE.instructorfreq</strong></a>
     
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 
 </div>
 
@@ -9671,7 +10045,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).rangecontrolfreq" ><strong>RANGE.rangecontrolfreq</strong></a>
     
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 
 </div>
 
@@ -9781,7 +10155,40 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetpath" ><strong>RANGE.targetpath</strong></a>
+    
+<p>Path where to save the target sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetprefix" ><strong>RANGE.targetprefix</strong></a>
+    
+<p>File prefix for target sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).targetsheet" ><strong>RANGE.targetsheet</strong></a>
+    
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 
 </div>
 
@@ -9795,7 +10202,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 
 
     
-<p> SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
+<p>SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
 
 </div>
 
@@ -11343,7 +11750,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is sent as messages on the screen.</p>
+<p>If true, debug info is send as messages on the screen.</p>
 
 </div>
 
@@ -11585,7 +11992,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -11596,7 +12003,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -11618,7 +12025,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).instructorfreq" ><strong>RANGE.instructorfreq</strong></a>
     
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 
 </div>
 
@@ -11717,7 +12124,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).rangecontrolfreq" ><strong>RANGE.rangecontrolfreq</strong></a>
     
-<p>Frequency on which the range control transmits.</p>
+<p>Frequency on which the range control transmitts.</p>
 
 </div>
 
@@ -11827,7 +12234,40 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetpath" ><strong>RANGE.targetpath</strong></a>
+    
+<p>Path where to save the target sheets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE).targetprefix" ><strong>RANGE.targetprefix</strong></a>
+    
+<p>File prefix for target sheet files.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).targetsheet" ><strong>RANGE.targetsheet</strong></a>
+    
+<p>If true, players can save their target sheets. Rangeboss will not work if targetsheets do not save.</p>
 
 </div>
 
@@ -11841,7 +12281,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 
 
     
-<p> SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
+<p>SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
 
 </div>
 
@@ -15183,6 +15623,20 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(RANGE.BombResult).heading" ><strong>RANGE.BombResult.heading</strong></a>
+    
+
+
+    
+<p>RANGEBOSS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(RANGE.BombResult).name" ><strong>RANGE.BombResult.name</strong></a>
     
@@ -15220,6 +15674,70 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(RANGE.BombResult).radial" ><strong>RANGE.BombResult.radial</strong></a>
     
 <p>Radial in degrees.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.BombResult).rangename" ><strong>RANGE.BombResult.rangename</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.BombResult).roundsFired" ><strong>RANGE.BombResult.roundsFired</strong></a>
+    
+
+
+    
+<p>RANGEBOSS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.BombResult).roundsHit" ><strong>RANGE.BombResult.roundsHit</strong></a>
+    
+
+
+    
+<p>RANGEBOSS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.BombResult).roundsQuality" ><strong>RANGE.BombResult.roundsQuality</strong></a>
+    
+
+
+    
+<p>RANGEBOSS</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.BombResult).strafeAccuracy" ><strong>RANGE.BombResult.strafeAccuracy</strong></a>
+    
+
 
 </div>
 
