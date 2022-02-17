@@ -1638,6 +1638,7 @@ Create a late-activated single infantry unit as template in the mission editor a
   self.SRSModulation = radio.modulation.AM -- modulation
   --
   self.csarUsePara = false -- If set to true, will use the LandingAfterEjection Event instead of Ejection --shagrat
+  self.wetfeettemplate = "man in floating thingy" -- if you use a mod to have a pilot in a rescue float, put the template name in here for wet feet spawns
 </code></pre>
 
 <h2>3. Results</h2>
@@ -1907,7 +1908,7 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._CreateDownedPilotTrack">CSAR:_CreateDownedPilotTrack(Group, Groupname, Side, OriginalUnit, Description, Typename, Frequency, Playername)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._CreateDownedPilotTrack">CSAR:_CreateDownedPilotTrack(Group, Groupname, Side, OriginalUnit, Description, Typename, Frequency, Playername, Wetfeet)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to insert downed pilot tracker object.</p>
 </td>
@@ -2081,7 +2082,7 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._SpawnPilotInField">CSAR:_SpawnPilotInField(country, point, frequency)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._SpawnPilotInField">CSAR:_SpawnPilotInField(country, point, frequency, wetfeet)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Spawn a downed pilot</p>
 </td>
@@ -2489,6 +2490,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).usewetfeet">CSAR.usewetfeet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).verbose">CSAR.verbose</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Verbosity level.</p>
@@ -2498,6 +2505,12 @@ Create a late-activated single infantry unit as template in the mission editor a
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).version">CSAR.version</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>CSAR class version.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).wetfeettemplate">CSAR.wetfeettemplate</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3413,7 +3426,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR.DownedPilot).alive">CSAR.DownedPilot.alive</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Group is alive or dead/rescued</p>
+<p>Group is alive or dead/rescued.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3467,13 +3480,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR.DownedPilot).timestamp">CSAR.DownedPilot.timestamp</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Timestamp for approach process</p>
+<p>Timestamp for approach process.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR.DownedPilot).typename">CSAR.DownedPilot.typename</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Typename of Unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR.DownedPilot).wetfeet">CSAR.DownedPilot.wetfeet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Group is spawned over (deep) water.</p>
 </td>
           </tr>
         </table>
@@ -3546,7 +3565,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -3848,13 +3867,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -3876,13 +3892,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
     
 
-
-    
-<p> Replacement woundedGroups</p>
 
 </div>
 
@@ -4290,6 +4303,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Use the Prefixed defined below, Requires Unit have the Prefix defined below </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CSAR).usewetfeet" ><strong>CSAR.usewetfeet</strong></a>
+    
+
 
 </div>
 
@@ -5779,7 +5803,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR)._CreateDownedPilotTrack" ><strong>CSAR:_CreateDownedPilotTrack(Group, Groupname, Side, OriginalUnit, Description, Typename, Frequency, Playername)</strong></a></h2>
+<h2><a id="#(CSAR)._CreateDownedPilotTrack" ><strong>CSAR:_CreateDownedPilotTrack(Group, Groupname, Side, OriginalUnit, Description, Typename, Frequency, Playername, Wetfeet)</strong></a></h2>
 </div>
     
 <p>(Internal) Function to insert downed pilot tracker object.</p>
@@ -5892,6 +5916,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Name of Player (if applicable)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Wetfeet</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Ejected over water</p>
 
           </div>
         </div>
@@ -7354,7 +7391,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR)._SpawnPilotInField" ><strong>CSAR:_SpawnPilotInField(country, point, frequency)</strong></a></h2>
+<h2><a id="#(CSAR)._SpawnPilotInField" ><strong>CSAR:_SpawnPilotInField(country, point, frequency, wetfeet)</strong></a></h2>
 </div>
     
 <p>(Internal) Spawn a downed pilot</p>
@@ -7402,6 +7439,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Frequency of the pilot's beacon</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>wetfeet</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Spawn is over water</p>
 
           </div>
         </div>
@@ -8310,7 +8360,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -8612,13 +8662,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -8640,13 +8687,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
     
 
-
-    
-<p> Replacement woundedGroups</p>
 
 </div>
 
@@ -9054,6 +9098,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Use the Prefixed defined below, Requires Unit have the Prefix defined below </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CSAR).usewetfeet" ><strong>CSAR.usewetfeet</strong></a>
+    
+
 
 </div>
 
@@ -10593,7 +10648,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -10895,13 +10950,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -10923,13 +10975,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
     
 
-
-    
-<p> Replacement woundedGroups</p>
 
 </div>
 
@@ -11337,6 +11386,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Use the Prefixed defined below, Requires Unit have the Prefix defined below </p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CSAR).usewetfeet" ><strong>CSAR.usewetfeet</strong></a>
+    
+
 
 </div>
 
@@ -14776,7 +14836,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #boolean
 <a id="#(CSAR.DownedPilot).alive" ><strong>CSAR.DownedPilot.alive</strong></a>
     
-<p>Group is alive or dead/rescued</p>
+<p>Group is alive or dead/rescued.</p>
 
 </div>
 
@@ -14875,7 +14935,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #number
 <a id="#(CSAR.DownedPilot).timestamp" ><strong>CSAR.DownedPilot.timestamp</strong></a>
     
-<p>Timestamp for approach process</p>
+<p>Timestamp for approach process.</p>
 
 </div>
 
@@ -14887,6 +14947,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CSAR.DownedPilot).typename" ><strong>CSAR.DownedPilot.typename</strong></a>
     
 <p>Typename of Unit.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CSAR.DownedPilot).wetfeet" ><strong>CSAR.DownedPilot.wetfeet</strong></a>
+    
+<p>Group is spawned over (deep) water.</p>
 
 </div>
 
