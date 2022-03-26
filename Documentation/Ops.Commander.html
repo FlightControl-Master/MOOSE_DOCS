@@ -1978,7 +1978,7 @@ end
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).CountMissions">COMMANDER:CountMissions(MissionTypes)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).CountMissions">COMMANDER:CountMissions(MissionTypes, OnlyRunning)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Count assets of all assigned legions.</p>
 </td>
@@ -2098,6 +2098,12 @@ end
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).SetLimitMission">COMMANDER:SetLimitMission(Limit, MissionType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set limit for number of total or specific missions to be executed simultaniously.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).SetVerbosity">COMMANDER:SetVerbosity(VerbosityLevel)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set verbosity level.</p>
@@ -2125,6 +2131,12 @@ end
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).TransportCancel">COMMANDER:TransportCancel(Transport)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "TransportCancel".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER)._CheckMissionLimit">COMMANDER:_CheckMissionLimit(MissionType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Check if limit of missions has been reached.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2221,6 +2233,12 @@ end
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).lid">COMMANDER.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Class id string for output to DCS log file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(COMMANDER).limitMission">COMMANDER.limitMission</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table of limits for mission types.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3242,6 +3260,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #table
+<a id="#(COMMANDER).limitMission" ><strong>COMMANDER.limitMission</strong></a>
+    
+<p>Table of limits for mission types.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(COMMANDER).missionqueue" ><strong>COMMANDER.missionqueue</strong></a>
     
 <p>Mission queue.</p>
@@ -4134,7 +4163,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(COMMANDER).CountMissions" ><strong>COMMANDER:CountMissions(MissionTypes)</strong></a></h2>
+<h2><a id="#(COMMANDER).CountMissions" ><strong>COMMANDER:CountMissions(MissionTypes, OnlyRunning)</strong></a></h2>
 </div>
     
 <p>Count assets of all assigned legions.</p>
@@ -4145,7 +4174,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>COMMANDER</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -4156,6 +4185,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>(Optional) Count only missions of these types. Default is all types.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>OnlyRunning</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <code>true</code>, only count running missions.</p>
 
           </div>
         </div>
@@ -5298,6 +5340,63 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(COMMANDER).SetLimitMission" ><strong>COMMANDER:SetLimitMission(Limit, MissionType)</strong></a></h2>
+</div>
+    
+<p>Set limit for number of total or specific missions to be executed simultaniously.</p>
+
+<div id= "#Functions##SetLimitMission" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>COMMANDER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Limit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Number of max. mission of this type. Default 10.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of mission, e.g. <code>AUFTRAG.Type.BAI</code>. Default <code>"Total"</code> for total number of missions.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(COMMANDER)">#COMMANDER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(COMMANDER).SetVerbosity" ><strong>COMMANDER:SetVerbosity(VerbosityLevel)</strong></a></h2>
 </div>
     
@@ -5454,6 +5553,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(COMMANDER)._CheckMissionLimit" ><strong>COMMANDER:_CheckMissionLimit(MissionType)</strong></a></h2>
+</div>
+    
+<p>Check if limit of missions has been reached.</p>
+
+<div id= "#Functions##_CheckMissionLimit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>COMMANDER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of mission.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>If <code>true</code>, mission limit has <strong>not</strong> been reached. If <code>false</code>, limit has been reached.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -6486,6 +6629,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(COMMANDER).lid" ><strong>COMMANDER.lid</strong></a>
     
 <p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(COMMANDER).limitMission" ><strong>COMMANDER.limitMission</strong></a>
+    
+<p>Table of limits for mission types.</p>
 
 </div>
 
@@ -8107,6 +8261,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(COMMANDER).lid" ><strong>COMMANDER.lid</strong></a>
     
 <p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(COMMANDER).limitMission" ><strong>COMMANDER.limitMission</strong></a>
+    
+<p>Table of limits for mission types.</p>
 
 </div>
 
