@@ -1860,8 +1860,12 @@ Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> t
 
 <h2>5. Support for Hercules mod by Anubis</h2>
 
-<p>Basic support for the Hercules mod By Anubis has been build into CTLD. Currently this does <strong>not</strong> cover objects and troops which can
-be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but you cannot use them in functions scripted with this class.</p>
+<p>Basic support for the Hercules mod By Anubis has been build into CTLD - that is you can load/drop/build the same objects as the helicopters. 
+To also cover objects and troops which can be loaded from the groud crew Rearm/Refuel menu, you need to use <a href="##(CTLD_HERCULES).New">CTLD_HERCULES.New</a>() and link
+this object to your CTLD setup. In this case, do <strong>not</strong> use the <code>Hercules_Cargo.lua</code> or <code>Hercules_Cargo_CTLD.lua</code> which are part of the mod 
+in your mission!</p>
+
+<h3>5.1 Create an own CTLD instance and allow the usage of the Hercules mod:</h3>
 
 <pre><code>         local my_ctld = CTLD:New(coalition.side.BLUE,{"Helicargo", "Hercules"},"Lufttransportbrigade I")
 </code></pre>
@@ -1874,10 +1878,33 @@ be loaded from the Rearm/Refuel menu, i.e. you can drop them into the field, but
          my_ctld.HercMaxSpeed = 77 -- 77mps or 270kph or 150kn
 </code></pre>
 
+<p>Hint: you can <strong>only</strong> airdrop from the Hercules if you are "in parameters", i.e. at or below <code>HercMaxSpeed</code> and in the AGL bracket between
+<code>HercMinAngels</code> and <code>HercMaxAngels</code>!</p>
+
 <p>Also, the following options need to be set to <code>true</code>:</p>
 
 <pre><code>         my_ctld.useprefix = true -- this is true by default and MUST BE ON. 
 </code></pre>
+
+<h3>5.2 Integrate Hercules ground crew loadable objects</h3>
+
+<p>Add ground crew loadable objects to your CTLD instance like so, where <code>my_ctld</code> is the previously created CTLD instance:</p>
+
+<pre><code>       local herccargo = CTLD_HERCULES:New("blue", "Hercules Test", my_ctld)
+</code></pre>
+
+<p>You also need: 
+* A template called "Infantry" for 10 Paratroopers (as set via herccargo.infantrytemplate). 
+* Depending on what you are loading with the help of the ground crew, there are 42 more templates for the various vehicles that are loadable. 
+There's a <strong>quick check output in the <code>dcs.log</code></strong> which tells you what's there and what not.
+E.g.:</p>
+<pre><code>       ...Checking template for APC BTR-82A Air [24998lb] (BTR-82A) ... MISSING)
+       ...Checking template for ART 2S9 NONA Skid [19030lb] (SAU 2-C9) ... MISSING)
+       ...Checking template for EWR SBORKA Air [21624lb] (Dog Ear radar) ... MISSING)
+       ...Checking template for Transport Tigr Air [15900lb] (Tigr_233036) ... OK)
+</code></pre>
+
+<p>Expected template names are the ones in the rounded brackets.</p>
 
 <p>Standard transport capabilities as per the real Hercules are:</p>
 
@@ -6418,7 +6445,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -6440,7 +6467,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -6465,10 +6492,27 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
     
+
+
+    
+<p>use as counter</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
+
+    
+<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -6501,7 +6545,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -6512,7 +6556,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -6523,7 +6567,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -6747,6 +6791,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(CTLD.UnitCapabilities)">#CTLD.UnitCapabilities</a>
 <a id="#(CTLD).UnitTypes" ><strong>CTLD.UnitTypes</strong></a>
     
@@ -6884,6 +6939,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -7168,7 +7234,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -13942,7 +14008,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -13964,7 +14030,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -13989,10 +14055,27 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
     
+
+
+    
+<p>use as counter</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
+
+    
+<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -14025,7 +14108,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -14036,7 +14119,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -14047,7 +14130,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -14271,6 +14354,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(CTLD.UnitCapabilities)">#CTLD.UnitCapabilities</a>
 <a id="#(CTLD).UnitTypes" ><strong>CTLD.UnitTypes</strong></a>
     
@@ -14408,6 +14502,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -14692,7 +14797,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -16307,7 +16412,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -16329,7 +16434,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -16354,10 +16459,27 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
     
+
+
+    
+<p>use as counter</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
+
+    
+<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -16390,7 +16512,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -16401,7 +16523,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -16412,7 +16534,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -16636,6 +16758,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(CTLD.UnitCapabilities)">#CTLD.UnitCapabilities</a>
 <a id="#(CTLD).UnitTypes" ><strong>CTLD.UnitTypes</strong></a>
     
@@ -16773,6 +16906,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -17057,7 +17201,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -25343,6 +25487,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD_HERCULES).j" ><strong>CTLD_HERCULES.j</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD_HERCULES).lid" ><strong>CTLD_HERCULES.lid</strong></a>
     
@@ -26572,6 +26727,17 @@ Expected template names are the ones in the rounded brackets.</code></pre>
 
     
 <p> template for a group of 10 paratroopers</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD_HERCULES).j" ><strong>CTLD_HERCULES.j</strong></a>
+    
+
 
 </div>
 
