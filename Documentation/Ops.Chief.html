@@ -1857,14 +1857,116 @@ function myChief:OnAfterStrategyChange(From, Event, To, Strategy)
 end
 </code></pre>
 
+<h1>Resources</h1>
+
+<p>A chief needs resources such as air, ground and naval assets. These can be added in form of AIRWINGs, BRIGADEs and FLEETs.</p>
+
+<p>Whenever the chief detects a target or receives a mission, he will select the best available assets and assign them to the mission.
+The best assets are determined by their mission performance, payload performance (in case of air), distance to the target, skill level, etc.</p>
+
+<h2>Adding Airwings</h2>
+
+<p>Airwings can be added via the <a href="##(CHIEF).AddAirwing">CHIEF.AddAirwing</a>() function.</p>
+
+<h2>Adding Brigades</h2>
+
+<p>Brigades can be added via the <a href="##(CHIEF).AddBrigade">CHIEF.AddBrigade</a>() function.</p>
+
+<h2>Adding Fleets</h2>
+
+<p>Fleets are not implemented yet.</p>
+
+
 <h1>Strategic (Capture) Zones</h1>
 
-<p>Strategically important zones, which should be captured can be added via the <a href="##(CHIEF).AddStrategicZone">CHIEF.AddStrategicZone</a>() function.</p>
+<p>Strategically important zones, which should be captured can be added via the <a href="##(CHIEF).AddStrategicZone">CHIEF.AddStrategicZone</a>(<em>OpsZone, Prio, Importance</em>) function.
+The first parameter <em>OpsZone</em> is an <a href="Ops.OpsZone.html##(OPSZONE)">Ops.OpsZone#OPSZONE</a> specifying the zone. This has to be a <strong>circular zone</strong> due to DCS API restrictions.
+The second parameter <em>Prio</em> is the priority. The zone queue is sorted wrt to lower prio values. By default this is set to 50.
+The third parameter <em>Importance</em> is the importance of the zone. By default this is <code>nil</code>. If you specify one zone with importance 2 and a second zone with
+importance 3, then the zone of importance 2 is attacked first and only if that zone has been captured, zones that have importances with higher values are attacked.</p>
 
-<p>If the zone is currently owned by another coalition and enemy ground troops are present in the zone, a CAS and an ARTY mission are lauchned, provided assets are available.</p>
+<p>For example:</p>
 
-<p>Once the zone is cleaned of enemy forces, ground (infantry) troops are send there. These require a transportation via helicopters.
-So in order to deploy our own troops, infantry assets with <code>AUFTRAG.Type.ONGUARD</code> and helicopters with <code>AUFTRAG.Type.OPSTRANSPORT</code> need to be available.</p>
+<pre><code>local myStratZone=myChief:AddStrategicZone(myOpsZone, nil , 2)
+</code></pre>
+
+<p>Will at a strategic zone with importance 2.</p>
+
+<p>If the zone is currently owned by another coalition and enemy ground troops are present in the zone, a CAS and an ARTY mission are lauchned:</p>
+
+<ul>
+    <li>A mission of type <code>AUFTRAG.Type.CASENHANCED</code> is started if assets are available that can carry out this mission type.</li>
+    <li>A mission of type <code>AUFTRAG.Type.ARTY</code> is started provided assets are available.</li>
+</ul>
+
+<p>The CAS flight(s) will patrol the zone randomly and take out enemy ground units they detect. It can always be possible that the enemies cannot be detected however.
+The assets will shell the zone. However, it is unlikely that they hit anything as they do not have any information about the location of the enemies.</p>
+
+<p>Once the zone is cleaned of enemy forces, ground troops are send there. By default, two missions are launched:</p>
+
+<ul>
+    <li>First mission is of type <code>AUFTRAG.Type.ONGUARD</code> and will send infantry groups. These are transported by helicopters. Therefore, helo assets with <code>AUFTRAG.Type.OPSTRANSPORT</code> need to be available.</li>
+    <li>The second mission is also of type <code>AUFTRAG.Type.ONGUARD</code> but will send tanks if these are available.</li>
+</ul>
+
+<h2>Customized Reaction</h2>
+
+<p>The default mission types and number of assets can be customized for the two scenarious (zone empty or zone occupied by the enemy).</p>
+
+<p>In order to do this, you need to create resource lists (one for each scenario) via the <a href="##(CHIEF).CreateResource">CHIEF.CreateResource</a>() function.
+These list can than be used to replace the default resources employed with</p>
+
+<ul>
+    <li><a href="CHIEF.SetStrategicZoneResourceOccupied.html">CHIEF.SetStrategicZoneResourceOccupied</a>(<em>StrateticZone, ResourceOccupied</em>) for the case that the zone is occupied by the enemy and</li>
+    <li><a href="CHIEF.SetStrategicZoneResourceEmpty.html">CHIEF.SetStrategicZoneResourceEmpty</a>(<em>StrateticZone, ResourceEmpty</em>) for the case that the zone is empty.</li>
+</ul>
+
+<p>The first parameter <em>StrateticZone</em> is the strategic zone object that is returned by the <a href="##(CHIEF).AddStrategicZone">CHIEF.AddStrategicZone</a>() function.
+The second parameter is the resource list created with the <a href="##(CHIEF).CreateResource">CHIEF.CreateResource</a>() function.</p>
+
+<p>For example:</p>
+
+<pre><code>-- Create a resource list of mission types and required assets for the case that the zone is occupied.
+-- Here, we create an enhanced CAS mission and employ at least on and at most two asset groups.
+local ResourceOccupied=myChief:CreateResource(AUFTRAG.Type.CASENHANCED, 1, 2)
+-- We also add ARTY missions with at least one and at most two assets. We additionally require these to be MLRS groups (and not howitzers).
+myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.ARTY, 1, 2, nil, "MLRS")
+-- Add at least one RECON mission that uses UAV type assets.
+myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.RECON, 1, nil, GROUP.Attribute.AIR_UAV)
+-- Add at least one but at most two BOMBCARPET missions.
+myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.BOMBCARPET, 1, 2)
+
+-- Replace the default list with the customized one.
+myChief:SetStrategicZoneResourceOccupied(myStratZone, ResourceOccupied)  
+
+
+-- Create a resource list of mission types and required assets for the case that the zone is empty.
+-- Here, we create an ONGUARD mission and employ at least on and at most five infantry assets.
+local ResourceEmpty=myChief:CreateResource(AUFTRAG.Type.ONGUARD, 1, 5, GROUP.Attribute.GROUND_INFANTRY)
+-- Additionally, we send up to three tank groups.
+myChief:AddToResource(ResourceEmpty, AUFTRAG.Type.ONGUARD, 1, 3, GROUP.Attribute.GROUND_TANK)
+-- Finally, we send two groups that patrol the zone.
+myChief:AddToResource(ResourceEmpty, AUFTRAG.Type.PATROLZONE, 2)
+
+-- Set this to be the resources employed when the zone is empty.
+myChief:SetStrategicZoneResourceEmpty(myStratZone, ResourceEmpty)
+</code></pre>
+
+<p>As the location of the enemies is not known, only mission types that don't require and explicit target group are possible. These are</p>
+
+<ul>
+    <li><code>AUFTRAG.Type.CASENHANCED</code></li>
+    <li><code>AUFTRAG.Type.ARTY</code></li>
+    <li><code>AUFTRAG.Type.PATROLZONE</code></li>
+    <li><code>AUFTRAG.Type.ONGUARD</code></li>
+    <li><code>AUFTRAG.Type.RECON</code></li>
+    <li><code>AUFTRAG.Type.AMMOSUPPLY</code></li>
+    <li><code>AUFTRAG.Type.BOMBING</code></li>
+    <li><code>AUFTRAG.Type.BOMBCARPET</code></li>
+    <li><code>AUFTRAG.Type.BARRAGE</code></li>
+</ul>
+
+<h2>Events</h2>
 
 <p>Whenever a strategic zone is captured by us the FSM event <a href="##(CHIEF).ZoneCaptured">CHIEF.ZoneCaptured</a> is triggered and customized further actions can be executed 
 with the <a href="##(CHIEF).OnAfterZoneCaptured">CHIEF.OnAfterZoneCaptured</a>() function.</p>
@@ -1997,6 +2099,12 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddToResource">CHIEF:AddToResource(Resource, MissionType, Nmin, Nmax, Attributes, Properties)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add mission type and number of required assets to resource.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AllowGroundTransport">CHIEF:AllowGroundTransport()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Allow chief to use GROUND units for transport tasks.</p>
@@ -2051,6 +2159,12 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).CreateResource">CHIEF:CreateResource(MissionType, Nmin, Nmax, Attributes, Properties)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Create a new resource list of required assets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).DEFCON">CHIEF.DEFCON</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2066,6 +2180,12 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).DefconChange">CHIEF:DefconChange(Defcon)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "DefconChange".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).DeleteFromResource">CHIEF:DeleteFromResource(Resource, MissionType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Delete mission type from resource list.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2090,6 +2210,18 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).GetMissionLimit">CHIEF:GetMissionLimit(MissionType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get mission limit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).GetStrategicZoneResourceEmpty">CHIEF:GetStrategicZoneResourceEmpty(StrategicZone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the resource list of missions and assets employed when the zone is empty.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).GetStrategicZoneResourceOccupied">CHIEF:GetStrategicZoneResourceOccupied(StrategicZone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get the resource list of missions and assets employed when the zone is occupied by the enemy.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2249,7 +2381,7 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).RecruitAssetsForZone">CHIEF:RecruitAssetsForZone(StratZone, MissionType, NassetsMin, NassetsMax, Categories, Attributes)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).RecruitAssetsForZone">CHIEF:RecruitAssetsForZone(StratZone, Resource)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Recruit assets for a given OPS zone.</p>
 </td>
@@ -2336,6 +2468,18 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).SetLimitMission">CHIEF:SetLimitMission(Limit, MissionType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set limit for number of total or specific missions to be executed simultaniously.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).SetStrategicZoneResourceEmpty">CHIEF:SetStrategicZoneResourceEmpty(StrategicZone, Resource, NoCopy)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the resource list of missions and assets employed when the zone is empty.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).SetStrategicZoneResourceOccupied">CHIEF:SetStrategicZoneResourceOccupied(StrategicZone, Resource, NoCopy)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the resource list of missions and assets employed when the zone is occupied by the enemy.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2739,6 +2883,55 @@ Think of it as the local population providing the intel. It's not totally realis
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CHIEF.Resource)">Type <strong>CHIEF.Resource</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(CHIEF.Resource)">CHIEF.Resource</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from CHIEF.Resource</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).Attributes">CHIEF.Resource.Attributes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Generalized attribute, e.g. <code>{GROUP.Attribute.GROUND_INFANTRY}</code>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).MissionType">CHIEF.Resource.MissionType</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Mission type, e.g. <code>AUFTRAG.Type.BAI</code>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).Nmax">CHIEF.Resource.Nmax</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Max number of assets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).Nmin">CHIEF.Resource.Nmin</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Min number of assets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).Properties">CHIEF.Resource.Properties</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Properties (<a href="https://wiki.hoggitworld.com/view/DCS_enum_attributes">DCS attributes</a>), e.g. <code>"Attack helicopters"</code> or <code>"Mobile AAA"</code>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).mission">CHIEF.Resource.mission</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Attached mission.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CHIEF.StrategicZone)">Type <strong>CHIEF.StrategicZone</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
      <strong><a href="##(CHIEF.StrategicZone)">CHIEF.StrategicZone</a></strong>
@@ -2752,25 +2945,13 @@ Think of it as the local population providing the intel. It's not totally realis
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).importance">CHIEF.StrategicZone.importance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Importance</p>
+<p>Importance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).missionARTY">CHIEF.StrategicZone.missionARTY</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).missions">CHIEF.StrategicZone.missions</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Artillery mission.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).missionCAS">CHIEF.StrategicZone.missionCAS</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>CAS mission.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).missionPatrol">CHIEF.StrategicZone.missionPatrol</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Patrol mission.</p>
+<p>Mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2783,6 +2964,18 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).prio">CHIEF.StrategicZone.prio</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Priority.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).resourceEmpty">CHIEF.StrategicZone.resourceEmpty</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Resource list.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.StrategicZone).resourceOccup">CHIEF.StrategicZone.resourceOccup</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Resource list.</p>
 </td>
           </tr>
         </table>
@@ -3867,6 +4060,23 @@ Think of it as the local population providing the intel. It's not totally realis
     
 <p>Add strategically important zone.</p>
 
+    
+<p>By default two resource lists are created. One for the case that the zone is empty and the other for the case that the zone is occupied
+Empty:</p>
+
+<ul>
+    <li><code>AUFTRAG.Type.ARTY</code> with Nmin=1, Nmax=2</li>
+    <li><code>AUFTRAG.Type.CASENHANCED</code> with Nmin=1, Nmax=2</li>
+</ul>
+
+<p>Occupied:</p>
+
+<ul>
+    <li><code>AUFTRAG.Type.ONGUARD</code> with Nmin=1 and Nmax=3 assets, Attribute=<code>GROUP.Attribute.GROUND_INFANTRY</code>.</li>
+    <li><code>AUFTRAG.Type.ONGURAD</code> with Nmin=1 and Nmax=1 assets, Attribute=<code>GROUP.Attribute.GROUND_TANK</code>.</li>
+</ul>
+
+
 <div id= "#Functions##AddStrategicZone" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -3916,11 +4126,11 @@ Think of it as the local population providing the intel. It's not totally realis
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(CHIEF)">#CHIEF</a>:</p>
+        <p><a href="##(CHIEF.StrategicZone)">#CHIEF.StrategicZone</a>:</p>
       </div>
       <div class="w3-half">
         
-<p>self</p>
+<p>The strategic zone.</p>
 
       </div>
     </div>
@@ -4063,6 +4273,115 @@ Think of it as the local population providing the intel. It's not totally realis
           <div class="w3-half">
               
 <p>Target object to be added.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF)">#CHIEF</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF).AddToResource" ><strong>CHIEF:AddToResource(Resource, MissionType, Nmin, Nmax, Attributes, Properties)</strong></a></h2>
+</div>
+    
+<p>Add mission type and number of required assets to resource.</p>
+
+<div id= "#Functions##AddToResource" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Resource</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Resource table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Mission Type.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Nmin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min number of required assets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Nmax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Max number of requried assets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Attributes</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Generalized attribute(s).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Properties</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>DCS attribute(s). Default <code>nil</code>.</p>
 
           </div>
         </div>
@@ -4403,6 +4722,102 @@ if a destination can be reached on land.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CHIEF).CreateResource" ><strong>CHIEF:CreateResource(MissionType, Nmin, Nmax, Attributes, Properties)</strong></a></h2>
+</div>
+    
+<p>Create a new resource list of required assets.</p>
+
+<div id= "#Functions##CreateResource" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The mission type.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Nmin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min number of required assets. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Nmax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Max number of requried assets. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Attributes</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Generalized attribute(s). Default <code>nil</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Properties</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>DCS attribute(s). Default <code>nil</code>.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>The resource object.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CHIEF).DefconChange" ><strong>CHIEF:DefconChange(Defcon)</strong></a></h2>
 </div>
     
@@ -4428,6 +4843,66 @@ if a destination can be reached on land.</p>
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF).DeleteFromResource" ><strong>CHIEF:DeleteFromResource(Resource, MissionType)</strong></a></h2>
+</div>
+    
+<p>Delete mission type from resource list.</p>
+
+    
+<p>All running missions are cancelled.</p>
+
+<div id= "#Functions##DeleteFromResource" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Resource</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Resource table.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Mission Type.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF)">#CHIEF</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -4575,6 +5050,94 @@ if a destination can be reached on land.</p>
       <div class="w3-half">
         
 <p>Limit. Unlimited mission types are returned as 999.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF).GetStrategicZoneResourceEmpty" ><strong>CHIEF:GetStrategicZoneResourceEmpty(StrategicZone)</strong></a></h2>
+</div>
+    
+<p>Get the resource list of missions and assets employed when the zone is empty.</p>
+
+<div id= "#Functions##GetStrategicZoneResourceEmpty" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.StrategicZone)">#CHIEF.StrategicZone</a>
+            <strong><strong>StrategicZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The strategic zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF.Resource)">#CHIEF.Resource</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Resource list of missions and assets.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF).GetStrategicZoneResourceOccupied" ><strong>CHIEF:GetStrategicZoneResourceOccupied(StrategicZone)</strong></a></h2>
+</div>
+    
+<p>Get the resource list of missions and assets employed when the zone is occupied by the enemy.</p>
+
+<div id= "#Functions##GetStrategicZoneResourceOccupied" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.StrategicZone)">#CHIEF.StrategicZone</a>
+            <strong><strong>StrategicZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The strategic zone.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF.Resource)">#CHIEF.Resource</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Resource list of missions and assets.</p>
 
       </div>
     </div>
@@ -5820,7 +6383,7 @@ if a destination can be reached on land.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CHIEF).RecruitAssetsForZone" ><strong>CHIEF:RecruitAssetsForZone(StratZone, MissionType, NassetsMin, NassetsMax, Categories, Attributes)</strong></a></h2>
+<h2><a id="#(CHIEF).RecruitAssetsForZone" ><strong>CHIEF:RecruitAssetsForZone(StratZone, Resource)</strong></a></h2>
 </div>
     
 <p>Recruit assets for a given OPS zone.</p>
@@ -5848,65 +6411,13 @@ if a destination can be reached on land.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #string
-            <strong><strong>MissionType</strong></strong>
+                <a href="##(CHIEF.Resource)">#CHIEF.Resource</a>
+            <strong><strong>Resource</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>Mission Type.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NassetsMin</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Min number of required assets.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NassetsMax</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Max number of required assets.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>Categories</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Group categories of the assets.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>Attributes</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Generalized group attributes.</p>
+<p>The required resources.</p>
 
           </div>
         </div>
@@ -6517,6 +7028,146 @@ if a destination can be reached on land.</p>
           <div class="w3-half">
               
 <p>Type of mission, e.g. <code>AUFTRAG.Type.BAI</code>. Default <code>"Total"</code> for total number of missions.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF)">#CHIEF</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF).SetStrategicZoneResourceEmpty" ><strong>CHIEF:SetStrategicZoneResourceEmpty(StrategicZone, Resource, NoCopy)</strong></a></h2>
+</div>
+    
+<p>Set the resource list of missions and assets employed when the zone is empty.</p>
+
+<div id= "#Functions##SetStrategicZoneResourceEmpty" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.StrategicZone)">#CHIEF.StrategicZone</a>
+            <strong><strong>StrategicZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The strategic zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.Resource)">#CHIEF.Resource</a>
+            <strong><strong>Resource</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Resource list of missions and assets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>NoCopy</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <code>true</code>, do <strong>not</strong> create a deep copy of the resource.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF)">#CHIEF</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF).SetStrategicZoneResourceOccupied" ><strong>CHIEF:SetStrategicZoneResourceOccupied(StrategicZone, Resource, NoCopy)</strong></a></h2>
+</div>
+    
+<p>Set the resource list of missions and assets employed when the zone is occupied by the enemy.</p>
+
+<div id= "#Functions##SetStrategicZoneResourceOccupied" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.StrategicZone)">#CHIEF.StrategicZone</a>
+            <strong><strong>StrategicZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The strategic zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.Resource)">#CHIEF.Resource</a>
+            <strong><strong>Resource</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Resource list of missions and assets.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>NoCopy</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <code>true</code>, do <strong>not</strong> create a deep copy of the resource.</p>
 
           </div>
         </div>
@@ -8704,6 +9355,87 @@ Targets with threat level 0 are usually harmless.</p>
 </div>
 
         </div>
+      <div onclick="myFunction('#Types##CHIEF.Resource')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CHIEF.Resource)">Type <strong>CHIEF.Resource</strong></a></h2></div>
+        <div id= "#Types##CHIEF.Resource" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Resource.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CHIEF.Resource).Attributes" ><strong>CHIEF.Resource.Attributes</strong></a>
+    
+<p>Generalized attribute, e.g. <code>{GROUP.Attribute.GROUND_INFANTRY}</code>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CHIEF.Resource).MissionType" ><strong>CHIEF.Resource.MissionType</strong></a>
+    
+<p>Mission type, e.g. <code>AUFTRAG.Type.BAI</code>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CHIEF.Resource).Nmax" ><strong>CHIEF.Resource.Nmax</strong></a>
+    
+<p>Max number of assets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CHIEF.Resource).Nmin" ><strong>CHIEF.Resource.Nmin</strong></a>
+    
+<p>Min number of assets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CHIEF.Resource).Properties" ><strong>CHIEF.Resource.Properties</strong></a>
+    
+<p>Properties (<a href="https://wiki.hoggitworld.com/view/DCS_enum_attributes">DCS attributes</a>), e.g. <code>"Attack helicopters"</code> or <code>"Mobile AAA"</code>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Ops.Auftrag.html##(AUFTRAG)">Ops.Auftrag#AUFTRAG</a>
+<a id="#(CHIEF.Resource).mission" ><strong>CHIEF.Resource.mission</strong></a>
+    
+<p>Attached mission.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
       <div onclick="myFunction('#Types##CHIEF.StrategicZone')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CHIEF.StrategicZone)">Type <strong>CHIEF.StrategicZone</strong></a></h2></div>
         <div id= "#Types##CHIEF.StrategicZone" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
@@ -8719,7 +9451,7 @@ Targets with threat level 0 are usually harmless.</p>
     #number
 <a id="#(CHIEF.StrategicZone).importance" ><strong>CHIEF.StrategicZone.importance</strong></a>
     
-<p>Importance</p>
+<p>Importance.</p>
 
 </div>
 
@@ -8727,32 +9459,10 @@ Targets with threat level 0 are usually harmless.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Ops.Auftrag.html##(AUFTRAG)">Ops.Auftrag#AUFTRAG</a>
-<a id="#(CHIEF.StrategicZone).missionARTY" ><strong>CHIEF.StrategicZone.missionARTY</strong></a>
+    #table
+<a id="#(CHIEF.StrategicZone).missions" ><strong>CHIEF.StrategicZone.missions</strong></a>
     
-<p>Artillery mission.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Ops.Auftrag.html##(AUFTRAG)">Ops.Auftrag#AUFTRAG</a>
-<a id="#(CHIEF.StrategicZone).missionCAS" ><strong>CHIEF.StrategicZone.missionCAS</strong></a>
-    
-<p>CAS mission.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Ops.Auftrag.html##(AUFTRAG)">Ops.Auftrag#AUFTRAG</a>
-<a id="#(CHIEF.StrategicZone).missionPatrol" ><strong>CHIEF.StrategicZone.missionPatrol</strong></a>
-    
-<p>Patrol mission.</p>
+<p>Mission.</p>
 
 </div>
 
@@ -8775,6 +9485,28 @@ Targets with threat level 0 are usually harmless.</p>
 <a id="#(CHIEF.StrategicZone).prio" ><strong>CHIEF.StrategicZone.prio</strong></a>
     
 <p>Priority.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CHIEF.StrategicZone).resourceEmpty" ><strong>CHIEF.StrategicZone.resourceEmpty</strong></a>
+    
+<p>Resource list.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CHIEF.StrategicZone).resourceOccup" ><strong>CHIEF.StrategicZone.resourceOccup</strong></a>
+    
+<p>Resource list.</p>
 
 </div>
 
