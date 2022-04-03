@@ -1933,13 +1933,9 @@ AIRWING analouges, which are called BRIGADE and FLEET. Brigades and fleets will 
 
 <p>An arty mission can be created with the <a href="##(AUFTRAG).NewARTY">AUFTRAG.NewARTY</a>() function.</p>
 
-<h2>ARMORATTACK</h2>
+<h2>GROUNDATTACK</h2>
 
-<p>A mission to send a tank group can be created with the <a href="##(AUFTRAG).NewARMORATTACK">AUFTRAG.NewARMORATTACK</a>() function.</p>
-
-<h1>Options and Parameters</h1>
-
-<p>TODO</p>
+<p>A ground attack mission can be created with the <a href="##(AUFTRAG).NewGROUNDATTACK">AUFTRAG.NewGROUNDATTACK</a>() function.</p>
 
 <h1>Assigning Missions</h1>
 
@@ -2658,7 +2654,7 @@ Similarly, an AUFTRAG can be added to a brigade via the <a href="Ops.Brigade.htm
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUFTRAG).NewARMORATTACK">AUFTRAG:NewARMORATTACK(Target, Speed, Formation)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p><strong>[GROUND]</strong> Create a ARMORATTACK mission.</p>
+<p><strong>[OBSOLETE]</strong> Create a ARMORATTACK mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2812,7 +2808,7 @@ Similarly, an AUFTRAG can be added to a brigade via the <a href="Ops.Brigade.htm
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUFTRAG).NewRECON">AUFTRAG:NewRECON(ZoneSet, Speed, Altitude, Adinfinitum, Randomly)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AUFTRAG).NewRECON">AUFTRAG:NewRECON(ZoneSet, Speed, Altitude, Adinfinitum, Randomly, Formation)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p><strong>[AIR, GROUND, NAVAL]</strong> Create a RECON mission.</p>
 </td>
@@ -10747,10 +10743,10 @@ This determines the payload and the DCS mission task which are used when the air
 <h2><a id="#(AUFTRAG).NewARMORATTACK" ><strong>AUFTRAG:NewARMORATTACK(Target, Speed, Formation)</strong></a></h2>
 </div>
     
-<p><strong>[GROUND]</strong> Create a ARMORATTACK mission.</p>
+<p><strong>[OBSOLETE]</strong> Create a ARMORATTACK mission.</p>
 
     
-<p>Armoured ground group(s) will go to the zone and attack.</p>
+<p><em>* Note that this is actually creating a GROUNDATTACK mission!</em>* </p>
 
 <div id= "#Functions##NewARMORATTACK" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -12232,7 +12228,7 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
           </div>
           <div class="w3-half">
               
-<p>Speed in knots.</p>
+<p>Speed in knots. Default max.</p>
 
           </div>
         </div>
@@ -12245,7 +12241,7 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
           </div>
           <div class="w3-half">
               
-<p>The attack formation, e.g. "Wedge", "Vee" etc.</p>
+<p>The attack formation, e.g. "Wedge", "Vee" etc. Default <code>ENUMS.Formation.Vehicle.Vee</code>.</p>
 
           </div>
         </div>
@@ -12777,7 +12773,7 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
           </div>
           <div class="w3-half">
               
-<p>Formation used during patrol.</p>
+<p>Formation used by ground units during patrol. Default "Off Road".</p>
 
           </div>
         </div>
@@ -12800,7 +12796,7 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AUFTRAG).NewRECON" ><strong>AUFTRAG:NewRECON(ZoneSet, Speed, Altitude, Adinfinitum, Randomly)</strong></a></h2>
+<h2><a id="#(AUFTRAG).NewRECON" ><strong>AUFTRAG:NewRECON(ZoneSet, Speed, Altitude, Adinfinitum, Randomly, Formation)</strong></a></h2>
 </div>
     
 <p><strong>[AIR, GROUND, NAVAL]</strong> Create a RECON mission.</p>
@@ -12860,7 +12856,7 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
           </div>
           <div class="w3-half">
               
-<p>If true, the group will start over again after reaching the final zone.</p>
+<p>If <code>true</code>, the group will start over again after reaching the final zone.</p>
 
           </div>
         </div>
@@ -12873,7 +12869,20 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
           </div>
           <div class="w3-half">
               
-<p>If true, the group will select a random zone.</p>
+<p>If <code>true</code>, the group will select a random zone.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Formation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Formation used during recon route.</p>
 
           </div>
         </div>
@@ -13213,7 +13222,7 @@ themselfs. They wait for the CHIEF to tell them whom to engage.</p>
           </div>
           <div class="w3-half">
               
-<p>Coordinate where the helo will land to pick up the the cargo. Default is the fist transport group.</p>
+<p>Coordinate where the helo will land to pick up the the cargo. Default is the first transport group.</p>
 
           </div>
         </div>
