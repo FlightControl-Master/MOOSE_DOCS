@@ -1534,6 +1534,7 @@ Controls a network of short range air/missile defense groups.</p>
     <li><a href="https://en.wikipedia.org/wiki/USS_Tarawa_(LHA-1">USS Tarawa</a> (LHA-1) [<strong>WIP</strong>]</li>
     <li><a href="https://en.wikipedia.org/wiki/USS_America_(LHA-6">USS America</a> (LHA-6) [<strong>WIP</strong>]</li>
     <li><a href="https://en.wikipedia.org/wiki/Spanish_amphibious_assault_ship_Juan_Carlos_I">Juan Carlos I</a> (L61) [<strong>WIP</strong>]</li>
+    <li><a href="https://en.wikipedia.org/wiki/HMAS_Canberra_(L02">HMAS Canberra</a> (L02) [<strong>WIP</strong>]</li>
 </ul>
 
 <p><strong>Supported Aircraft:</strong></p>
@@ -1555,7 +1556,7 @@ Controls a network of short range air/missile defense groups.</p>
 
 <p>The AV-8B Harrier, HMS Hermes, the USS Tarawa, USS America, HMAS Canberra, and Juan Carlos I are WIP. The AV-8B harrier and the LHA's and LHD can only be used together, i.e. these ships are the only carriers the harrier is supposed to land on and
 no other fixed wing aircraft (human or AI controlled) are supposed to land on these ships. Currently only Case I is supported. Case II/III take slightly different steps from the CVN carrier.
-However, the two Case II/III pattern are very similar so this is not a big drawback.</p>
+However, if no offset is used for the holding radial this provides a very close representation of the V/STOL Case III, allowing for an approach to over the deck and a vertical landing.</p>
 
 <p>Heatblur's mighty F-14B Tomcat has been added (March 13th 2019) as well. Same goes for the A version.</p>
 
@@ -1626,11 +1627,12 @@ They contain the latest development Moose.lua file.</p>
     <li><a href="https://www.youtube.com/watch?v=lqmVvpunk2c">Harrier Ship Landing Mission with Auto LSO!</a></li>
     <li><a href="https://youtu.be/K7I4pU6j718">Updated Airboss V/STOL Features USS Tarawa</a></li>
     <li><a href="https://youtu.be/99NigITYmcI">Harrier Practice pattern USS America</a></li>
+    <li><a href="https://www.youtube.com/watch?v=bTgJXZ9Mhdc&amp;t=1s">Harrier CASE III TACAN Approach USS Tarawa</a></li>
 </ul>
 
 <hr/>
 
-<h3>Author: <strong>funkyfranky</strong></h3>
+<h3>Author: <strong>funkyfranky</strong> LHA and LHD V/STOL additions by <strong>Pene</strong></h3>
 <h3>Special Thanks To <strong>Bankler</strong></h3>
 <p>For his great <a href="https://forums.eagle.ru/showthread.php?t=221412">Recovery Trainer</a> mission and script!
 His work was the initial inspiration for this class. Also note that this implementation uses some routines for determining the player position in Case I recoveries he developed.
@@ -3343,7 +3345,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetGlideslopeErrorThresholds">AIRBOSS:SetGlideslopeErrorThresholds(_max, _min, High, HIGH, Low, LOW)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set glideslope error thresholds.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3397,7 +3399,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetLineupErrorThresholds">AIRBOSS:SetLineupErrorThresholds(_max, _min, Left, LeftMed, LEFT, Right, RightMed, RIGHT)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Set lineup error thresholds.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -4315,7 +4317,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._GetZoneAbeamLandingSpot">AIRBOSS:_GetZoneAbeamLandingSpot()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Get zone of primary abeam landing position of HMS Hermes, USS Tarawa, USS America and Juan Carlos.</p>
+<p>Allow for Clear to land call from LSO approaching abeam the landing spot if stable as per NATOPS 00-80T</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -9226,32 +9228,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AIRBOSS).RQLid" ><strong>AIRBOSS.RQLid</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(AIRBOSS).RQMarshal" ><strong>AIRBOSS.RQMarshal</strong></a>
     
 <p>Radio queue of marshal.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AIRBOSS).RQMid" ><strong>AIRBOSS.RQMid</strong></a>
-    
-
 
 </div>
 
@@ -13984,7 +13964,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
 <h2><a id="#(AIRBOSS).SetGlideslopeErrorThresholds" ><strong>AIRBOSS:SetGlideslopeErrorThresholds(_max, _min, High, HIGH, Low, LOW)</strong></a></h2>
 </div>
     
-<p>Set glideslope error thresholds.</p>
+
 
 <div id= "#Functions##SetGlideslopeErrorThresholds" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -13996,7 +13976,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>_max</strong></strong>
             </p>
           </div>
@@ -14007,7 +13986,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>_min</strong></strong>
             </p>
           </div>
@@ -14018,7 +13996,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>High</strong></strong>
             </p>
           </div>
@@ -14029,7 +14006,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>HIGH</strong></strong>
             </p>
           </div>
@@ -14040,7 +14016,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>Low</strong></strong>
             </p>
           </div>
@@ -14051,7 +14026,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>LOW</strong></strong>
             </p>
           </div>
@@ -14059,17 +14033,6 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
               <p></p>
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>self</p>
-
-      </div>
-    </div>
 </div>
 
 </div>
@@ -14430,7 +14393,7 @@ So best stick to the defaults up to 30 degrees.</p>
 <h2><a id="#(AIRBOSS).SetLineupErrorThresholds" ><strong>AIRBOSS:SetLineupErrorThresholds(_max, _min, Left, LeftMed, LEFT, Right, RightMed, RIGHT)</strong></a></h2>
 </div>
     
-<p>Set lineup error thresholds.</p>
+
 
 <div id= "#Functions##SetLineupErrorThresholds" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -14442,7 +14405,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>_max</strong></strong>
             </p>
           </div>
@@ -14453,7 +14415,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>_min</strong></strong>
             </p>
           </div>
@@ -14464,7 +14425,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>Left</strong></strong>
             </p>
           </div>
@@ -14475,7 +14435,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>LeftMed</strong></strong>
             </p>
           </div>
@@ -14486,7 +14445,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>LEFT</strong></strong>
             </p>
           </div>
@@ -14497,7 +14455,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>Right</strong></strong>
             </p>
           </div>
@@ -14508,7 +14465,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>RightMed</strong></strong>
             </p>
           </div>
@@ -14519,7 +14475,6 @@ So best stick to the defaults up to 30 degrees.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>RIGHT</strong></strong>
             </p>
           </div>
@@ -14527,17 +14482,6 @@ So best stick to the defaults up to 30 degrees.</p>
               <p></p>
           </div>
         </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>self</p>
-
-      </div>
-    </div>
 </div>
 
 </div>
@@ -20286,7 +20230,7 @@ No groove time for Harrier on LHA, LHD set to Tgroove Unicorn as starting point 
 <p>Get optimal landing position of the aircraft.</p>
 
     
-<p>Usually between second and third wire. In case of Tarawa and America we take the abeam landing spot 120 ft abeam the 7.5 position, for the Juan Carlos I it is 120 ft and abeam the 5 position.</p>
+<p>Usually between second and third wire. In case of Tarawa, Canberrra, Juan Carlos and America we take the abeam landing spot 120 ft above and 21 ft abeam the 7.5 position, for the Juan Carlos I and HMS Hermes it is 120 ft above and 21 ft abeam the 5 position. For CASE III it is 120ft directly above the landing spot.</p>
 
 <div id= "#Functions##_GetOptLandingCoordinate" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -21021,11 +20965,7 @@ Note that this is calculated in the X-Z plane, i.e. the altitude Y is not taken 
 <h2><a id="#(AIRBOSS)._GetZoneAbeamLandingSpot" ><strong>AIRBOSS:_GetZoneAbeamLandingSpot()</strong></a></h2>
 </div>
     
-<p>Get zone of primary abeam landing position of HMS Hermes, USS Tarawa, USS America and Juan Carlos.</p>
-
-    
-<p>Box length 50 meters and width 30 meters.
-- Allow for Clear to land call from LSO approaching abeam the landing spot if stable as per NATOPS 00-80T</p>
+<p>Allow for Clear to land call from LSO approaching abeam the landing spot if stable as per NATOPS 00-80T</p>
 
 <div id= "#Functions##_GetZoneAbeamLandingSpot" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -28431,32 +28371,10 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AIRBOSS).RQLid" ><strong>AIRBOSS.RQLid</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(AIRBOSS).RQMarshal" ><strong>AIRBOSS.RQMarshal</strong></a>
     
 <p>Radio queue of marshal.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AIRBOSS).RQMid" ><strong>AIRBOSS.RQMid</strong></a>
-    
-
 
 </div>
 
@@ -31434,32 +31352,10 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AIRBOSS).RQLid" ><strong>AIRBOSS.RQLid</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(AIRBOSS).RQMarshal" ><strong>AIRBOSS.RQMarshal</strong></a>
     
 <p>Radio queue of marshal.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AIRBOSS).RQMid" ><strong>AIRBOSS.RQMid</strong></a>
-    
-
 
 </div>
 
@@ -38793,7 +38689,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
 
     
-<p> Set current case.</p>
+<p> Set case of f</p>
 
 </div>
 
@@ -38856,13 +38752,10 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="##(AIRBOSS.GroovePos)">#AIRBOSS.GroovePos</a>
+<a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
-<a id="#(AIRBOSS.PlayerData).flag" ><strong>AIRBOSS.PlayerData.flag</strong></a>
-    
-
-
-    
-<p> Also decrease flag for section members of flight.</p>
+<p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
 
 </div>
 
@@ -38870,10 +38763,10 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(AIRBOSS.GroovePos)">#AIRBOSS.GroovePos</a>
-<a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
+    #boolean
+<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
     
-<p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
+
 
 </div>
 
@@ -39010,6 +38903,9 @@ When moose is loading dynamically (for moose class development), tracing is swit
     
 
 
+    
+<p> Set section lead of player flight.</p>
+
 </div>
 
 </div>   
@@ -39067,9 +38963,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(AIRBOSS.PlayerData).time" ><strong>AIRBOSS.PlayerData.time</strong></a>
     
 
-
-    
-<p> Set new time stamp.</p>
 
 </div>
 
