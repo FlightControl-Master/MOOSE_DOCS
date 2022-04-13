@@ -1828,7 +1828,7 @@ Controls a network of short range air/missile defense groups.</p>
       <tr>
         <td class="style="width:40%;"><p><h2>Global <strong>FLEET</strong></h2></p></td>
         <td class="style="width:60%;">
-<p><em>I am not afraid of an Army of lions lead by a sheep; I am afraid of sheep lead by a lion</em> -- Alexander the Great</p>
+<p><em>A fleet of British ships at war are the best negotiators.</em> -- Horatio Nelson</p>
 
 <hr/>
 
@@ -1845,7 +1845,7 @@ Controls a network of short range air/missile defense groups.</p>
     <a href="##(FLEET)">#FLEET</a>
 <a id="FLEET" ><strong>FLEET</strong></a>
     
-<p><em>I am not afraid of an Army of lions lead by a sheep; I am afraid of sheep lead by a lion</em> -- Alexander the Great</p>
+<p><em>A fleet of British ships at war are the best negotiators.</em> -- Horatio Nelson</p>
 
 <hr/>
 
@@ -1855,6 +1855,29 @@ Controls a network of short range air/missile defense groups.</p>
 
     
 <p>These flotillas "live" in a WAREHOUSE that has a phyiscal struction (STATIC or UNIT) and can be captured or destroyed.</p>
+
+<h1>Basic Setup</h1>
+
+<p>A new <code>FLEET</code> object can be created with the <a href="##(FLEET).New">FLEET.New</a>(<code>WarehouseName</code>, <code>FleetName</code>) function, where <code>WarehouseName</code> is the name of the static or unit object hosting the fleet
+and <code>FleetName</code> is the name you want to give the fleet. This must be <em>unique</em>!</p>
+
+<pre><code>myFleet=FLEET:New("myWarehouseName", "1st Fleet")
+myFleet:SetPortZone(ZonePort1stFleet)
+myFleet:Start()
+</code></pre>
+
+<p>A fleet needs a <em>port zone</em>, which is set via the <a href="##(FLEET).SetPortZone">FLEET.SetPortZone</a>(<code>PortZone</code>) function. This is the zone where the naval assets are spawned and return to.</p>
+
+<p>Finally, the fleet needs to be started using the <a href="##(FLEET).Start">FLEET.Start</a>() function. If the fleet is not started, it will not process any requests.</p>
+
+<h2>Adding Flotillas</h2>
+
+<p>Flotillas can be added via the <a href="##(FLEET).AddFlotilla">FLEET.AddFlotilla</a>(<code>Flotilla</code>) function. See <a href="Ops.Flotilla.html##(FLOTILLA)">Ops.Flotilla#FLOTILLA</a> for how to create a flotilla.</p>
+
+<pre><code>myFleet:AddFlotilla(FlotillaTiconderoga)
+myFleet:AddFlotilla(FlotillaPerry)
+</code></pre>
+
 
 
 
@@ -1943,6 +1966,12 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FLEET).SetPathfinding">FLEET:SetPathfinding(Switch)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set pathfinding for all spawned naval groups.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FLEET).SetRetreatZones">FLEET:SetRetreatZones(RetreatZoneSet)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Define a set of retreat zones.</p>
@@ -1994,6 +2023,12 @@ Controls a network of short range air/missile defense groups.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FLEET).onafterStatus">FLEET:onafterStatus(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Update status.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FLEET).pathfinding">FLEET.pathfinding</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set pathfinding on for all spawned navy groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2293,7 +2328,7 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FLEET).RecruitCohortAssets">FLEET.RecruitCohortAssets(Cohorts, MissionTypeRecruit, MissionTypeOpt, NreqMin, NreqMax, TargetVec2, Payloads, RangeMax, RefuelSystem, CargoWeight, TotalWeight, Categories, Attributes, Properties)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(FLEET).RecruitCohortAssets">FLEET.RecruitCohortAssets(Cohorts, MissionTypeRecruit, MissionTypeOpt, NreqMin, NreqMax, TargetVec2, Payloads, RangeMax, RefuelSystem, CargoWeight, TotalWeight, Categories, Attributes, Properties, WeaponTypes)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Recruit assets from Cohorts for the given parameters.</p>
 </td>
@@ -5243,6 +5278,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(FLEET).pathfinding" ><strong>FLEET.pathfinding</strong></a>
+    
+<p>Set pathfinding on for all spawned navy groups.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_ZONE)">Core.Set#SET_ZONE</a>
 <a id="#(FLEET).retreatZones" ><strong>FLEET.retreatZones</strong></a>
     
@@ -5763,6 +5809,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(FLEET).SetPathfinding" ><strong>FLEET:SetPathfinding(Switch)</strong></a></h2>
+</div>
+    
+<p>Set pathfinding for all spawned naval groups.</p>
+
+<div id= "#Functions##SetPathfinding" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>FLEET</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Switch</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <code>true</code>, pathfinding is used.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(FLEET)">#FLEET</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(FLEET).SetRetreatZones" ><strong>FLEET:SetRetreatZones(RetreatZoneSet)</strong></a></h2>
 </div>
     
@@ -6176,6 +6266,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Set some string id for output to DCS.log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(FLEET).pathfinding" ><strong>FLEET.pathfinding</strong></a>
+    
+<p>Set pathfinding on for all spawned navy groups.</p>
 
 </div>
 
@@ -8748,7 +8849,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(FLEET).RecruitCohortAssets" ><strong>FLEET.RecruitCohortAssets(Cohorts, MissionTypeRecruit, MissionTypeOpt, NreqMin, NreqMax, TargetVec2, Payloads, RangeMax, RefuelSystem, CargoWeight, TotalWeight, Categories, Attributes, Properties)</strong></a></h2>
+<h2><a id="#(FLEET).RecruitCohortAssets" ><strong>FLEET.RecruitCohortAssets(Cohorts, MissionTypeRecruit, MissionTypeOpt, NreqMin, NreqMax, TargetVec2, Payloads, RangeMax, RefuelSystem, CargoWeight, TotalWeight, Categories, Attributes, Properties, WeaponTypes)</strong></a></h2>
 </div>
     
 <p>Recruit assets from Cohorts for the given parameters.</p>
@@ -8942,6 +9043,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>DCS attributes.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>WeaponTypes</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Bit of weapon types.</p>
 
           </div>
         </div>
@@ -11441,6 +11555,17 @@ Cohort assets will not be available until relocation is finished.</p>
 
     
 <p> Set some string id for output to DCS.log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(FLEET).pathfinding" ><strong>FLEET.pathfinding</strong></a>
+    
+<p>Set pathfinding on for all spawned navy groups.</p>
 
 </div>
 
@@ -24530,6 +24655,17 @@ this request is used to put the groups back into the warehouse stock.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(FLEET).pathfinding" ><strong>FLEET.pathfinding</strong></a>
+    
+<p>Set pathfinding on for all spawned navy groups.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_ZONE)">Core.Set#SET_ZONE</a>
 <a id="#(FLEET).retreatZones" ><strong>FLEET.retreatZones</strong></a>
     
@@ -26026,6 +26162,17 @@ this request is used to put the groups back into the warehouse stock.</p>
 
     
 <p> Set some string id for output to DCS.log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(FLEET).pathfinding" ><strong>FLEET.pathfinding</strong></a>
+    
+<p>Set pathfinding on for all spawned navy groups.</p>
 
 </div>
 
