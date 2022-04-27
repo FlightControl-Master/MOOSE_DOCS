@@ -1999,19 +1999,12 @@ The assets will shell the zone. However, it is unlikely that they hit anything a
 <p>The default mission types and number of assets can be customized for the two scenarious (zone empty or zone occupied by the enemy).</p>
 
 <p>In order to do this, you need to create resource lists (one for each scenario) via the <a href="##(CHIEF).CreateResource">CHIEF.CreateResource</a>() function.
-These list can than be used to replace the default resources employed with</p>
-
-<ul>
-    <li><a href="CHIEF.SetStrategicZoneResourceOccupied.html">CHIEF.SetStrategicZoneResourceOccupied</a>(<em>StrateticZone, ResourceOccupied</em>) for the case that the zone is occupied by the enemy and</li>
-    <li><a href="CHIEF.SetStrategicZoneResourceEmpty.html">CHIEF.SetStrategicZoneResourceEmpty</a>(<em>StrateticZone, ResourceEmpty</em>) for the case that the zone is empty.</li>
-</ul>
-
-<p>The first parameter <em>StrateticZone</em> is the strategic zone object that is returned by the <a href="##(CHIEF).AddStrategicZone">CHIEF.AddStrategicZone</a>() function.
-The second parameter is the resource list created with the <a href="##(CHIEF).CreateResource">CHIEF.CreateResource</a>() function.</p>
+These lists can than passed as additional parameters to the <a href="##(CHIEF).AddStrategicZone">CHIEF.AddStrategicZone</a> function.</p>
 
 <p>For example:</p>
 
-<pre><code>-- Create a resource list of mission types and required assets for the case that the zone is occupied.
+<pre><code>--- Create a resource list of mission types and required assets for the case that the zone is OCCUPIED.
+--
 -- Here, we create an enhanced CAS mission and employ at least on and at most two asset groups.
 local ResourceOccupied=myChief:CreateResource(AUFTRAG.Type.CASENHANCED, 1, 2)
 -- We also add ARTY missions with at least one and at most two assets. We additionally require these to be MLRS groups (and not howitzers).
@@ -2021,11 +2014,8 @@ myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.RECON, 1, nil, GROUP.Attrib
 -- Add at least one but at most two BOMBCARPET missions.
 myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.BOMBCARPET, 1, 2)
 
--- Replace the default list with the customized one.
-myChief:SetStrategicZoneResourceOccupied(myStratZone, ResourceOccupied)  
-
-
--- Create a resource list of mission types and required assets for the case that the zone is empty.
+--- Create a resource list of mission types and required assets for the case that the zone is EMPTY.
+--
 -- Here, we create an ONGUARD mission and employ at least on and at most five infantry assets.
 local ResourceEmpty=myChief:CreateResource(AUFTRAG.Type.ONGUARD, 1, 5, GROUP.Attribute.GROUND_INFANTRY)
 -- Additionally, we send up to three tank groups.
@@ -2033,11 +2023,11 @@ myChief:AddToResource(ResourceEmpty, AUFTRAG.Type.ONGUARD, 1, 3, GROUP.Attribute
 -- Finally, we send two groups that patrol the zone.
 myChief:AddToResource(ResourceEmpty, AUFTRAG.Type.PATROLZONE, 2)
 
--- Set this to be the resources employed when the zone is empty.
-myChief:SetStrategicZoneResourceEmpty(myStratZone, ResourceEmpty)
+-- Add stratetic zone with customized reaction.
+myChief:AddStrategicZone(myOpsZone, nil , 2, ResourceOccupied, ResourceEmpty)
 </code></pre>
 
-<p>As the location of the enemies is not known, only mission types that don't require and explicit target group are possible. These are</p>
+<p>As the location of the enemies is not known, only mission types that don't require an explicit target group are possible. These are</p>
 
 <ul>
     <li><code>AUFTRAG.Type.CASENHANCED</code></li>
@@ -2172,7 +2162,7 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddStrategicZone">CHIEF:AddStrategicZone(OpsZone, Priority, Importance)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddStrategicZone">CHIEF:AddStrategicZone(OpsZone, Priority, Importance, ResourceOccupied, ResourceEmpty)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add strategically important zone.</p>
 </td>
@@ -4190,26 +4180,29 @@ Think of it as the local population providing the intel. It's not totally realis
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CHIEF).AddStrategicZone" ><strong>CHIEF:AddStrategicZone(OpsZone, Priority, Importance)</strong></a></h2>
+<h2><a id="#(CHIEF).AddStrategicZone" ><strong>CHIEF:AddStrategicZone(OpsZone, Priority, Importance, ResourceOccupied, ResourceEmpty)</strong></a></h2>
 </div>
     
 <p>Add strategically important zone.</p>
 
     
-<p>By default two resource lists are created. One for the case that the zone is empty and the other for the case that the zone is occupied
-Empty:</p>
+<p>By default two resource lists are created. One for the case that the zone is empty and the other for the case that the zone is occupied.</p>
+
+<p>Occupied:</p>
 
 <ul>
     <li><code>AUFTRAG.Type.ARTY</code> with Nmin=1, Nmax=2</li>
     <li><code>AUFTRAG.Type.CASENHANCED</code> with Nmin=1, Nmax=2</li>
 </ul>
 
-<p>Occupied:</p>
+<p>Empty:</p>
 
 <ul>
     <li><code>AUFTRAG.Type.ONGUARD</code> with Nmin=1 and Nmax=3 assets, Attribute=<code>GROUP.Attribute.GROUND_INFANTRY</code>.</li>
     <li><code>AUFTRAG.Type.ONGURAD</code> with Nmin=1 and Nmax=1 assets, Attribute=<code>GROUP.Attribute.GROUND_TANK</code>.</li>
 </ul>
+
+<p>Resources can be created with the <a href="##(CHIEF).CreateResource">CHIEF.CreateResource</a> and <a href="##(CHIEF).AddToResource">CHIEF.AddToResource</a> functions.</p>
 
 
 <div id= "#Functions##AddStrategicZone" class="w3-show w3-white">
@@ -4241,7 +4234,7 @@ Empty:</p>
           </div>
           <div class="w3-half">
               
-<p>Priority.</p>
+<p>Priority. Default 50.</p>
 
           </div>
         </div>
@@ -4254,7 +4247,33 @@ Empty:</p>
           </div>
           <div class="w3-half">
               
-<p>Importance.</p>
+<p>Importance. Default nil.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.Resource)">#CHIEF.Resource</a>
+            <strong><strong>ResourceOccupied</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Resources used then zone is occupied by the enemy.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CHIEF.Resource)">#CHIEF.Resource</a>
+            <strong><strong>ResourceEmpty</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Resources used then zone is empty.</p>
 
           </div>
         </div>
