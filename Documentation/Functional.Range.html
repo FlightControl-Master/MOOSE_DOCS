@@ -1843,7 +1843,7 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
     <li>Bomb, rocket and missile impact points can be marked by smoke.</li>
     <li>Direct hits on targets can trigger flares.</li>
     <li>Smoke and flare colors can be adjusted for each player via radio menu.</li>
-    <li>Range information and weather report at the range can be reported via radio menu.</li>
+    <li>Range information and weather at the range can be obtained via radio menu.</li>
     <li>Persistence: Bombing range results can be saved to disk and loaded the next time the mission is started.</li>
     <li>Range control voice overs (>40) for hit assessment.</li>
 </ul>
@@ -1937,12 +1937,12 @@ there should be an "On the Range" menu items in the "F10. Other..." menu.</p>
 <p>A strafe pit can be added to the range by the <a href="##(RANGE).AddStrafePit">RANGE.AddStrafePit</a>(<em>targetnames, boxlength, boxwidth, heading, inverseheading, goodpass, foulline</em>) function.</p>
 
 <ul>
-    <li>The first parameter <em>targetnames</em> defines the target or targets. This has to be given as a lua table which contains the names of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
+    <li>The first parameter <em>targetnames</em> defines the target or targets. This can be a single item or a Table with the name(s) of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
     <li>In order to perform a valid pass on the strafe pit, the pilot has to begin his run from the correct direction. Therefore, an "approach box" is defined in front
-    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box while the parameter <em>heading</em> defines its direction.
-    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading of the first target unit as defined in the ME.
-    The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is sometimes useful, since the default heading of strafe target units point in the
-    wrong/opposite direction.</li>
+    of the strafe targets. The parameters <em>boxlength</em> and <em>boxwidth</em> define the size of the box in meters, while the <em>heading</em> parameter defines the heading of the box FROM the target.
+    For example, if heading 120 is set, the approach box will start FROM the target and extend outwards on heading 120. A strafe run approach must then be flown apx. heading 300 TOWARDS the target.
+    If the parameter <em>heading</em> is passed as <strong>nil</strong>, the heading is automatically taken from the heading set in the ME for the first target unit.</li>
+    <li>The parameter <em>inverseheading</em> turns the heading around by 180 degrees. This is useful when the default heading of strafe target units point in the wrong/opposite direction.</li>
     <li>The parameter <em>goodpass</em> defines the number of hits a pilot has to achieve during a run to be judged as a "good" pass.</li>
     <li>The last parameter <em>foulline</em> sets the distance from the pit targets to the foul line. Hit from closer than this line are not counted!</li>
 </ul>
@@ -1958,9 +1958,8 @@ strafing pits of the range and can be adjusted by the <a href="##(RANGE).SetMaxS
 <p>One ore multiple bombing targets can be added to the range by the <a href="##(RANGE).AddBombingTargets">RANGE.AddBombingTargets</a>(targetnames, goodhitrange, randommove) function.</p>
 
 <ul>
-    <li>The first parameter <em>targetnames</em> has to be a lua table, which contains the names of <a href="Wrapper.Unit.html">Wrapper.Unit</a> and/or <a href="Static.html">Static</a> objects defined in the mission editor.
-    Note that the <a href="Range.html">Range</a> logic <strong>automatically</strong> determines, if a name belongs to a <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> object now.</li>
-    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius around the target. If a bomb or rocket falls at a distance smaller than this number, the hit is considered to be "good".</li>
+    <li>The first parameter <em>targetnames</em> defines the target or targets. This can be a single item or a Table with the name(s) of <a href="Wrapper.Unit.html">Wrapper.Unit</a> or <a href="Static.html">Static</a> objects defined in the mission editor.</li>
+    <li>The (optional) parameter <em>goodhitrange</em> specifies the radius in metres around the target within which a bomb/rocket hit is considered to be "good".</li>
     <li>If final (optional) parameter "<em>randommove</em>" can be enabled to create moving targets. If this parameter is set to true, the units of this bombing target will randomly move within the range zone.
     Note that there might be quirks since DCS units can get stuck in buildings etc. So it might be safer to manually define a route for the units in the mission editor if moving targets are desired.</li>
 </ul>
@@ -1999,7 +1998,7 @@ coordinate will still be a valid impact point. This can be done via the <a href=
 
 <p>The main range menu can be found at "F10. Other..." --> "F<em>X</em> . On the Range..." --> "F1. <Range Name>...".</p>
 
-<p>The range menu contains the following submenues:</p>
+<p>The range menu contains the following submenus:</p>
 
 <p><img src="..\Presentations\RANGE\Menu_Main.png" alt="Banner Image"/></p>
 
@@ -2046,6 +2045,18 @@ Each range has a separate file, which is named "RANGE-&lt;<em>RangeName</em>>_Bo
 
 <p>Strafing results are currently <strong>not</strong> saved.</p>
 
+<h1>FSM Events</h1>
+
+<p>This class creates additional events that can be used by mission designers for custom reactions</p>
+
+<ul>
+    <li><code>EnterRange</code> when a player enters a range zone. See <a href="##(RANGE).OnAfterEnterRange">RANGE.OnAfterEnterRange</a></li>
+    <li><code>ExitRange</code>  when a player leaves a range zone. See <a href="##(RANGE).OnAfterExitRange">RANGE.OnAfterExitRange</a></li>
+    <li><code>Impact</code> on impact of a player's weapon on a bombing target. See <a href="##(RANGE).OnAfterImpact">RANGE.OnAfterImpact</a></li>
+    <li><code>RollingIn</code> when a player rolls in on a strafing target. See <a href="##(RANGE).OnAfterRollingIn">RANGE.OnAfterRollingIn</a></li>
+    <li><code>StrafeResult</code> when a player finishes a strafing run. See <a href="##(RANGE).OnAfterStrafeResult">RANGE.OnAfterStrafeResult</a></li>
+</ul>
+
 <h1>Examples</h1>
 
 <h2>Goldwater Range</h2>
@@ -2068,9 +2079,9 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
  -- Note that this could also be done manually by simply measuring the distance between the target and the foul line in the ME.
  GoldwaterRange:GetFoullineDistance("GWR Strafe Pit Left 1", "GWR Foul Line Left")
 
- -- Add strafe pits. Each pit (left and right) consists of two targets.
- GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 20, fouldist)
- GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, fouldist)
+ -- Add strafe pits. Each pit (left and right) consists of two targets. Where "nil" is used as input, the default value is used.
+ GoldwaterRange:AddStrafePit(strafepit_left, 3000, 300, nil, true, 30, 500)
+ GoldwaterRange:AddStrafePit(strafepit_right, nil, nil, nil, true, nil, 500)
 
  -- Add bombing targets. A good hit is if the bomb falls less then 50 m from the target.
  GoldwaterRange:AddBombingTargets(bombtargets, 50)
@@ -2104,113 +2115,6 @@ It consists of two strafe pits each has two targets plus three bombing targets.<
 The could avoid the lua garbage collection to accidentally/falsely deallocate the RANGE objects.</p>
 
 
-
-
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##StrafeAircraftType')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>StrafeAircraftType</strong></h2></p></td>
-        <td class="style="width:60%;">
-
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##StrafeAircraftType" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="StrafeAircraftType" ><strong>StrafeAircraftType</strong></a>
-    
-
-
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Straferesult')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>Straferesult</strong></h2></p></td>
-        <td class="style="width:60%;">
-
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##Straferesult" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="Straferesult" ><strong>Straferesult</strong></a>
-    
-
-
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##clientRollingIn')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>clientRollingIn</strong></h2></p></td>
-        <td class="style="width:60%;">
-
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##clientRollingIn" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="clientRollingIn" ><strong>clientRollingIn</strong></a>
-    
-
-
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##clientStrafed')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>clientStrafed</strong></h2></p></td>
-        <td class="style="width:60%;">
-
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##clientStrafed" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="clientStrafed" ><strong>clientStrafed</strong></a>
-    
-
-
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##hypemanStrafeRollIn')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>hypemanStrafeRollIn</strong></h2></p></td>
-        <td class="style="width:60%;">
-<p>Default range variables for RangeBoss/Hypeman tie in.</p>
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##hypemanStrafeRollIn" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="hypemanStrafeRollIn" ><strong>hypemanStrafeRollIn</strong></a>
-    
-<p>Default range variables for RangeBoss/Hypeman tie in.</p>
-
 </div>
 
   </div>
@@ -2232,29 +2136,8 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
     
 
 
-</div>
-
-  </div>
-  <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##unitheadingStrafe')">
-      <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>unitheadingStrafe</strong></h2></p></td>
-        <td class="style="width:60%;">
-
-</td>
-      </tr>
-    </table>
-  </div>
-  <div id= "#Globals##unitheadingStrafe" class="w3-container w3-white w3-padding-small">
-    <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     
-<a id="unitheadingStrafe" ><strong>unitheadingStrafe</strong></a>
-    
-
-
-    
-<p>RangeBoss</p>
+<p> Rangeboss Edit</p>
 
 </div>
 
@@ -2329,7 +2212,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).Debug">RANGE.Debug</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2423,6 +2306,18 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).OnAfterRollingIn">RANGE:OnAfterRollingIn(From, Event, To, player, target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "RollingIn" event user function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).OnAfterStrafeResult">RANGE:OnAfterStrafeResult(From, Event, To, player, result)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "StrafeResult" event user function.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).OnEventBirth">RANGE:OnEventBirth(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Range event handler for event birth.</p>
@@ -2444,6 +2339,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).PlayerSettings">RANGE.PlayerSettings</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Individual player settings.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).RollingIn">RANGE:RollingIn(player, target)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "RollingIn".</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2606,6 +2507,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).StrafePitSmokeColor">RANGE.StrafePitSmokeColor</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Color id used to smoke strafe pit approach boxes.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).StrafeResult">RANGE:StrafeResult(player, result)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "StrafeResult".</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2809,7 +2716,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._SaveTargetSheet">RANGE:_SaveTargetSheet(_playername, result)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<h2>FSM Functions</h2>
+<p>Save target sheet.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2893,7 +2800,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE)._myname">RANGE:_myname(unitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns a string which consits of this callsign and the player name.</p>
+<p>Returns a string which consists of the player name.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2971,13 +2878,13 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).illuminationmaxalt">RANGE.illuminationmaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).illuminationminalt">RANGE.illuminationminalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3163,7 +3070,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).strafemaxalt">RANGE.strafemaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4066,12 +3973,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).heading">RANGE.BombResult.heading</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).name">RANGE.BombResult.name</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of closest target.</p>
@@ -4115,12 +4016,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).roundsQuality">RANGE.BombResult.roundsQuality</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.BombResult).strafeAccuracy">RANGE.BombResult.strafeAccuracy</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -4576,6 +4471,128 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RANGE.StrafeResult)">Type <strong>RANGE.StrafeResult</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(RANGE.StrafeResult)">RANGE.StrafeResult</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from RANGE.StrafeResult</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).airframe">RANGE.StrafeResult.airframe</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Aircraft type of player.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).date">RANGE.StrafeResult.date</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>OS date.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).invalid">RANGE.StrafeResult.invalid</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).name">RANGE.StrafeResult.name</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).player">RANGE.StrafeResult.player</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Player name.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).rangename">RANGE.StrafeResult.rangename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).roundsFired">RANGE.StrafeResult.roundsFired</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).roundsHit">RANGE.StrafeResult.roundsHit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).roundsQuality">RANGE.StrafeResult.roundsQuality</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).strafeAccuracy">RANGE.StrafeResult.strafeAccuracy</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeResult).time">RANGE.StrafeResult.time</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Time via timer.getAbsTime() in seconds of impact.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RANGE.StrafeStatus)">Type <strong>RANGE.StrafeStatus</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(RANGE.StrafeStatus)">RANGE.StrafeStatus</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from RANGE.StrafeStatus</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeStatus).ammo">RANGE.StrafeStatus.ammo</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Amount of ammo.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeStatus).hits">RANGE.StrafeStatus.hits</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Number of hits on target.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeStatus).pastfoulline">RANGE.StrafeStatus.pastfoulline</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If <code>true</code>, player passed foul line. Invalid pass.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeStatus).time">RANGE.StrafeStatus.time</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Number of times.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE.StrafeStatus).zone">RANGE.StrafeStatus.zone</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Strafe target.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RANGE.StrafeTarget)">Type <strong>RANGE.StrafeTarget</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
      <strong><a href="##(RANGE.StrafeTarget)">RANGE.StrafeTarget</a></strong>
@@ -4678,9 +4695,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div id= "#Types##RANGE" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
   
-<ul>
-    <li>RANGE class</li>
-</ul>
+<p>RANGE class</p>
 
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
@@ -4724,7 +4739,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 
 </div>
 
@@ -4966,7 +4981,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -4977,7 +4992,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -5208,7 +5223,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 
 </div>
 
@@ -5253,9 +5268,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(RANGE).timerCheckZone" ><strong>RANGE.timerCheckZone</strong></a>
     
 
-
-    
-<p>SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
 
 </div>
 
@@ -5555,7 +5567,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>Table containing names of unit or static objects serving as bomb targets.</p>
+<p>Single or multiple (Table) names of unit or static objects serving as bomb targets.</p>
 
           </div>
         </div>
@@ -5611,7 +5623,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p>For a strafe pit, hits from guns are counted. One pit can consist of several units.
-Note, an approach is only valid, if the player enters via a zone in front of the pit, which defined by boxlength and boxheading.
+A strafe run approach is only valid if the player enters via a zone in front of the pit, which is defined by boxlength, boxwidth, and heading.
 Furthermore, the player must not be too high and fly in the direction of the pit to make a valid target apporoach.</p>
 
 <div id= "#Functions##AddStrafePit" class="w3-show w3-white">
@@ -5630,7 +5642,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Table of unit or static names defining the strafe targets. The first target in the list determines the approach zone (heading and box).</p>
+<p>Single or multiple (Table) unit or static names defining the strafe targets. The first target in the list determines the approach box origin (heading and box).</p>
 
           </div>
         </div>
@@ -5669,7 +5681,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Approach heading in Degrees. Default is heading of the unit as defined in the mission editor.</p>
+<p>(Optional) Approach box heading in degrees (originating FROM the target). Default is the heading set in the ME for the first target unit</p>
 
           </div>
         </div>
@@ -5682,7 +5694,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Take inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
+<p>(Optional) Use inverse heading (heading --> heading - 180 Degrees). Default is false.</p>
 
           </div>
         </div>
@@ -5708,7 +5720,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>(Optional) Foul line distance. Hits from closer than this distance are not counted. Default 610 m = 2000 ft. Set to 0 for no foul line.</p>
+<p>(Optional) Foul line distance. Hits from closer than this distance are not counted. Default is 610 m = 2000 ft. Set to 0 for no foul line.</p>
 
           </div>
         </div>
@@ -6372,6 +6384,182 @@ Furthermore, the player must not be too high and fly in the direction of the pit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(RANGE).OnAfterRollingIn" ><strong>RANGE:OnAfterRollingIn(From, Event, To, player, target)</strong></a></h2>
+</div>
+    
+<p>On after "RollingIn" event user function.</p>
+
+    
+<p>Called when a player rolls in to a strafe taret.</p>
+
+<div id= "#Functions##OnAfterRollingIn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.PlayerData)">#RANGE.PlayerData</a>
+            <strong><strong>player</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data of player settings etc.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.StrafeTarget)">#RANGE.StrafeTarget</a>
+            <strong><strong>target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Strafe target.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).OnAfterStrafeResult" ><strong>RANGE:OnAfterStrafeResult(From, Event, To, player, result)</strong></a></h2>
+</div>
+    
+<p>On after "StrafeResult" event user function.</p>
+
+    
+<p>Called when a player finished a strafing run.</p>
+
+<div id= "#Functions##OnAfterStrafeResult" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.PlayerData)">#RANGE.PlayerData</a>
+            <strong><strong>player</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data of player settings etc.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.StrafeResult)">#RANGE.StrafeResult</a>
+            <strong><strong>result</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data of the strafing run.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(RANGE).OnEventBirth" ><strong>RANGE:OnEventBirth(EventData)</strong></a></h2>
 </div>
     
@@ -6455,6 +6643,52 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).RollingIn" ><strong>RANGE:RollingIn(player, target)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "RollingIn".</p>
+
+<div id= "#Functions##RollingIn" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.PlayerData)">#RANGE.PlayerData</a>
+            <strong><strong>player</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data of player settings etc.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.StrafeTarget)">#RANGE.StrafeTarget</a>
+            <strong><strong>target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Strafe target.</p>
+
           </div>
         </div>
 </div>
@@ -6835,7 +7069,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
           </div>
           <div class="w3-half">
               
-<p>Maximum altitude AGL in meters. Default is 914 m= 3000 ft.</p>
+<p>Maximum altitude in meters AGL. Default is 914 m = 3000 ft.</p>
 
           </div>
         </div>
@@ -7334,7 +7568,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
           </div>
           <div class="w3-half">
               
-<p>Path for sound files. Default "ATIS Soundfiles/". Mind the slash "/" at the end!</p>
+<p>Path for sound files. Default "Range Soundfiles/". Mind the slash "/" at the end!</p>
 
           </div>
         </div>
@@ -7541,6 +7775,52 @@ If a zone is not explicitly specified, the range zone is determined by its locat
    <div class="w3-margin-left">
 <p>RANGE</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).StrafeResult" ><strong>RANGE:StrafeResult(player, result)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "StrafeResult".</p>
+
+<div id= "#Functions##StrafeResult" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.PlayerData)">#RANGE.PlayerData</a>
+            <strong><strong>player</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data of player settings etc.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(RANGE.StrafeResult)">#RANGE.StrafeResult</a>
+            <strong><strong>result</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Data of the strafing run.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -8633,7 +8913,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE)._SaveTargetSheet" ><strong>RANGE:_SaveTargetSheet(_playername, result)</strong></a></h2>
 </div>
     
-<h2>FSM Functions</h2>
+<p>Save target sheet.</p>
 
 <div id= "#Functions##_SaveTargetSheet" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -8645,21 +8925,27 @@ If a zone is not explicitly specified, the range zone is determined by its locat
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #string
             <strong><strong>_playername</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Player name.</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                <a href="##(RANGE.StrafeResult)">#RANGE.StrafeResult</a>
             <strong><strong>result</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Results table.</p>
+
           </div>
         </div>
 </div>
@@ -9171,7 +9457,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <h2><a id="#(RANGE)._myname" ><strong>RANGE:_myname(unitname)</strong></a></h2>
 </div>
     
-<p>Returns a string which consits of this callsign and the player name.</p>
+<p>Returns a string which consists of the player name.</p>
 
 <div id= "#Functions##_myname" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -10007,7 +10293,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 
 </div>
 
@@ -10249,7 +10535,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -10260,7 +10546,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -10491,7 +10777,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 
 </div>
 
@@ -10536,9 +10822,6 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).timerCheckZone" ><strong>RANGE.timerCheckZone</strong></a>
     
 
-
-    
-<p>SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
 
 </div>
 
@@ -12082,7 +12365,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #boolean
 <a id="#(RANGE).Debug" ><strong>RANGE.Debug</strong></a>
     
-<p>If true, debug info is send as messages on the screen.</p>
+<p>If true, debug info is sent as messages on the screen.</p>
 
 </div>
 
@@ -12324,7 +12607,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationmaxalt" ><strong>RANGE.illuminationmaxalt</strong></a>
     
-<p>Maximum altitude AGL in meters at which illumination bombs are fired. Default is 1000 m.</p>
+<p>Maximum altitude in meters AGL at which illumination bombs are fired. Default is 1000 m.</p>
 
 </div>
 
@@ -12335,7 +12618,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).illuminationminalt" ><strong>RANGE.illuminationminalt</strong></a>
     
-<p>Minimum altitude AGL in meters at which illumination bombs are fired. Default is 500 m.</p>
+<p>Minimum altitude in meters AGL at which illumination bombs are fired. Default is 500 m.</p>
 
 </div>
 
@@ -12566,7 +12849,7 @@ If a zone is not explicitly specified, the range zone is determined by its locat
     #number
 <a id="#(RANGE).strafemaxalt" ><strong>RANGE.strafemaxalt</strong></a>
     
-<p>Maximum altitude above ground for registering for a strafe run. Default is 914 m = 3000 ft.</p>
+<p>Maximum altitude in meters AGL for registering for a strafe run. Default is 914 m = 3000 ft.</p>
 
 </div>
 
@@ -12611,9 +12894,6 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).timerCheckZone" ><strong>RANGE.timerCheckZone</strong></a>
     
 
-
-    
-<p>SCHEDULER:New(nil, self._CheckInZone, {self, EventData.IniUnitName}, 1, 1)</p>
 
 </div>
 
@@ -16059,20 +16339,6 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(RANGE.BombResult).heading" ><strong>RANGE.BombResult.heading</strong></a>
-    
-
-
-    
-<p>RANGEBOSS</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #string
 <a id="#(RANGE.BombResult).name" ><strong>RANGE.BombResult.name</strong></a>
     
@@ -16134,7 +16400,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p>Rangeboss Edit</p>
+<p> Rangeboss Edit</p>
 
 </div>
 
@@ -16148,7 +16414,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p>Rangeboss Edit</p>
+<p> Rangeboss Edit</p>
 
 </div>
 
@@ -16162,18 +16428,7 @@ BASE:TraceOnOff( false )</code></pre>
 
 
     
-<p>Rangeboss Edit</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(RANGE.BombResult).strafeAccuracy" ><strong>RANGE.BombResult.strafeAccuracy</strong></a>
-    
-
+<p> Rangeboss Edit</p>
 
 </div>
 
@@ -16949,6 +17204,201 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(RANGE.Soundfile).filename" ><strong>RANGE.Soundfile.filename</strong></a>
     
 <p>Name of the file</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##RANGE.StrafeResult')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RANGE.StrafeResult)">Type <strong>RANGE.StrafeResult</strong></a></h2></div>
+        <div id= "#Types##RANGE.StrafeResult" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Strafe result.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE.StrafeResult).airframe" ><strong>RANGE.StrafeResult.airframe</strong></a>
+    
+<p>Aircraft type of player.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE.StrafeResult).date" ><strong>RANGE.StrafeResult.date</strong></a>
+    
+<p>OS date.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.StrafeResult).invalid" ><strong>RANGE.StrafeResult.invalid</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(RANGE.StrafeResult).player" ><strong>RANGE.StrafeResult.player</strong></a>
+    
+<p>Player name.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.StrafeResult).rangename" ><strong>RANGE.StrafeResult.rangename</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.StrafeResult).roundsFired" ><strong>RANGE.StrafeResult.roundsFired</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.StrafeResult).roundsHit" ><strong>RANGE.StrafeResult.roundsHit</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.StrafeResult).roundsQuality" ><strong>RANGE.StrafeResult.roundsQuality</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(RANGE.StrafeResult).strafeAccuracy" ><strong>RANGE.StrafeResult.strafeAccuracy</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RANGE.StrafeResult).time" ><strong>RANGE.StrafeResult.time</strong></a>
+    
+<p>Time via timer.getAbsTime() in seconds of impact.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##RANGE.StrafeStatus')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(RANGE.StrafeStatus)">Type <strong>RANGE.StrafeStatus</strong></a></h2></div>
+        <div id= "#Types##RANGE.StrafeStatus" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Strafe status for player.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RANGE.StrafeStatus).ammo" ><strong>RANGE.StrafeStatus.ammo</strong></a>
+    
+<p>Amount of ammo.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RANGE.StrafeStatus).hits" ><strong>RANGE.StrafeStatus.hits</strong></a>
+    
+<p>Number of hits on target.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE.StrafeStatus).pastfoulline" ><strong>RANGE.StrafeStatus.pastfoulline</strong></a>
+    
+<p>If <code>true</code>, player passed foul line. Invalid pass.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(RANGE.StrafeStatus).time" ><strong>RANGE.StrafeStatus.time</strong></a>
+    
+<p>Number of times.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(RANGE.StrafeTarget)">#RANGE.StrafeTarget</a>
+<a id="#(RANGE.StrafeStatus).zone" ><strong>RANGE.StrafeStatus.zone</strong></a>
+    
+<p>Strafe target.</p>
 
 </div>
 
