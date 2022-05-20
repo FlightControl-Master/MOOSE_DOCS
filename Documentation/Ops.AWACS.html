@@ -1095,9 +1095,13 @@ Controls a network of short range air/missile defense groups.</p>
 <h2>Main Features:</h2>
 
 <ul>
-    <li>WIP</li>
-    <li>References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces)</li>
-    <li>References from CNATRA P-877 (Rev.</li>
+    <li>WIP (beta)</li>
+    <li>AWACS replacement for the in-game AWACS</li>
+    <li>Will control a fighter engagement zone and assign tasks to AI and human CAP flights</li>
+    <li>Concentrates on threat-based call outs</li>
+    <li>Callouts referenced from:
+    <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces)
+    *</em> References from CNATRA P-877 (Rev.</li>
 </ul>
 </p></div>
        </div>         
@@ -1824,9 +1828,13 @@ Controls a network of short range air/missile defense groups.</p>
 <h2>Main Features:</h2>
 
 <ul>
-    <li>WIP</li>
-    <li>References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces)</li>
-    <li>References from CNATRA P-877 (Rev.</li>
+    <li>WIP (beta)</li>
+    <li>AWACS replacement for the in-game AWACS</li>
+    <li>Will control a fighter engagement zone and assign tasks to AI and human CAP flights</li>
+    <li>Concentrates on threat-based call outs</li>
+    <li>Callouts referenced from:
+    <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces)
+    *</em> References from CNATRA P-877 (Rev.</li>
 </ul>
 
     
@@ -1858,8 +1866,20 @@ Controls a network of short range air/missile defense groups.</p>
 
 <h1>AWACS AI Air Controller</h1>
 
-<p>This class provides Fighter Engagement Zone surveillance and tasking.</p>
+<ul>
+    <li>WIP (beta)</li>
+    <li>AWACS replacement for the in-game AWACS</li>
+    <li>Will control a fighter engagement zone and assign tasks to AI and human CAP flights</li>
+    <li>Callouts referenced from: <br/>
+    <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces) <br/>
+    *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
+    <li>FSM events that the mission designer can hook into</li>
+</ul>
 
+<h2>1 Prerequisites</h2>
+
+<p>The radio callouts in this class are <strong><em>exclusively</em></strong> created with Text-To-Speech (TTS), based on the Moose <a href="Sound.SRS.html">Sound.SRS</a> Class, and output is via <a href="https://github.com/ciribob/DCS-SimpleRadioStandalone/releases">Ciribob's SRS system</a>
+Ensure you have this covered and working before tackling this class.</p>
 </td>
       </tr>
     </table>
@@ -1878,7 +1898,176 @@ Controls a network of short range air/missile defense groups.</p>
 
 <h1>AWACS AI Air Controller</h1>
 
-<p>This class provides Fighter Engagement Zone surveillance and tasking.</p>
+<ul>
+    <li>WIP (beta)</li>
+    <li>AWACS replacement for the in-game AWACS</li>
+    <li>Will control a fighter engagement zone and assign tasks to AI and human CAP flights</li>
+    <li>Callouts referenced from: <br/>
+    <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces) <br/>
+    *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
+    <li>FSM events that the mission designer can hook into</li>
+</ul>
+
+<h2>1 Prerequisites</h2>
+
+<p>The radio callouts in this class are <strong><em>exclusively</em></strong> created with Text-To-Speech (TTS), based on the Moose <a href="Sound.SRS.html">Sound.SRS</a> Class, and output is via <a href="https://github.com/ciribob/DCS-SimpleRadioStandalone/releases">Ciribob's SRS system</a>
+Ensure you have this covered and working before tackling this class.</p>
+
+    
+<p>TTS generation can thus be done via the Windows built-in system or via Google TTS; 
+the latter offers a wider range of voices and options, but you need to set up your own Google product account for this to work correctly.</p>
+
+<h2>2 Mission Design - Zones</h2>
+
+<p>Basic operational target of the AWACS is to control a Fighter Engagement Zone, or FEZ, and defend itself.</p>
+
+<h2>3 Airwing(s)</h2>
+
+<p>The AWACS plane, the optional escort planes, and the AI CAP planes work based on the @(Ops.AirWing) class. Read and understand the manual for this class in 
+order to set everything up correctly. You will at least need one Squadron containing the AWACS plane itself.</p>
+
+<p>Set up the AirWing</p>
+
+<pre><code>       local AwacsAW = AIRWING:New("AirForce WH-1","AirForce One")
+       AwacsAW:SetMarker(false)
+       AwacsAW:SetAirbase(AIRBASE:FindByName(AIRBASE.Caucasus.Kutaisi))
+       AwacsAW:SetRespawnAfterDestroyed(900)
+       AwacsAW:SetTakeoffAir()
+       AwacsAW:__Start(2)
+</code></pre>
+
+<p>Add the AWACS template Squadron - <strong>Note</strong>: remove the task AWACS in the mission editor und "Advanced Waypoint Actions" from the template to remove the DCS F10 AWACS menu</p>
+
+<pre><code>       local Squad_One = SQUADRON:New("Awacs One",2,"Awacs North")
+       Squad_One:AddMissionCapability({AUFTRAG.Type.ORBIT},100)
+       Squad_One:SetFuelLowRefuel(true)
+       Squad_One:SetFuelLowThreshold(0.2)
+       Squad_One:SetTurnoverTime(10,20)
+       AwacsAW:AddSquadron(Squad_One)
+       AwacsAW:NewPayload("Awacs One One",-1,{AUFTRAG.Type.ORBIT},100)
+</code></pre>
+
+<p>Add Escorts Squad (recommended, optional)</p>
+
+<pre><code>       local Squad_Two = SQUADRON:New("Escorts",4,"Escorts North")
+       Squad_Two:AddMissionCapability({AUFTRAG.Type.ESCORT})
+       Squad_Two:SetFuelLowRefuel(true)
+       Squad_Two:SetFuelLowThreshold(0.3)
+       Squad_Two:SetTurnoverTime(10,20)
+       Squad_Two:SetTakeoffAir()
+       Squad_Two:SetRadio(255,radio.modulation.AM)
+       AwacsAW:AddSquadron(Squad_Two)
+       AwacsAW:NewPayload("Escorts",-1,{AUFTRAG.Type.ESCORT},100)
+</code></pre>
+
+<p>Add CAP Squad (recommended, optional)</p>
+
+<pre><code>       local Squad_Three = SQUADRON:New("CAP",10,"CAP North")
+       Squad_Three:AddMissionCapability({AUFTRAG.Type.ALERT5, AUFTRAG.Type.CAP, AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT},80)
+       Squad_Three:SetFuelLowRefuel(true)
+       Squad_Three:SetFuelLowThreshold(0.3)
+       Squad_Three:SetTurnoverTime(10,20)
+       Squad_Three:SetTakeoffAir()
+       Squad_Two:SetRadio(255,radio.modulation.AM)
+       AwacsAW:AddSquadron(Squad_Three)
+       AwacsAW:NewPayload("Aerial-1-2",-1,{AUFTRAG.Type.ALERT5,AUFTRAG.Type.CAP, AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT},100)
+</code></pre>
+
+<h2>4 Zones</h2>
+
+<p>For the setup, you need to set up a couple of zones:</p>
+
+<ul>
+    <li>An Orbit Zone, where your AWACS will orbit</li>
+    <li>A Fighter Engagement Zone or FEZ</li>
+    <li>A zone where your CAP flights will be stationed, waiting for assignments</li>
+    <li>Optionally, an additional zone you wish to defend</li>
+    <li>Optionally, a border of the opposing party</li>
+    <li>Also, and move your BullsEye in the mission accordingly - this will be the key reference point for most AWACS callouts</li>
+</ul>
+
+<h3>4.1 Strategic considerations</h3>
+
+<p>Your AWACS is an HVT or high-value-target. Thus it makes sense to position the Orbit Zone in a way that your FEZ and thus your CAP flights defend it. 
+It should hence be positioned behind the FEZ, away from the direction of enemy engagement.
+The zone for CAP stations should be close to the FEZ, but not inside it.
+The optional additional defense zone can be anywhere, but keep an eye on the location so your CAP flight don't take ages to get there. 
+The optional border is useful for e.g. "cold war" scenarios - planes across the border will not be considered as targets by AWACS.</p>
+
+<h2>5 Set up AWACS</h2>
+
+<pre><code>       -- Set up AWACS called "AWACS North". It will use the AwacsAW AirWing set up above and be of the "blue" coalition. Homebase is Kutaisi.
+       -- The AWACS Orbit Zone is a round zone set in the mission editor named "Awacs Orbit", the FEZ is a Polygon-Zone called "Rock" we have also
+       -- set up in the mission editor with a late activated helo named "Rock#ZONE_POLYGON". Note this also sets the BullsEye to be referenced as "Rock".
+       -- The CAP station zone is called "Fremont". We will be on 255 AM.
+       local testawacs = AWACS:New("AWACS North",AwacsAW,"blue",AIRBASE.Caucasus.Kutaisi,"Awacs Orbit",ZONE:FindByName("Rock"),"Fremont",255,radio.modulation.AM )
+       -- set two escorts
+       testawacs:SetEscort(2)
+       -- Callsign will be "Focus". We'll be a Angels 30, doing 300 knots, orbit leg to 88deg with a lenght of 25nm.
+       testawacs:SetAwacsDetails(CALLSIGN.AWACS.Focus,1,30,300,88,25)
+       -- Set up SRS on port 5010 - change the below to your path and port
+       testawacs:SetSRS("C:\\Program Files\\DCS-SimpleRadio-Standalone","female","en-GB",5010)
+       -- Add a "red" border we don't want to cross, set up in the mission editor with a late activated helo named "REd Border#ZONE_POLYGON"
+       testawacs:SetRejectionZone(ZONE:FindByName("Red Border"))
+       -- Our CAP flight will have callsign "Ford", we want 4 AI planes, Time-On-Station 4 hours, doing 300 kn IAS.
+       testawacs:SetAICAPDetails(CALLSIGN.Aircraft.Ford,4,4,300)
+</code></pre>
+<p>We're modern (default), e.g. we have EPLRS and get more fill-in information on detections</p>
+<pre><code>       testawacs:SetModernEra()
+</code></pre>
+<p>And start</p>
+<pre><code>       testawacs:__Start(5)
+</code></pre>
+
+<h2>6 Menu entries</h2>
+
+<p><strong>Note on Radio Menu entries</strong>: Due to a DCS limitation, these are on GROUP level and not individual (UNIT level). Hence, either put each player in his/her own group,
+or ensure that only the flight lead will use the menu. Recommend the 1st option, unless you have a disciplined team.</p>
+
+<h3>6.1 Check-in</h3>
+
+<p>In the base setup, you need to check in to the AWACS to get the full menu. This can be done once the AWACS is airborne. You will get an Alpha Check callout 
+and be assigned a CAP station.</p>
+
+<h3>6.2 Check-out</h3>
+
+<p>You can check-ou anytime, of course.</p>
+
+<h3>6.3 Picture</h3>
+
+<p>Get a picture from the AWACS. It will call out the three most important groups. References are BRAA to the Player position.
+<strong>Note</strong> that AWACS will do a regular picture call to all stations every five minutes. Here, references are to the (named) BullsEye position.</p>
+
+<h3>6.4 Bogey Dope</h3>
+
+<p>Get bogey dope from the AWACS. It will call out the three most important groups. References are BRAA to the Player position.</p>
+
+<h3>6.5 Declare</h3>
+
+<p>AWACS will declare, if the bogey closest to the calling player in a 3nm circle is hostile, friendly or neutral.</p>
+
+<h3>6.6 Tasking</h3>
+
+<p>Tasking will show you the current task with "Showtask". Updated directions are shown, also.
+You can decline a <strong>requested</strong> task with "unable", and abort <strong>any task but CAP station</strong> with "abort".
+You can "commit" to a requested task within 3 minutes.
+"VID" - if AWACS is set to Visial ID or VID oncoming planes first, there will also be an "VID" entry. Similar to "Declare" you can declare the requested contact 
+to be hostile, friendly or neutral if you are close enough to it (3nm). If hostile, at the time of writing, an engagement task will be assigned to you (not: requested).
+If neutral/friendly, contact will be excluded from further tasking.</p>
+
+<h2>7 Air-to-Air Timeline Support</h2>
+
+<p>To support your engagement timeline, AWACS will make Tac-Range, Meld, Merge and Threat call-outs to the player/group (Figure 7-3, CNATRA P-877). Default settings in NM are </p>
+
+<pre><code>       Tac Distance = 45
+       Meld Distance = 35
+       Threat Distance = 25
+       Merge Distance =3 
+</code></pre>
+
+<h2>8 Discussion</h2>
+
+<p>If you have questions or suggestions, please visit the <a href="https://discord.gg/AeYAkHP">MOOSE Discord</a> #ops-awacs channel.</p>
 
 
 </div>
@@ -1940,9 +2129,9 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).AddCAPAirWing">AWACS:AddCAPAirWing(AirWing)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).AddCAPAirWing">AWACS:AddCAPAirWing(AirWing, Zone)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[User] Add another AirWing for CAP Flights under management</p>
+<p>[User] Add another AirWing for AI CAP Flights under management</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2432,6 +2621,12 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ReassignmentPause">AWACS.ReassignmentPause</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>-- Wait this many seconds before re-assignment of a player</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).RejectZone">AWACS.RejectZone</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2470,7 +2665,7 @@ Controls a network of short range air/missile defense groups.</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetColdWar">AWACS:SetColdWar()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[User] Set AWACS to Cold War standards - ROE to VID, ROT to Passive (bypass and escape)</p>
+<p>[User] Set AWACS to Cold War standards - ROE to VID, ROT to Passive (bypass and escape).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2480,27 +2675,45 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetModernEra">AWACS:SetModernEra()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetInterceptTimeline">AWACS:SetInterceptTimeline(TacDistance, MeldDistance, ThreatDistance)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[User] Set AWACS to Modern Era standards - ROE to IFF, ROT to Active (evade fire)</p>
+<p>[User] Set AWACS intercept timeline support distance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetModernEraAgressive">AWACS:SetModernEraAgressive()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Set AWACS to Modern Era standards - ROE to BVR, ROT to return fire.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetModernEraDefensive">AWACS:SetModernEraDefensive()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Set AWACS to Modern Era standards - ROE to IFF, ROT to defensive (evade fire).</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetPolicingColdWar">AWACS:SetPolicingColdWar()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape)</p>
+<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape).</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetPolicingModern">AWACS:SetPolicingModern()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape)</p>
+<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape).</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetRadarBlue">AWACS:SetRadarBlue(Percent)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetRadarBlur">AWACS:SetRadarBlur(Percent)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Set AWACS Radar Blur - the radar contact count per group/cluster will be distored up or down by this number percent.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetReassignmentPause">AWACS:SetReassignmentPause(Seconds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Change number of seconds AWACS waits until a Player is re-assigned a different task.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2518,7 +2731,7 @@ Controls a network of short range air/missile defense groups.</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetSRSVoiceCAP">AWACS:SetSRSVoiceCAP(Gender, Culture, Voice)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[User] Set AWACS Voice Details for AI CAP Planes  - SRS TTS - see <a href="##(MSRS)">#MSRS</a> for details</p>
+<p>[User] Set AWACS Voice Details for AI CAP Planes  - SRS TTS - see <a href="Sound.SRS.html">Sound.SRS</a> for details</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2624,18 +2837,6 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ToStringBULLS">AWACS:ToStringBULLS(Coordinate, ssml, TTS)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[Internal] Return Bullseye BR for Alpha Check etc, returns e.g.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ToStringBullsTTS">AWACS:ToStringBullsTTS(Text)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[Internal] Change Bullseye string to be TTS friendly,  "Bullseye 021, 16" returns e.g.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).Voice">AWACS.Voice</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2660,7 +2861,7 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._AssignAnchorToID">AWACS:_AssignAnchorToID(GID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._AssignAnchorToID">AWACS:_AssignAnchorToID(GID, HasOwnStation, StationName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] AWACS Assign Anchor Position to a Group</p>
 </td>
@@ -2984,6 +3185,18 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._ToStringBULLS">AWACS:_ToStringBULLS(Coordinate, ssml, TTS)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Return Bullseye BR for Alpha Check etc, returns e.g.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._ToStringBullsTTS">AWACS:_ToStringBullsTTS(Text)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Change Bullseye string to be TTS friendly,  "Bullseye 021, 16" returns e.g.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._Unable">AWACS:_Unable(Group)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] AWACS Menu for Unable</p>
@@ -3074,7 +3287,7 @@ Controls a network of short range air/missile defense groups.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).onafterAssignAnchor">AWACS:onafterAssignAnchor(From, Event, To, GID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).onafterAssignAnchor">AWACS:onafterAssignAnchor(From, Event, To, GID, HasOwnStation, HasOwnStation, StationName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] onafterAssignAnchor</p>
 </td>
@@ -5589,6 +5802,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(AWACS).ReassignmentPause" ><strong>AWACS.ReassignmentPause</strong></a>
+    
+<p>-- Wait this many seconds before re-assignment of a player</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
 <a id="#(AWACS).RejectZone" ><strong>AWACS.RejectZone</strong></a>
     
@@ -5944,10 +6168,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AWACS).AddCAPAirWing" ><strong>AWACS:AddCAPAirWing(AirWing)</strong></a></h2>
+<h2><a id="#(AWACS).AddCAPAirWing" ><strong>AWACS:AddCAPAirWing(AirWing, Zone)</strong></a></h2>
 </div>
     
-<p>[User] Add another AirWing for CAP Flights under management</p>
+<p>[User] Add another AirWing for AI CAP Flights under management</p>
 
 <div id= "#Functions##AddCAPAirWing" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5955,7 +6179,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>AWACS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -5966,6 +6190,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>The AirWing to (also) obtain CAP flights from</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(optional) This AirWing has it's own station zone, AI CAP will be send there</p>
 
           </div>
         </div>
@@ -6512,7 +6749,11 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
 <h2><a id="#(AWACS).SetColdWar" ><strong>AWACS:SetColdWar()</strong></a></h2>
 </div>
     
-<p>[User] Set AWACS to Cold War standards - ROE to VID, ROT to Passive (bypass and escape)</p>
+<p>[User] Set AWACS to Cold War standards - ROE to VID, ROT to Passive (bypass and escape).</p>
+
+    
+<p>Radar blur 25%.
+Sets TAC/Meld/Threat call distances to 35, 25 and 15 nm.</p>
 
 <div id= "#Functions##SetColdWar" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6583,12 +6824,118 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AWACS).SetModernEra" ><strong>AWACS:SetModernEra()</strong></a></h2>
+<h2><a id="#(AWACS).SetInterceptTimeline" ><strong>AWACS:SetInterceptTimeline(TacDistance, MeldDistance, ThreatDistance)</strong></a></h2>
 </div>
     
-<p>[User] Set AWACS to Modern Era standards - ROE to IFF, ROT to Active (evade fire)</p>
+<p>[User] Set AWACS intercept timeline support distance.</p>
 
-<div id= "#Functions##SetModernEra" class="w3-show w3-white">
+<div id= "#Functions##SetInterceptTimeline" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>TacDistance</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Distance for TAC call, default 45nm</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>MeldDistance</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Distance for Meld call, default 35nm</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ThreatDistance</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Distance for Threat call, default 25nm</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS).SetModernEraAgressive" ><strong>AWACS:SetModernEraAgressive()</strong></a></h2>
+</div>
+    
+<p>[User] Set AWACS to Modern Era standards - ROE to BVR, ROT to return fire.</p>
+
+    
+<p>Radar blur 15%.</p>
+
+<div id= "#Functions##SetModernEraAgressive" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS).SetModernEraDefensive" ><strong>AWACS:SetModernEraDefensive()</strong></a></h2>
+</div>
+    
+<p>[User] Set AWACS to Modern Era standards - ROE to IFF, ROT to defensive (evade fire).</p>
+
+    
+<p>Radar blur 15%.</p>
+
+<div id= "#Functions##SetModernEraDefensive" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -6616,7 +6963,11 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
 <h2><a id="#(AWACS).SetPolicingColdWar" ><strong>AWACS:SetPolicingColdWar()</strong></a></h2>
 </div>
     
-<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape)</p>
+<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape).</p>
+
+    
+<p>Radar blur 25%.
+Sets TAC/Meld/Threat call distances to 35, 25 and 15 nm.</p>
 
 <div id= "#Functions##SetPolicingColdWar" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6646,7 +6997,10 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
 <h2><a id="#(AWACS).SetPolicingModern" ><strong>AWACS:SetPolicingModern()</strong></a></h2>
 </div>
     
-<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape)</p>
+<p>[User] Set AWACS to Policing standards - ROE to VID, ROT to Lock (bypass and escape).</p>
+
+    
+<p>Radar blur 15%.</p>
 
 <div id= "#Functions##SetPolicingModern" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6673,7 +7027,7 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AWACS).SetRadarBlue" ><strong>AWACS:SetRadarBlue(Percent)</strong></a></h2>
+<h2><a id="#(AWACS).SetRadarBlur" ><strong>AWACS:SetRadarBlur(Percent)</strong></a></h2>
 </div>
     
 <p>[User] Set AWACS Radar Blur - the radar contact count per group/cluster will be distored up or down by this number percent.</p>
@@ -6681,7 +7035,7 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
     
 <p>Defaults to 15 in Modern Era and 25 in Cold War.</p>
 
-<div id= "#Functions##SetRadarBlue" class="w3-show w3-white">
+<div id= "#Functions##SetRadarBlur" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -6693,6 +7047,51 @@ The name of the zone will be used in reference calls as bulls eye name, so ensur
             <p>
                 #number
             <strong><strong>Percent</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS).SetReassignmentPause" ><strong>AWACS:SetReassignmentPause(Seconds)</strong></a></h2>
+</div>
+    
+<p>[User] Change number of seconds AWACS waits until a Player is re-assigned a different task.</p>
+
+    
+<p>Defaults to 180.</p>
+
+<div id= "#Functions##SetReassignmentPause" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Seconds</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -6889,7 +7288,7 @@ Note that this must be installed on your windows system. Can also be Google voic
 <h2><a id="#(AWACS).SetSRSVoiceCAP" ><strong>AWACS:SetSRSVoiceCAP(Gender, Culture, Voice)</strong></a></h2>
 </div>
     
-<p>[User] Set AWACS Voice Details for AI CAP Planes  - SRS TTS - see <a href="##(MSRS)">#MSRS</a> for details</p>
+<p>[User] Set AWACS Voice Details for AI CAP Planes  - SRS TTS - see <a href="Sound.SRS.html">Sound.SRS</a> for details</p>
 
 <div id= "#Functions##SetSRSVoiceCAP" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6990,124 +7389,6 @@ Note that this must be installed on your windows system. Can also be Google voic
       <div class="w3-half">
         
 <p>sel</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AWACS).ToStringBULLS" ><strong>AWACS:ToStringBULLS(Coordinate, ssml, TTS)</strong></a></h2>
-</div>
-    
-<p>[Internal] Return Bullseye BR for Alpha Check etc, returns e.g.</p>
-
-    
-<p>"Rock 021, 16" ("Rock" being the set BE name)</p>
-
-<div id= "#Functions##ToStringBULLS" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AWACS</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-            <strong><strong>Coordinate</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>ssml</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Add SSML tag</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>TTS</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>For non-Alpha checks, hand back in format "Rock 0 2 1, 16"</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>BullseyeBR</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AWACS).ToStringBullsTTS" ><strong>AWACS:ToStringBullsTTS(Text)</strong></a></h2>
-</div>
-    
-<p>[Internal] Change Bullseye string to be TTS friendly,  "Bullseye 021, 16" returns e.g.</p>
-
-    
-<p>"Bulls eye 0 2 1. 1 6"</p>
-
-<div id= "#Functions##ToStringBullsTTS" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AWACS</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Text</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Input text</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>BullseyeBRTTS</p>
 
       </div>
     </div>
@@ -7239,7 +7520,7 @@ Note that this must be installed on your windows system. Can also be Google voic
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AWACS)._AssignAnchorToID" ><strong>AWACS:_AssignAnchorToID(GID)</strong></a></h2>
+<h2><a id="#(AWACS)._AssignAnchorToID" ><strong>AWACS:_AssignAnchorToID(GID, HasOwnStation, StationName)</strong></a></h2>
 </div>
     
 <p>[Internal] AWACS Assign Anchor Position to a Group</p>
@@ -7250,35 +7531,52 @@ Note that this must be installed on your windows system. Can also be Google voic
    <div class="w3-margin-left">
 <p>AWACS</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #number
             <strong><strong>GID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Managed Group ID</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>HasOwnStation</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               <p></p>
           </div>
         </div>
-    <h2><strong>Return values:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>StationName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#number:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>GID Managed Group ID</p>
-
-        </div>
-        <div class="w3-half">
-          <p><a href="##(AWACS)">#AWACS</a>:</p>
-        </div>
-        <div class="w3-half">
-          
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
 <p>self</p>
 
-        </div>
+      </div>
     </div>
 </div>
 
@@ -10103,6 +10401,124 @@ Note that this must be installed on your windows system. Can also be Google voic
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AWACS)._ToStringBULLS" ><strong>AWACS:_ToStringBULLS(Coordinate, ssml, TTS)</strong></a></h2>
+</div>
+    
+<p>[Internal] Return Bullseye BR for Alpha Check etc, returns e.g.</p>
+
+    
+<p>"Rock 021, 16" ("Rock" being the set BE name)</p>
+
+<div id= "#Functions##_ToStringBULLS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Coordinate</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ssml</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Add SSML tag</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>TTS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>For non-Alpha checks, hand back in format "Rock 0 2 1, 16"</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>BullseyeBR</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS)._ToStringBullsTTS" ><strong>AWACS:_ToStringBullsTTS(Text)</strong></a></h2>
+</div>
+    
+<p>[Internal] Change Bullseye string to be TTS friendly,  "Bullseye 021, 16" returns e.g.</p>
+
+    
+<p>"Bulls eye 0 2 1. 1 6"</p>
+
+<div id= "#Functions##_ToStringBullsTTS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Text</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Input text</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>BullseyeBRTTS</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AWACS)._Unable" ><strong>AWACS:_Unable(Group)</strong></a></h2>
 </div>
     
@@ -10344,7 +10760,7 @@ Note that this must be installed on your windows system. Can also be Google voic
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AWACS).onafterAssignAnchor" ><strong>AWACS:onafterAssignAnchor(From, Event, To, GID)</strong></a></h2>
+<h2><a id="#(AWACS).onafterAssignAnchor" ><strong>AWACS:onafterAssignAnchor(From, Event, To, GID, HasOwnStation, HasOwnStation, StationName)</strong></a></h2>
 </div>
     
 <p>[Internal] onafterAssignAnchor</p>
@@ -10400,6 +10816,38 @@ Note that this must be installed on your windows system. Can also be Google voic
               
 <p>Group ID</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>HasOwnStation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>HasOwnStation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>StationName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -12271,6 +12719,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).RadioQueue" ><strong>AWACS.RadioQueue</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AWACS).ReassignmentPause" ><strong>AWACS.ReassignmentPause</strong></a>
+    
+<p>-- Wait this many seconds before re-assignment of a player</p>
 
 </div>
 
@@ -14830,6 +15289,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).RadioQueue" ><strong>AWACS.RadioQueue</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(AWACS).ReassignmentPause" ><strong>AWACS.ReassignmentPause</strong></a>
+    
+<p>-- Wait this many seconds before re-assignment of a player</p>
 
 </div>
 
