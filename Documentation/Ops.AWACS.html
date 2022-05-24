@@ -1852,7 +1852,12 @@ Controls a network of short range air/missile defense groups.</p>
 <p>Demo missions can be found on <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/">github</a>.</p>
 
     
-<h1>   </h1>
+
+<h2>Videos:</h2>
+
+<p>Demo videos can be found on <a href="https://www.youtube.com/watch?v=ocdy8QzTNN4&amp;list=PLFxp425SeXnq-oS0DSjam1HtddywH8i_k">Youtube</a></p>
+
+<hr/>
 
 <h3>Author: <strong>applevangelist</strong></h3>
 
@@ -1880,6 +1885,8 @@ Controls a network of short range air/missile defense groups.</p>
     *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
     <li>FSM events that the mission designer can hook into</li>
 </ul>
+
+<hr/>
 
 <h2>1 Prerequisites</h2>
 
@@ -1912,6 +1919,8 @@ Ensure you have this covered and working before tackling this class.</p>
     *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
     <li>FSM events that the mission designer can hook into</li>
 </ul>
+
+<hr/>
 
 <h2>1 Prerequisites</h2>
 
@@ -2073,7 +2082,46 @@ If neutral/friendly, contact will be excluded from further tasking.</p>
 <p>Append the GROUP name of your client slots with "#CallSign" to use bespoke callsigns in AWACS callouts. E.g. "Player F14#Ghostrider" will be refered to 
 as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
 
-<h2>9 Discussion</h2>
+<h2>9 Options</h2>
+
+<p>There's a number of functions available, to set various options for the setup.</p>
+
+<ul>
+    <li><a href="##(AWACS).SetBullsEyeAlias">AWACS.SetBullsEyeAlias</a>() : Set the alias name of the Bulls Eye.</li>
+    <li><a href="##(AWACS).SetTOS">AWACS.SetTOS</a>() : Set time on station for AWACS and CAP.</li>
+    <li><a href="##(AWACS).SetReassignmentPause">AWACS.SetReassignmentPause</a>() : Pause this number of seconds before re-assigning a Player to a task.</li>
+    <li><a href="##(AWACS).SuppressScreenMessages">AWACS.SuppressScreenMessages</a>() : Suppress message output on screen.</li>
+    <li><a href="##(AWACS).SetRadarBlur">AWACS.SetRadarBlur</a>() : Set the radar blur faktor in percent.</li>
+    <li><a href="##(AWACS).SetColdWar">AWACS.SetColdWar</a>() : Set to cold war - no fill-ins, no EPLRS, VID as standard.</li>
+    <li><a href="##(AWACS).SetModernEraDefensive">AWACS.SetModernEraDefensive</a>() : Set to modern, EPLRS, BVR/IFF engagement, fill-ins.</li>
+    <li><a href="##(AWACS).SetModernEraAgressive">AWACS.SetModernEraAgressive</a>() : Set to modern, EPLRS, BVR/IFF engagement, fill-ins.</li>
+    <li><a href="##(AWACS).SetPolicingModern">AWACS.SetPolicingModern</a>() : Set to modern, EPLRS, VID engagement, fill-ins.</li>
+    <li><a href="##(AWACS).SetPolicingColdWar">AWACS.SetPolicingColdWar</a>() : Set to cold war, no EPLRS, VID engagement, no fill-ins.</li>
+    <li><a href="##(AWACS).SetInterceptTimeline">AWACS.SetInterceptTimeline</a>() : Set distances for TAC, Meld and Threat range calls.</li>
+    <li><a href="##(AWACS).SetAdditionalZone">AWACS.SetAdditionalZone</a>() : Add one additional defense zone, e.g. own border.</li>
+    <li><a href="##(AWACS).SetRejectionZone">AWACS.SetRejectionZone</a>() : Add one foreign border. Targets beyond will be ignored for tasking.</li>
+    <li><a href="##(AWACS).DrawFEZ">AWACS.DrawFEZ</a>() : Show the FEZ on the F10 map.</li>
+    <li><a href="##(AWACS).SetAWACSDetails">AWACS.SetAWACSDetails</a>() : Set AWACS details.</li>
+    <li><a href="##(AWACS).AddGroupToDetection">AWACS.AddGroupToDetection</a>() : Add a group object to INTEL detection, e.g. EWR.</li>
+    <li><a href="##(AWACS).SetSRS">AWACS.SetSRS</a>() : Set SRS details.</li>
+    <li><a href="##(AWACS).SetSRSVoiceCAP">AWACS.SetSRSVoiceCAP</a>() : Set voice details for AI CAP planes, using Windows dektop TTS.</li>
+    <li><a href="##(AWACS).SetAICAPDetails">AWACS.SetAICAPDetails</a>() : Set AI CAP details.</li>
+    <li><a href="##(AWACS).SetEscort">AWACS.SetEscort</a>() : Set number of escorting planes for AWACS.</li>
+    <li><a href="##(AWACS).AddCAPAirWing">AWACS.AddCAPAirWing</a>() : Add an additional <a href="Ops.AirWing.html##(AIRWING)">Ops.AirWing#AIRWING</a> for CAP flights.</li>
+</ul>
+
+<p>Further options (set before starting your AWACS instance, but after <code>:New()</code>)</p>
+
+<pre><code>       self.PlayerGuidance = true -- allow missile warning call-outs.
+       self.NoGroupTags = false -- use group tags like Alpha, Bravo .. etc in call outs.
+       self.callsignshort = true -- use short callsigns, e.g. "Moose 1", not "Moose 1-1".
+       self.DeclareRadius = 5 -- you need to be this close to the lead unit for declare/VID to work, in NM.
+       self.MenuStrict = true -- Players need to check-in to see the menu; check-in still require to use the menu.
+       self.maxassigndistance = 100 -- Don't assign targets further out than this, in NM.
+       self.debug = false -- set to true to produce more log output.
+</code></pre>
+
+<h2>10 Discussion</h2>
 
 <p>If you have questions or suggestions, please visit the <a href="https://discord.gg/AeYAkHP">MOOSE Discord</a> #ops-awacs channel.</p>
 
@@ -2127,13 +2175,13 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).AOCoordinate">AWACS.AOCoordinate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- Coordinate of bulls eye</p>
+<p>Coordinate of bulls eye</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).AOName">AWACS.AOName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- name of the FEZ, e.g. Rock</p>
+<p>name of the FEZ, e.g. Rock</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2493,7 +2541,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).MeldDistance">AWACS.MeldDistance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- 25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
+<p>25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2505,7 +2553,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ModernEra">AWACS.ModernEra</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- if true we get more intel on targets, and EPLR on the AIC</p>
+<p>if true we get more intel on targets, and EPLR on the AIC</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2530,6 +2578,12 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).New">AWACS:New(Name, AirWing, Coalition, AirbaseName, AwacsOrbit, OpsZone, StationZone, Frequency, Modulation)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set up a new AI AWACS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).NoGroupTags">AWACS.NoGroupTags</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set to true if you don't want group tags.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2595,7 +2649,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).PlayerGuidance">AWACS.PlayerGuidance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- if true additional callouts to guide/warn players</p>
+<p>if true additional callouts to guide/warn players</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2625,7 +2679,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).RadarBlur">AWACS.RadarBlur</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- Radar blur in %</p>
+<p>Radar blur in %</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2637,7 +2691,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ReassignmentPause">AWACS.ReassignmentPause</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- Wait this many seconds before re-assignment of a player</p>
+<p>Wait this many seconds before re-assignment of a player</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2811,7 +2865,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SuppressScreenOutput">AWACS.SuppressScreenOutput</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Set to true to suppress all screen output.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2823,7 +2877,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).TacDistance">AWACS.TacDistance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- 30nm - distance for "TAC" Call</p>
+<p>30nm - distance for "TAC" Call</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2853,7 +2907,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ThreatDistance">AWACS.ThreatDistance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- 15nm - distance to declare untargeted (new) threats</p>
+<p>15nm - distance to declare untargeted (new) threats</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3243,7 +3297,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).callsignshort">AWACS.callsignshort</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>-- if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
+<p>if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5085,7 +5139,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
 <a id="#(AWACS).AOCoordinate" ><strong>AWACS.AOCoordinate</strong></a>
     
-<p>-- Coordinate of bulls eye</p>
+<p>Coordinate of bulls eye</p>
 
 </div>
 
@@ -5096,7 +5150,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #string
 <a id="#(AWACS).AOName" ><strong>AWACS.AOName</strong></a>
     
-<p>-- name of the FEZ, e.g. Rock</p>
+<p>name of the FEZ, e.g. Rock</p>
 
 </div>
 
@@ -5594,7 +5648,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(AWACS).MeldDistance" ><strong>AWACS.MeldDistance</strong></a>
     
-<p>-- 25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
+<p>25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
 
 </div>
 
@@ -5616,7 +5670,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(AWACS).ModernEra" ><strong>AWACS.ModernEra</strong></a>
     
-<p>-- if true we get more intel on targets, and EPLR on the AIC</p>
+<p>if true we get more intel on targets, and EPLR on the AIC</p>
 
 </div>
 
@@ -5650,6 +5704,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AWACS).MonitoringOn" ><strong>AWACS.MonitoringOn</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).NoGroupTags" ><strong>AWACS.NoGroupTags</strong></a>
+    
+<p>Set to true if you don't want group tags.</p>
 
 </div>
 
@@ -5759,7 +5824,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(AWACS).PlayerGuidance" ><strong>AWACS.PlayerGuidance</strong></a>
     
-<p>-- if true additional callouts to guide/warn players</p>
+<p>if true additional callouts to guide/warn players</p>
 
 </div>
 
@@ -5803,7 +5868,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(AWACS).RadarBlur" ><strong>AWACS.RadarBlur</strong></a>
     
-<p>-- Radar blur in %</p>
+<p>Radar blur in %</p>
 
 </div>
 
@@ -5825,7 +5890,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(AWACS).ReassignmentPause" ><strong>AWACS.ReassignmentPause</strong></a>
     
-<p>-- Wait this many seconds before re-assignment of a player</p>
+<p>Wait this many seconds before re-assignment of a player</p>
 
 </div>
 
@@ -5943,6 +6008,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).SuppressScreenOutput" ><strong>AWACS.SuppressScreenOutput</strong></a>
+    
+<p>Set to true to suppress all screen output.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AWACS).THREATLEVEL" ><strong>AWACS.THREATLEVEL</strong></a>
     
@@ -5957,7 +6033,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(AWACS).TacDistance" ><strong>AWACS.TacDistance</strong></a>
     
-<p>-- 30nm - distance for "TAC" Call</p>
+<p>30nm - distance for "TAC" Call</p>
 
 </div>
 
@@ -6012,7 +6088,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(AWACS).ThreatDistance" ><strong>AWACS.ThreatDistance</strong></a>
     
-<p>-- 15nm - distance to declare untargeted (new) threats</p>
+<p>15nm - distance to declare untargeted (new) threats</p>
 
 </div>
 
@@ -6045,7 +6121,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #boolean
 <a id="#(AWACS).callsignshort" ><strong>AWACS.callsignshort</strong></a>
     
-<p>-- if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
+<p>if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
 
 </div>
 
@@ -12122,7 +12198,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
 <a id="#(AWACS).AOCoordinate" ><strong>AWACS.AOCoordinate</strong></a>
     
-<p>-- Coordinate of bulls eye</p>
+<p>Coordinate of bulls eye</p>
 
 </div>
 
@@ -12133,7 +12209,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #string
 <a id="#(AWACS).AOName" ><strong>AWACS.AOName</strong></a>
     
-<p>-- name of the FEZ, e.g. Rock</p>
+<p>name of the FEZ, e.g. Rock</p>
 
 </div>
 
@@ -12631,7 +12707,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).MeldDistance" ><strong>AWACS.MeldDistance</strong></a>
     
-<p>-- 25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
+<p>25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
 
 </div>
 
@@ -12653,7 +12729,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #boolean
 <a id="#(AWACS).ModernEra" ><strong>AWACS.ModernEra</strong></a>
     
-<p>-- if true we get more intel on targets, and EPLR on the AIC</p>
+<p>if true we get more intel on targets, and EPLR on the AIC</p>
 
 </div>
 
@@ -12687,6 +12763,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).MonitoringOn" ><strong>AWACS.MonitoringOn</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).NoGroupTags" ><strong>AWACS.NoGroupTags</strong></a>
+    
+<p>Set to true if you don't want group tags.</p>
 
 </div>
 
@@ -12796,7 +12883,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #boolean
 <a id="#(AWACS).PlayerGuidance" ><strong>AWACS.PlayerGuidance</strong></a>
     
-<p>-- if true additional callouts to guide/warn players</p>
+<p>if true additional callouts to guide/warn players</p>
 
 </div>
 
@@ -12840,7 +12927,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).RadarBlur" ><strong>AWACS.RadarBlur</strong></a>
     
-<p>-- Radar blur in %</p>
+<p>Radar blur in %</p>
 
 </div>
 
@@ -12862,7 +12949,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).ReassignmentPause" ><strong>AWACS.ReassignmentPause</strong></a>
     
-<p>-- Wait this many seconds before re-assignment of a player</p>
+<p>Wait this many seconds before re-assignment of a player</p>
 
 </div>
 
@@ -12980,6 +13067,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).SuppressScreenOutput" ><strong>AWACS.SuppressScreenOutput</strong></a>
+    
+<p>Set to true to suppress all screen output.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AWACS).THREATLEVEL" ><strong>AWACS.THREATLEVEL</strong></a>
     
@@ -12994,7 +13092,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).TacDistance" ><strong>AWACS.TacDistance</strong></a>
     
-<p>-- 30nm - distance for "TAC" Call</p>
+<p>30nm - distance for "TAC" Call</p>
 
 </div>
 
@@ -13049,7 +13147,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).ThreatDistance" ><strong>AWACS.ThreatDistance</strong></a>
     
-<p>-- 15nm - distance to declare untargeted (new) threats</p>
+<p>15nm - distance to declare untargeted (new) threats</p>
 
 </div>
 
@@ -13082,7 +13180,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #boolean
 <a id="#(AWACS).callsignshort" ><strong>AWACS.callsignshort</strong></a>
     
-<p>-- if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
+<p>if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
 
 </div>
 
@@ -14692,7 +14790,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
 <a id="#(AWACS).AOCoordinate" ><strong>AWACS.AOCoordinate</strong></a>
     
-<p>-- Coordinate of bulls eye</p>
+<p>Coordinate of bulls eye</p>
 
 </div>
 
@@ -14703,7 +14801,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #string
 <a id="#(AWACS).AOName" ><strong>AWACS.AOName</strong></a>
     
-<p>-- name of the FEZ, e.g. Rock</p>
+<p>name of the FEZ, e.g. Rock</p>
 
 </div>
 
@@ -15201,7 +15299,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).MeldDistance" ><strong>AWACS.MeldDistance</strong></a>
     
-<p>-- 25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
+<p>25nm - distance for "Meld" Call , usually shortly before the actual engagement </p>
 
 </div>
 
@@ -15223,7 +15321,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #boolean
 <a id="#(AWACS).ModernEra" ><strong>AWACS.ModernEra</strong></a>
     
-<p>-- if true we get more intel on targets, and EPLR on the AIC</p>
+<p>if true we get more intel on targets, and EPLR on the AIC</p>
 
 </div>
 
@@ -15257,6 +15355,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).MonitoringOn" ><strong>AWACS.MonitoringOn</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).NoGroupTags" ><strong>AWACS.NoGroupTags</strong></a>
+    
+<p>Set to true if you don't want group tags.</p>
 
 </div>
 
@@ -15366,7 +15475,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #boolean
 <a id="#(AWACS).PlayerGuidance" ><strong>AWACS.PlayerGuidance</strong></a>
     
-<p>-- if true additional callouts to guide/warn players</p>
+<p>if true additional callouts to guide/warn players</p>
 
 </div>
 
@@ -15410,7 +15519,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).RadarBlur" ><strong>AWACS.RadarBlur</strong></a>
     
-<p>-- Radar blur in %</p>
+<p>Radar blur in %</p>
 
 </div>
 
@@ -15432,7 +15541,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).ReassignmentPause" ><strong>AWACS.ReassignmentPause</strong></a>
     
-<p>-- Wait this many seconds before re-assignment of a player</p>
+<p>Wait this many seconds before re-assignment of a player</p>
 
 </div>
 
@@ -15550,6 +15659,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).SuppressScreenOutput" ><strong>AWACS.SuppressScreenOutput</strong></a>
+    
+<p>Set to true to suppress all screen output.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(AWACS).THREATLEVEL" ><strong>AWACS.THREATLEVEL</strong></a>
     
@@ -15564,7 +15684,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).TacDistance" ><strong>AWACS.TacDistance</strong></a>
     
-<p>-- 30nm - distance for "TAC" Call</p>
+<p>30nm - distance for "TAC" Call</p>
 
 </div>
 
@@ -15619,7 +15739,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #number
 <a id="#(AWACS).ThreatDistance" ><strong>AWACS.ThreatDistance</strong></a>
     
-<p>-- 15nm - distance to declare untargeted (new) threats</p>
+<p>15nm - distance to declare untargeted (new) threats</p>
 
 </div>
 
@@ -15652,7 +15772,7 @@ Note that this must be installed on your windows system. Can also be Google voic
     #boolean
 <a id="#(AWACS).callsignshort" ><strong>AWACS.callsignshort</strong></a>
     
-<p>-- if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
+<p>if true use short (group) callsigns, e.g. "Ghost 1", else "Ghost 1 1"</p>
 
 </div>
 
