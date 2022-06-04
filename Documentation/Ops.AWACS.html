@@ -2068,7 +2068,7 @@ If neutral/friendly, contact will be excluded from further tasking.</p>
 <pre><code>       Tac Distance = 45
        Meld Distance = 35
        Threat Distance = 25
-       Merge Distance = 3 
+       Merge Distance = 5 
 </code></pre>
 
 <h2>8 Bespoke Player CallSigns</h2>
@@ -2102,9 +2102,12 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
     <li><a href="##(AWACS).SetAICAPDetails">AWACS.SetAICAPDetails</a>() : Set AI CAP details.</li>
     <li><a href="##(AWACS).SetEscort">AWACS.SetEscort</a>() : Set number of escorting planes for AWACS.</li>
     <li><a href="##(AWACS).AddCAPAirWing">AWACS.AddCAPAirWing</a>() : Add an additional <a href="Ops.Airwing.html##(AIRWING)">Ops.Airwing#AIRWING</a> for CAP flights.</li>
+    <li><a href="##(AWACS).ZipLip">AWACS.ZipLip</a>() : Do not show messages on screen, no extra calls for player guidance, use short callsigns, no group tags.</li>
 </ul>
 
-<p>Further options (set before starting your AWACS instance, but after <code>:New()</code>)</p>
+<h2>9.1 Single Options</h2>
+
+<p>Further single options (set before starting your AWACS instance, but after <code>:New()</code>)</p>
 
 <pre><code>       testawacs.PlayerGuidance = true -- allow missile warning call-outs.
        testawacs.NoGroupTags = false -- use group tags like Alpha, Bravo .. etc in call outs.
@@ -2113,11 +2116,35 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
        testawacs.MenuStrict = true -- Players need to check-in to see the menu; check-in still require to use the menu.
        testawacs.maxassigndistance = 100 -- Don't assign targets further out than this, in NM.
        testawacs.debug = false -- set to true to produce more log output.
+       testawacs.NoMissileCalls = true -- suppress missile callouts
+       testawacs.PlayerCapAssigment = true -- no task assignment for players
+       testawacs.invisible = false -- set AWACS to be invisible to hostiles
+       testawacs.immortal = false -- set AWACS to be immortal
        -- By default, the radio queue is checked every 10 secs. This is altered by the calculated length of the sentence to speak
        -- over the radio. Google and Windows speech speed is different. Use the below to fine-tune the setup in case of overlapping
        -- messages or too long pauses
-       testawacs.GoogleTTSPadding = 1
-       testawacs.WindowsTTSPadding = 2.5
+       testawacs.GoogleTTSPadding = 1 -- seconds
+       testawacs.WindowsTTSPadding = 2.5 -- seconds
+</code></pre>
+
+<h2>9.2 Bespoke random voices for AI CAP (Google TTS only)</h2>
+
+<p>Currently there are 10 voices defined which are randomly assigned to the AI CAP flights:</p>
+
+<p>Defaults are:</p>
+
+<pre><code>     testawacs.CapVoices = {
+       [1] = "de-DE-Wavenet-A",
+       [2] = "de-DE-Wavenet-B",
+       [3] = "fr-FR-Wavenet-A",
+       [4] = "fr-FR-Wavenet-B",
+       [5] = "en-GB-Wavenet-A",
+       [6] = "en-GB-Wavenet-B",
+       [7] = "en-GB-Wavenet-D",
+       [8] = "en-AU-Wavenet-B",
+       [9] = "en-US-Wavenet-J",
+       [10] = "en-US-Wavenet-H",
+      }
 </code></pre>
 
 <h2>10 Discussion</h2>
@@ -2595,6 +2622,12 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).NoMissileCalls">AWACS.NoMissileCalls</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Suppress missile callouts</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).OnAfterAssignedAnchor">AWACS:OnAfterAssignedAnchor(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On After "AssignedAnchor" event.</p>
@@ -2718,6 +2751,12 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).PictureTimeStamp">AWACS.PictureTimeStamp</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Interval timestamp</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).PlayerCapAssigment">AWACS.PlayerCapAssigment</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Assign players to CAP tasks when they are logged on</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5867,6 +5906,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).NoMissileCalls" ><strong>AWACS.NoMissileCalls</strong></a>
+    
+<p>Suppress missile callouts</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
 <a id="#(AWACS).OpenTasks" ><strong>AWACS.OpenTasks</strong></a>
     
@@ -5959,6 +6009,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AWACS).PictureTimeStamp" ><strong>AWACS.PictureTimeStamp</strong></a>
     
 <p>Interval timestamp</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).PlayerCapAssigment" ><strong>AWACS.PlayerCapAssigment</strong></a>
+    
+<p>Assign players to CAP tasks when they are logged on</p>
 
 </div>
 
@@ -13903,6 +13964,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).NoMissileCalls" ><strong>AWACS.NoMissileCalls</strong></a>
+    
+<p>Suppress missile callouts</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
 <a id="#(AWACS).OpenTasks" ><strong>AWACS.OpenTasks</strong></a>
     
@@ -13995,6 +14067,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).PictureTimeStamp" ><strong>AWACS.PictureTimeStamp</strong></a>
     
 <p>Interval timestamp</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).PlayerCapAssigment" ><strong>AWACS.PlayerCapAssigment</strong></a>
+    
+<p>Assign players to CAP tasks when they are logged on</p>
 
 </div>
 
@@ -16517,6 +16600,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).NoMissileCalls" ><strong>AWACS.NoMissileCalls</strong></a>
+    
+<p>Suppress missile callouts</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
 <a id="#(AWACS).OpenTasks" ><strong>AWACS.OpenTasks</strong></a>
     
@@ -16609,6 +16703,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).PictureTimeStamp" ><strong>AWACS.PictureTimeStamp</strong></a>
     
 <p>Interval timestamp</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).PlayerCapAssigment" ><strong>AWACS.PlayerCapAssigment</strong></a>
+    
+<p>Assign players to CAP tasks when they are logged on</p>
 
 </div>
 
