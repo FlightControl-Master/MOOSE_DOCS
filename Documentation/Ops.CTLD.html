@@ -1092,24 +1092,9 @@ Controls a network of short range air/missile defense groups.</p>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
 <p><strong>Ops</strong> - AWACS</p>
 
-<h2>Main Features:</h2>
-
-<ul>
-    <li>WIP (beta)</li>
-    <li>AWACS replacement for the in-game AWACS</li>
-    <li>Will control a fighter engagement zone and assign tasks to AI and human CAP flights</li>
-    <li>Concentrates on threat-based call outs</li>
-    <li>Callouts referenced from: <br/>
-    <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces) <br/>
-    *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
-    <li>Many additional events that the mission designer can hook into</li>
-</ul>
-
 <hr/>
 
-<h2>Example Missions:</h2>
-
-<p>Demo missions can be found on <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/OPS%20-%20Awacs/">github</a>.</p>
+<p><strong>AWACS</strong> - MOOSE AI AWACS Operations using text-to-speech.</p>
 </p></div>
        </div>         
      </div>
@@ -2039,7 +2024,8 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
    ["Mi-24P"] = {type="Mi-24P", crates=true, troops=true, cratelimit = 2, trooplimit = 8, length = 18, cargoweightlimit = 700},
    ["Mi-24V"] = {type="Mi-24V", crates=true, troops=true, cratelimit = 2, trooplimit = 8, length = 18, cargoweightlimit = 700},
    ["Hercules"] = {type="Hercules", crates=true, troops=true, cratelimit = 7, trooplimit = 64, length = 25, cargoweightlimit = 19000},
-   ["UH-60L"] = {type="UH-60L", crates=true, troops=true, cratelimit = 2, trooplimit = 20, length = 16, cargoweightlimit = 3500}, 
+   ["UH-60L"] = {type="UH-60L", crates=true, troops=true, cratelimit = 2, trooplimit = 20, length = 16, cargoweightlimit = 3500},
+   ["AH-64D_BLK_II"] = {type="AH-64D_BLK_II", crates=false, troops=true, cratelimit = 0, trooplimit = 2, length = 17, cargoweightlimit = 200}, 
 </code></pre>
 
 <h3>2.1.2 Activate and deactivate zones</h3>
@@ -2199,12 +2185,13 @@ Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> t
 
 <h2>5. Support for Hercules mod by Anubis</h2>
 
-<p>Basic support for the Hercules mod By Anubis has been build into CTLD - that is you can load/drop/build the same objects as the helicopters. 
-To also cover objects and troops which can be loaded from the groud crew Rearm/Refuel menu, you need to use <a href="##(CTLD_HERCULES).New">CTLD_HERCULES.New</a>() and link
-this object to your CTLD setup. In this case, do <strong>not</strong> use the <code>Hercules_Cargo.lua</code> or <code>Hercules_Cargo_CTLD.lua</code> which are part of the mod 
+<p>Basic support for the Hercules mod By Anubis has been build into CTLD - that is you can load/drop/build the same way and for the same objects as 
+the helicopters (main method). 
+To cover objects and troops which can be loaded from the groud crew Rearm/Refuel menu (F8), you need to use <a href="##(CTLD_HERCULES).New">CTLD_HERCULES.New</a>() and link
+this object to your CTLD setup (alternative method). In this case, do <strong>not</strong> use the <code>Hercules_Cargo.lua</code> or <code>Hercules_Cargo_CTLD.lua</code> which are part of the mod 
 in your mission!</p>
 
-<h3>5.1 Create an own CTLD instance and allow the usage of the Hercules mod:</h3>
+<h3>5.1 Create an own CTLD instance and allow the usage of the Hercules mod (main method)</h3>
 
 <pre><code>         local my_ctld = CTLD:New(coalition.side.BLUE,{"Helicargo", "Hercules"},"Lufttransportbrigade I")
 </code></pre>
@@ -2225,29 +2212,41 @@ in your mission!</p>
 <pre><code>         my_ctld.useprefix = true -- this is true by default and MUST BE ON. 
 </code></pre>
 
-<h3>5.2 Integrate Hercules ground crew loadable objects</h3>
+<h3>5.2 Integrate Hercules ground crew (F8 Menu) loadable objects (alternative method)</h3>
 
-<p>Add ground crew loadable objects to your CTLD instance like so, where <code>my_ctld</code> is the previously created CTLD instance:</p>
+<p>Integrate to your CTLD instance like so, where <code>my_ctld</code> is a previously created CTLD instance:</p>
 
-<pre><code>       local herccargo = CTLD_HERCULES:New("blue", "Hercules Test", my_ctld)
+<pre><code>       my_ctld.enableHercules = false -- avoid dual loading via CTLD F10 and F8 ground crew
+       local herccargo = CTLD_HERCULES:New("blue", "Hercules Test", my_ctld)
 </code></pre>
 
-<p>You also need:</p>
+<p>You also need: </p>
 
 <ul>
-    <li>A template called "Infantry" for 10 Paratroopers (as set via herccargo.infantrytemplate). </li>
-    <li>Depending on what you are loading with the help of the ground crew, there are 42 more templates for the various vehicles that are loadable. </li>
+    <li>A template called "Infantry" for 10 Paratroopers (as set via herccargo.infantrytemplate).   </li>
+    <li>Depending on what you are loading with the help of the ground crew, there are 42 more templates for the various vehicles that are loadable.   </li>
 </ul>
 
 <p>There's a <strong>quick check output in the <code>dcs.log</code></strong> which tells you what's there and what not.
-E.g.:</p>
-<pre><code>       ...Checking template for APC BTR-82A Air [24998lb] (BTR-82A) ... MISSING)
-       ...Checking template for ART 2S9 NONA Skid [19030lb] (SAU 2-C9) ... MISSING)
-       ...Checking template for EWR SBORKA Air [21624lb] (Dog Ear radar) ... MISSING)
-       ...Checking template for Transport Tigr Air [15900lb] (Tigr_233036) ... OK)
+E.g.:   </p>
+
+<pre><code>       ...Checking template for APC BTR-82A Air [24998lb] (BTR-82A) ... MISSING)   
+       ...Checking template for ART 2S9 NONA Skid [19030lb] (SAU 2-C9) ... MISSING)   
+       ...Checking template for EWR SBORKA Air [21624lb] (Dog Ear radar) ... MISSING)   
+       ...Checking template for Transport Tigr Air [15900lb] (Tigr_233036) ... OK)   
 </code></pre>
 
 <p>Expected template names are the ones in the rounded brackets.</p>
+
+<h3>5.2.1 Hints</h3>
+
+<p>The script works on the EVENTS.Shot trigger, which is used by the mod when you <strong>drop cargo from the Hercules while flying</strong>. Unloading on the ground does
+not achieve anything here. If you just want to unload on the ground, use the normal Moose CTLD (see 5.1).</p>
+
+<p>There are two ways of airdropping: </p>
+
+<p>1) Very low and very slow (>5m and &lt;10m AGL) - here you can drop stuff which has "Skid" at the end of the cargo name (loaded via F8 Ground Crew menu) <br/>
+2) Higher up and slow (>100m AGL) - here you can drop paratroopers and cargo which has "Air" at the end of the cargo name (loaded via F8 Ground Crew menu)   </p>
 
 <p>Standard transport capabilities as per the real Hercules are:</p>
 
@@ -7407,7 +7406,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -7418,7 +7417,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -14931,7 +14930,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -14942,7 +14941,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -17292,7 +17291,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -17303,7 +17302,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -21882,17 +21881,6 @@ BASE:TraceOnOff( false )</code></pre>
 <a id="#(CTLD.UnitCapabilities).crates" ><strong>CTLD.UnitCapabilities.crates</strong></a>
     
 <p>Can transport crate.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD.UnitCapabilities).length" ><strong>CTLD.UnitCapabilities.length</strong></a>
-    
-
 
 </div>
 
