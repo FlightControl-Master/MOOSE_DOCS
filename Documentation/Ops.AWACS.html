@@ -1859,12 +1859,12 @@ Controls a network of short range air/missile defense groups.</p>
     <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces) <br/>
     *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
     <li>FSM events that the mission designer can hook into</li>
+    <li>Can also be used as GCI Controller</li>
 </ul>
 
-<h2>1 Prerequisites</h2>
+<h2>0 Note for Multiplayer Setup</h2>
 
-<p>The radio callouts in this class are <strong><em>exclusively</em></strong> created with Text-To-Speech (TTS), based on the Moose <a href="Sound.SRS.html">Sound.SRS</a> Class, and output is via <a href="https://github.com/ciribob/DCS-SimpleRadioStandalone/releases">Ciribob's SRS system</a>
-Ensure you have this covered and working before tackling this class.</p>
+<p>Due to DCS limitations you need to set up a second, "normal" AWACS plane in multi-player/server environments to keep the EPLRS/DataLink going in these environments.</p>
 </td>
       </tr>
     </table>
@@ -1890,15 +1890,20 @@ Ensure you have this covered and working before tackling this class.</p>
     <em>* References from ARN33396 ATP 3-52.4 (Sep 2021) (Combined Forces) <br/>
     *</em> References from CNATRA P-877 (Rev 12-20) (NAVY)   </li>
     <li>FSM events that the mission designer can hook into</li>
+    <li>Can also be used as GCI Controller</li>
 </ul>
+
+<h2>0 Note for Multiplayer Setup</h2>
+
+<p>Due to DCS limitations you need to set up a second, "normal" AWACS plane in multi-player/server environments to keep the EPLRS/DataLink going in these environments.</p>
+
+    
+<p>Though working in single player, the situational awareness screens of the e.g. F14/16/18 will else not receive datalink targets.</p>
 
 <h2>1 Prerequisites</h2>
 
 <p>The radio callouts in this class are <strong><em>exclusively</em></strong> created with Text-To-Speech (TTS), based on the Moose <a href="Sound.SRS.html">Sound.SRS</a> Class, and output is via <a href="https://github.com/ciribob/DCS-SimpleRadioStandalone/releases">Ciribob's SRS system</a>
-Ensure you have this covered and working before tackling this class.</p>
-
-    
-<p>TTS generation can thus be done via the Windows built-in system or via Google TTS; 
+Ensure you have this covered and working before tackling this class. TTS generation can thus be done via the Windows built-in system or via Google TTS; 
 the latter offers a wider range of voices and options, but you need to set up your own Google product account for this to work correctly.</p>
 
 <h2>2 Mission Design - Operational Priorities</h2>
@@ -2001,6 +2006,27 @@ The optional border is useful for e.g. "cold war" scenarios - planes across the 
        testawacs:__Start(5)
 </code></pre>
 
+<h3>5.1 Alternative - Set up as GCI (no AWACS plane needed)</h3>
+
+<pre><code>       -- Set up as GCI called "GCI Senaki". It will use the AwacsAW AirWing set up above and be of the "blue" coalition. Homebase is Senaki.
+       -- No need to set the AWACS Orbit Zone; the FEZ is still a Polygon-Zone called "Rock" we have also
+       -- set up in the mission editor with a late activated helo named "Rock#ZONE_POLYGON". Note this also sets the BullsEye to be referenced as "Rock".
+       -- The CAP station zone is called "Fremont". We will be on 255 AM. Note the Orbit Zone is given as *nil* in the `New()`-Statement
+       local testawacs = AWACS:New("GCI Senaki",AwacsAW,"blue",AIRBASE.Caucasus.Senaki_Kolkhi,nil,ZONE:FindByName("Rock"),"Fremont",255,radio.modulation.AM )
+       -- Set up SRS on port 5010 - change the below to your path and port
+       testawacs:SetSRS("C:\\Program Files\\DCS-SimpleRadio-Standalone","female","en-GB",5010)
+       -- Add a "red" border we don't want to cross, set up in the mission editor with a late activated helo named "Red Border#ZONE_POLYGON"
+       testawacs:SetRejectionZone(ZONE:FindByName("Red Border"))
+       -- Our CAP flight will have the callsign "Ford", we want 4 AI planes, Time-On-Station is four hours, doing 300 kn IAS.
+       testawacs:SetAICAPDetails(CALLSIGN.Aircraft.Ford,4,4,300)
+       -- We're modern (default), e.g. we have EPLRS and get more fill-in information on detections
+       testawacs:SetModernEra()
+       -- Give it a fancy callsign
+       testawacs:SetAwacsDetails(CALLSIGN.AWACS.Wizard)
+       -- And start as GCI using a group name "Blue EWR" as main EWR station
+       testawacs:StartAsGCI(GROUP:FindByName("Blue EWR"),2)
+</code></pre>
+
 <h2>6 Menu entries</h2>
 
 <p><strong>Note on Radio Menu entries</strong>: Due to a DCS limitation, these are on GROUP level and not individual (UNIT level). Hence, either put each player in his/her own group,
@@ -2072,7 +2098,7 @@ as "Ghostrider" plus group number, e.g. "Ghostrider 9".</p>
     <li><a href="##(AWACS).SetRejectionZone">AWACS.SetRejectionZone</a>() : Add one foreign border. Targets beyond will be ignored for tasking.</li>
     <li><a href="##(AWACS).DrawFEZ">AWACS.DrawFEZ</a>() : Show the FEZ on the F10 map.</li>
     <li><a href="##(AWACS).SetAWACSDetails">AWACS.SetAWACSDetails</a>() : Set AWACS details.</li>
-    <li><a href="##(AWACS).AddGroupToDetection">AWACS.AddGroupToDetection</a>() : Add a group object to INTEL detection, e.g. EWR.</li>
+    <li><a href="##(AWACS).AddGroupToDetection">AWACS.AddGroupToDetection</a>() : Add a GROUP or SET_GROUP object to INTEL detection, e.g. EWR.</li>
     <li><a href="##(AWACS).SetSRS">AWACS.SetSRS</a>() : Set SRS details.</li>
     <li><a href="##(AWACS).SetSRSVoiceCAP">AWACS.SetSRSVoiceCAP</a>() : Set voice details for AI CAP planes, using Windows dektop TTS.</li>
     <li><a href="##(AWACS).SetAICAPDetails">AWACS.SetAICAPDetails</a>() : Set AI CAP details.</li>
@@ -2494,6 +2520,18 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).Frequency">AWACS.Frequency</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).GCI">AWACS.GCI</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Act as GCI</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).GCIGroup">AWACS.GCIGroup</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>EWR group object for GCI ops</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2986,6 +3024,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).Start">AWACS:Start()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Start".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).StartAsGCI">AWACS:StartAsGCI(EWR, Delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Start this instance and act as GCI Ground Controlled Intercepts Operator</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3640,6 +3684,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).onafterStop">AWACS:onafterStop(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] onafterStop</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).sunrisedone">AWACS.sunrisedone</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5777,6 +5827,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).GCI" ><strong>AWACS.GCI</strong></a>
+    
+<p>Act as GCI</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+<a id="#(AWACS).GCIGroup" ><strong>AWACS.GCIGroup</strong></a>
+    
+<p>EWR group object for GCI ops</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(AWACS).GoogleTTSPadding" ><strong>AWACS.GoogleTTSPadding</strong></a>
     
@@ -6507,6 +6579,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AWACS).maxassigndistance" ><strong>AWACS.maxassigndistance</strong></a>
     
 <p>Only assing AI/Pilots to targets max this far away</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).sunrisedone" ><strong>AWACS.sunrisedone</strong></a>
+    
+
 
 </div>
 
@@ -8603,6 +8686,63 @@ Note that this must be installed on your windows system. Can also be Google voic
    <div class="w3-margin-left">
 <p>AWACS</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS).StartAsGCI" ><strong>AWACS:StartAsGCI(EWR, Delay)</strong></a></h2>
+</div>
+    
+<p>[User] Start this instance and act as GCI Ground Controlled Intercepts Operator</p>
+
+<div id= "#Functions##StartAsGCI" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>EWR</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <strong>main</strong> Early Warning Radar (EWR) group name for this GCI.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(option) Start after this many seconds (optional).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -14011,6 +14151,28 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).GCI" ><strong>AWACS.GCI</strong></a>
+    
+<p>Act as GCI</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+<a id="#(AWACS).GCIGroup" ><strong>AWACS.GCIGroup</strong></a>
+    
+<p>EWR group object for GCI ops</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(AWACS).GoogleTTSPadding" ><strong>AWACS.GoogleTTSPadding</strong></a>
     
@@ -14741,6 +14903,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).maxassigndistance" ><strong>AWACS.maxassigndistance</strong></a>
     
 <p>Only assing AI/Pilots to targets max this far away</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).sunrisedone" ><strong>AWACS.sunrisedone</strong></a>
+    
+
 
 </div>
 
@@ -16680,6 +16853,28 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AWACS).GCI" ><strong>AWACS.GCI</strong></a>
+    
+<p>Act as GCI</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+<a id="#(AWACS).GCIGroup" ><strong>AWACS.GCIGroup</strong></a>
+    
+<p>EWR group object for GCI ops</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(AWACS).GoogleTTSPadding" ><strong>AWACS.GoogleTTSPadding</strong></a>
     
@@ -17410,6 +17605,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).maxassigndistance" ><strong>AWACS.maxassigndistance</strong></a>
     
 <p>Only assing AI/Pilots to targets max this far away</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AWACS).sunrisedone" ><strong>AWACS.sunrisedone</strong></a>
+    
+
 
 </div>
 
