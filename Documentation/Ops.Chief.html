@@ -522,6 +522,17 @@
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/Core_Conditon.png" alt="Image">
+           <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Core.Condition.html">Core.Condition</a></strong></h2></div>
+         </div>
+         <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Core</strong> - Define any or all conditions to be evaluated.</p>
+</p></div>
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin-16">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
            <img src= "../Images/Core_Database.JPG" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Core.Database.html">Core.Database</a></strong></h2></div>
          </div>
@@ -1086,6 +1097,17 @@ Controls a network of short range air/missile defense groups.</p>
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/OPS_FlightControl.png" alt="Image">
+           <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="OPS.FlightControl.html">OPS.FlightControl</a></strong></h2></div>
+         </div>
+         <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>OPS</strong> - Air Traffic Control for AI and human players.</p>
+</p></div>
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin-16">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
            <img src= "../Images/OPS_AWACS.jpg" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.AWACS.html">Ops.AWACS</a></strong></h2></div>
          </div>
@@ -1282,6 +1304,17 @@ Controls a network of short range air/missile defense groups.</p>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
 <p><strong>Ops</strong> - Enhanced Naval Group.</p>
+</p></div>
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin-16">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/OPS_Operation.png" alt="Image">
+           <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.Operation.html">Ops.Operation</a></strong></h2></div>
+         </div>
+         <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Ops</strong> - Operation with multiple phases.</p>
 </p></div>
        </div>         
      </div>
@@ -1951,6 +1984,34 @@ The best assets are determined by their mission performance, payload performance
 
 <p>Fleets can be added via the <a href="##(CHIEF).AddFleet">CHIEF.AddFleet</a>() function.</p>
 
+<h2>Response on Target</h2>
+
+<p>When the chief detects a valid target, he will launch a certain number of selected assets. Only whole groups from SQUADRONs, PLATOONs or FLOTILLAs can be selected.
+In other words, it is not possible to specify the abount of individual <em>units</em>.</p>
+
+<p>By default, one group is selected for any detected target. This can, however, be customized with the <a href="CHIEF.SetResponseOnTarget.html">CHIEF.SetResponseOnTarget</a>() function. The number of min and max
+asset groups can be specified depending on threatlevel, category, mission type, number of units, defcon and strategy.</p>
+
+<p>For example:</p>
+
+<pre><code>-- One group for aircraft targets of threat level 0 or higher.
+myChief:SetResponseOnTarget(1, 1, 0, TARGET.Category.AIRCRAFT)
+-- At least one and up to two groups for aircraft targets of threat level 8 or higher. This will overrule the previous response!
+myChief:SetResponseOnTarget(1, 2, 8, TARGET.Category.AIRCRAFT)
+
+-- At least one and up to three groups for ground targets of threat level 0 or higher if current strategy is aggressive.  
+myChief:SetResponseOnTarget(1, 1, 0, TARGET.Category.GROUND, nil ,nil, nil, CHIEF.Strategy.DEFENSIVE)
+
+-- One group for BAI missions if current defcon is green.
+myChief:SetResponseOnTarget(1, 1, 0, nil, AUFTRAG.Type.BAI, nil, CHIEF.DEFCON.GREEN)
+
+-- At least one and up to four groups for BAI missions if current defcon is red.
+myChief:SetResponseOnTarget(1, 2, 0, nil, AUFTRAG.Type.BAI, nil, CHIEF.DEFCON.YELLOW)
+
+-- At least one and up to four groups for BAI missions if current defcon is red.
+myChief:SetResponseOnTarget(1, 3, 0, nil, AUFTRAG.Type.BAI, nil, CHIEF.DEFCON.RED)
+</code></pre>
+
 
 <h1>Strategic (Capture) Zones</h1>
 
@@ -2446,12 +2507,6 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).RecruitAssetsForTarget">CHIEF:RecruitAssetsForTarget(Target, MissionType, NassetsMin, NassetsMax)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Recruit assets for a given TARGET.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).RecruitAssetsForZone">CHIEF:RecruitAssetsForZone(StratZone, Resource)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Recruit assets for a given OPS zone.</p>
@@ -2539,6 +2594,12 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).SetLimitMission">CHIEF:SetLimitMission(Limit, MissionType)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set limit for number of total or specific missions to be executed simultaniously.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).SetResponseOnTarget">CHIEF:SetResponseOnTarget(NassetsMin, NassetsMax, ThreatLevel, TargetCategory, MissionType, Nunits, Defcon, Strategy)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set number of assets requested for detected targets.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2650,6 +2711,12 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF)._GetAssetsForTarget">CHIEF:_GetAssetsForTarget(Target, MissionType)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add mission type and number of required assets to resource.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF)._GetMissionPerformanceFromTarget">CHIEF:_GetMissionPerformanceFromTarget(Target)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get mission performance for a given TARGET.</p>
@@ -2743,6 +2810,12 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).__ZoneLost">CHIEF:__ZoneLost(delay, OpsZone)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "ZoneLost" after a delay.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).assetNumbers">CHIEF.assetNumbers</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2893,6 +2966,67 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).zonequeue">CHIEF.zonequeue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Strategic zone queue.</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CHIEF.AssetNumber)">Type <strong>CHIEF.AssetNumber</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(CHIEF.AssetNumber)">CHIEF.AssetNumber</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from CHIEF.AssetNumber</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).defcon">CHIEF.AssetNumber.defcon</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Defense condition.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).missionType">CHIEF.AssetNumber.missionType</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Mission type.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).nAssetMax">CHIEF.AssetNumber.nAssetMax</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Max number of assets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).nAssetMin">CHIEF.AssetNumber.nAssetMin</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Min number of assets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).nUnits">CHIEF.AssetNumber.nUnits</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Number of enemy units.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).strategy">CHIEF.AssetNumber.strategy</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Strategy.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).targetCategory">CHIEF.AssetNumber.targetCategory</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Target category.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.AssetNumber).threatlevel">CHIEF.AssetNumber.threatlevel</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Threat level.</p>
 </td>
           </tr>
         </table>
@@ -6428,105 +6562,6 @@ if a destination can be reached on land.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CHIEF).RecruitAssetsForTarget" ><strong>CHIEF:RecruitAssetsForTarget(Target, MissionType, NassetsMin, NassetsMax)</strong></a></h2>
-</div>
-    
-<p>Recruit assets for a given TARGET.</p>
-
-<div id= "#Functions##RecruitAssetsForTarget" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>CHIEF</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Ops.Target.html##(TARGET)">Ops.Target#TARGET</a>
-            <strong><strong>Target</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>MissionType</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Mission Type.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NassetsMin</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Min number of required assets.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>NassetsMax</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Max number of required assets.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return values:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>If <code>true</code> enough assets could be recruited.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#table:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>Assets that have been recruited from all legions.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#table:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>Legions that have recruited assets.</p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
 <h2><a id="#(CHIEF).RecruitAssetsForZone" ><strong>CHIEF:RecruitAssetsForZone(StratZone, Resource)</strong></a></h2>
 </div>
     
@@ -7194,6 +7229,141 @@ if a destination can be reached on land.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CHIEF).SetResponseOnTarget" ><strong>CHIEF:SetResponseOnTarget(NassetsMin, NassetsMax, ThreatLevel, TargetCategory, MissionType, Nunits, Defcon, Strategy)</strong></a></h2>
+</div>
+    
+<p>Set number of assets requested for detected targets.</p>
+
+<div id= "#Functions##SetResponseOnTarget" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>NassetsMin</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Min number of assets. Should be at least 1. Default 1.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>NassetsMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Max number of assets. Default is same as <code>NassetsMin</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ThreatLevel</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only apply this setting if the target threat level is greater or equal this number. Default 0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>TargetCategory</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only apply this setting if the target is of this category, e.g. <code>TARGET.Category.AIRCRAFT</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only apply this setting for this mission type, e.g. <code>AUFTRAG.Type.INTERCEPT</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Nunits</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only apply this setting if the number of enemy units is greater or equal this number.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Defcon</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only apply this setting if this defense condition is in place.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Strategy</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Only apply this setting if this strategy is in currently. place.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CHIEF)">#CHIEF</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CHIEF).SetStrategicZoneResourceEmpty" ><strong>CHIEF:SetStrategicZoneResourceEmpty(StrategicZone, Resource, NoCopy)</strong></a></h2>
 </div>
     
@@ -7827,6 +7997,71 @@ Targets with threat level 0 are usually harmless.</p>
 <p>Mission performance.</p>
 
       </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CHIEF)._GetAssetsForTarget" ><strong>CHIEF:_GetAssetsForTarget(Target, MissionType)</strong></a></h2>
+</div>
+    
+<p>Add mission type and number of required assets to resource.</p>
+
+<div id= "#Functions##_GetAssetsForTarget" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CHIEF</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.Target.html##(TARGET)">Ops.Target#TARGET</a>
+            <strong><strong>Target</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The target.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>MissionType</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Mission type.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Number of min assets.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Number of max assets.</p>
+
+        </div>
     </div>
 </div>
 
@@ -9413,6 +9648,109 @@ Targets with threat level 0 are usually harmless.</p>
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##CHIEF.AssetNumber')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CHIEF.AssetNumber)">Type <strong>CHIEF.AssetNumber</strong></a></h2></div>
+        <div id= "#Types##CHIEF.AssetNumber" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Asset numbers for detected targets.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CHIEF.AssetNumber).defcon" ><strong>CHIEF.AssetNumber.defcon</strong></a>
+    
+<p>Defense condition.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CHIEF.AssetNumber).missionType" ><strong>CHIEF.AssetNumber.missionType</strong></a>
+    
+<p>Mission type.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CHIEF.AssetNumber).nAssetMax" ><strong>CHIEF.AssetNumber.nAssetMax</strong></a>
+    
+<p>Max number of assets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CHIEF.AssetNumber).nAssetMin" ><strong>CHIEF.AssetNumber.nAssetMin</strong></a>
+    
+<p>Min number of assets.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CHIEF.AssetNumber).nUnits" ><strong>CHIEF.AssetNumber.nUnits</strong></a>
+    
+<p>Number of enemy units.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CHIEF.AssetNumber).strategy" ><strong>CHIEF.AssetNumber.strategy</strong></a>
+    
+<p>Strategy.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CHIEF.AssetNumber).targetCategory" ><strong>CHIEF.AssetNumber.targetCategory</strong></a>
+    
+<p>Target category.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CHIEF.AssetNumber).threatlevel" ><strong>CHIEF.AssetNumber.threatlevel</strong></a>
+    
+<p>Threat level.</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
