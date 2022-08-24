@@ -1974,7 +1974,8 @@ from the target objects:  </p>
 <ul>
     <li>A2A - AUFTRAG.Type.INTERCEPT</li>
     <li>A2S - AUFTRAG.Type.ANTISHIP</li>
-    <li>A2G - AUFTRAG.Type.CAS, AUFTRAG.Type.BAI, AUFTRAG.Type.SEAD, AUFTRAG.Type.BOMBING, AUFTRAG.Type.BOMBRUNWAY</li>
+    <li>A2G - AUFTRAG.Type.CAS, AUFTRAG.Type.BAI, AUFTRAG.Type.SEAD, AUFTRAG.Type.BOMBING, AUFTRAG.Type.PRECISIONBOMBING, AUFTRAG.Type.BOMBRUNWAY</li>
+    <li>A2GS - A2S and A2G combined</li>
 </ul>
 
 <p>Task types are derived from <a href="Ops.Auftrag.html##(AUFTRAG)">Ops.Auftrag#AUFTRAG</a>:   </p>
@@ -1984,6 +1985,7 @@ from the target objects:  </p>
     <li>BAI - Battlefield air interdiction, same as above, but no friendlies around</li>
     <li>SEAD - Same as CAS, but the enemy ground units field AAA, SAM or EWR units</li>
     <li>Bombing - Against static targets</li>
+    <li>Precision Bombing - (if enabled) Laser-guided bombing, against static targets and high-value ground targets (MBTs etc)</li>
     <li>Bomb Runway - Against Airbase runways (in effect, drop bombs over the runway)</li>
     <li>ZONE and COORDINATE - Targets will be scanned for GROUND or STATIC enemy units and tasks created from these</li>
     <li>Intercept - Any airborne targets, if the controller is of type "A2A"</li>
@@ -2073,6 +2075,7 @@ To add a localization, the following texts need to be translated and set in your
            CASTTS = "close air support",
            SEADTTS = "suppress air defense",
            BOMBTTS = "bombing",
+           PRECBOMBTTS = "precision bombing",
            BAITTS = "battle field air interdiction",
            ANTISHIPTTS = "anti-ship",
            INTERCEPTTS = "intercept",
@@ -2112,6 +2115,10 @@ To add a localization, the following texts need to be translated and set in your
            TASKADDED = "%s has a new task %s available!",
            PILOTS = "\nPilot(s): ",
            PILOTSTTS = ". Pilot(s): ",
+           YES = "Yes",
+           NO = "No",
+           POINTEROVERTARGET = "%s, %s, pointer over target for task %03d, lasing!",
+           POINTERTARGETREPORT = "\nPointer over target: %s\nLasing: %s\n",
          },
 </code></pre>
 
@@ -3505,6 +3512,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).DisablePrecisionBombing">PLAYERTASKCONTROLLER:DisablePrecisionBombing(FlightGroup, LaserCode)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Disable precision laser-guided bombing on statics and "high-value" ground units (MBT etc)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnablePrecisionBombing">PLAYERTASKCONTROLLER:EnablePrecisionBombing(FlightGroup, LaserCode)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Allow precision laser-guided bombing on statics and "high-value" ground units (MBT etc)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).Frequency">PLAYERTASKCONTROLLER.Frequency</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -3518,6 +3537,24 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).Intel">PLAYERTASKCONTROLLER.Intel</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).LaserCode">PLAYERTASKCONTROLLER.LaserCode</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).LasingDrone">PLAYERTASKCONTROLLER.LasingDrone</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).LasingDroneTemplate">PLAYERTASKCONTROLLER.LasingDroneTemplate</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3614,6 +3651,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).Port">PLAYERTASKCONTROLLER.Port</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).PrecisionTasks">PLAYERTASKCONTROLLER.PrecisionTasks</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3811,6 +3854,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._CheckPrecisionTasks">PLAYERTASKCONTROLLER:_CheckPrecisionTasks()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Check precision task queue</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._CheckTargetQueue">PLAYERTASKCONTROLLER:_CheckTargetQueue()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Check target queue</p>
@@ -3883,7 +3932,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).coalition">PLAYERTASKCONTROLLER.coalition</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).autolase">PLAYERTASKCONTROLLER.autolase</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3952,6 +4001,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).onafterTaskSuccess">PLAYERTASKCONTROLLER:onafterTaskSuccess(From, Event, To, Task)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] On after task success</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).precisionbombing">PLAYERTASKCONTROLLER.precisionbombing</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -4796,6 +4851,43 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).onEvent">PLAYERTASKCONTROLLER:onEvent(event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The main event handling function...</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Type)">Type <strong>Type</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(Type)">Type</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from Type</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(Type).A2A">Type.A2A</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Air-to-Air Controller</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(Type).A2G">Type.A2G</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Air-to-Ground Controller</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(Type).A2GS">Type.A2GS</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Air-to-Ground-and-Ship Controller</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(Type).A2S">Type.A2S</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Air-to-Ship Controller</p>
 </td>
           </tr>
         </table>
@@ -12366,6 +12458,28 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Ops.FlightGroup.html##(FLIGHTGROUP)">Ops.FlightGroup#FLIGHTGROUP</a>
+<a id="#(PLAYERTASKCONTROLLER).LasingDrone" ><strong>PLAYERTASKCONTROLLER.LasingDrone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PLAYERTASKCONTROLLER).LasingDroneTemplate" ><strong>PLAYERTASKCONTROLLER.LasingDroneTemplate</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(PLAYERTASKCONTROLLER).MenuName" ><strong>PLAYERTASKCONTROLLER.MenuName</strong></a>
     
@@ -12423,6 +12537,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #table
 <a id="#(PLAYERTASKCONTROLLER).PlayerMenu" ><strong>PLAYERTASKCONTROLLER.PlayerMenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
+<a id="#(PLAYERTASKCONTROLLER).PrecisionTasks" ><strong>PLAYERTASKCONTROLLER.PrecisionTasks</strong></a>
     
 
 
@@ -12578,17 +12703,6 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(PLAYERTASKCONTROLLER).coalition" ><strong>PLAYERTASKCONTROLLER.coalition</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
 <a id="#(PLAYERTASKCONTROLLER).gettext" ><strong>PLAYERTASKCONTROLLER.gettext</strong></a>
     
@@ -12613,6 +12727,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #string
 <a id="#(PLAYERTASKCONTROLLER).locale" ><strong>PLAYERTASKCONTROLLER.locale</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).precisionbombing" ><strong>PLAYERTASKCONTROLLER.precisionbombing</strong></a>
     
 
 
@@ -12867,6 +12992,114 @@ BASE:TraceOnOff( false )</code></pre>
           <div class="w3-half">
               
 <p>The task to be cancelled</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).DisablePrecisionBombing" ><strong>PLAYERTASKCONTROLLER:DisablePrecisionBombing(FlightGroup, LaserCode)</strong></a></h2>
+</div>
+    
+<p>[User] Disable precision laser-guided bombing on statics and "high-value" ground units (MBT etc)</p>
+
+<div id= "#Functions##DisablePrecisionBombing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>FlightGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>LaserCode</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).EnablePrecisionBombing" ><strong>PLAYERTASKCONTROLLER:EnablePrecisionBombing(FlightGroup, LaserCode)</strong></a></h2>
+</div>
+    
+<p>[User] Allow precision laser-guided bombing on statics and "high-value" ground units (MBT etc)</p>
+
+<div id= "#Functions##EnablePrecisionBombing" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.FlightGroup.html##(FLIGHTGROUP)">Ops.FlightGroup#FLIGHTGROUP</a>
+            <strong><strong>FlightGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The FlightGroup (e.g. drone) to be used for lasing (one unit in one group only)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>LaserCode</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The lasercode to be used. Defaults to 1688.</p>
 
           </div>
         </div>
@@ -13995,7 +14228,8 @@ Note that this must be installed on your windows system. Can also be Google voic
     <pre class="example"><code>Currently, the following task types will be generated, if detection has been set up:
 A2A - AUFTRAG.Type.INTERCEPT
 A2S - AUFTRAG.Type.ANTISHIP
-A2G - AUFTRAG.Type.CAS, AUFTRAG.Type.BAI, AUFTRAG.Type.SEAD, AUFTRAG.Type.BOMBING, AUFTRAG.Type.BOMBRUNWAY
+A2G - AUFTRAG.Type.CAS, AUFTRAG.Type.BAI, AUFTRAG.Type.SEAD, AUFTRAG.Type.BOMBING, AUFTRAG.Type.PRECISIONBOMBING, AUFTRAG.Type.BOMBRUNWAY
+A2GS - A2G + A2S
 If you don't want SEAD tasks generated, use as follows where "mycontroller" is your PLAYERTASKCONTROLLER object:
 
            `mycontroller:SetTaskWhiteList({AUFTRAG.Type.CAS, AUFTRAG.Type.BAI, AUFTRAG.Type.BOMBING, AUFTRAG.Type.BOMBRUNWAY})`
@@ -14363,6 +14597,36 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
       <div class="w3-half">
         
 <p>outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER)._CheckPrecisionTasks" ><strong>PLAYERTASKCONTROLLER:_CheckPrecisionTasks()</strong></a></h2>
+</div>
+    
+<p>[Internal] Check precision task queue</p>
+
+<div id= "#Functions##_CheckPrecisionTasks" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
@@ -15530,6 +15794,28 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Ops.FlightGroup.html##(FLIGHTGROUP)">Ops.FlightGroup#FLIGHTGROUP</a>
+<a id="#(PLAYERTASKCONTROLLER).LasingDrone" ><strong>PLAYERTASKCONTROLLER.LasingDrone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PLAYERTASKCONTROLLER).LasingDroneTemplate" ><strong>PLAYERTASKCONTROLLER.LasingDroneTemplate</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(PLAYERTASKCONTROLLER).MenuName" ><strong>PLAYERTASKCONTROLLER.MenuName</strong></a>
     
@@ -15587,6 +15873,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #table
 <a id="#(PLAYERTASKCONTROLLER).PlayerMenu" ><strong>PLAYERTASKCONTROLLER.PlayerMenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
+<a id="#(PLAYERTASKCONTROLLER).PrecisionTasks" ><strong>PLAYERTASKCONTROLLER.PrecisionTasks</strong></a>
     
 
 
@@ -15742,17 +16039,6 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(PLAYERTASKCONTROLLER).coalition" ><strong>PLAYERTASKCONTROLLER.coalition</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
 <a id="#(PLAYERTASKCONTROLLER).gettext" ><strong>PLAYERTASKCONTROLLER.gettext</strong></a>
     
@@ -15777,6 +16063,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #string
 <a id="#(PLAYERTASKCONTROLLER).locale" ><strong>PLAYERTASKCONTROLLER.locale</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).precisionbombing" ><strong>PLAYERTASKCONTROLLER.precisionbombing</strong></a>
     
 
 
@@ -17363,6 +17660,28 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Ops.FlightGroup.html##(FLIGHTGROUP)">Ops.FlightGroup#FLIGHTGROUP</a>
+<a id="#(PLAYERTASKCONTROLLER).LasingDrone" ><strong>PLAYERTASKCONTROLLER.LasingDrone</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PLAYERTASKCONTROLLER).LasingDroneTemplate" ><strong>PLAYERTASKCONTROLLER.LasingDroneTemplate</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(PLAYERTASKCONTROLLER).MenuName" ><strong>PLAYERTASKCONTROLLER.MenuName</strong></a>
     
@@ -17420,6 +17739,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #table
 <a id="#(PLAYERTASKCONTROLLER).PlayerMenu" ><strong>PLAYERTASKCONTROLLER.PlayerMenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
+<a id="#(PLAYERTASKCONTROLLER).PrecisionTasks" ><strong>PLAYERTASKCONTROLLER.PrecisionTasks</strong></a>
     
 
 
@@ -17575,17 +17905,6 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(PLAYERTASKCONTROLLER).coalition" ><strong>PLAYERTASKCONTROLLER.coalition</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
 <a id="#(PLAYERTASKCONTROLLER).gettext" ><strong>PLAYERTASKCONTROLLER.gettext</strong></a>
     
@@ -17610,6 +17929,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #string
 <a id="#(PLAYERTASKCONTROLLER).locale" ><strong>PLAYERTASKCONTROLLER.locale</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).precisionbombing" ><strong>PLAYERTASKCONTROLLER.precisionbombing</strong></a>
     
 
 
@@ -20998,6 +21328,62 @@ BASE:TraceOnOff( false )</code></pre>
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##Type')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Type)">Type <strong>Type</strong></a></h2></div>
+        <div id= "#Types##Type" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(Type).A2A" ><strong>Type.A2A</strong></a>
+    
+<p>Air-to-Air Controller</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(Type).A2G" ><strong>Type.A2G</strong></a>
+    
+<p>Air-to-Ground Controller</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(Type).A2GS" ><strong>Type.A2GS</strong></a>
+    
+<p>Air-to-Ground-and-Ship Controller</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(Type).A2S" ><strong>Type.A2S</strong></a>
+    
+<p>Air-to-Ship Controller</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
