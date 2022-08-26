@@ -2217,7 +2217,99 @@ in this example will be the name of the new station point. The user marker can t
 You can delete a player station point the same way: "AWACS Delete London"; note this will only work if currently there are no assigned flights on this station. 
 Lastly, you can move the station around with keyword "Move": "AWACS Move London".</p>
 
-<h2>11 Discussion</h2>
+<h2>11 Localization</h2>
+
+<p>Localization for English text is build-in. Default setting is English. Change with <a href="##(AWACS).SetLocale">AWACS.SetLocale</a>()</p>
+
+<h3>11.1 Adding Localization</h3>
+
+<p>A list of fields to be defined follows below. <strong>Note</strong> that in some cases <code>string.format()</code> is used to format texts for screen and SRS. 
+Hence, the <code>%d</code>, <code>%s</code> and <code>%f</code> special characters need to appear in the exact same amount and order of appearance in the localized text or it will create errors.
+To add a localization, the following texts need to be translated and set in your mission script <strong>before</strong> <a href="##(AWACS).Start">AWACS.Start</a>():   </p>
+
+<pre><code> AWACS.Messages = {
+   EN =
+     {
+     DEFEND = "%s, %s! %s! %s! Defend!",
+     VECTORTO = "%s, %s. Vector%s %s",
+     VECTORTOTTS = "%s, %s, Vector%s %s",
+     ANGELS = ". Angels ",
+     ZERO = "zero",
+     VANISHED = "%s, %s Group. Vanished.",
+     VANISHEDTTS = "%s, %s group vanished.",
+     SHIFTCHANGE = "%s shift change for %s control.",
+     GROUPCAP = "Group",
+     GROUP = "group",
+     MILES = "miles",
+     THOUSAND = "thousand",
+     BOGEY = "Bogey",
+     ALLSTATIONS = "All Stations",
+     PICCLEAN = "%s. %s. Picture Clean.",
+     PICTURE = "Picture",
+     ONE = "One",
+     GROUPMULTI = "groups",
+     NOTCHECKEDIN = "%s. %s. Negative. You are not checked in.",
+     CLEAN = "%s. %s. Clean.",
+     DOPE = "%s. %s. Bogey Dope. ",
+     VIDPOS = "%s. %s. Copy, target identified as %s.",
+     VIDNEG = "%s. %s. Negative, get closer to target.",
+     FFNEUTRAL = "Neutral",
+     FFFRIEND = "Friendly",
+     FFHOSTILE = "Hostile",
+     FFSPADES = "Spades",
+     FFCLEAN = "Clean",
+     COPY = "%s. %s. Copy.",
+     TARGETEDBY = "Targeted by %s.",
+     STATUS = "Status",
+     ALREADYCHECKEDIN = "%s. %s. Negative. You are already checked in.",
+     ALPHACHECK = "Alpha Check",
+     CHECKINAI = "%s. %s. Checking in as fragged. Expected playtime %d hours. Request Alpha Check %s.",
+     SAFEFLIGHT = "%s. %s. Copy. Have a safe flight home.",
+     VERYLOW = "very low",
+     AIONSTATION = "%s. %s. On station over anchor %d at angels  %d. Ready for tasking.",
+     POPUP = "Pop-up",
+     NEWGROUP = "New group",
+     HIGH= " High.",
+     VERYFAST = " Very fast.",
+     FAST = " Fast.",
+     THREAT = "Threat",
+     MERGED = "Merged",
+     SCREENVID = "Intercept and VID %s group.",
+     SCREENINTER = "Intercept %s group.",
+     ENGAGETAG = "Targeted by %s.",
+     REQCOMMIT = "%s. %s group. %s. %s, request commit.",
+     AICOMMIT = "%s. %s group. %s. %s, commit.",
+     COMMIT = "Commit",
+     SUNRISE = "%s. All stations, SUNRISE SUNRISE SUNRISE, %s.",
+     AWONSTATION = "%s on station for %s control.",
+     STATIONAT = "%s. %s. Station at %s at angels %d.",
+     STATIONATLONG = "%s. %s. Station at %s at angels %d doing %d knots.",
+     STATIONSCREEN = "%s. %s.\nStation at %s\nAngels %d\nSpeed %d knots\nCoord %s\nROE %s.",
+     STATIONTASK = "Station at %s\nAngels %d\nSpeed %d knots\nCoord %s\nROE %s",
+     VECTORSTATION = " to Station",
+     TEXTOPTIONS1 = "Lost friendly flight",
+     TEXTOPTIONS2 =  "Vanished friendly flight",
+     TEXTOPTIONS3 =  "Faded friendly contact",
+     TEXTOPTIONS4 =  "Lost contact with",
+     },
+    } 
+</code></pre>
+
+<p>e.g.</p>
+
+<pre><code>       testawacs.Messages = {
+         DE = {
+           ...
+           FFNEUTRAL = "Neutral",
+           FFFRIEND = "Freund",
+           FFHOSTILE = "Feind",
+           FFSPADES = "Uneindeutig",
+           FFCLEAN = "Sauber",
+           ...
+         },
+</code></pre>
+
+<h2>12 Discussion</h2>
 
 <p>If you have questions or suggestions, please visit the <a href="https://discord.gg/AeYAkHP">MOOSE Discord</a> #ops-awacs channel.</p>
 
@@ -2680,6 +2772,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).Messages">AWACS.Messages</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).ModernEra">AWACS.ModernEra</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>if true we get more intel on targets, and EPLR on the AIC</p>
@@ -2977,6 +3075,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetInterceptTimeline">AWACS:SetInterceptTimeline(TacDistance, MeldDistance, ThreatDistance)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Set AWACS intercept timeline support distance.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).SetLocale">AWACS:SetLocale(Locale)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Set locale for localization.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3394,6 +3498,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._InitLocalization">AWACS:_InitLocalization()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Init localization</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS)._Judy">AWACS:_Judy(Group)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] AWACS Menu for Judy</p>
@@ -3646,6 +3756,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).gettext">AWACS.gettext</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).intel">AWACS.intel</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -3661,6 +3777,12 @@ Lastly, you can move the station around with keyword "Move": "AWACS Move London"
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).lid">AWACS.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>LID for log entries.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AWACS).locale">AWACS.locale</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Localization</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6043,6 +6165,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(AWACS).Messages" ><strong>AWACS.Messages</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AWACS).ModernEra" ><strong>AWACS.ModernEra</strong></a>
     
@@ -6626,6 +6759,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
+<a id="#(AWACS).gettext" ><strong>AWACS.gettext</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Ops.Intelligence.html##(INTEL)">Ops.Intelligence#INTEL</a>
 <a id="#(AWACS).intel" ><strong>AWACS.intel</strong></a>
     
@@ -6652,6 +6796,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(AWACS).lid" ><strong>AWACS.lid</strong></a>
     
 <p>LID for log entries.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AWACS).locale" ><strong>AWACS.locale</strong></a>
+    
+<p>Localization</p>
 
 </div>
 
@@ -8291,6 +8446,53 @@ The default callsign used in AWACS is "Magic". With the above change, the AWACS 
           <div class="w3-half">
               
 <p>Distance for Threat call, default 25nm</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS).SetLocale" ><strong>AWACS:SetLocale(Locale)</strong></a></h2>
+</div>
+    
+<p>[User] Set locale for localization.</p>
+
+    
+<p>Defaults to "en"</p>
+
+<div id= "#Functions##SetLocale" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Locale</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The locale to use</p>
 
           </div>
         </div>
@@ -10826,6 +11028,36 @@ Note that this must be installed on your windows system. Can also be Google voic
       <div class="w3-half">
         
 <p>threattext</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AWACS)._InitLocalization" ><strong>AWACS:_InitLocalization()</strong></a></h2>
+</div>
+    
+<p>[Internal] Init localization</p>
+
+<div id= "#Functions##_InitLocalization" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AWACS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AWACS)">#AWACS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
@@ -14500,6 +14732,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(AWACS).Messages" ><strong>AWACS.Messages</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AWACS).ModernEra" ><strong>AWACS.ModernEra</strong></a>
     
@@ -15083,6 +15326,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
+<a id="#(AWACS).gettext" ><strong>AWACS.gettext</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Ops.Intelligence.html##(INTEL)">Ops.Intelligence#INTEL</a>
 <a id="#(AWACS).intel" ><strong>AWACS.intel</strong></a>
     
@@ -15109,6 +15363,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).lid" ><strong>AWACS.lid</strong></a>
     
 <p>LID for log entries.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AWACS).locale" ><strong>AWACS.locale</strong></a>
+    
+<p>Localization</p>
 
 </div>
 
@@ -17213,6 +17478,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(AWACS).Messages" ><strong>AWACS.Messages</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(AWACS).ModernEra" ><strong>AWACS.ModernEra</strong></a>
     
@@ -17796,6 +18072,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
+<a id="#(AWACS).gettext" ><strong>AWACS.gettext</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Ops.Intelligence.html##(INTEL)">Ops.Intelligence#INTEL</a>
 <a id="#(AWACS).intel" ><strong>AWACS.intel</strong></a>
     
@@ -17822,6 +18109,17 @@ Note that this must be installed on your windows system. Can also be Google voic
 <a id="#(AWACS).lid" ><strong>AWACS.lid</strong></a>
     
 <p>LID for log entries.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(AWACS).locale" ><strong>AWACS.locale</strong></a>
+    
+<p>Localization</p>
 
 </div>
 
