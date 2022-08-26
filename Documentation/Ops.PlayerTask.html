@@ -2119,6 +2119,7 @@ To add a localization, the following texts need to be translated and set in your
            NO = "No",
            POINTEROVERTARGET = "%s, %s, pointer over target for task %03d, lasing!",
            POINTERTARGETREPORT = "\nPointer over target: %s\nLasing: %s",
+           POINTERTARGETLASINGTTS = ". Pointer over target and lasing.",
          },
 </code></pre>
 
@@ -3923,6 +3924,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._GetAvailableTaskTypes">PLAYERTASKCONTROLLER:_GetAvailableTaskTypes()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Get task types for the menu</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._GetPlayerName">PLAYERTASKCONTROLLER:_GetPlayerName(Client)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Get player name</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -12821,17 +12828,6 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(PLAYERTASKCONTROLLER).repeattimes" ><strong>PLAYERTASKCONTROLLER.repeattimes</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(PLAYERTASKCONTROLLER).usecluster" ><strong>PLAYERTASKCONTROLLER.usecluster</strong></a>
     
@@ -13160,7 +13156,8 @@ BASE:TraceOnOff( false )</code></pre>
           </div>
           <div class="w3-half">
               
-<p>The FlightGroup (e.g. drone) to be used for lasing (one unit in one group only)</p>
+<p>The FlightGroup (e.g. drone) to be used for lasing (one unit in one group only).
+Can optionally be handed as Ops.ArmyGroup#ARMYGROUP - <strong>Note</strong> might not find an LOS spot or get lost on the way. Cannot island-hop.</p>
 
           </div>
         </div>
@@ -13188,6 +13185,20 @@ BASE:TraceOnOff( false )</code></pre>
 
       </div>
     </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- Set up precision bombing, FlightGroup as lasing unit
+       local FlightGroup = FLIGHTGROUP:New("LasingUnit")
+       FlightGroup:Activate()
+       taskmanager:EnablePrecisionBombing(FlightGroup,1688)
+
+-- Alternatively, set up precision bombing, ArmyGroup as lasing unit
+       local ArmyGroup = ARMYGROUP:New("LasingUnit")
+       ArmyGroup:SetDefaultROE(ENUMS.ROE.WeaponHold)
+       ArmyGroup:SetDefaultInvisible(true)
+       ArmyGroup:Activate()
+       taskmanager:EnablePrecisionBombing(ArmyGroup,1688)
+</code></pre>
+
 </div>
 
 </div>
@@ -15069,6 +15080,56 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER)._GetPlayerName" ><strong>PLAYERTASKCONTROLLER:_GetPlayerName(Client)</strong></a></h2>
+</div>
+    
+<p>[Internal] Get player name</p>
+
+<div id= "#Functions##_GetPlayerName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Client.html##(CLIENT)">Wrapper.Client#CLIENT</a>
+            <strong><strong>Client</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>playername</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#string:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>ttsplayername</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER)._GetTasksPerType" ><strong>PLAYERTASKCONTROLLER:_GetTasksPerType()</strong></a></h2>
 </div>
     
@@ -16292,17 +16353,6 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #boolean
 <a id="#(PLAYERTASKCONTROLLER).repeatonfailed" ><strong>PLAYERTASKCONTROLLER.repeatonfailed</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(PLAYERTASKCONTROLLER).repeattimes" ><strong>PLAYERTASKCONTROLLER.repeattimes</strong></a>
     
 
 
@@ -18202,17 +18252,6 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #boolean
 <a id="#(PLAYERTASKCONTROLLER).repeatonfailed" ><strong>PLAYERTASKCONTROLLER.repeatonfailed</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(PLAYERTASKCONTROLLER).repeattimes" ><strong>PLAYERTASKCONTROLLER.repeattimes</strong></a>
     
 
 
