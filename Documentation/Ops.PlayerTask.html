@@ -2092,7 +2092,7 @@ To add a localization, the following texts need to be translated and set in your
            INTERCEPTTS = "intercept",
            BOMBRUNWAYTTS = "bomb runway",
            HAVEACTIVETASK = "You already have one active task! Complete it first!",
-           PILOTJOINEDTASK = "%s, %s joined task %03d",
+           PILOTJOINEDTASK = "%s, %s. You have been assigned %s task %03d",
            TASKNAME = "%s Task ID %03d",
            TASKNAMETTS = "%s Task ID %03d",
            THREATHIGH = "high",
@@ -2103,7 +2103,7 @@ To add a localization, the following texts need to be translated and set in your
            MARKTASK = "%s, %s, copy, task %03d location marked on map!",
            SMOKETASK = "%s, %s, copy, task %03d location smoked!",
            FLARETASK = "%s, %s, copy, task %03d location illuminated!",
-           ABORTTASK = "%s, all stations, %s aborted task %03d!",
+           ABORTTASK = "%s, all stations, %s has aborted %s task %03d!",
            UNKNOWN = "Unknown",
            MENUTASKING = " Tasking ",
            MENUACTIVE = "Active Task",
@@ -2113,6 +2113,7 @@ To add a localization, the following texts need to be translated and set in your
            MENUFLARE = "Flare",
            MENUABORT = "Abort",
            MENUJOIN = "Join Task",
+           MENUTASKINFO = Task Info",
            MENUTASKNO = "TaskNo",
            MENUNOTASKS = "Currently no tasks available.",
            TASKCANCELLED = "Task #%03d %s is cancelled!",
@@ -2128,6 +2129,7 @@ To add a localization, the following texts need to be translated and set in your
            PILOTSTTS = ". Pilot(s): ",
            YES = "Yes",
            NO = "No",
+           NONE = "None",
            POINTEROVERTARGET = "%s, %s, pointer in reach for task %03d, lasing!",
            POINTERTARGETREPORT = "\nPointer in reach: %s\nLasing: %s",
            POINTERTARGETLASINGTTS = ". Pointer in reach and lasing.",
@@ -3547,6 +3549,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).DisableTaskInfoMenu">PLAYERTASKCONTROLLER:DisableTaskInfoMenu()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Disable extra menu to show task detail information before joining</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnableMarkerOps">PLAYERTASKCONTROLLER:EnableMarkerOps(Tag)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Allow addition of targets with user F10 map markers.</p>
@@ -3556,6 +3564,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnablePrecisionBombing">PLAYERTASKCONTROLLER:EnablePrecisionBombing(FlightGroup, LaserCode)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Allow precision laser-guided bombing on statics and "high-value" ground units (MBT etc)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnableTaskInfoMenu">PLAYERTASKCONTROLLER:EnableTaskInfoMenu()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Enable extra menu to show task detail information before joining</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3895,7 +3909,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._ActiveTaskInfo">PLAYERTASKCONTROLLER:_ActiveTaskInfo(Group, Client)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._ActiveTaskInfo">PLAYERTASKCONTROLLER:_ActiveTaskInfo(Group, Client, Task)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Show active task info</p>
 </td>
@@ -3907,7 +3921,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._BuildMenus">PLAYERTASKCONTROLLER:_BuildMenus(Client)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._BuildMenus">PLAYERTASKCONTROLLER:_BuildMenus(Client, enforced)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Build client menus</p>
 </td>
@@ -4015,6 +4029,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).askinfomenu">PLAYERTASKCONTROLLER.askinfomenu</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).autolase">PLAYERTASKCONTROLLER.autolase</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -4028,6 +4048,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).gettext">PLAYERTASKCONTROLLER.gettext</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).lasttaskcount">PLAYERTASKCONTROLLER.lasttaskcount</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -4106,6 +4132,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).repeattimes">PLAYERTASKCONTROLLER.repeattimes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).taskinfomenu">PLAYERTASKCONTROLLER.taskinfomenu</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -5515,16 +5547,24 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>PLAYERTASK</p>
 </div>
-    <h2><strong>Return value:</strong></h2>
+    <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#table:</p>
-      </div>
-      <div class="w3-half">
-        
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
 <p>clients</p>
 
-      </div>
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>clientcount</p>
+
+        </div>
     </div>
 </div>
 
@@ -12867,6 +12907,17 @@ BASE:TraceOnOff( false )</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).askinfomenu" ><strong>PLAYERTASKCONTROLLER.askinfomenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(PLAYERTASKCONTROLLER).coalition" ><strong>PLAYERTASKCONTROLLER.coalition</strong></a>
     
@@ -12880,6 +12931,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
 <a id="#(PLAYERTASKCONTROLLER).gettext" ><strong>PLAYERTASKCONTROLLER.gettext</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PLAYERTASKCONTROLLER).lasttaskcount" ><strong>PLAYERTASKCONTROLLER.lasttaskcount</strong></a>
     
 
 
@@ -12924,6 +12986,17 @@ BASE:TraceOnOff( false )</code></pre>
 
     #boolean
 <a id="#(PLAYERTASKCONTROLLER).repeatonfailed" ><strong>PLAYERTASKCONTROLLER.repeatonfailed</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).taskinfomenu" ><strong>PLAYERTASKCONTROLLER.taskinfomenu</strong></a>
     
 
 
@@ -13249,6 +13322,36 @@ BASE:TraceOnOff( false )</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).DisableTaskInfoMenu" ><strong>PLAYERTASKCONTROLLER:DisableTaskInfoMenu()</strong></a></h2>
+</div>
+    
+<p>[User] Disable extra menu to show task detail information before joining</p>
+
+<div id= "#Functions##DisableTaskInfoMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER).EnableMarkerOps" ><strong>PLAYERTASKCONTROLLER:EnableMarkerOps(Tag)</strong></a></h2>
 </div>
     
@@ -13357,6 +13460,36 @@ Can optionally be handed as Ops.ArmyGroup#ARMYGROUP - <strong>Note</strong> migh
        taskmanager:EnablePrecisionBombing(ArmyGroup,1688)
 </code></pre>
 
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).EnableTaskInfoMenu" ><strong>PLAYERTASKCONTROLLER:EnableTaskInfoMenu()</strong></a></h2>
+</div>
+    
+<p>[User] Enable extra menu to show task detail information before joining</p>
+
+<div id= "#Functions##EnableTaskInfoMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -14786,7 +14919,7 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(PLAYERTASKCONTROLLER)._ActiveTaskInfo" ><strong>PLAYERTASKCONTROLLER:_ActiveTaskInfo(Group, Client)</strong></a></h2>
+<h2><a id="#(PLAYERTASKCONTROLLER)._ActiveTaskInfo" ><strong>PLAYERTASKCONTROLLER:_ActiveTaskInfo(Group, Client, Task)</strong></a></h2>
 </div>
     
 <p>[Internal] Show active task info</p>
@@ -14814,6 +14947,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
             <p>
                 <a href="Wrapper.Client.html##(CLIENT)">Wrapper.Client#CLIENT</a>
             <strong><strong>Client</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.PlayerTask.html##(PLAYERTASK)">Ops.PlayerTask#PLAYERTASK</a>
+            <strong><strong>Task</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -14881,7 +15025,7 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(PLAYERTASKCONTROLLER)._BuildMenus" ><strong>PLAYERTASKCONTROLLER:_BuildMenus(Client)</strong></a></h2>
+<h2><a id="#(PLAYERTASKCONTROLLER)._BuildMenus" ><strong>PLAYERTASKCONTROLLER:_BuildMenus(Client, enforced)</strong></a></h2>
 </div>
     
 <p>[Internal] Build client menus</p>
@@ -14892,7 +15036,7 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
    <div class="w3-margin-left">
 <p>PLAYERTASKCONTROLLER</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -14904,6 +15048,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
               
 <p>(optional) build for this client name only</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(boolen)">#boolen</a>
+            <strong><strong>enforced</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -16575,6 +16730,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).askinfomenu" ><strong>PLAYERTASKCONTROLLER.askinfomenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(PLAYERTASKCONTROLLER).coalition" ><strong>PLAYERTASKCONTROLLER.coalition</strong></a>
     
@@ -16588,6 +16754,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
 <a id="#(PLAYERTASKCONTROLLER).gettext" ><strong>PLAYERTASKCONTROLLER.gettext</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PLAYERTASKCONTROLLER).lasttaskcount" ><strong>PLAYERTASKCONTROLLER.lasttaskcount</strong></a>
     
 
 
@@ -16632,6 +16809,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #boolean
 <a id="#(PLAYERTASKCONTROLLER).repeatonfailed" ><strong>PLAYERTASKCONTROLLER.repeatonfailed</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).taskinfomenu" ><strong>PLAYERTASKCONTROLLER.taskinfomenu</strong></a>
     
 
 
@@ -18496,6 +18684,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).askinfomenu" ><strong>PLAYERTASKCONTROLLER.askinfomenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(PLAYERTASKCONTROLLER).coalition" ><strong>PLAYERTASKCONTROLLER.coalition</strong></a>
     
@@ -18509,6 +18708,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
 <a id="#(PLAYERTASKCONTROLLER).gettext" ><strong>PLAYERTASKCONTROLLER.gettext</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PLAYERTASKCONTROLLER).lasttaskcount" ><strong>PLAYERTASKCONTROLLER.lasttaskcount</strong></a>
     
 
 
@@ -18553,6 +18763,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
     #boolean
 <a id="#(PLAYERTASKCONTROLLER).repeatonfailed" ><strong>PLAYERTASKCONTROLLER.repeatonfailed</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).taskinfomenu" ><strong>PLAYERTASKCONTROLLER.taskinfomenu</strong></a>
     
 
 
