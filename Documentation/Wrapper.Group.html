@@ -1918,6 +1918,12 @@ Use the following Zone validation methods on the group:</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(GROUP).GetCustomCallSign">GROUP:GetCustomCallSign(ShortCallsign, Keepnumber, CallsignTranslations)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get TTS friendly, optionally customized callsign mainly for <strong>player groups</strong>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(GROUP).GetDCSDesc">GROUP:GetDCSDesc(n)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns the DCS descriptor table of the nth unit of the group.</p>
@@ -4931,7 +4937,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(GROUP).InitRespawnRandomizePositionZone" ><strong>GROUP.InitRespawnRandomizePositionZone</strong></a>
+<a id="#(GROUP).InitRespawnRandomizePositionInner" ><strong>GROUP.InitRespawnRandomizePositionInner</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(GROUP).InitRespawnRandomizePositionOuter" ><strong>GROUP.InitRespawnRandomizePositionOuter</strong></a>
     
 
 
@@ -5751,6 +5768,96 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(GROUP).GetCustomCallSign" ><strong>GROUP:GetCustomCallSign(ShortCallsign, Keepnumber, CallsignTranslations)</strong></a></h2>
+</div>
+    
+<p>Get TTS friendly, optionally customized callsign mainly for <strong>player groups</strong>.</p>
+
+    
+<p>A customized callsign is taken from the #GROUP name, after an optional '#' sign, e.g. "Aerial 1-1#Ghostrider" resulting in "Ghostrider 9", or, 
+if that isn't available, from the playername, as set in the mission editor main screen under Logbook, after an optional '|' sign (actually, more of a personal call sign), e.g. "Apple|Moose" results in "Moose 9 1". Options see below.</p>
+
+<div id= "#Functions##GetCustomCallSign" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>GROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>ShortCallsign</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Return a shortened customized callsign, i.e. "Ghostrider 9" and not "Ghostrider 9 1"</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Keepnumber</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Player only) Return customized callsign, incl optional numbers at the end, e.g. "Aerial 1-1#Ghostrider 109" results in "Ghostrider 109", if you want to e.g. use historical US Navy Callsigns</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>CallsignTranslations</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>with DCS callsigns as keys and replacements as values</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Callsign</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>           -- Set Custom CAP Flight Callsigns for use with TTS
+           mygroup:GetCustomCallSign(true,false,{
+             Devil = 'Bengal',
+             Snake = 'Winder',
+             Colt = 'Camelot',
+             Enfield = 'Victory',
+             Uzi = 'Evil Eye'
+           })
+
+results in this outcome if the group has Callsign "Enfield 9 1" on the 1st #UNIT of the group:
+
+     'Victory 9'
+
+</code></pre>
+
 </div>
 
 </div>
@@ -9172,7 +9279,18 @@ So each unit of the group is respawned at exactly the same parking spot as it cu
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(GROUP).InitRespawnRandomizePositionZone" ><strong>GROUP.InitRespawnRandomizePositionZone</strong></a>
+<a id="#(GROUP).InitRespawnRandomizePositionInner" ><strong>GROUP.InitRespawnRandomizePositionInner</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(GROUP).InitRespawnRandomizePositionOuter" ><strong>GROUP.InitRespawnRandomizePositionOuter</strong></a>
     
 
 
@@ -18058,7 +18176,18 @@ Note that when the WayPoint parameter is used, the new start mission waypoint of
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(GROUP).InitRespawnRandomizePositionZone" ><strong>GROUP.InitRespawnRandomizePositionZone</strong></a>
+<a id="#(GROUP).InitRespawnRandomizePositionInner" ><strong>GROUP.InitRespawnRandomizePositionInner</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(GROUP).InitRespawnRandomizePositionOuter" ><strong>GROUP.InitRespawnRandomizePositionOuter</strong></a>
     
 
 
@@ -21904,7 +22033,18 @@ Coordinates are dependent on the position of the maps origin.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(GROUP).InitRespawnRandomizePositionZone" ><strong>GROUP.InitRespawnRandomizePositionZone</strong></a>
+<a id="#(GROUP).InitRespawnRandomizePositionInner" ><strong>GROUP.InitRespawnRandomizePositionInner</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(GROUP).InitRespawnRandomizePositionOuter" ><strong>GROUP.InitRespawnRandomizePositionOuter</strong></a>
     
 
 
@@ -22529,7 +22669,18 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(GROUP).InitRespawnRandomizePositionZone" ><strong>GROUP.InitRespawnRandomizePositionZone</strong></a>
+<a id="#(GROUP).InitRespawnRandomizePositionInner" ><strong>GROUP.InitRespawnRandomizePositionInner</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(GROUP).InitRespawnRandomizePositionOuter" ><strong>GROUP.InitRespawnRandomizePositionOuter</strong></a>
     
 
 
@@ -22789,7 +22940,18 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(GROUP).InitRespawnRandomizePositionZone" ><strong>GROUP.InitRespawnRandomizePositionZone</strong></a>
+<a id="#(GROUP).InitRespawnRandomizePositionInner" ><strong>GROUP.InitRespawnRandomizePositionInner</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(GROUP).InitRespawnRandomizePositionOuter" ><strong>GROUP.InitRespawnRandomizePositionOuter</strong></a>
     
 
 
