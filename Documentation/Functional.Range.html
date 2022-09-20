@@ -1925,6 +1925,7 @@ by a script by SNAFU <a href="https://forums.eagle.ru/showthread.php?t=109174">s
 <h3>Author: <strong><a href="https://forums.eagle.ru/member.php?u=115026">funkyfranky</a></strong></h3>
 
 <h3>Contributions: <a href="https://forums.eagle.ru/member.php?u=89536">FlightControl</a>, <a href="https://forums.eagle.ru/member.php?u=112175">Ciribob</a></h3>
+<h3>SRS Additions: Applevangelist</h3>
 
 <hr/>
 
@@ -2086,6 +2087,11 @@ This can be enabled via the <a href="##(RANGE).SetInstructorRadio">RANGE.SetInst
 <p>The range control can be enabled via the <a href="##(RANGE).SetRangeControl">RANGE.SetRangeControl</a>(<em>frequency</em>) functions, where <em>frequency</em> is the AM frequency in MHz.</p>
 
 <p>By default, the sound files are placed in the "Range Soundfiles/" folder inside the mission (.miz) file. Another folder can be specified via the <a href="##(RANGE).SetSoundfilesPath">RANGE.SetSoundfilesPath</a>(<em>path</em>) function.</p>
+
+<h2>Voice output via SRS</h2>
+
+<p>Alternatively, the voice output can be fully done via SRS, <strong>no sound file additions needed</strong>. Set up SRS with <a href="##(RANGE).SetSRS">RANGE.SetSRS</a>(). Range control and instructor frequencies and voices can then be
+set via <a href="##(RANGE).SetSRSRangeControl">RANGE.SetSRSRangeControl</a>() and <a href="##(RANGE).SetSRSRangeInstructor">RANGE.SetSRSRangeInstructor</a>()</p>
 
 <h1>Persistence</h1>
 
@@ -2425,7 +2431,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetInstructorRadio">RANGE:SetInstructorRadio(frequency, relayunitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Enable instructor radio and set frequency.</p>
+<p>Enable instructor radio and set frequency (non-SRS).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2461,7 +2467,7 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetRangeControl">RANGE:SetRangeControl(frequency, relayunitname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Enable range control and set frequency.</p>
+<p>Enable range control and set frequency (non-SRS).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2480,6 +2486,24 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetRangeZone">RANGE:SetRangeZone(zone)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set range zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetSRS">RANGE:SetSRS(PathToSRS, Port, Coalition, Frequency, Modulation, Volume, PathToGoogleKey)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use SRS Simple-Text-To-Speech for transmissions.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetSRSRangeControl">RANGE:SetSRSRangeControl(frequency, modulation, voice, culture, gender, relayunitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(SRS) Set range control frequency and voice.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).SetSRSRangeInstructor">RANGE:SetSRSRangeInstructor(frequency, modulation, voice, culture, gender, relayunitname)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(SRS) Set range instructor frequency and voice.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2879,6 +2903,18 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).controlmsrs">RANGE.controlmsrs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).controlsrsQ">RANGE.controlsrsQ</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).defaultsmokebomb">RANGE.defaultsmokebomb</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, initialize player settings to smoke bomb.</p>
@@ -2933,6 +2969,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).instructmsrs">RANGE.instructmsrs</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).instructor">RANGE.instructor</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Instructor radio queue.</p>
@@ -2948,6 +2990,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).instructorrelayname">RANGE.instructorrelayname</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Name of relay unit.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).instructsrsQ">RANGE.instructsrsQ</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3164,6 +3212,12 @@ The could avoid the lua garbage collection to accidentally/falsely deallocate th
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).trackrockets">RANGE.trackrockets</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true (default), all rocket types are tracked and impact point to closest bombing target is evaluated.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(RANGE).useSRS">RANGE.useSRS</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5029,6 +5083,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
+<a id="#(RANGE).controlmsrs" ><strong>RANGE.controlmsrs</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
+<a id="#(RANGE).controlsrsQ" ><strong>RANGE.controlsrsQ</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(RANGE).defaultsmokebomb" ><strong>RANGE.defaultsmokebomb</strong></a>
     
@@ -5128,6 +5204,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
+<a id="#(RANGE).instructmsrs" ><strong>RANGE.instructmsrs</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Sound.RadioQueue.html##(RADIOQUEUE)">Sound.RadioQueue#RADIOQUEUE</a>
 <a id="#(RANGE).instructor" ><strong>RANGE.instructor</strong></a>
     
@@ -5154,6 +5241,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(RANGE).instructorrelayname" ><strong>RANGE.instructorrelayname</strong></a>
     
 <p>Name of relay unit.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
+<a id="#(RANGE).instructsrsQ" ><strong>RANGE.instructsrsQ</strong></a>
+    
+
 
 </div>
 
@@ -5429,6 +5527,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(RANGE).trackrockets" ><strong>RANGE.trackrockets</strong></a>
     
 <p>If true (default), all rocket types are tracked and impact point to closest bombing target is evaluated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).useSRS" ><strong>RANGE.useSRS</strong></a>
+    
+
 
 </div>
 
@@ -7180,7 +7289,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
 <h2><a id="#(RANGE).SetInstructorRadio" ><strong>RANGE:SetInstructorRadio(frequency, relayunitname)</strong></a></h2>
 </div>
     
-<p>Enable instructor radio and set frequency.</p>
+<p>Enable instructor radio and set frequency (non-SRS).</p>
 
 <div id= "#Functions##SetInstructorRadio" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -7451,7 +7560,7 @@ Furthermore, the player must not be too high and fly in the direction of the pit
 <h2><a id="#(RANGE).SetRangeControl" ><strong>RANGE:SetRangeControl(frequency, relayunitname)</strong></a></h2>
 </div>
     
-<p>Enable range control and set frequency.</p>
+<p>Enable range control and set frequency (non-SRS).</p>
 
 <div id= "#Functions##SetRangeControl" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -7626,6 +7735,349 @@ If a zone is not explicitly specified, the range zone is determined by its locat
           <div class="w3-half">
               
 <p>MOOSE zone defining the range perimeters.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RANGE)">#RANGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).SetSRS" ><strong>RANGE:SetSRS(PathToSRS, Port, Coalition, Frequency, Modulation, Volume, PathToGoogleKey)</strong></a></h2>
+</div>
+    
+<p>Use SRS Simple-Text-To-Speech for transmissions.</p>
+
+    
+<p>No sound files necessary.</p>
+
+<div id= "#Functions##SetSRS" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PathToSRS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path to SRS directory.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Port</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>SRS port. Default 5002.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Coalition side, e.g. coalition.side.BLUE or coalition.side.RED</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Frequency to use, defaults to 256 (same as rangecontrol)</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Modulation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Modulation to use, defaults to radio.modulation.AM</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Volume</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Volume, between 0.0 and 1.0. Defaults to 1.0</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>PathToGoogleKey</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path to Google TTS credentials.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RANGE)">#RANGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).SetSRSRangeControl" ><strong>RANGE:SetSRSRangeControl(frequency, modulation, voice, culture, gender, relayunitname)</strong></a></h2>
+</div>
+    
+<p>(SRS) Set range control frequency and voice.</p>
+
+<div id= "#Functions##SetSRSRangeControl" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Frequency in MHz. Default 256 MHz.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>modulation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Modulation, defaults to radio.modulation.AM.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Voice.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>culture</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Culture, defaults to "en-US".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>gender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Gender, defaults to "female".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>relayunitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the unit used for transmission location.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(RANGE)">#RANGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(RANGE).SetSRSRangeInstructor" ><strong>RANGE:SetSRSRangeInstructor(frequency, modulation, voice, culture, gender, relayunitname)</strong></a></h2>
+</div>
+    
+<p>(SRS) Set range instructor frequency and voice.</p>
+
+<div id= "#Functions##SetSRSRangeInstructor" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>RANGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>frequency</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Frequency in MHz. Default 305 MHz.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>modulation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Modulation, defaults to radio.modulation.AM.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Voice.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>culture</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Culture, defaults to "en-US".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>gender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Gender, defaults to "male".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>relayunitname</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the unit used for transmission location.</p>
 
           </div>
         </div>
@@ -10773,6 +11225,28 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
+<a id="#(RANGE).controlmsrs" ><strong>RANGE.controlmsrs</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
+<a id="#(RANGE).controlsrsQ" ><strong>RANGE.controlsrsQ</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(RANGE).defaultsmokebomb" ><strong>RANGE.defaultsmokebomb</strong></a>
     
@@ -10872,6 +11346,17 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
+<a id="#(RANGE).instructmsrs" ><strong>RANGE.instructmsrs</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Sound.RadioQueue.html##(RADIOQUEUE)">Sound.RadioQueue#RADIOQUEUE</a>
 <a id="#(RANGE).instructor" ><strong>RANGE.instructor</strong></a>
     
@@ -10898,6 +11383,17 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).instructorrelayname" ><strong>RANGE.instructorrelayname</strong></a>
     
 <p>Name of relay unit.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
+<a id="#(RANGE).instructsrsQ" ><strong>RANGE.instructsrsQ</strong></a>
+    
+
 
 </div>
 
@@ -11173,6 +11669,17 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).trackrockets" ><strong>RANGE.trackrockets</strong></a>
     
 <p>If true (default), all rocket types are tracked and impact point to closest bombing target is evaluated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).useSRS" ><strong>RANGE.useSRS</strong></a>
+    
+
 
 </div>
 
@@ -12856,6 +13363,28 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
+<a id="#(RANGE).controlmsrs" ><strong>RANGE.controlmsrs</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
+<a id="#(RANGE).controlsrsQ" ><strong>RANGE.controlsrsQ</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(RANGE).defaultsmokebomb" ><strong>RANGE.defaultsmokebomb</strong></a>
     
@@ -12955,6 +13484,17 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
+<a id="#(RANGE).instructmsrs" ><strong>RANGE.instructmsrs</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Sound.RadioQueue.html##(RADIOQUEUE)">Sound.RadioQueue#RADIOQUEUE</a>
 <a id="#(RANGE).instructor" ><strong>RANGE.instructor</strong></a>
     
@@ -12981,6 +13521,17 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).instructorrelayname" ><strong>RANGE.instructorrelayname</strong></a>
     
 <p>Name of relay unit.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
+<a id="#(RANGE).instructsrsQ" ><strong>RANGE.instructsrsQ</strong></a>
+    
+
 
 </div>
 
@@ -13256,6 +13807,17 @@ If a zone is not explicitly specified, the range zone is determined by its locat
 <a id="#(RANGE).trackrockets" ><strong>RANGE.trackrockets</strong></a>
     
 <p>If true (default), all rocket types are tracked and impact point to closest bombing target is evaluated.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(RANGE).useSRS" ><strong>RANGE.useSRS</strong></a>
+    
+
 
 </div>
 
