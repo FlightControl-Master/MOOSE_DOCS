@@ -1599,785 +1599,1556 @@ Controls a network of short range air/missile defense groups.</p>
    </div>
   </nav>
   
-<img src="..\Images\Task_Cargo_CSAR.JPG" alt="Banner Image"/>   
+<img src="..\Images\MOOSE.JPG" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Tasking.Task_Cargo_CSAR</strong></h1>
+    <h1>Module <strong>Utilities.Routines</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Tasking</strong> - Orchestrates the task for players to execute CSAR for downed pilots.</p>
-
-    
-
-<p><strong>Specific features:</strong></p>
-
-<ul>
-    <li>Creates a task to retrieve a pilot <a href="Cargo.Cargo.html">Cargo.Cargo</a> from behind enemy lines.</li>
-    <li>Derived from the TASK_CARGO class, which is derived from the TASK class.</li>
-    <li>Orchestrate the task flow, so go from Planned to Assigned to Success, Failed or Cancelled.</li>
-    <li>Co-operation tasking, so a player joins a group of players executing the same task.</li>
-</ul>
-
-
-<p><strong>A complete task menu system to allow players to:</strong></p>
-
-<ul>
-    <li>Join the task, abort the task.</li>
-    <li>Mark the task location on the map.</li>
-    <li>Provide details of the target.</li>
-    <li>Route to the cargo.</li>
-    <li>Route to the deploy zones.</li>
-    <li>Load/Unload cargo.</li>
-    <li>Board/Unboard cargo.</li>
-    <li>Slingload cargo.</li>
-    <li>Display the task briefing.</li>
-</ul>
-
-
-<p><strong>A complete mission menu system to allow players to:</strong></p>
-
-<ul>
-    <li>Join a task, abort the task.</li>
-    <li>Display task reports.</li>
-    <li>Display mission statistics.</li>
-    <li>Mark the task locations on the map.</li>
-    <li>Provide details of the targets.</li>
-    <li>Display the mission briefing.</li>
-    <li>Provide status updates as retrieved from the command center.</li>
-    <li>Automatically assign a random task as part of a mission.</li>
-    <li>Manually assign a specific task as part of a mission.</li>
-</ul>
-
-
-<p> <strong>A settings system, using the settings menu:</strong></p>
-
-<ul>
-    <li>Tweak the duration of the display of messages.</li>
-    <li>Switch between metric and imperial measurement system.</li>
-    <li>Switch between coordinate formats used in messages: BR, BRA, LL DMS, LL DDM, MGRS.</li>
-    <li>Different settings modes for A2G and A2A operations.</li>
-    <li>Various other options.</li>
-</ul>
-
-<hr/>
-
-<p>Please read through the <a href="Tasking.Task_CARGO.html">Tasking.Task_CARGO</a> process to understand the mechanisms of tasking and cargo tasking and handling.</p>
-
-<p>The cargo will be a downed pilot, which is located somwhere on the battlefield. Use the menus system and facilities to 
-join the CSAR task, and retrieve the pilot from behind enemy lines. The menu system is generic, there is nothing
-specific on a CSAR task that requires further explanation, than reading the generic TASK_CARGO explanations.</p>
-
-<p>Enjoy!
-FC</p>
-
-<hr/>
-
-<h3>Author: <strong>FlightControl</strong></h3>
-
-<h3>Contributions:</h3>
-
-<hr/>
-
+<p>Various routines</p>
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TASK_CARGO_CSAR')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Alive')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>TASK_CARGO_CSAR</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>Alive</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Orchestrates the task for players to execute CSAR for downed pilots.</p>
+
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##TASK_CARGO_CSAR" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##Alive" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(TASK_CARGO_CSAR)">#TASK_CARGO_CSAR</a>
-<a id="TASK_CARGO_CSAR" ><strong>TASK_CARGO_CSAR</strong></a>
     
-<p>Orchestrates the task for players to execute CSAR for downed pilots.</p>
-
+<a id="Alive" ><strong>Alive</strong></a>
     
-
-<p>CSAR tasks are suited to govern the process of return downed pilots behind enemy lines back to safetly.
-Typically, this task is executed by helicopter pilots, but it can also be executed by ground forces!</p>
-
-<hr/>
-
-<p>A CSAR task can be created manually, but actually, it is better to <strong>GENERATE</strong> these tasks using the 
-<a href="Tasking.Task_Cargo_Dispatcher.html">Tasking.Task_Cargo_Dispatcher</a> module.</p>
-
-<p>Using the dispatcher, CSAR tasks will be created <strong>automatically</strong> when a pilot ejects from a damaged AI aircraft.
-When this happens, the pilot actually will survive, but needs to be retrieved from behind enemy lines.</p>
-
-<h1>1) Create a CSAR task manually (code it).</h1>
-
-<p>Although it is recommended to use the dispatcher, you can create a CSAR task yourself as a mission designer.
-It is easy, as it works just like any other task setup.</p>
-
-<h2>1.1) Create a command center.</h2>
-
-<p>First you need to create a command center using the <a href="Tasking.CommandCenter.html##(COMMANDCENTER).New">Tasking.CommandCenter#COMMANDCENTER.New</a>() constructor.</p>
-
-<pre><code>local CommandCenter = COMMANDCENTER
-   :New( HQ, "Lima" ) -- Create the CommandCenter.
-</code></pre>
-
-<h2>1.2) Create a mission.</h2>
-
-<p>Tasks work in a mission, which groups these tasks to achieve a joint mission goal.
-A command center can govern multiple missions.
-Create a new mission, using the <a href="Tasking.Mission.html##(MISSION).New">Tasking.Mission#MISSION.New</a>() constructor.</p>
-
-<pre><code>-- Declare the Mission for the Command Center.
-local Mission = MISSION
-  :New( CommandCenter, 
-        "Overlord", 
-        "High", 
-        "Retrieve the downed pilots.", 
-        coalition.side.RED 
-      ) 
-</code></pre>
-
-<h2>1.3) Create the CSAR cargo task.</h2>
-
-<p>So, now that we have a command center and a mission, we now create the CSAR task.
-We create the CSAR task using the <a href="##(TASK_CARGO_CSAR).New">TASK_CARGO_CSAR.New</a>() constructor.</p>
-
-<p>Because a CSAR task will not generate the cargo itself, you'll need to create it first.
-The cargo in this case will be the downed pilot!</p>
-
-<pre><code>-- Here we define the "cargo set", which is a collection of cargo objects.
--- The cargo set will be the input for the cargo transportation task.
--- So a transportation object is handling a cargo set, which is automatically refreshed when new cargo is added/deleted.
-local CargoSet = SET_CARGO:New():FilterTypes( "Pilots" ):FilterStart()
-
--- Now we add cargo into the battle scene.
-local PilotGroup = GROUP:FindByName( "Pilot" )
-
--- CARGO_GROUP can be used to setup cargo with a GROUP object underneath.
--- We name this group Engineers.
--- Note that the name of the cargo is "Engineers".
--- The cargoset "CargoSet" will embed all defined cargo of type "Pilots" (prefix) into its set.
-local CargoGroup = CARGO_GROUP:New( PilotGroup, "Pilots", "Downed Pilot", 500 )
-</code></pre>
-
-<p>What is also needed, is to have a set of <a href="Core.Group.html">Core.Group</a>s defined that contains the clients of the players.</p>
-
-<pre><code>-- Allocate the Transport, which are the helicopter to retrieve the pilot, that can be manned by players.
-local GroupSet = SET_GROUP:New():FilterPrefixes( "Transport" ):FilterStart()
-</code></pre>
-
-<p>Now that we have a CargoSet and a GroupSet, we can now create the CSARTask manually.</p>
-
-<pre><code>-- Declare the CSAR task.
-local CSARTask = TASK_CARGO_CSAR
-  :New( Mission, 
-        GroupSet, 
-        "CSAR Pilot", 
-        CargoSet, 
-        "Fly behind enemy lines, and retrieve the downed pilot." 
-      )
-</code></pre>
-
-<p>So you can see, setting up a CSAR task manually is a lot of work.
-It is better you use the cargo dispatcher to generate CSAR tasks and it will work as it is intended.
-By doing this, CSAR tasking will become a dynamic experience.</p>
-
-<h1>2) Create a task using the <a href="Tasking.Task_Cargo_Dispatcher.html">Tasking.Task_Cargo_Dispatcher</a> module.</h1>
-
-<p>Actually, it is better to <strong>GENERATE</strong> these tasks using the <a href="Tasking.Task_Cargo_Dispatcher.html">Tasking.Task_Cargo_Dispatcher</a> module.
-Using the dispatcher module, transport tasks can be created much more easy.</p>
-
-<p>Find below an example how to use the TASK_CARGO_DISPATCHER class:</p>
-
-
-<pre><code> -- Find the HQ group.
- HQ = GROUP:FindByName( "HQ", "Bravo" )
-
- -- Create the command center with the name "Lima".
- CommandCenter = COMMANDCENTER
-   :New( HQ, "Lima" )
-
- -- Create the mission, for the command center, with the name "CSAR Mission", a "Tactical" mission, with the mission briefing "Rescue downed pilots.", for the RED coalition.
- Mission = MISSION
-   :New( CommandCenter, "CSAR Mission", "Tactical", "Rescue downed pilots.", coalition.side.RED )
-
- -- Create the SET of GROUPs containing clients (players) that will transport the cargo.
- -- These are have a name that start with "Rescue" and are of the "red" coalition.
- AttackGroups = SET_GROUP:New():FilterCoalitions( "red" ):FilterPrefixes( "Rescue" ):FilterStart()
-
-
- -- Here we create the TASK_CARGO_DISPATCHER object! This is where we assign the dispatcher to generate tasks in the Mission for the AttackGroups.
- TaskDispatcher = TASK_CARGO_DISPATCHER:New( Mission, AttackGroups )
-
-
- -- Here the task dispatcher will generate automatically CSAR tasks once a pilot ejects.
- TaskDispatcher:StartCSARTasks( 
-   "CSAR", 
-   { ZONE_UNIT:New( "Hospital", STATIC:FindByName( "Hospital" ), 100 ) }, 
-   "One of our pilots has ejected. Go out to Search and Rescue our pilot!\n" .. 
-   "Use the radio menu to let the command center assist you with the CSAR tasking."
- )
-</code></pre>
-
-<h1>3) Handle cargo task events.</h1>
-
-<p>When a player is picking up and deploying cargo using his carrier, events are generated by the tasks. These events can be captured and tailored with your own code.</p>
-
-<p>In order to properly capture the events and avoid mistakes using the documentation, it is advised that you execute the following actions:</p>
-
-<ul>
-    <li><strong>Copy / Paste</strong> the code section into your script.</li>
-    <li><strong>Change</strong> the CLASS literal to the task object name you have in your script.</li>
-    <li>Within the function, you can now <strong>write your own code</strong>!</li>
-    <li><strong>IntelliSense</strong> will recognize the type of the variables provided by the function. Note: the From, Event and To variables can be safely ignored, 
-    but you need to declare them as they are automatically provided by the event handling system of MOOSE.</li>
-</ul>
-
-<p>You can send messages or fire off any other events within the code section. The sky is the limit!</p>
-
-<p>NOTE: CSAR tasks are actually automatically created by the TASK_CARGO_DISPATCHER. So the underlying is not really applicable for mission designers as they will use the dispatcher instead
-of capturing these events from manually created CSAR tasks!</p>
-
-<h2>3.1) Handle the <strong>CargoPickedUp</strong> event.</h2>
-
-<p>Find below an example how to tailor the <strong>CargoPickedUp</strong> event, generated by the CSARTask:</p>
-
-<pre><code> function CSARTask:OnAfterCargoPickedUp( From, Event, To, TaskUnit, Cargo )
-
-   MESSAGE:NewType( "Unit " .. TaskUnit:GetName().. " has picked up cargo.", MESSAGE.Type.Information ):ToAll()
-
- end
-</code></pre>
-
-<p>If you want to code your own event handler, use this code fragment to tailor the event when a player carrier has picked up a cargo object in the CarrierGroup.
-You can use this event handler to post messages to players, or provide status updates etc.</p>
-
-<pre><code> --- CargoPickedUp event handler OnAfter for CLASS.
- -- @param #CLASS self
- -- @param #string From A string that contains the "*from state name*" when the event was triggered.
- -- @param #string Event A string that contains the "*event name*" when the event was triggered.
- -- @param #string To A string that contains the "*to state name*" when the event was triggered.
- -- @param Wrapper.Unit#UNIT TaskUnit The unit (client) of the player that has picked up the cargo.
- -- @param Cargo.Cargo#CARGO Cargo The cargo object that has been picked up. Note that this can be a CARGO_GROUP, CARGO_CRATE or CARGO_SLINGLOAD object!
- function CLASS:OnAfterCargoPickedUp( From, Event, To, TaskUnit, Cargo )
-
-   -- Write here your own code.
-
- end
-</code></pre>
-
-
-<h2>3.2) Handle the <strong>CargoDeployed</strong> event.</h2>
-
-<p>Find below an example how to tailor the <strong>CargoDeployed</strong> event, generated by the CSARTask:</p>
-
-<pre><code> function CSARTask:OnAfterCargoDeployed( From, Event, To, TaskUnit, Cargo, DeployZone )
-
-   MESSAGE:NewType( "Unit " .. TaskUnit:GetName().. " has deployed cargo at zone " .. DeployZone:GetName(), MESSAGE.Type.Information ):ToAll()
-
- end
-</code></pre>
-
-<p>If you want to code your own event handler, use this code fragment to tailor the event when a player carrier has deployed a cargo object from the CarrierGroup.
-You can use this event handler to post messages to players, or provide status updates etc.</p>
-
-
-<pre><code> --- CargoDeployed event handler OnAfter for CLASS.
- -- @param #CLASS self
- -- @param #string From A string that contains the "*from state name*" when the event was triggered.
- -- @param #string Event A string that contains the "*event name*" when the event was triggered.
- -- @param #string To A string that contains the "*to state name*" when the event was triggered.
- -- @param Wrapper.Unit#UNIT TaskUnit The unit (client) of the player that has deployed the cargo.
- -- @param Cargo.Cargo#CARGO Cargo The cargo object that has been deployed. Note that this can be a CARGO_GROUP, CARGO_CRATE or CARGO_SLINGLOAD object!
- -- @param Core.Zone#ZONE DeployZone The zone wherein the cargo is deployed. This can be any zone type, like a ZONE, ZONE_GROUP, ZONE_AIRBASE.
- function CLASS:OnAfterCargoDeployed( From, Event, To, TaskUnit, Cargo, DeployZone )
-
-   -- Write here your own code.
-
- end
-</code></pre>
-
-<hr/>
 
 
 </div>
 
   </div>
-  <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CARGO_CSAR)">Type <strong>TASK_CARGO_CSAR</strong></a></h2></div>
-         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(TASK_CARGO_CSAR)">TASK_CARGO_CSAR</a></strong>
-, extends <strong><a href="Tasking.Task_Cargo.html##(TASK_CARGO)">Tasking.Task_Cargo#TASK_CARGO</a></strong>
-   </div>
-        <div class="w3-card w3-margin">
-        <table class="w3-table w3-border-bottom w3-border-theme-l2">
-          <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from TASK_CARGO_CSAR</th>
-            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_CSAR).IsAllCargoTransported">TASK_CARGO_CSAR:IsAllCargoTransported()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##ChooseInfantry')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>ChooseInfantry(TeleportPrefixTable, TeleportMax)</strong></h2></p></td>
+        <td class="style="width:60%;">
 
 </td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_CSAR).New">TASK_CARGO_CSAR:New(Mission, SetGroup, TaskName, SetCargo, TaskBriefing)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Instantiates a new TASK_CARGO_CSAR.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_CSAR).OnAfterCargoDeployed">TASK_CARGO_CSAR:OnAfterCargoDeployed(From, Event, To, TaskUnit, Cargo, DeployZone)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event CargoDeployed.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_CSAR).OnAfterCargoPickedUp">TASK_CARGO_CSAR:OnAfterCargoPickedUp(From, Event, To, TaskUnit, Cargo)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event CargoPickedUp.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_CSAR).ReportOrder">TASK_CARGO_CSAR:ReportOrder(ReportGroup)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##ChooseInfantry" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TASK_CARGO_CSAR).onafterGoal">TASK_CARGO_CSAR:onafterGoal(TaskUnit, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<div class="w3-theme-l2">
+<h3><a id="ChooseInfantry" ><strong>ChooseInfantry(TeleportPrefixTable, TeleportMax)</strong></a></h3>
+</div>
+    
 
-</td>
-          </tr>
-        </table>
+
+<div id= "#Functions##ChooseInfantry" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TeleportPrefixTable</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>TeleportMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
 
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Tasking.Task_Cargo_CSAR)" >Type <strong>Tasking.Task_Cargo_CSAR</strong></a></h2></div>
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##EscortCarrier')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>EscortCarrier(CarrierGroup, EscortPrefix, EscortLastWayPoint, EscortEngagementDistanceMax, EscortTargetTypes)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##EscortCarrier" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="EscortCarrier" ><strong>EscortCarrier(CarrierGroup, EscortPrefix, EscortLastWayPoint, EscortEngagementDistanceMax, EscortTargetTypes)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##EscortCarrier" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>CarrierGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>EscortPrefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>EscortLastWayPoint</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>EscortEngagementDistanceMax</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>EscortTargetTypes</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##EscortCount')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>EscortCount</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##EscortCount" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="EscortCount" ><strong>EscortCount</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##EscortMissionName')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>EscortMissionName</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##EscortMissionName" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="EscortMissionName" ><strong>EscortMissionName</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##GetUnitHeight')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>GetUnitHeight(CheckUnit)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##GetUnitHeight" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="GetUnitHeight" ><strong>GetUnitHeight(CheckUnit)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##GetUnitHeight" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>CheckUnit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##GroupAlive')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>GroupAlive(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##GroupAlive" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="GroupAlive" ><strong>GroupAlive(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##GroupAlive" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##LandCarrier')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>LandCarrier(CarrierGroup, LandingZonePrefix)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##LandCarrier" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="LandCarrier" ><strong>LandCarrier(CarrierGroup, LandingZonePrefix)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##LandCarrier" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>CarrierGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>LandingZonePrefix</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MessageToAll')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MessageToAll(MsgText, MsgTime, MsgName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MessageToAll" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="MessageToAll" ><strong>MessageToAll(MsgText, MsgTime, MsgName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##MessageToAll" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MessageToBlue')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MessageToBlue(MsgText, MsgTime, MsgName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MessageToBlue" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="MessageToBlue" ><strong>MessageToBlue(MsgText, MsgTime, MsgName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##MessageToBlue" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MessageToUnit')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MessageToUnit(UnitName, MsgText, MsgTime, MsgName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MessageToUnit" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="MessageToUnit" ><strong>MessageToUnit(UnitName, MsgText, MsgTime, MsgName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##MessageToUnit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>UnitName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MsgName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MusicRegister')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MusicRegister(SndRef, SndFile, SndTime)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MusicRegister" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="MusicRegister" ><strong>MusicRegister(SndRef, SndFile, SndTime)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##MusicRegister" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SndRef</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SndFile</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SndTime</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MusicReset')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MusicReset(flg)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MusicReset" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="MusicReset" ><strong>MusicReset(flg)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##MusicReset" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>flg</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##MusicToPlayer')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>MusicToPlayer(SndRef, PlayerName, SndContinue)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##MusicToPlayer" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="MusicToPlayer" ><strong>MusicToPlayer(SndRef, PlayerName, SndContinue)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##MusicToPlayer" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SndRef</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>PlayerName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SndContinue</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##PlaneActivate')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>PlaneActivate(groupNameFormat, flg)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##PlaneActivate" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="PlaneActivate" ><strong>PlaneActivate(groupNameFormat, flg)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##PlaneActivate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupNameFormat</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>flg</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##PlayerGroup')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>PlayerGroup</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##PlayerGroup" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="PlayerGroup" ><strong>PlayerGroup</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SendMessageToCarrier')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>SendMessageToCarrier(CarrierGroup, CarrierMessage)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##SendMessageToCarrier" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="SendMessageToCarrier" ><strong>SendMessageToCarrier(CarrierGroup, CarrierMessage)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##SendMessageToCarrier" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>CarrierGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>CarrierMessage</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SpawnSettings')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>SpawnSettings</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##SpawnSettings" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="SpawnSettings" ><strong>SpawnSettings</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##SpawnedInfantry')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>SpawnedInfantry</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##SpawnedInfantry" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="SpawnedInfantry" ><strong>SpawnedInfantry</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34AttackCarlVinson')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34AttackCarlVinson(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34AttackCarlVinson" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34AttackCarlVinson" ><strong>Su34AttackCarlVinson(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34AttackCarlVinson" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34AttackNorth')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34AttackNorth(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34AttackNorth" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34AttackNorth" ><strong>Su34AttackNorth(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34AttackNorth" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34AttackWest')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34AttackWest(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34AttackWest" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34AttackWest" ><strong>Su34AttackWest(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34AttackWest" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34Destroyed')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34Destroyed(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34Destroyed" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34Destroyed" ><strong>Su34Destroyed(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34Destroyed" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34Hold')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34Hold(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34Hold" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34Hold" ><strong>Su34Hold(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34Hold" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34IsDead')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34IsDead()</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34IsDead" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34IsDead" ><strong>Su34IsDead()</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34IsDead" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34Menu')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34Menu(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34Menu" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34Menu" ><strong>Su34Menu(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34Menu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34MenuPath')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34MenuPath</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34MenuPath" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="Su34MenuPath" ><strong>Su34MenuPath</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34Menus')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34Menus</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34Menus" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="Su34Menus" ><strong>Su34Menus</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34Orbit')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34Orbit(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34Orbit" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34Orbit" ><strong>Su34Orbit(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34Orbit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34OverviewStatus')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34OverviewStatus()</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34OverviewStatus" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34OverviewStatus" ><strong>Su34OverviewStatus()</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34OverviewStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34RTB')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34RTB(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34RTB" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34RTB" ><strong>Su34RTB(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34RTB" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34Status')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34Status</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34Status" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="Su34Status" ><strong>Su34Status</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##Su34TakeOff')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>Su34TakeOff(groupName)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##Su34TakeOff" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="Su34TakeOff" ><strong>Su34TakeOff(groupName)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##Su34TakeOff" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>groupName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TeleportPrefixTableCount')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>TeleportPrefixTableCount</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##TeleportPrefixTableCount" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<a id="TeleportPrefixTableCount" ><strong>TeleportPrefixTableCount</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##TeleportPrefixTableIndex')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>TeleportPrefixTableIndex</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##TeleportPrefixTableIndex" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="TeleportPrefixTableIndex" ><strong>TeleportPrefixTableIndex</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##UpdateBoardMsg')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>UpdateBoardMsg()</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##UpdateBoardMsg" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="UpdateBoardMsg" ><strong>UpdateBoardMsg()</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##UpdateBoardMsg" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##_MusicTable')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>_MusicTable</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##_MusicTable" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="_MusicTable" ><strong>_MusicTable</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##boardMsgAll')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>boardMsgAll</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##boardMsgAll" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="boardMsgAll" ><strong>boardMsgAll</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##boardMsgRed')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>boardMsgRed</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##boardMsgRed" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="boardMsgRed" ><strong>boardMsgRed</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##getCarrierHeight')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>getCarrierHeight(CarrierGroup)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##getCarrierHeight" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="getCarrierHeight" ><strong>getCarrierHeight(CarrierGroup)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##getCarrierHeight" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameter:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>CarrierGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##lookup_table')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>lookup_table</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##lookup_table" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="lookup_table" ><strong>lookup_table</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##routines')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>routines</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##routines" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="routines" ><strong>routines</strong></a>
+    
+
+
+</div>
+
+  </div>
+  <div class="w3-theme-d2 w3-margin-top ">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##spairs')">
+      <tr>
+        <td class="style="width:40%;"><p><h2>Global <strong>spairs(t, order)</strong></h2></p></td>
+        <td class="style="width:60%;">
+
+</td>
+      </tr>
+    </table>
+  </div>
+  <div id= "#Globals##spairs" class="w3-container w3-white w3-padding-small">
+    <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h3><a id="spairs" ><strong>spairs(t, order)</strong></a></h3>
+</div>
+    
+
+
+<div id= "#Functions##spairs" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+    <h3><strong>Parameters:</strong></h3>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>t</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>order</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+  </div>
+  <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Utilities.Routines)" >Type <strong>Utilities.Routines</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##TASK_CARGO_CSAR')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(TASK_CARGO_CSAR)">Type <strong>TASK_CARGO_CSAR</strong></a></h2></div>
-        <div id= "#Types##TASK_CARGO_CSAR" class="w3-container w3-white w3-padding-16" id="module_other_types">
-          <div class="w3-white" id="record_type">
-<div class="fields w3-container w3-theme-l2">
-  <h2>Field(s)</h2>
-</div>
-<div class="functions  w3-container w3-theme-l2">
-  <h2>Function(s)</h2>
-</div>  
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(TASK_CARGO_CSAR).IsAllCargoTransported" ><strong>TASK_CARGO_CSAR:IsAllCargoTransported()</strong></a></h2>
-</div>
-    
-
-
-<div id= "#Functions##IsAllCargoTransported" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>TASK_CARGO_CSAR</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(TASK_CARGO_CSAR).New" ><strong>TASK_CARGO_CSAR:New(Mission, SetGroup, TaskName, SetCargo, TaskBriefing)</strong></a></h2>
-</div>
-    
-<p>Instantiates a new TASK_CARGO_CSAR.</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>TASK_CARGO_CSAR</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Tasking.Mission.html##(MISSION)">Tasking.Mission#MISSION</a>
-            <strong><strong>Mission</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
-            <strong><strong>SetGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The set of groups for which the Task can be assigned.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>TaskName</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The name of the Task.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Set.html##(SET_CARGO)">Core.Set#SET_CARGO</a>
-            <strong><strong>SetCargo</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The scope of the cargo to be transported.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>TaskBriefing</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Cargo Task briefing.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(TASK_CARGO_CSAR)">#TASK_CARGO_CSAR</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>self</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(TASK_CARGO_CSAR).OnAfterCargoDeployed" ><strong>TASK_CARGO_CSAR:OnAfterCargoDeployed(From, Event, To, TaskUnit, Cargo, DeployZone)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event CargoDeployed.</p>
-
-<div id= "#Functions##OnAfterCargoDeployed" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>TASK_CARGO_CSAR</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-            <strong><strong>TaskUnit</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Unit (Client) that Deployed the cargo. You can use this to retrieve the PlayerName etc.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Cargo.html##(CARGO)">Core.Cargo#CARGO</a>
-            <strong><strong>Cargo</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Cargo that got PickedUp by the TaskUnit. You can use this to check Cargo Status.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
-            <strong><strong>DeployZone</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The zone where the Cargo got Deployed or UnBoarded.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(TASK_CARGO_CSAR).OnAfterCargoPickedUp" ><strong>TASK_CARGO_CSAR:OnAfterCargoPickedUp(From, Event, To, TaskUnit, Cargo)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event CargoPickedUp.</p>
-
-<div id= "#Functions##OnAfterCargoPickedUp" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>TASK_CARGO_CSAR</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
-            <strong><strong>TaskUnit</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Unit (Client) that PickedUp the cargo. You can use this to retrieve the PlayerName etc.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Cargo.html##(CARGO)">Core.Cargo#CARGO</a>
-            <strong><strong>Cargo</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Cargo that got PickedUp by the TaskUnit. You can use this to check Cargo Status.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(TASK_CARGO_CSAR).ReportOrder" ><strong>TASK_CARGO_CSAR:ReportOrder(ReportGroup)</strong></a></h2>
-</div>
-    
-
-
-<div id= "#Functions##ReportOrder" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>TASK_CARGO_CSAR</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>ReportGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(TASK_CARGO_CSAR).onafterGoal" ><strong>TASK_CARGO_CSAR:onafterGoal(TaskUnit, From, Event, To)</strong></a></h2>
-</div>
-    
-
-
-<div id= "#Functions##onafterGoal" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>TASK_CARGO_CSAR</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>TaskUnit</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-</div>
-
-        </div>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Task_Cargo_CSAR.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/MOOSE.JPG')";
 }
 </script>
 
