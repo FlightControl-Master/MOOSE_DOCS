@@ -2092,6 +2092,7 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
      my_ctld.smokedistance = 2000 -- Only smoke or flare zones if requesting player unit is this far away (in meters)
      my_ctld.suppressmessages = false -- Set to true if you want to script your own messages.
      my_ctld.repairtime = 300 -- Number of seconds it takes to repair a unit.
+     my_ctld.buildtime = 300 -- Number of seconds it takes to build a unit. Set to zero or nil to build instantly.
      my_ctld.cratecountry = country.id.GERMANY -- ID of crates. Will default to country.id.RUSSIA for RED coalition setups.
      my_ctld.allowcratepickupagain = true  -- allow re-pickup crates that were dropped.
      my_ctld.enableslingload = false -- allow cargos to be slingloaded - might not work for all cargo types
@@ -2101,6 +2102,7 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
      my_ctld.basetype = "container_cargo" -- default shape of the cargo container
      my_ctld.droppedbeacontimeout = 600 -- dropped beacon lasts 10 minutes
      my_ctld.usesubcats = false -- use sub-category names for crates, adds an extra menu layer in "Get Crates", useful if you have &gt; 10 crate types.
+     my_ctld.placeCratesAhead = false -- place crates straight ahead of the helicopter, in a random way. If true, crates are more neatly sorted.
 </code></pre>
 
 <h2>2.1 User functions</h2>
@@ -3028,7 +3030,7 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildObjectFromCrates">CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair, Coordinate, RepairLocation)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildObjectFromCrates">CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair, RepairLocation)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to actually SPAWN buildables in the mission.</p>
 </td>
@@ -3293,6 +3295,12 @@ If you use units build by multiple templates, they will effectively double on lo
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).basetype">CTLD.basetype</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).buildtime">CTLD.buildtime</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -7600,7 +7608,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -7919,6 +7927,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).buildtime" ><strong>CTLD.buildtime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).coalition" ><strong>CTLD.coalition</strong></a>
     
 <p>Coalition side number, e.g. <code>coalition.side.RED</code>.</p>
@@ -8190,7 +8209,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repairor build a unit/group</p>
 
 </div>
 
@@ -11713,7 +11732,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD)._BuildObjectFromCrates" ><strong>CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair, Coordinate, RepairLocation)</strong></a></h2>
+<h2><a id="#(CTLD)._BuildObjectFromCrates" ><strong>CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair, RepairLocation)</strong></a></h2>
 </div>
     
 <p>(Internal) Function to actually SPAWN buildables in the mission.</p>
@@ -11775,23 +11794,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
             <p>
                 <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-            <strong><strong>Coordinate</strong></strong>
+            <strong><strong>RepairLocation</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
 <p>Location for repair (e.g. where the destroyed unit was)</p>
 
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>RepairLocation</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
           </div>
         </div>
 </div>
@@ -15216,7 +15225,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -15535,6 +15544,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).buildtime" ><strong>CTLD.buildtime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).coalition" ><strong>CTLD.coalition</strong></a>
     
 <p>Coalition side number, e.g. <code>coalition.side.RED</code>.</p>
@@ -15806,7 +15826,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repairor build a unit/group</p>
 
 </div>
 
@@ -17585,7 +17605,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -17904,6 +17924,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).buildtime" ><strong>CTLD.buildtime</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).coalition" ><strong>CTLD.coalition</strong></a>
     
 <p>Coalition side number, e.g. <code>coalition.side.RED</code>.</p>
@@ -18175,7 +18206,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repairor build a unit/group</p>
 
 </div>
 
@@ -22366,6 +22397,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD_CARGO).Mark" ><strong>CTLD_CARGO.Mark</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD_CARGO).Name" ><strong>CTLD_CARGO.Name</strong></a>
     
@@ -22508,6 +22550,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD_CARGO).LoadDirectly" ><strong>CTLD_CARGO.LoadDirectly</strong></a>
     
 <p>Flag for direct loading.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD_CARGO).Mark" ><strong>CTLD_CARGO.Mark</strong></a>
+    
+
 
 </div>
 
@@ -30335,17 +30388,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD_HERCULES).j" ><strong>CTLD_HERCULES.j</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #string
 <a id="#(CTLD_HERCULES).lid" ><strong>CTLD_HERCULES.lid</strong></a>
     
@@ -31592,17 +31634,6 @@ Use either this method to integrate the Hercules **or** the one from the "normal
 
     
 <p> template for a group of 10 paratroopers</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD_HERCULES).j" ><strong>CTLD_HERCULES.j</strong></a>
-    
-
 
 </div>
 
