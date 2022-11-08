@@ -2126,7 +2126,8 @@ These lists can than passed as additional parameters to the <a href="##(CHIEF).A
 <pre><code>--- Create a resource list of mission types and required assets for the case that the zone is OCCUPIED.
 --
 -- Here, we create an enhanced CAS mission and employ at least on and at most two asset groups.
-local ResourceOccupied=myChief:CreateResource(AUFTRAG.Type.CASENHANCED, 1, 2)
+-- NOTE that two objects are returned, the resource list (ResourceOccupied) and the first resource of that list (resourceCAS).
+local ResourceOccupied, resourceCAS=myChief:CreateResource(AUFTRAG.Type.CASENHANCED, 1, 2)
 -- We also add ARTY missions with at least one and at most two assets. We additionally require these to be MLRS groups (and not howitzers).
 myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.ARTY, 1, 2, nil, "MLRS")
 -- Add at least one RECON mission that uses UAV type assets.
@@ -2135,13 +2136,16 @@ myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.RECON, 1, nil, GROUP.Attrib
 myChief:AddToResource(ResourceOccupied, AUFTRAG.Type.BOMBCARPET, 1, 2)
 
 --- Create a resource list of mission types and required assets for the case that the zone is EMPTY.
---
+-- NOTE that two objects are returned, the resource list (ResourceEmpty) and the first resource of that list (resourceInf).
 -- Here, we create an ONGUARD mission and employ at least on and at most five infantry assets.
-local ResourceEmpty=myChief:CreateResource(AUFTRAG.Type.ONGUARD, 1, 5, GROUP.Attribute.GROUND_INFANTRY)
+local ResourceEmpty, resourceInf=myChief:CreateResource(AUFTRAG.Type.ONGUARD, 1, 5, GROUP.Attribute.GROUND_INFANTRY)
 -- Additionally, we send up to three tank groups.
 myChief:AddToResource(ResourceEmpty, AUFTRAG.Type.ONGUARD, 1, 3, GROUP.Attribute.GROUND_TANK)
 -- Finally, we send two groups that patrol the zone.
 myChief:AddToResource(ResourceEmpty, AUFTRAG.Type.PATROLZONE, 2)
+
+-- Add a transport to the infantry resource. We want at least one and up to two transport helicopters.
+myChief:AddTransportToResource(resourceInf, 1, 2, GROUP.Attribute.AIR_TRANSPORTHELO)
 
 -- Add stratetic zone with customized reaction.
 myChief:AddStrategicZone(myOpsZone, nil , 2, ResourceOccupied, ResourceEmpty)
@@ -2300,13 +2304,13 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddToResource">CHIEF:AddToResource(Resource, MissionType, Nmin, Nmax, Attributes, Properties)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddToResource">CHIEF:AddToResource(Resource, MissionType, Nmin, Nmax, Attributes, Properties, Categories)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add mission type and number of required assets to resource list.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddTransportToResource">CHIEF:AddTransportToResource(Resource, CargoAttributes, CargoProperties, CargoCategories, Nmin, Nmax, CarrierAttributes, CarrierProperties, CarrierCategories)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).AddTransportToResource">CHIEF:AddTransportToResource(Resource, Nmin, Nmax, CarrierAttributes, CarrierProperties, CarrierCategories)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Define which assets will be transported and define the number and attributes/properties of the cargo carrier assets.</p>
 </td>
@@ -2366,7 +2370,7 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).CreateResource">CHIEF:CreateResource(MissionType, Nmin, Nmax, Attributes, Properties)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF).CreateResource">CHIEF:CreateResource(MissionType, Nmin, Nmax, Attributes, Properties, Categories)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new resource list of required assets.</p>
 </td>
@@ -3222,6 +3226,12 @@ Think of it as the local population providing the intel. It's not totally realis
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).Categories">CHIEF.Resource.Categories</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Categories Group categories.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).MissionType">CHIEF.Resource.MissionType</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Mission type, e.g. <code>AUFTRAG.Type.BAI</code>.</p>
@@ -3243,24 +3253,6 @@ Think of it as the local population providing the intel. It's not totally realis
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).Properties">CHIEF.Resource.Properties</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Properties (<a href="https://wiki.hoggitworld.com/view/DCS_enum_attributes">DCS attributes</a>), e.g. <code>"Attack helicopters"</code> or <code>"Mobile AAA"</code>.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).cargoAttributes">CHIEF.Resource.cargoAttributes</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Generalized attribute, e.g. <code>{GROUP.Attribute.GROUND_INFANTRY}</code>.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).cargoCategories">CHIEF.Resource.cargoCategories</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Group categories.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CHIEF.Resource).cargoProperties">CHIEF.Resource.cargoProperties</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Properties (<a href="https://wiki.hoggitworld.com/view/DCS_enum_attributes">DCS attributes</a>), e.g. <code>"Attack helicopters"</code> or <code>"Mobile AAA"</code>. </p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4757,7 +4749,7 @@ Think of it as the local population providing the intel. It's not totally realis
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CHIEF).AddToResource" ><strong>CHIEF:AddToResource(Resource, MissionType, Nmin, Nmax, Attributes, Properties)</strong></a></h2>
+<h2><a id="#(CHIEF).AddToResource" ><strong>CHIEF:AddToResource(Resource, MissionType, Nmin, Nmax, Attributes, Properties, Categories)</strong></a></h2>
 </div>
     
 <p>Add mission type and number of required assets to resource list.</p>
@@ -4847,6 +4839,19 @@ Think of it as the local population providing the intel. It's not totally realis
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Categories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group categories.</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -4866,7 +4871,7 @@ Think of it as the local population providing the intel. It's not totally realis
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CHIEF).AddTransportToResource" ><strong>CHIEF:AddTransportToResource(Resource, CargoAttributes, CargoProperties, CargoCategories, Nmin, Nmax, CarrierAttributes, CarrierProperties, CarrierCategories)</strong></a></h2>
+<h2><a id="#(CHIEF).AddTransportToResource" ><strong>CHIEF:AddTransportToResource(Resource, Nmin, Nmax, CarrierAttributes, CarrierProperties, CarrierCategories)</strong></a></h2>
 </div>
     
 <p>Define which assets will be transported and define the number and attributes/properties of the cargo carrier assets.</p>
@@ -4888,45 +4893,6 @@ Think of it as the local population providing the intel. It's not totally realis
           <div class="w3-half">
               
 <p>Resource table.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>CargoAttributes</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Generalized attribute(s) of the cargo assets.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>CargoProperties</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>DCS attribute(s) of the cargo assets.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>CargoCategories</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Group categories of the cargo assets.</p>
 
           </div>
         </div>
@@ -5332,7 +5298,7 @@ if a destination can be reached on land.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CHIEF).CreateResource" ><strong>CHIEF:CreateResource(MissionType, Nmin, Nmax, Attributes, Properties)</strong></a></h2>
+<h2><a id="#(CHIEF).CreateResource" ><strong>CHIEF:CreateResource(MissionType, Nmin, Nmax, Attributes, Properties, Categories)</strong></a></h2>
 </div>
     
 <p>Create a new resource list of required assets.</p>
@@ -5406,6 +5372,19 @@ if a destination can be reached on land.</p>
           <div class="w3-half">
               
 <p>DCS attribute(s). Default <code>nil</code>.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Categories</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group categories.</p>
 
           </div>
         </div>
@@ -10598,6 +10577,17 @@ Targets with threat level 0 are usually harmless.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(CHIEF.Resource).Categories" ><strong>CHIEF.Resource.Categories</strong></a>
+    
+<p>Categories Group categories.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CHIEF.Resource).MissionType" ><strong>CHIEF.Resource.MissionType</strong></a>
     
@@ -10635,39 +10625,6 @@ Targets with threat level 0 are usually harmless.</p>
 <a id="#(CHIEF.Resource).Properties" ><strong>CHIEF.Resource.Properties</strong></a>
     
 <p>Properties (<a href="https://wiki.hoggitworld.com/view/DCS_enum_attributes">DCS attributes</a>), e.g. <code>"Attack helicopters"</code> or <code>"Mobile AAA"</code>.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CHIEF.Resource).cargoAttributes" ><strong>CHIEF.Resource.cargoAttributes</strong></a>
-    
-<p>Generalized attribute, e.g. <code>{GROUP.Attribute.GROUND_INFANTRY}</code>.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CHIEF.Resource).cargoCategories" ><strong>CHIEF.Resource.cargoCategories</strong></a>
-    
-<p>Group categories.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CHIEF.Resource).cargoProperties" ><strong>CHIEF.Resource.cargoProperties</strong></a>
-    
-<p>Properties (<a href="https://wiki.hoggitworld.com/view/DCS_enum_attributes">DCS attributes</a>), e.g. <code>"Attack helicopters"</code> or <code>"Mobile AAA"</code>. </p>
 
 </div>
 
