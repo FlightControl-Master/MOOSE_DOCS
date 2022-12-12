@@ -102,7 +102,7 @@ It is the ambition to grow this framework as a de-facto standard for mission des
 
 
 
-## 7. [MOOSE community on Discord](https://discord.gg/yBPfxC6) 
+## 7. [MOOSE community on Discord](https://discord.gg/Tf3hYy3ZYb) 
 
 Join our MOOSE community on Discord. 
 A place where mission designers and developers come together to discuss the latest features.
