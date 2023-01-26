@@ -5,21 +5,19 @@
 This set of MOOSE classes take control of your AI.
 
 
-## 1. [**AI A2A Dispatching**](Documentation/AI.AI_A2A_Dispatcher.html)
-
-![AI A2A Dispatcher](Images\AI_Air_To_Air_Dispatching.JPG)
+## 1. [**AI A2A Dispatching**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Dispatcher.html)
 
 Create an **A2A defense system** executed by AI to perform CAP or GCI to defend your airspace.  
 There are two classes that are important to learn:
 
-   * [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP)
-   * [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER)
+   * [**AI\_A2A\_GCICAP**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Dispatcher.html##(AI_A2A_GCICAP))
+   * [**AI\_A2A\_DISPATCHER**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Dispatcher.html)
    
 The [**AI\_A2A\_GCICAP**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_GCICAP) is a class for **novice mission designers**, 
 so I recommend novice users to start with using this class. 
 You can quickly configure a working GCICAP process.
 But it will provide less flexibility and options. 
-If you want more options, use the [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_A2A_Dispatcher.html#AI_A2A_DISPATCHER).
+If you want more options, use the [**AI\_A2A\_DISPATCHER**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Dispatcher.html).
 
 **Features:**
  
@@ -39,7 +37,7 @@ If you want more options, use the [**AI\_A2A\_DISPATCHER**](Documentation/AI.AI_
   * Setup a more advanced defense system using AI_A2A_DISPATCHER.
 
 
-## 2. AI Cargo Dispatching
+## 2. [AI Cargo Dispatching](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_Cargo_Dispatcher.html)
 
 Cargo dispatching will make the AI to transport cargo to deploy zones.
 Cargo can be transported by APC or trucks, or by helicopters.
@@ -55,9 +53,7 @@ Cargo can be transported by APC or trucks, or by helicopters.
   * Automatic activation of carriers when new cargo is to be picked-up (of cargo is spawned for example).
 
 
-## 3. [**AI Balancing**](Documentation/AI.AI_Balancer.html)
-
-![AI_Balancer](Images\AI_Balancing.JPG)
+## 3. [**AI Balancing**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_Balancer.html)
 
 Balance player slots with AI to create an engaging simulation environment, independent of the amount of players.
 
@@ -69,9 +65,7 @@ Balance player slots with AI to create an engaging simulation environment, indep
   * Configure the behaviour of AI when a human joins a slot for which an AI is active.
 
 
-## 4. [**AI Large Formations**](Documentation/AI.AI_Formation.html)
-
-![AI_Formation](Images\AI_Large_Formations.JPG)
+## 4. [**AI Large Formations**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_Formation.html)
 
 Build large airborne formations of aircraft.
 
@@ -83,9 +77,7 @@ Build large airborne formations of aircraft.
 
 ## 5. AI engagement
 
-### 5.1. [**AI Patrolling**]
-
-![AI_Patrol](Images\AI_Air_Patrolling.JPG)
+### 5.1. [**AI Patrolling**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Patrol.html)
 
 Peform Air Patrolling for airplanes within a patrol zone.
 
@@ -98,8 +90,6 @@ Peform Air Patrolling for airplanes within a patrol zone.
 
 ### 5.2. [**AI Combat Air Patrolling**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Cap.html)
 
-![AI_Patrol](Images\AI_Combat_Air_Patrol.JPG)
-
 Peform Combat Air Patrolling (CAP) for airplanes within a patrol zone.
 
 **Features:**
@@ -110,8 +100,6 @@ Peform Combat Air Patrolling (CAP) for airplanes within a patrol zone.
   * Engage the enemy when detected.
 
 ### 5.3. [**AI Close Air Support**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2G_CAS.html)
-
-![AI_Patrol](Images\AI_Close_Air_Support.JPG)
 
 Peform Close Air Support (CAS) near friendlies within an engagement zone.
 
@@ -125,8 +113,6 @@ Peform Close Air Support (CAS) near friendlies within an engagement zone.
   * RTB when commanded or after out of fuel.
 
 ### 5.4. [**AI Battlefield Air Interdiction**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2G_BAI.html)
-
-![AI_Patrol](Images\AI_Battlefield_Air_Interdiction.JPG)
 
 Peform Battlefield Air Interdiction (BAI) within an engagement zone.
 
