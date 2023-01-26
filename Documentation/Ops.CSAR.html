@@ -1600,7 +1600,7 @@
 
 <hr/>
 
-<h3>Author: <strong>Applevangelist</strong> (Moose Version), <strong><em>Ciribob</em></strong> (original), Thanks to: Shadowze, Cammel (testing)</h3>
+<h3>Author: <strong>Applevangelist</strong> (Moose Version), <strong><em>Ciribob</em></strong> (original), Thanks to: Shadowze, Cammel (testing), The Chosen One (Persistence)</h3>
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
@@ -1802,6 +1802,28 @@ Create a late-activated single infantry unit as template in the mission editor a
  my_csar:SpawnCASEVAC(Point, coalition.side.BLUE)  
 </code></pre>
 
+<h2>6. Save and load downed pilots - Persistance</h2>
+
+<p>You can save and later load back downed pilots to make your mission persistent.
+For this to work, you need to de-sanitize <strong>io</strong> and <strong>lfs</strong> in your MissionScripting.lua, which is located in your DCS installtion folder under Scripts.
+There is a risk involved in doing that; if you do not know what that means, this is possibly not for you.</p>
+
+<p>Use the following options to manage your saves:</p>
+
+<pre><code>         mycsar.enableLoadSave = true -- allow auto-saving and loading of files
+         mycsar.saveinterval = 600 -- save every 10 minutes
+         mycsar.filename = "missionsave.csv" -- example filename
+         mycsar.filepath = "C:\\Users\\myname\\Saved Games\\DCS\Missions\\MyMission" -- example path
+</code></pre>
+
+<p> Then use an initial load at the beginning of your mission:</p>
+
+<pre><code>       mycsar:__Load(10)
+</code></pre>
+
+<p> <strong>Caveat:</strong>
+Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
+
 
 </div>
 
@@ -1874,6 +1896,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).Load">CSAR:Load()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Save".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).New">CSAR:New(Coalition, Template, Alias)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new CSAR object and start the FSM.</p>
@@ -1904,6 +1932,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).OnAfterLoad">CSAR:OnAfterLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM Function OnAfterLoad.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).OnAfterPilotDown">CSAR:OnAfterPilotDown(From, Event, To, Group, Frequency, Leadername, CoordinatesText)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On After "PilotDown" event.</p>
@@ -1919,6 +1953,12 @@ Create a late-activated single infantry unit as template in the mission editor a
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).OnAfterReturning">CSAR:OnAfterReturning(From, Event, To, Heliname, Woundedgroupname)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On After "Returning" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).OnAfterSave">CSAR:OnAfterSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>FSM Function OnAfterSave.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2288,13 +2328,25 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).__Load">CSAR:__Load(delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Load" after a delay.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).__Save">CSAR:__Save(delay)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Triggers the FSM event "Save" after a delay.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).__Start">CSAR:__Start(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Start" after a delay.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).__Status">CSAR:__Status(delay)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).__Status">CSAR:__Status(delay, self)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Status" after a delay.</p>
 </td>
@@ -2450,7 +2502,25 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).enableLoadSave">CSAR.enableLoadSave</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).extractDistance">CSAR.extractDistance</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).filename">CSAR.filename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).filepath">CSAR.filepath</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2481,6 +2551,12 @@ Create a late-activated single infantry unit as template in the mission editor a
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).inTransitGroups">CSAR.inTransitGroups</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).index">CSAR.index</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2564,6 +2640,18 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onafterLoad">CSAR:onafterLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Load" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onafterSave">CSAR:onafterSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Save" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onafterStart">CSAR:onafterStart(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function called after Start() event.</p>
@@ -2600,6 +2688,12 @@ Create a late-activated single infantry unit as template in the mission editor a
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onbeforeLoad">CSAR:onbeforeLoad(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "Load" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onbeforePilotDown">CSAR:onbeforePilotDown(From, Event, To, Group, Frequency, Leadername, CoordinatesText)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function called before PilotDown() event.</p>
@@ -2615,6 +2709,12 @@ Create a late-activated single infantry unit as template in the mission editor a
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onbeforeReturning">CSAR:onbeforeReturning(From, Event, To, Heliname, Woundedgroupname, IsAirport, IsAirPort)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function called before Returning() event. </p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).onbeforeSave">CSAR:onbeforeSave(From, Event, To, path, filename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On before "Save" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2661,6 +2761,12 @@ Create a late-activated single infantry unit as template in the mission editor a
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).rescues">CSAR.rescues</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).saveinterval">CSAR.saveinterval</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3825,7 +3931,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -4238,13 +4344,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -4277,17 +4380,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(CSAR).enableForAI" ><strong>CSAR.enableForAI</strong></a>
     
@@ -4302,6 +4394,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).enableLoadSave" ><strong>CSAR.enableLoadSave</strong></a>
+    
+
+
+    
+<p> load and save downed pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).extractDistance" ><strong>CSAR.extractDistance</strong></a>
     
@@ -4309,6 +4415,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Distance the Downed pilot will run to the rescue helicopter</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).filename" ><strong>CSAR.filename</strong></a>
+    
+
 
 </div>
 
@@ -4379,6 +4496,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
+    
+
 
 </div>
 
@@ -4593,20 +4721,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
-    
-
-
-    
-<p> counter for saved pilots</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CSAR).rescuehoverdistance" ><strong>CSAR.rescuehoverdistance</strong></a>
     
 
@@ -4632,12 +4746,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+<a id="#(CSAR).saveinterval" ><strong>CSAR.saveinterval</strong></a>
     
 
-
-    
-<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -4807,6 +4918,25 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR).Load" ><strong>CSAR:Load()</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Save".</p>
+
+<div id= "#Functions##Load" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
 </div>
 
 </div>
@@ -5237,6 +5367,91 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR).OnAfterLoad" ><strong>CSAR:OnAfterLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>FSM Function OnAfterLoad.</p>
+
+<div id= "#Functions##OnAfterLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is located. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for loading. Default is "CSAR_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR).OnAfterPilotDown" ><strong>CSAR:OnAfterPilotDown(From, Event, To, Group, Frequency, Leadername, CoordinatesText)</strong></a></h2>
 </div>
     
@@ -5529,6 +5744,91 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Name of the downed pilot's group.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR).OnAfterSave" ><strong>CSAR:OnAfterSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>FSM Function OnAfterSave.</p>
+
+<div id= "#Functions##OnAfterSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is saved. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving. Default is "CSAR_<alias>_Persist.csv".</p>
 
           </div>
         </div>
@@ -8194,6 +8494,72 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR).__Load" ><strong>CSAR:__Load(delay)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Load" after a delay.</p>
+
+<div id= "#Functions##__Load" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR).__Save" ><strong>CSAR:__Save(delay)</strong></a></h2>
+</div>
+    
+<p>Triggers the FSM event "Save" after a delay.</p>
+
+<div id= "#Functions##__Save" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>delay</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Delay in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR).__Start" ><strong>CSAR:__Start(delay)</strong></a></h2>
 </div>
     
@@ -8230,7 +8596,7 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR).__Status" ><strong>CSAR:__Status(delay)</strong></a></h2>
+<h2><a id="#(CSAR).__Status" ><strong>CSAR:__Status(delay, self)</strong></a></h2>
 </div>
     
 <p>Triggers the FSM event "Status" after a delay.</p>
@@ -8241,7 +8607,7 @@ callsigns from playername or group name.</p>
    <div class="w3-margin-left">
 <p>CSAR</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
+    <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -8253,6 +8619,19 @@ callsigns from playername or group name.</p>
               
 <p>Delay in seconds.</p>
 
+<p>  --- Triggers the FSM event "Load".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CSAR)">#CSAR</a>
+            <strong><strong>self</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
 </div>
@@ -8288,6 +8667,182 @@ callsigns from playername or group name.</p>
           <div class="w3-half">
               
 <p>Delay in seconds.</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR).onafterLoad" ><strong>CSAR:onafterLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Load" event.</p>
+
+    
+<p>Loads dropped units from file.</p>
+
+<div id= "#Functions##onafterLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is located. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for loading. Default is "CSAR_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CSAR).onafterSave" ><strong>CSAR:onafterSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On after "Save" event.</p>
+
+    
+<p>Player data is saved to file.</p>
+
+<div id= "#Functions##onafterSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where the file is saved. If nil, file is saved in the DCS root installtion directory or your "Saved Games" folder if lfs was desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving. Default is Default is "CSAR_<alias>_Persist.csv".</p>
 
           </div>
         </div>
@@ -8731,6 +9286,94 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR).onbeforeLoad" ><strong>CSAR:onbeforeLoad(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On before "Load" event.</p>
+
+    
+<p>Checks if io and lfs and the file are available.</p>
+
+<div id= "#Functions##onbeforeLoad" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is located. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for loading. Default is "CSAR_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR).onbeforePilotDown" ><strong>CSAR:onbeforePilotDown(From, Event, To, Group, Frequency, Leadername, CoordinatesText)</strong></a></h2>
 </div>
     
@@ -9048,6 +9691,94 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CSAR).onbeforeSave" ><strong>CSAR:onbeforeSave(From, Event, To, path, filename)</strong></a></h2>
+</div>
+    
+<p>On before "Save" event.</p>
+
+    
+<p>Checks if io and lfs are available.</p>
+
+<div id= "#Functions##onbeforeSave" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CSAR</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Path where the file is saved. Default is the DCS root installation folder or your "Saved Games\DCS" folder if the lfs module is desanitized.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) File name for saving. Default is "CSAR_<alias>_Persist.csv".</p>
+
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CSAR).onbeforeStatus" ><strong>CSAR:onbeforeStatus(From, Event, To)</strong></a></h2>
 </div>
     
@@ -9179,7 +9910,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -9592,13 +10323,10 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -9631,17 +10359,6 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(CSAR).enableForAI" ><strong>CSAR.enableForAI</strong></a>
     
@@ -9656,6 +10373,20 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).enableLoadSave" ><strong>CSAR.enableLoadSave</strong></a>
+    
+
+
+    
+<p> load and save downed pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).extractDistance" ><strong>CSAR.extractDistance</strong></a>
     
@@ -9663,6 +10394,17 @@ callsigns from playername or group name.</p>
 
     
 <p> Distance the Downed pilot will run to the rescue helicopter</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).filename" ><strong>CSAR.filename</strong></a>
+    
+
 
 </div>
 
@@ -9733,6 +10475,17 @@ callsigns from playername or group name.</p>
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
+    
+
 
 </div>
 
@@ -9947,20 +10700,6 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
-    
-
-
-    
-<p> counter for saved pilots</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CSAR).rescuehoverdistance" ><strong>CSAR.rescuehoverdistance</strong></a>
     
 
@@ -9986,12 +10725,9 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+<a id="#(CSAR).saveinterval" ><strong>CSAR.saveinterval</strong></a>
     
 
-
-    
-<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -11638,7 +12374,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -12051,13 +12787,10 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -12090,17 +12823,6 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #boolean
 <a id="#(CSAR).enableForAI" ><strong>CSAR.enableForAI</strong></a>
     
@@ -12115,6 +12837,20 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CSAR).enableLoadSave" ><strong>CSAR.enableLoadSave</strong></a>
+    
+
+
+    
+<p> load and save downed pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).extractDistance" ><strong>CSAR.extractDistance</strong></a>
     
@@ -12122,6 +12858,17 @@ callsigns from playername or group name.</p>
 
     
 <p> Distance the Downed pilot will run to the rescue helicopter</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).filename" ><strong>CSAR.filename</strong></a>
+    
+
 
 </div>
 
@@ -12192,6 +12939,17 @@ callsigns from playername or group name.</p>
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
+    
+
 
 </div>
 
@@ -12406,20 +13164,6 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
-    
-
-
-    
-<p> counter for saved pilots</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
 <a id="#(CSAR).rescuehoverdistance" ><strong>CSAR.rescuehoverdistance</strong></a>
     
 
@@ -12445,12 +13189,9 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+<a id="#(CSAR).saveinterval" ><strong>CSAR.saveinterval</strong></a>
     
 
-
-    
-<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
