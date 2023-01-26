@@ -83,7 +83,7 @@ Build large airborne formations of aircraft.
 
 ## 5. AI engagement
 
-### 5.1. [**AI Patrolling**](Documentation/AI.AI_Patrol.html)
+### 5.1. [**AI Patrolling**]
 
 ![AI_Patrol](Images\AI_Air_Patrolling.JPG)
 
@@ -96,7 +96,7 @@ Peform Air Patrolling for airplanes within a patrol zone.
   * Manage a fuel treshold to RTB on time.
 
 
-### 5.2. [**AI Combat Air Patrolling**](Documentation/AI.AI_Cap.html)
+### 5.2. [**AI Combat Air Patrolling**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2A_Cap.html)
 
 ![AI_Patrol](Images\AI_Combat_Air_Patrol.JPG)
 
@@ -109,7 +109,7 @@ Peform Combat Air Patrolling (CAP) for airplanes within a patrol zone.
   * Manage a fuel treshold to RTB on time.
   * Engage the enemy when detected.
 
-### 5.3. [**AI Close Air Support**](Documentation/AI.AI_Cas.html)
+### 5.3. [**AI Close Air Support**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2G_CAS.html)
 
 ![AI_Patrol](Images\AI_Close_Air_Support.JPG)
 
@@ -124,7 +124,7 @@ Peform Close Air Support (CAS) near friendlies within an engagement zone.
   * After combat, return to the patrol zone and hold.
   * RTB when commanded or after out of fuel.
 
-### 5.4. [**AI Battlefield Air Interdiction**](Documentation/AI.AI_Bai.html)
+### 5.4. [**AI Battlefield Air Interdiction**](https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/AI.AI_A2G_BAI.html)
 
 ![AI_Patrol](Images\AI_Battlefield_Air_Interdiction.JPG)
 
