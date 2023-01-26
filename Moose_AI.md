@@ -1,7 +1,5 @@
 # AI Guide
 
-![MOOSE AI](Images\MOOSE_AI.JPG)
-
 This set of MOOSE classes take control of your AI.
 
 
