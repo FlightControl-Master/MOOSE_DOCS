@@ -1967,12 +1967,6 @@ EscortPlanes = AI_ESCORT_REQUEST:New( EscortUnit, EscortGroup, "Desert", "Welcom
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_ESCORT_REQUEST).FlightMenu">AI_ESCORT_REQUEST.FlightMenu</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_ESCORT_REQUEST).FollowDistance">AI_ESCORT_REQUEST.FollowDistance</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -1986,12 +1980,6 @@ EscortPlanes = AI_ESCORT_REQUEST:New( EscortUnit, EscortGroup, "Desert", "Welcom
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_ESCORT_REQUEST).GetFlightReportType">AI_ESCORT_REQUEST:GetFlightReportType()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_ESCORT_REQUEST).MainMenu">AI_ESCORT_REQUEST.MainMenu</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2339,11 +2327,9 @@ EscortPlanes = AI_ESCORT_REQUEST:New( EscortUnit, EscortGroup, "Desert", "Welcom
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_ESCORT_REQUEST)._AssistTarget">AI_ESCORT_REQUEST._AssistTarget(EscortGroup, DetectedItem, self)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_ESCORT_REQUEST)._AssistTarget">AI_ESCORT_REQUEST:_AssistTarget(EscortGroup, DetectedItem)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<ul>
-    <li>@param #AI_ESCORT self</li>
-</ul>
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -6180,10 +6166,14 @@ Note that if a report targets menu is not specified, no targets will be detected
 
 -- First find the GROUP object and the CLIENT object.
 local EscortUnit = CLIENT:FindByName( "Unit Name" ) -- The Unit Name is the name of the unit flagged with the skill Client in the mission editor.
-local EscortGroup = GROUP:FindByName( "Group Name" ) -- The Group Name is the name of the group that will escort the Escort Client.
+local EscortGroup = SET_GROUP:New():FilterPrefixes("Escort"):FilterOnce() -- The the group name of the escorts contains "Escort".
 
 -- Now use these 2 objects to construct the new EscortPlanes object.
-EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the mission. You are escorted by a plane with code name 'Desert', which can be instructed through the F10 radio menu." )</code></pre>
+EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the mission. You are escorted by a plane with code name 'Desert', which can be instructed through the F10 radio menu." )
+EscortPlanes:MenusAirplanes() -- create menus for airplanes
+EscortPlanes:__Start(2)
+
+</code></pre>
 
 </div>
 
@@ -6819,12 +6809,10 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_ESCORT_REQUEST)._AssistTarget" ><strong>AI_ESCORT_REQUEST._AssistTarget(EscortGroup, DetectedItem, self)</strong></a></h2>
+<h2><a id="#(AI_ESCORT_REQUEST)._AssistTarget" ><strong>AI_ESCORT_REQUEST:_AssistTarget(EscortGroup, DetectedItem)</strong></a></h2>
 </div>
     
-<ul>
-    <li>@param #AI_ESCORT self</li>
-</ul>
+
 
 <div id= "#Functions##_AssistTarget" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6857,16 +6845,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
               <p></p>
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>self</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
 </div>
 
 </div>
@@ -6880,6 +6858,11 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param #AI_ESCORT self
+ @param Wrapper.Group#GROUP EscortGroup The escort group that will attack the detected item.
+ @param Functional.Detection#DETECTION_BASE.DetectedItem DetectedItem</p>
+
 <div id= "#Functions##_AttackTarget" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -6890,20 +6873,16 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
             <strong><strong>EscortGroup</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              
-<p>The escort group that will attack the detected item.</p>
-
+              <p></p>
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Functional.Detection.html##(DETECTION_BASE.DetectedItem)">Functional.Detection#DETECTION_BASE.DetectedItem</a>
             <strong><strong>DetectedItem</strong></strong>
             </p>
           </div>
@@ -7357,6 +7336,12 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param #AI_ESCORT self
+ @param Wrapper.Group#GROUP OrbitGroup
+ @param #number OrbitHeight
+ @param #number OrbitSeconds</p>
+
 <div id= "#Functions##_FlightHoldPosition" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -7367,7 +7352,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
             <strong><strong>OrbitGroup</strong></strong>
             </p>
           </div>
@@ -7378,7 +7362,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>OrbitHeight</strong></strong>
             </p>
           </div>
@@ -7389,7 +7372,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>OrbitSeconds</strong></strong>
             </p>
           </div>
@@ -7868,6 +7850,13 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param #AI_ESCORT self
+ @param Wrapper.Group#GROUP OrbitGroup
+ @param Wrapper.Group#GROUP EscortGroup
+ @param #number OrbitHeight
+ @param #number OrbitSeconds</p>
+
 <div id= "#Functions##_HoldPosition" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -7878,7 +7867,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
             <strong><strong>OrbitGroup</strong></strong>
             </p>
           </div>
@@ -7889,7 +7877,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
             <strong><strong>EscortGroup</strong></strong>
             </p>
           </div>
@@ -7900,7 +7887,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>OrbitHeight</strong></strong>
             </p>
           </div>
@@ -7911,7 +7897,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>OrbitSeconds</strong></strong>
             </p>
           </div>
@@ -8212,6 +8197,11 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param #AI_ESCORT self
+ @param Wrapper.Group#GROUP EscortGroup
+ @param #number WayPoint</p>
+
 <div id= "#Functions##_ResumeMission" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -8222,7 +8212,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
             <strong><strong>EscortGroup</strong></strong>
             </p>
           </div>
@@ -8233,7 +8222,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                #number
             <strong><strong>WayPoint</strong></strong>
             </p>
           </div>
@@ -8365,6 +8353,10 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param Wrapper.Group#GROUP EscortGroup
+ @param #AI_ESCORT self</p>
+
 <div id= "#Functions##___Resume" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -8375,7 +8367,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
             <strong><strong>EscortGroup</strong></strong>
             </p>
           </div>
@@ -8386,7 +8377,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="##(AI_ESCORT)">#AI_ESCORT</a>
             <strong><strong>self</strong></strong>
             </p>
           </div>
@@ -8407,6 +8397,10 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param #AI_ESCORT self
+ @param Core.Set#SET_GROUP EscortGroupSet</p>
+
 <div id= "#Functions##onafterStart" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -8417,7 +8411,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
             <strong><strong>EscortGroupSet</strong></strong>
             </p>
           </div>
@@ -8438,6 +8431,10 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
     
 
 
+    
+<p> @param #AI_ESCORT self
+ @param Core.Set#SET_GROUP EscortGroupSet</p>
+
 <div id= "#Functions##onafterStop" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -8448,7 +8445,6 @@ EscortPlanes = AI_ESCORT:New( EscortUnit, EscortGroup, "Desert", "Welcome to the
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
             <strong><strong>EscortGroupSet</strong></strong>
             </p>
           </div>
