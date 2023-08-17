@@ -1605,199 +1605,300 @@
    </div>
   </nav>
   
-<img src="..\Images\MOOSE.JPG" alt="Banner Image"/>   
+<img src="..\Images\Wrapper_Storage.png" alt="Banner Image"/>   
 <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>Wrapper.Identifiable</strong></h1>
+    <h1>Module <strong>Wrapper.Storage</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>Wrapper</strong> - IDENTIFIABLE is an intermediate class wrapping DCS Object class derived Objects.</p>
+<p><strong>Wrapper</strong> - Warehouse storage of DCS airbases.</p>
 
     
 
+<h2>Main Features:</h2>
+
+<ul>
+    <li>Convenient access to DCS API functions</li>
+</ul>
+
 <hr/>
 
-<h3>Author: <strong>FlightControl</strong></h3>
+<h2>Example Missions:</h2>
 
-<h3>Contributions:</h3>
+<p>Demo missions can be found on <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/Wrapper%20-%20Storage">github</a>.</p>
 
 <hr/>
 
+<h3>Author: <strong>funkyfranky</strong></h3>
+
+<hr/>
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##IDENTIFIABLE')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##STORAGE')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>IDENTIFIABLE</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>STORAGE</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Wrapper class to handle the DCS Identifiable objects.</p>
+<p><em>The capitalist cannot store labour-power in warehouses after he has bought it, as he may do with the raw material.</em> -- Karl Marx</p>
+
+<hr/>
+
+<h1>The STORAGE Concept</h1>
+
+<p>The STORAGE class offers an easy-to-use wrapper interface to all DCS API functions of DCS warehouses.</p>
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##IDENTIFIABLE" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##STORAGE" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(IDENTIFIABLE)">#IDENTIFIABLE</a>
-<a id="IDENTIFIABLE" ><strong>IDENTIFIABLE</strong></a>
+    <a href="##(STORAGE)">#STORAGE</a>
+<a id="STORAGE" ><strong>STORAGE</strong></a>
     
-<p>Wrapper class to handle the DCS Identifiable objects.</p>
+<p><em>The capitalist cannot store labour-power in warehouses after he has bought it, as he may do with the raw material.</em> -- Karl Marx</p>
+
+<hr/>
+
+<h1>The STORAGE Concept</h1>
+
+<p>The STORAGE class offers an easy-to-use wrapper interface to all DCS API functions of DCS warehouses.</p>
 
     
+<p>We named the class STORAGE, because the name WAREHOUSE is already taken by another MOOSE class.</p>
+
+<p>This class allows you to add and remove items to a DCS warehouse, such as aircraft, liquids, weapons and other equipment.</p>
+
+<h1>Constructor</h1>
+
+<p>A DCS warehouse is associated with an airbase. Therefore, a <code>STORAGE</code> instance is automatically created, once an airbase is registered and added to the MOOSE database.</p>
+
+<p>You can get the <code>STORAGE</code> object from the </p>
+
+<pre><code>-- Create a STORAGE instance of the Batumi warehouse  
+local storage=STORAGE:FindByName("Batumi")
+</code></pre>
+
+<p>An other way to get the <code>STORAGE</code> object is to retrieve it from the AIRBASE function <code>AIRBASE:GetStorage()</code></p>
+
+<pre><code>-- Get storage instance of Batumi airbase
+local Batumi=AIRBASE:FindByName("Batumi")
+local storage=Batumi:GetStorage()
+</code></pre>
+
+<h1>Aircraft, Weapons and Equipment</h1>
+
+<h2>Adding Items</h2>
+
+<p>To add aircraft, weapons and/or othe equipment, you can use the <a href="##(STORAGE).AddItem">STORAGE.AddItem</a>() function</p>
+
+<pre><code>storage:AddItem("A-10C", 3)
+storage:AddItem("weapons.missiles.AIM_120C", 10)
+</code></pre>
+
+<p>This will add three A-10Cs and ten AIM-120C missiles to the warehouse inventory.</p>
+
+<h2>Setting Items</h2>
+
+<p>You can also explicitly set, how many items are in the inventory with the <a href="##(STORAGE).SetItem">STORAGE.SetItem</a>() function.</p>
+
+<h2>Removing Items</h2>
+
+<p>Items can be removed from the inventory with the <a href="##(STORAGE).RemoveItem">STORAGE.RemoveItem</a>() function.</p>
+
+<h2>Getting Amount</h2>
+
+<p>The number of items currently in the inventory can be obtained with the <a href="##(STORAGE).GetItemAmount">STORAGE.GetItemAmount</a>() function</p>
+
+<pre><code>local N=storage:GetItemAmount("A-10C")
+env.info(string.format("We currently have %d A-10Cs available", N))
+</code></pre>
+
+<h1>Liquids</h1>
+
+<p>Liquids can be added and removed by slightly different functions as described below. Currently there are four types of liquids</p>
 
 <ul>
-    <li>Support all DCS Identifiable APIs.</li>
-    <li>Enhance with Identifiable specific APIs not in the DCS Identifiable API set.</li>
-    <li>Manage the "state" of the DCS Identifiable.</li>
+    <li>Jet fuel <code>STORAGE.Liquid.JETFUEL</code></li>
+    <li>Aircraft gasoline <code>STORAGE.Liquid.GASOLINE</code></li>
+    <li>MW 50 <code>STORAGE.Liquid.MW50</code></li>
+    <li>Diesel <code>STORAGE.Liquid.DIESEL</code></li>
 </ul>
 
-<h2>IDENTIFIABLE constructor</h2>
+<h2>Adding Liquids</h2>
 
-<p>The IDENTIFIABLE class provides the following functions to construct a IDENTIFIABLE instance:</p>
+<p>To add a certain type of liquid, you can use the <a href="##(STORAGE).AddItem">STORAGE.AddItem</a>(Type, Amount) function</p>
 
-<ul>
-    <li><a href="##(IDENTIFIABLE).New">IDENTIFIABLE.New</a>(): Create a IDENTIFIABLE instance.</li>
-</ul>
+<pre><code>storage:AddLiquid(STORAGE.Liquid.JETFUEL, 10000)
+storage:AddLiquid(STORAGE.Liquid.DIESEL, 20000)
+</code></pre>
+
+<p>This will add 10,000 kg of jet fuel and 20,000 kg of diesel to the inventory.</p>
+
+<h2>Setting Liquids</h2>
+
+<p>You can also explicitly set the amount of liquid with the <a href="##(STORAGE).SetLiquid">STORAGE.SetLiquid</a>(Type, Amount) function.</p>
+
+<h2>Removing Liquids</h2>
+
+<p>Liquids can be removed with <a href="##(STORAGE).RemoveLiquid">STORAGE.RemoveLiquid</a>(Type, Amount) function.</p>
+
+<h2>Getting Amount</h2>
+
+<p>The current amount of a certain liquid can be obtained with the <a href="##(STORAGE).GetLiquidAmount">STORAGE.GetLiquidAmount</a>(Type) function</p>
+
+<pre><code>local N=storage:GetLiquidAmount(STORAGE.Liquid.DIESEL)
+env.info(string.format("We currently have %d kg of Diesel available", N))
+</code></pre>
+
+
+<h1>Inventory</h1>
+
+<p>The current inventory of the warehouse can be obtained with the <a href="##(STORAGE).GetInventory">STORAGE.GetInventory</a>() function. This returns three tables with the aircraft, liquids and weapons:</p>
+
+<pre><code>local aircraft, liquids, weapons=storage:GetInventory()
+
+UTILS.PrintTableToLog(aircraft)
+UTILS.PrintTableToLog(liquids)
+UTILS.PrintTableToLog(weapons)
+</code></pre>
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(IDENTIFIABLE)">Type <strong>IDENTIFIABLE</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(STORAGE)">Type <strong>STORAGE</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(IDENTIFIABLE)">IDENTIFIABLE</a></strong>
-, extends <strong><a href="Wrapper.Object.html##(OBJECT)">Wrapper.Object#OBJECT</a></strong>
+     <strong><a href="##(STORAGE)">STORAGE</a></strong>
 , extends <strong><a href="Core.Base.html##(BASE)">Core.Base#BASE</a></strong>
    </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from IDENTIFIABLE</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from STORAGE</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCallsign">IDENTIFIABLE:GetCallsign()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).AddItem">STORAGE:AddItem(Name, Amount)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Gets the CallSign of the IDENTIFIABLE, which is a blank by default.</p>
+<p>Adds the passed amount of a given item to the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCategory">IDENTIFIABLE:GetCategory()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).AddLiquid">STORAGE:AddLiquid(Type, Amount)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns object category of the DCS Identifiable.</p>
+<p>Adds the passed amount of a given liquid to the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCategoryName">IDENTIFIABLE:GetCategoryName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ClassName">STORAGE.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns the DCS Identifiable category name as defined within the DCS Identifiable Descriptor.</p>
+<p>Name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCoalition">IDENTIFIABLE:GetCoalition()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).FindByName">STORAGE:FindByName(AirbaseName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns coalition of the Identifiable.</p>
+<p>Find a STORAGE in the <strong>_DATABASE</strong> using the name associated airbase.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCoalitionName">IDENTIFIABLE:GetCoalitionName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetInventory">STORAGE:GetInventory(Item)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns the name of the coalition of the Identifiable.</p>
+<p>Returns a full itemized list of everything currently in a warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCountry">IDENTIFIABLE:GetCountry()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetItemAmount">STORAGE:GetItemAmount(Name)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns country of the Identifiable.</p>
+<p>Gets the amount of a given item currently present the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetCountryName">IDENTIFIABLE:GetCountryName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetLiquidAmount">STORAGE:GetLiquidAmount(Type)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns country name of the Identifiable.</p>
+<p>Gets the amount of a given liquid currently present the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetDesc">IDENTIFIABLE:GetDesc()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetLiquidName">STORAGE:GetLiquidName(Type)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns Identifiable descriptor.</p>
+<p>Returns the name of the liquid from its numeric type.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetName">IDENTIFIABLE:GetName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).Liquid">STORAGE.Liquid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns DCS Identifiable object name.</p>
+
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetThreatLevel">IDENTIFIABLE:GetThreatLevel()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).New">STORAGE:New(AirbaseName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Gets the threat level.</p>
+<p>Create a new STORAGE object from the DCS weapon object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetTypeName">IDENTIFIABLE:GetTypeName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).RemoveItem">STORAGE:RemoveItem(Name, Amount)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns the type name of the DCS Identifiable.</p>
+<p>Removes the amount of the passed item from the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).HasAttribute">IDENTIFIABLE:HasAttribute(AttributeName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).RemoveLiquid">STORAGE:RemoveLiquid(Type, Amount)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if the Object has the attribute.</p>
+<p>Removes the amount of the given liquid type from the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).IdentifiableName">IDENTIFIABLE.IdentifiableName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).SetItem">STORAGE:SetItem(Name, Amount)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>The name of the identifiable.</p>
+<p>Sets the specified amount of a given item to the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).IsAlive">IDENTIFIABLE:IsAlive()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).SetLiquid">STORAGE:SetLiquid(Type, Amount)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns if the Identifiable is alive.</p>
+<p>Sets the specified amount of a given liquid to the warehouse.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).New">IDENTIFIABLE:New(IdentifiableName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).SetVerbosity">STORAGE:SetVerbosity(VerbosityLevel)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Create a new IDENTIFIABLE from a DCSIdentifiable</p>
-</td>
-          </tr>
-        </table>
-        </div>
-        <div class="w3-card w3-margin">
-        <table class="w3-table w3-border-bottom w3-border-theme-l2">
-          <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from OBJECT</th>
-            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).Destroy">IDENTIFIABLE:Destroy()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Destroys the OBJECT.</p>
+<p>Set verbosity level.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetID">IDENTIFIABLE:GetID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).airbase">STORAGE.airbase</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Returns the unit's unique identifier.</p>
+<p>The DCS airbase object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).New">IDENTIFIABLE:New(ObjectName, Test)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).lid">STORAGE.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Create a new OBJECT from a DCSObject</p>
+<p>Class id string for output to DCS log file.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ObjectName">IDENTIFIABLE.ObjectName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).verbose">STORAGE.verbose</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>The name of the Object.</p>
+<p>Verbosity level.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).version">STORAGE.version</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>STORAGE class version.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).warehouse">STORAGE.warehouse</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>The DCS warehouse object.</p>
 </td>
           </tr>
         </table>
@@ -1809,491 +1910,491 @@
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ClassID">IDENTIFIABLE.ClassID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ClassID">STORAGE.ClassID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ClassName">IDENTIFIABLE.ClassName</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ClassName">STORAGE.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ClassNameAndID">IDENTIFIABLE.ClassNameAndID</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ClassNameAndID">STORAGE.ClassNameAndID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The name of the class concatenated with the ID number of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ClearState">IDENTIFIABLE:ClearState(Object, StateName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ClearState">STORAGE:ClearState(Object, StateName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Clear the state of an object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventBirth">IDENTIFIABLE:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventBirth">STORAGE:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Birth Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventCrash">IDENTIFIABLE:CreateEventCrash(EventTime, Initiator, IniObjectCategory)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventCrash">STORAGE:CreateEventCrash(EventTime, Initiator, IniObjectCategory)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Crash Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventDead">IDENTIFIABLE:CreateEventDead(EventTime, Initiator, IniObjectCategory)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventDead">STORAGE:CreateEventDead(EventTime, Initiator, IniObjectCategory)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Dead Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventPlayerEnterAircraft">IDENTIFIABLE:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventPlayerEnterAircraft">STORAGE:CreateEventPlayerEnterAircraft(PlayerUnit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventRemoveUnit">IDENTIFIABLE:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventRemoveUnit">STORAGE:CreateEventRemoveUnit(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Remove Unit Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventTakeoff">IDENTIFIABLE:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventTakeoff">STORAGE:CreateEventTakeoff(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Takeoff Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).CreateEventUnitLost">IDENTIFIABLE:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).CreateEventUnitLost">STORAGE:CreateEventUnitLost(EventTime, Initiator)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Creation of a Crash Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).E">IDENTIFIABLE:E(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).E">STORAGE:E(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an exception which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).EventDispatcher">IDENTIFIABLE:EventDispatcher()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).EventDispatcher">STORAGE:EventDispatcher()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Returns the event dispatcher</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).EventRemoveAll">IDENTIFIABLE:EventRemoveAll()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).EventRemoveAll">STORAGE:EventRemoveAll()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Remove all subscribed events</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).F">IDENTIFIABLE:F(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).F">STORAGE:F(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).F2">IDENTIFIABLE:F2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).F2">STORAGE:F2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).F3">IDENTIFIABLE:F3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).F3">STORAGE:F3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetClassID">IDENTIFIABLE:GetClassID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetClassID">STORAGE:GetClassID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetClassName">IDENTIFIABLE:GetClassName()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetClassName">STORAGE:GetClassName()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetClassNameAndID">IDENTIFIABLE:GetClassNameAndID()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetClassNameAndID">STORAGE:GetClassNameAndID()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the ClassName + ClassID of the class instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetEventPriority">IDENTIFIABLE:GetEventPriority()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetEventPriority">STORAGE:GetEventPriority()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get the Class <a href="Core.Event.html">Core.Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetParent">IDENTIFIABLE:GetParent(Child, FromClass)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetParent">STORAGE:GetParent(Child, FromClass)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to retrieve the Parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).GetState">IDENTIFIABLE:GetState(Object, Key)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).GetState">STORAGE:GetState(Object, Key)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get a Value given a Key from the Object.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).HandleEvent">IDENTIFIABLE:HandleEvent(EventID, EventFunction)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).HandleEvent">STORAGE:HandleEvent(EventID, EventFunction)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Subscribe to a DCS Event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).I">IDENTIFIABLE:I(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).I">STORAGE:I(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Log an information which will be traced always.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).Inherit">IDENTIFIABLE:Inherit(Child, Parent)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).Inherit">STORAGE:Inherit(Child, Parent)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to inherit from a parent class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).IsInstanceOf">IDENTIFIABLE:IsInstanceOf(ClassName)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).IsInstanceOf">STORAGE:IsInstanceOf(ClassName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).IsTrace">IDENTIFIABLE:IsTrace()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).IsTrace">STORAGE:IsTrace()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enquires if tracing is on (for the class).</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).New">IDENTIFIABLE:New()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).New">STORAGE:New()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>BASE constructor.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEvent">IDENTIFIABLE:OnEvent(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEvent">STORAGE:OnEvent(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an Event for an object is triggered.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventBDA">IDENTIFIABLE:OnEventBDA(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventBDA">STORAGE:OnEventBDA(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>BDA.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventBaseCaptured">IDENTIFIABLE:OnEventBaseCaptured(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventBaseCaptured">STORAGE:OnEventBaseCaptured(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventBirth">IDENTIFIABLE:OnEventBirth(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventBirth">STORAGE:OnEventBirth(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any object is spawned into the mission.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventCrash">IDENTIFIABLE:OnEventCrash(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventCrash">STORAGE:OnEventCrash(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventDead">IDENTIFIABLE:OnEventDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventDead">STORAGE:OnEventDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an object is dead.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventDetailedFailure">IDENTIFIABLE:OnEventDetailedFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventDetailedFailure">STORAGE:OnEventDetailedFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Unknown precisely what creates this event, likely tied into newer damage model.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventDiscardChairAfterEjection">IDENTIFIABLE:OnEventDiscardChairAfterEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventDiscardChairAfterEjection">STORAGE:OnEventDiscardChairAfterEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Discard chair after ejection.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventEjection">IDENTIFIABLE:OnEventEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventEjection">STORAGE:OnEventEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a pilot ejects from an aircraft
 Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a> as these are just the prototypes.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventEngineShutdown">IDENTIFIABLE:OnEventEngineShutdown(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventEngineShutdown">STORAGE:OnEventEngineShutdown(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft shuts down its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventEngineStartup">IDENTIFIABLE:OnEventEngineStartup(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventEngineStartup">STORAGE:OnEventEngineStartup(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any aircraft starts its engines.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventHit">IDENTIFIABLE:OnEventHit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventHit">STORAGE:OnEventHit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever an object is hit by a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventHumanFailure">IDENTIFIABLE:OnEventHumanFailure(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventHumanFailure">STORAGE:OnEventHumanFailure(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any system fails on a human controlled aircraft.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventKill">IDENTIFIABLE:OnEventKill(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventKill">STORAGE:OnEventKill(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs on the death of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventLand">IDENTIFIABLE:OnEventLand(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventLand">STORAGE:OnEventLand(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft lands at an airbase, farp or ship
 Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a> as these are just the prototypes.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventLandingAfterEjection">IDENTIFIABLE:OnEventLandingAfterEjection(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventLandingAfterEjection">STORAGE:OnEventLandingAfterEjection(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs shortly after the landing animation of an ejected pilot touching the ground and standing up.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventLandingQualityMark">IDENTIFIABLE:OnEventLandingQualityMark(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventLandingQualityMark">STORAGE:OnEventLandingQualityMark(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Landing quality mark.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventMarkAdded">IDENTIFIABLE:OnEventMarkAdded(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventMarkAdded">STORAGE:OnEventMarkAdded(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a new mark was added.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventMarkChange">IDENTIFIABLE:OnEventMarkChange(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventMarkChange">STORAGE:OnEventMarkChange(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark text was changed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventMarkRemoved">IDENTIFIABLE:OnEventMarkRemoved(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventMarkRemoved">STORAGE:OnEventMarkRemoved(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mark was removed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventMissionEnd">IDENTIFIABLE:OnEventMissionEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventMissionEnd">STORAGE:OnEventMissionEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission ends
 Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a> as these are just the prototypes.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventMissionStart">IDENTIFIABLE:OnEventMissionStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventMissionStart">STORAGE:OnEventMissionStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a mission starts
 Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a> as these are just the prototypes. </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventParatrooperLanding">IDENTIFIABLE:OnEventParatrooperLanding(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventParatrooperLanding">STORAGE:OnEventParatrooperLanding(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Weapon add.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventPilotDead">IDENTIFIABLE:OnEventPilotDead(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventPilotDead">STORAGE:OnEventPilotDead(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the pilot of an aircraft is killed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventPlayerEnterAircraft">IDENTIFIABLE:OnEventPlayerEnterAircraft(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventPlayerEnterAircraft">STORAGE:OnEventPlayerEnterAircraft(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when a player enters a slot and takes control of an aircraft.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventPlayerEnterUnit">IDENTIFIABLE:OnEventPlayerEnterUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventPlayerEnterUnit">STORAGE:OnEventPlayerEnterUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player assumes direct control of a unit.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventPlayerLeaveUnit">IDENTIFIABLE:OnEventPlayerLeaveUnit(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventPlayerLeaveUnit">STORAGE:OnEventPlayerLeaveUnit(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any player relieves control of a unit to the AI.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventRefueling">IDENTIFIABLE:OnEventRefueling(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventRefueling">STORAGE:OnEventRefueling(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventRefuelingStop">IDENTIFIABLE:OnEventRefuelingStop(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventRefuelingStop">STORAGE:OnEventRefuelingStop(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft is finished taking fuel.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventScore">IDENTIFIABLE:OnEventScore(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventScore">STORAGE:OnEventScore(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any modification to the "Score" as seen on the debrief menu would occur.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventShootingEnd">IDENTIFIABLE:OnEventShootingEnd(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventShootingEnd">STORAGE:OnEventShootingEnd(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit stops firing its weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventShootingStart">IDENTIFIABLE:OnEventShootingStart(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventShootingStart">STORAGE:OnEventShootingStart(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventShot">IDENTIFIABLE:OnEventShot(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventShot">STORAGE:OnEventShot(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventTakeoff">IDENTIFIABLE:OnEventTakeoff(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventTakeoff">STORAGE:OnEventTakeoff(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventTriggerZone">IDENTIFIABLE:OnEventTriggerZone(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventTriggerZone">STORAGE:OnEventTriggerZone(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trigger zone.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).OnEventUnitLost">IDENTIFIABLE:OnEventUnitLost(EventData)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).OnEventUnitLost">STORAGE:OnEventUnitLost(EventData)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Occurs when the game thinks an object is destroyed.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ScheduleOnce">IDENTIFIABLE:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ScheduleOnce">STORAGE:ScheduleOnce(Start, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ScheduleRepeat">IDENTIFIABLE:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ScheduleRepeat">STORAGE:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Schedule a new time event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).ScheduleStop">IDENTIFIABLE:ScheduleStop(SchedulerID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).ScheduleStop">STORAGE:ScheduleStop(SchedulerID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Stops the Schedule.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).Scheduler">IDENTIFIABLE.Scheduler</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).Scheduler">STORAGE.Scheduler</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).SetEventPriority">IDENTIFIABLE:SetEventPriority(EventPriority)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).SetEventPriority">STORAGE:SetEventPriority(EventPriority)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set the Class <a href="Core.Event.html">Core.Event</a> processing Priority.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).SetState">IDENTIFIABLE:SetState(Object, Key, Value)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).SetState">STORAGE:SetState(Object, Key, Value)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set a state or property of the Object given a Key and a Value.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).T">IDENTIFIABLE:T(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).T">STORAGE:T(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 1.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).T2">IDENTIFIABLE:T2(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).T2">STORAGE:T2(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 2.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).T3">IDENTIFIABLE:T3(Arguments)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).T3">STORAGE:T3(Arguments)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic level 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceAll">IDENTIFIABLE:TraceAll(TraceAll)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceAll">STORAGE:TraceAll(TraceAll)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace all methods in MOOSE</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceClass">IDENTIFIABLE:TraceClass(Class)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceClass">STORAGE:TraceClass(Class)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceClassMethod">IDENTIFIABLE:TraceClassMethod(Class, Method)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceClassMethod">STORAGE:TraceClassMethod(Class, Method)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set tracing for a specific method of  class</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceLevel">IDENTIFIABLE:TraceLevel(Level)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceLevel">STORAGE:TraceLevel(Level)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace level</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceOff">IDENTIFIABLE:TraceOff()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceOff">STORAGE:TraceOff()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace off.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceOn">IDENTIFIABLE:TraceOn()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceOn">STORAGE:TraceOn()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).TraceOnOff">IDENTIFIABLE:TraceOnOff(TraceOnOff)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).TraceOnOff">STORAGE:TraceOnOff(TraceOnOff)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set trace on or off
 Note that when trace is off, no BASE.Debug statement is performed, increasing performance!
@@ -2301,37 +2402,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).UnHandleEvent">IDENTIFIABLE:UnHandleEvent(EventID)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).UnHandleEvent">STORAGE:UnHandleEvent(EventID)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>UnSubscribe to a DCS event.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE)._">IDENTIFIABLE._</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE)._">STORAGE._</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE)._F">IDENTIFIABLE:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE)._F">STORAGE:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function call.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE)._T">IDENTIFIABLE:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE)._T">STORAGE:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Trace a function logic.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).__">IDENTIFIABLE.__</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).__">STORAGE.__</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(IDENTIFIABLE).onEvent">IDENTIFIABLE:onEvent(event)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE).onEvent">STORAGE:onEvent(event)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The main event handling function...</p>
 </td>
@@ -2339,15 +2440,55 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Wrapper.Identifiable)" >Type <strong>Wrapper.Identifiable</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(STORAGE.Liquid)">Type <strong>STORAGE.Liquid</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(STORAGE.Liquid)">STORAGE.Liquid</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from STORAGE.Liquid</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE.Liquid).DIESEL">STORAGE.Liquid.DIESEL</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Diesel (3).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE.Liquid).GASOLINE">STORAGE.Liquid.GASOLINE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Aviation gasoline (1).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE.Liquid).JETFUEL">STORAGE.Liquid.JETFUEL</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Jet fuel (0).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(STORAGE.Liquid).MW50">STORAGE.Liquid.MW50</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>MW50 (2).</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Wrapper.Storage)" >Type <strong>Wrapper.Storage</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##IDENTIFIABLE')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(IDENTIFIABLE)">Type <strong>IDENTIFIABLE</strong></a></h2></div>
-        <div id= "#Types##IDENTIFIABLE" class="w3-container w3-white w3-padding-16" id="module_other_types">
+      <div onclick="myFunction('#Types##STORAGE')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(STORAGE)">Type <strong>STORAGE</strong></a></h2></div>
+        <div id= "#Types##STORAGE" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
+  
+<p>STORAGE class.</p>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
@@ -2355,9 +2496,75 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
-<a id="#(IDENTIFIABLE).IdentifiableName" ><strong>IDENTIFIABLE.IdentifiableName</strong></a>
+<a id="#(STORAGE).ClassName" ><strong>STORAGE.ClassName</strong></a>
     
-<p>The name of the identifiable.</p>
+<p>Name of the class.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(STORAGE.Liquid)">#STORAGE.Liquid</a>
+<a id="#(STORAGE).Liquid" ><strong>STORAGE.Liquid</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="DCS.html##(Airbase)">DCS#Airbase</a>
+<a id="#(STORAGE).airbase" ><strong>STORAGE.airbase</strong></a>
+    
+<p>The DCS airbase object.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STORAGE).lid" ><strong>STORAGE.lid</strong></a>
+    
+<p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STORAGE).verbose" ><strong>STORAGE.verbose</strong></a>
+    
+<p>Verbosity level.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STORAGE).version" ><strong>STORAGE.version</strong></a>
+    
+<p>STORAGE class version.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="DCS.html##(Warehouse)">DCS#Warehouse</a>
+<a id="#(STORAGE).warehouse" ><strong>STORAGE.warehouse</strong></a>
+    
+<p>The DCS warehouse object.</p>
 
 </div>
 
@@ -2368,617 +2575,660 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCallsign" ><strong>IDENTIFIABLE:GetCallsign()</strong></a></h2>
+<h2><a id="#(STORAGE).AddItem" ><strong>STORAGE:AddItem(Name, Amount)</strong></a></h2>
 </div>
     
-<p>Gets the CallSign of the IDENTIFIABLE, which is a blank by default.</p>
+<p>Adds the passed amount of a given item to the warehouse.</p>
 
-<div id= "#Functions##GetCallsign" class="w3-show w3-white">
+<div id= "#Functions##AddItem" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The CallSign of the IDENTIFIABLE.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCategory" ><strong>IDENTIFIABLE:GetCategory()</strong></a></h2>
-</div>
-    
-<p>Returns object category of the DCS Identifiable.</p>
-
-    
-<p>One of</p>
-
-<ul>
-    <li>Object.Category.UNIT = 1</li>
-    <li>Object.Category.WEAPON = 2</li>
-    <li>Object.Category.STATIC = 3</li>
-    <li>Object.Category.BASE = 4</li>
-    <li>Object.Category.SCENERY = 5</li>
-    <li>Object.Category.Cargo = 6
-    </li>
-</ul>
-
-<div id= "#Functions##GetCategory" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="DCS.html##(Object.Category)">DCS#Object.Category</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The category ID, i.e. a number.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCategoryName" ><strong>IDENTIFIABLE:GetCategoryName()</strong></a></h2>
-</div>
-    
-<p>Returns the DCS Identifiable category name as defined within the DCS Identifiable Descriptor.</p>
-
-<div id= "#Functions##GetCategoryName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The DCS Identifiable Category Name</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCoalition" ><strong>IDENTIFIABLE:GetCoalition()</strong></a></h2>
-</div>
-    
-<p>Returns coalition of the Identifiable.</p>
-
-<div id= "#Functions##GetCoalition" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="DCS.html##(coalition.side)">DCS#coalition.side</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The side of the coalition or <code>#nil</code> The DCS Identifiable is not existing or alive.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCoalitionName" ><strong>IDENTIFIABLE:GetCoalitionName()</strong></a></h2>
-</div>
-    
-<p>Returns the name of the coalition of the Identifiable.</p>
-
-<div id= "#Functions##GetCoalitionName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return values:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#string:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>The name of the coalition.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#nil:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>The DCS Identifiable is not existing or alive.  </p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCountry" ><strong>IDENTIFIABLE:GetCountry()</strong></a></h2>
-</div>
-    
-<p>Returns country of the Identifiable.</p>
-
-<div id= "#Functions##GetCountry" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="DCS.html##(country.id)">DCS#country.id</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The country identifier or <code>#nil</code> The DCS Identifiable is not existing or alive.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetCountryName" ><strong>IDENTIFIABLE:GetCountryName()</strong></a></h2>
-</div>
-    
-<p>Returns country name of the Identifiable.</p>
-
-<div id= "#Functions##GetCountryName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Name of the country.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetDesc" ><strong>IDENTIFIABLE:GetDesc()</strong></a></h2>
-</div>
-    
-<p>Returns Identifiable descriptor.</p>
-
-    
-<p>Descriptor type depends on Identifiable category.</p>
-
-<div id= "#Functions##GetDesc" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="DCS.html##(Object.Desc)">DCS#Object.Desc</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The Identifiable descriptor or <code>#nil</code> The DCS Identifiable is not existing or alive.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetName" ><strong>IDENTIFIABLE:GetName()</strong></a></h2>
-</div>
-    
-<p>Returns DCS Identifiable object name.</p>
-
-    
-<p>The function provides access to non-activated objects too.</p>
-
-<div id= "#Functions##GetName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The name of the DCS Identifiable or <code>#nil</code>.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetThreatLevel" ><strong>IDENTIFIABLE:GetThreatLevel()</strong></a></h2>
-</div>
-    
-<p>Gets the threat level.</p>
-
-<div id= "#Functions##GetThreatLevel" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return values:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#number:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>Threat level.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#string:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>Type.</p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetTypeName" ><strong>IDENTIFIABLE:GetTypeName()</strong></a></h2>
-</div>
-    
-<p>Returns the type name of the DCS Identifiable.</p>
-
-<div id= "#Functions##GetTypeName" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#string:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>The type name of the DCS Identifiable.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).HasAttribute" ><strong>IDENTIFIABLE:HasAttribute(AttributeName)</strong></a></h2>
-</div>
-    
-<p>Check if the Object has the attribute.</p>
-
-<div id= "#Functions##HasAttribute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>AttributeName</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The attribute name.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>true if the attribute exists or <code>#nil</code> The DCS Identifiable is not existing or alive.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).IsAlive" ><strong>IDENTIFIABLE:IsAlive()</strong></a></h2>
-</div>
-    
-<p>Returns if the Identifiable is alive.</p>
-
-    
-<p>If the Identifiable is not alive, nil is returned. <br/>
-If the Identifiable is alive, true is returned.  </p>
-
-<div id= "#Functions##IsAlive" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>true if Identifiable is alive or <code>#nil</code> if the Identifiable is not existing or is not alive.  </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).New" ><strong>IDENTIFIABLE:New(IdentifiableName)</strong></a></h2>
-</div>
-    
-<p>Create a new IDENTIFIABLE from a DCSIdentifiable</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>IDENTIFIABLE</p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>IdentifiableName</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The DCS Identifiable name</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(IDENTIFIABLE)">#IDENTIFIABLE</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>self</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-<div class="fields w3-container w3-theme-l2">
-  <h2>Field(s)</h2>
-</div>
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #string
-<a id="#(IDENTIFIABLE).IdentifiableName" ><strong>IDENTIFIABLE.IdentifiableName</strong></a>
-    
-<p>The name of the identifiable.</p>
-
-</div>
-
-</div>   
-<div class="functions  w3-container w3-theme-l2">
-  <h2>Function(s)</h2>
-</div>  
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).Destroy" ><strong>IDENTIFIABLE:Destroy()</strong></a></h2>
-</div>
-    
-<p>Destroys the OBJECT.</p>
-
-<div id= "#Functions##Destroy" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="Wrapper.Object.html##(OBJECT)">Wrapper.Object#OBJECT</a></p>
-</div>
-    <h2><strong>Return values:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>true if the object is destroyed.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#nil:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>The DCS Unit is not existing or alive.  </p>
-
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetID" ><strong>IDENTIFIABLE:GetID()</strong></a></h2>
-</div>
-    
-<p>Returns the unit's unique identifier.</p>
-
-<div id= "#Functions##GetID" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="Wrapper.Object.html##(OBJECT)">Wrapper.Object#OBJECT</a></p>
-</div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="DCS.html##(Object.ID)">DCS#Object.ID</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>ObjectID or #nil if the DCS Object is not existing or alive. Note that the ID is passed as a string and not a number. </p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).New" ><strong>IDENTIFIABLE:New(ObjectName, Test)</strong></a></h2>
-</div>
-    
-<p>Create a new OBJECT from a DCSObject</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="Wrapper.Object.html##(OBJECT)">Wrapper.Object#OBJECT</a></p>
+<p>STORAGE</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="DCS.html##(Object)">DCS#Object</a>
-            <strong><strong>ObjectName</strong></strong>
+                #string
+            <strong><strong>Name</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>The Object name</p>
+<p>Name of the item to add.</p>
 
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>Test</strong></strong>
+                #number
+            <strong><strong>Amount</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Amount of items to add.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="##(OBJECT)">#OBJECT</a>:</p>
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).AddLiquid" ><strong>STORAGE:AddLiquid(Type, Amount)</strong></a></h2>
+</div>
+    
+<p>Adds the passed amount of a given liquid to the warehouse.</p>
+
+<div id= "#Functions##AddLiquid" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Type</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of liquid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Amount</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Amount of liquid to add.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).FindByName" ><strong>STORAGE:FindByName(AirbaseName)</strong></a></h2>
+</div>
+    
+<p>Find a STORAGE in the <strong>_DATABASE</strong> using the name associated airbase.</p>
+
+<div id= "#Functions##FindByName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>AirbaseName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Airbase Name.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).GetInventory" ><strong>STORAGE:GetInventory(Item)</strong></a></h2>
+</div>
+    
+<p>Returns a full itemized list of everything currently in a warehouse.</p>
+
+    
+<p>If a category is set to unlimited then the table will be returned empty.</p>
+
+<div id= "#Functions##GetInventory" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Item</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of item as #string or type of liquid as #number.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Table of aircraft. Table is emtpy <code>{}</code> if number of aircraft is set to be unlimited.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Table of liquids. Table is emtpy <code>{}</code> if number of liquids is set to be unlimited.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Table of weapons and other equipment. Table is emtpy <code>{}</code> if number of liquids is set to be unlimited.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).GetItemAmount" ><strong>STORAGE:GetItemAmount(Name)</strong></a></h2>
+</div>
+    
+<p>Gets the amount of a given item currently present the warehouse.</p>
+
+<div id= "#Functions##GetItemAmount" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the item.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Amount of items.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).GetLiquidAmount" ><strong>STORAGE:GetLiquidAmount(Type)</strong></a></h2>
+</div>
+    
+<p>Gets the amount of a given liquid currently present the warehouse.</p>
+
+<div id= "#Functions##GetLiquidAmount" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Type</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of liquid.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Amount of liquid in kg.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).GetLiquidName" ><strong>STORAGE:GetLiquidName(Type)</strong></a></h2>
+</div>
+    
+<p>Returns the name of the liquid from its numeric type.</p>
+
+<div id= "#Functions##GetLiquidName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Type</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of liquid.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Name of the liquid.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).New" ><strong>STORAGE:New(AirbaseName)</strong></a></h2>
+</div>
+    
+<p>Create a new STORAGE object from the DCS weapon object.</p>
+
+<div id= "#Functions##New" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>AirbaseName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the airbase.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).RemoveItem" ><strong>STORAGE:RemoveItem(Name, Amount)</strong></a></h2>
+</div>
+    
+<p>Removes the amount of the passed item from the warehouse.</p>
+
+<div id= "#Functions##RemoveItem" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the item.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Amount</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Amount of items.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).RemoveLiquid" ><strong>STORAGE:RemoveLiquid(Type, Amount)</strong></a></h2>
+</div>
+    
+<p>Removes the amount of the given liquid type from the warehouse.</p>
+
+<div id= "#Functions##RemoveLiquid" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Type</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of liquid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Amount</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Amount of liquid in kg to be removed.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).SetItem" ><strong>STORAGE:SetItem(Name, Amount)</strong></a></h2>
+</div>
+    
+<p>Sets the specified amount of a given item to the warehouse.</p>
+
+<div id= "#Functions##SetItem" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Name of the item.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Amount</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Amount of items.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).SetLiquid" ><strong>STORAGE:SetLiquid(Type, Amount)</strong></a></h2>
+</div>
+    
+<p>Sets the specified amount of a given liquid to the warehouse.</p>
+
+<div id= "#Functions##SetLiquid" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Type</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Type of liquid.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Amount</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Amount of liquid.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(STORAGE).SetVerbosity" ><strong>STORAGE:SetVerbosity(VerbosityLevel)</strong></a></h2>
+</div>
+    
+<p>Set verbosity level.</p>
+
+<div id= "#Functions##SetVerbosity" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>STORAGE</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>VerbosityLevel</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Level of output (higher=more). Default 0.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(STORAGE)">#STORAGE</a>:</p>
       </div>
       <div class="w3-half">
         
@@ -2998,9 +3248,75 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
-<a id="#(IDENTIFIABLE).IdentifiableName" ><strong>IDENTIFIABLE.IdentifiableName</strong></a>
+<a id="#(STORAGE).ClassName" ><strong>STORAGE.ClassName</strong></a>
     
-<p>The name of the identifiable.</p>
+<p>Name of the class.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(STORAGE.Liquid)">#STORAGE.Liquid</a>
+<a id="#(STORAGE).Liquid" ><strong>STORAGE.Liquid</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="DCS.html##(Airbase)">DCS#Airbase</a>
+<a id="#(STORAGE).airbase" ><strong>STORAGE.airbase</strong></a>
+    
+<p>The DCS airbase object.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STORAGE).lid" ><strong>STORAGE.lid</strong></a>
+    
+<p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STORAGE).verbose" ><strong>STORAGE.verbose</strong></a>
+    
+<p>Verbosity level.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(STORAGE).version" ><strong>STORAGE.version</strong></a>
+    
+<p>STORAGE class version.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="DCS.html##(Warehouse)">DCS#Warehouse</a>
+<a id="#(STORAGE).warehouse" ><strong>STORAGE.warehouse</strong></a>
+    
+<p>The DCS warehouse object.</p>
 
 </div>
 
@@ -3011,7 +3327,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).ClearState" ><strong>IDENTIFIABLE:ClearState(Object, StateName)</strong></a></h2>
+<h2><a id="#(STORAGE).ClearState" ><strong>STORAGE:ClearState(Object, StateName)</strong></a></h2>
 </div>
     
 <p>Clear the state of an object.</p>
@@ -3055,7 +3371,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventBirth" ><strong>IDENTIFIABLE:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventBirth" ><strong>STORAGE:CreateEventBirth(EventTime, Initiator, IniUnitName, place, subplace)</strong></a></h2>
 </div>
     
 <p>Creation of a Birth Event.</p>
@@ -3134,7 +3450,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventCrash" ><strong>IDENTIFIABLE:CreateEventCrash(EventTime, Initiator, IniObjectCategory)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventCrash" ><strong>STORAGE:CreateEventCrash(EventTime, Initiator, IniObjectCategory)</strong></a></h2>
 </div>
     
 <p>Creation of a Crash Event.</p>
@@ -3190,7 +3506,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventDead" ><strong>IDENTIFIABLE:CreateEventDead(EventTime, Initiator, IniObjectCategory)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventDead" ><strong>STORAGE:CreateEventDead(EventTime, Initiator, IniObjectCategory)</strong></a></h2>
 </div>
     
 <p>Creation of a Dead Event.</p>
@@ -3246,7 +3562,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventPlayerEnterAircraft" ><strong>IDENTIFIABLE:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventPlayerEnterAircraft" ><strong>STORAGE:CreateEventPlayerEnterAircraft(PlayerUnit)</strong></a></h2>
 </div>
     
 <p>Creation of a <code>S_EVENT_PLAYER_ENTER_AIRCRAFT</code> event.</p>
@@ -3279,7 +3595,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventRemoveUnit" ><strong>IDENTIFIABLE:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventRemoveUnit" ><strong>STORAGE:CreateEventRemoveUnit(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Remove Unit Event.</p>
@@ -3325,7 +3641,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventTakeoff" ><strong>IDENTIFIABLE:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventTakeoff" ><strong>STORAGE:CreateEventTakeoff(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Takeoff Event.</p>
@@ -3371,7 +3687,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).CreateEventUnitLost" ><strong>IDENTIFIABLE:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
+<h2><a id="#(STORAGE).CreateEventUnitLost" ><strong>STORAGE:CreateEventUnitLost(EventTime, Initiator)</strong></a></h2>
 </div>
     
 <p>Creation of a Crash Event.</p>
@@ -3417,7 +3733,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).E" ><strong>IDENTIFIABLE:E(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).E" ><strong>STORAGE:E(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an exception which will be traced always.</p>
@@ -3452,7 +3768,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).EventDispatcher" ><strong>IDENTIFIABLE:EventDispatcher()</strong></a></h2>
+<h2><a id="#(STORAGE).EventDispatcher" ><strong>STORAGE:EventDispatcher()</strong></a></h2>
 </div>
     
 <p>Returns the event dispatcher</p>
@@ -3482,7 +3798,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).EventRemoveAll" ><strong>IDENTIFIABLE:EventRemoveAll()</strong></a></h2>
+<h2><a id="#(STORAGE).EventRemoveAll" ><strong>STORAGE:EventRemoveAll()</strong></a></h2>
 </div>
     
 <p>Remove all subscribed events</p>
@@ -3512,7 +3828,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).F" ><strong>IDENTIFIABLE:F(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).F" ><strong>STORAGE:F(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -3547,7 +3863,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).F2" ><strong>IDENTIFIABLE:F2(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).F2" ><strong>STORAGE:F2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 2.</p>
@@ -3582,7 +3898,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).F3" ><strong>IDENTIFIABLE:F3(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).F3" ><strong>STORAGE:F3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function call level 3.</p>
@@ -3617,7 +3933,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetClassID" ><strong>IDENTIFIABLE:GetClassID()</strong></a></h2>
+<h2><a id="#(STORAGE).GetClassID" ><strong>STORAGE:GetClassID()</strong></a></h2>
 </div>
     
 <p>Get the ClassID of the class instance.</p>
@@ -3647,7 +3963,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetClassName" ><strong>IDENTIFIABLE:GetClassName()</strong></a></h2>
+<h2><a id="#(STORAGE).GetClassName" ><strong>STORAGE:GetClassName()</strong></a></h2>
 </div>
     
 <p>Get the ClassName of the class instance.</p>
@@ -3677,7 +3993,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetClassNameAndID" ><strong>IDENTIFIABLE:GetClassNameAndID()</strong></a></h2>
+<h2><a id="#(STORAGE).GetClassNameAndID" ><strong>STORAGE:GetClassNameAndID()</strong></a></h2>
 </div>
     
 <p>Get the ClassName + ClassID of the class instance.</p>
@@ -3710,7 +4026,7 @@ If the Identifiable is alive, true is returned.  </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetEventPriority" ><strong>IDENTIFIABLE:GetEventPriority()</strong></a></h2>
+<h2><a id="#(STORAGE).GetEventPriority" ><strong>STORAGE:GetEventPriority()</strong></a></h2>
 </div>
     
 <p>Get the Class <a href="Core.Event.html">Core.Event</a> processing Priority.</p>
@@ -3744,7 +4060,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetParent" ><strong>IDENTIFIABLE:GetParent(Child, FromClass)</strong></a></h2>
+<h2><a id="#(STORAGE).GetParent" ><strong>STORAGE:GetParent(Child, FromClass)</strong></a></h2>
 </div>
     
 <p>This is the worker method to retrieve the Parent class.</p>
@@ -3809,7 +4125,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).GetState" ><strong>IDENTIFIABLE:GetState(Object, Key)</strong></a></h2>
+<h2><a id="#(STORAGE).GetState" ><strong>STORAGE:GetState(Object, Key)</strong></a></h2>
 </div>
     
 <p>Get a Value given a Key from the Object.</p>
@@ -3866,7 +4182,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).HandleEvent" ><strong>IDENTIFIABLE:HandleEvent(EventID, EventFunction)</strong></a></h2>
+<h2><a id="#(STORAGE).HandleEvent" ><strong>STORAGE:HandleEvent(EventID, EventFunction)</strong></a></h2>
 </div>
     
 <p>Subscribe to a DCS Event.</p>
@@ -3923,7 +4239,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).I" ><strong>IDENTIFIABLE:I(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).I" ><strong>STORAGE:I(Arguments)</strong></a></h2>
 </div>
     
 <p>Log an information which will be traced always.</p>
@@ -3958,7 +4274,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).Inherit" ><strong>IDENTIFIABLE:Inherit(Child, Parent)</strong></a></h2>
+<h2><a id="#(STORAGE).Inherit" ><strong>STORAGE:Inherit(Child, Parent)</strong></a></h2>
 </div>
     
 <p>This is the worker method to inherit from a parent class.</p>
@@ -4014,7 +4330,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).IsInstanceOf" ><strong>IDENTIFIABLE:IsInstanceOf(ClassName)</strong></a></h2>
+<h2><a id="#(STORAGE).IsInstanceOf" ><strong>STORAGE:IsInstanceOf(ClassName)</strong></a></h2>
 </div>
     
 <p>This is the worker method to check if an object is an (sub)instance of a class.</p>
@@ -4070,7 +4386,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).IsTrace" ><strong>IDENTIFIABLE:IsTrace()</strong></a></h2>
+<h2><a id="#(STORAGE).IsTrace" ><strong>STORAGE:IsTrace()</strong></a></h2>
 </div>
     
 <p>Enquires if tracing is on (for the class).</p>
@@ -4100,7 +4416,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).New" ><strong>IDENTIFIABLE:New()</strong></a></h2>
+<h2><a id="#(STORAGE).New" ><strong>STORAGE:New()</strong></a></h2>
 </div>
     
 <p>BASE constructor.</p>
@@ -4141,7 +4457,7 @@ end
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEvent" ><strong>IDENTIFIABLE:OnEvent(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEvent" ><strong>STORAGE:OnEvent(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an Event for an object is triggered.</p>
@@ -4178,7 +4494,7 @@ initiator : The unit that triggered the event. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventBDA" ><strong>IDENTIFIABLE:OnEventBDA(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventBDA" ><strong>STORAGE:OnEventBDA(EventData)</strong></a></h2>
 </div>
     
 <p>BDA.</p>
@@ -4214,7 +4530,7 @@ initiator : The unit that triggered the event. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventBaseCaptured" ><strong>IDENTIFIABLE:OnEventBaseCaptured(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventBaseCaptured" ><strong>STORAGE:OnEventBaseCaptured(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a ground unit captures either an airbase or a farp.</p>
@@ -4252,7 +4568,7 @@ place: The airbase that was captured, can be a FARP or Airbase. When calling pla
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventBirth" ><strong>IDENTIFIABLE:OnEventBirth(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventBirth" ><strong>STORAGE:OnEventBirth(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any object is spawned into the mission.</p>
@@ -4289,7 +4605,7 @@ initiator : The unit that was spawned </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventCrash" ><strong>IDENTIFIABLE:OnEventCrash(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventCrash" ><strong>STORAGE:OnEventCrash(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft crashes into the ground and is completely destroyed.</p>
@@ -4326,7 +4642,7 @@ initiator : The unit that has crashed </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventDead" ><strong>IDENTIFIABLE:OnEventDead(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventDead" ><strong>STORAGE:OnEventDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an object is dead.</p>
@@ -4363,7 +4679,7 @@ initiator : The unit that is dead. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventDetailedFailure" ><strong>IDENTIFIABLE:OnEventDetailedFailure(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventDetailedFailure" ><strong>STORAGE:OnEventDetailedFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Unknown precisely what creates this event, likely tied into newer damage model.</p>
@@ -4404,7 +4720,7 @@ initiator : The unit that is dead. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventDiscardChairAfterEjection" ><strong>IDENTIFIABLE:OnEventDiscardChairAfterEjection(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventDiscardChairAfterEjection" ><strong>STORAGE:OnEventDiscardChairAfterEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Discard chair after ejection.</p>
@@ -4440,7 +4756,7 @@ initiator : The unit that is dead. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventEjection" ><strong>IDENTIFIABLE:OnEventEjection(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventEjection" ><strong>STORAGE:OnEventEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a pilot ejects from an aircraft
@@ -4477,7 +4793,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventEngineShutdown" ><strong>IDENTIFIABLE:OnEventEngineShutdown(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventEngineShutdown" ><strong>STORAGE:OnEventEngineShutdown(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft shuts down its engines.</p>
@@ -4514,7 +4830,7 @@ initiator : The unit that is stopping its engines. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventEngineStartup" ><strong>IDENTIFIABLE:OnEventEngineStartup(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventEngineStartup" ><strong>STORAGE:OnEventEngineStartup(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any aircraft starts its engines.</p>
@@ -4551,7 +4867,7 @@ initiator : The unit that is starting its engines. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventHit" ><strong>IDENTIFIABLE:OnEventHit(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventHit" ><strong>STORAGE:OnEventHit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever an object is hit by a weapon.</p>
@@ -4590,7 +4906,7 @@ target: The Object that was hit. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventHumanFailure" ><strong>IDENTIFIABLE:OnEventHumanFailure(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventHumanFailure" ><strong>STORAGE:OnEventHumanFailure(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any system fails on a human controlled aircraft.</p>
@@ -4627,7 +4943,7 @@ initiator : The unit that had the failure </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventKill" ><strong>IDENTIFIABLE:OnEventKill(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventKill" ><strong>STORAGE:OnEventKill(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs on the death of a unit.</p>
@@ -4671,7 +4987,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventLand" ><strong>IDENTIFIABLE:OnEventLand(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventLand" ><strong>STORAGE:OnEventLand(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft lands at an airbase, farp or ship
@@ -4709,7 +5025,7 @@ place: Object that the unit landed on. Can be an Airbase Object, FARP, or Ships 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventLandingAfterEjection" ><strong>IDENTIFIABLE:OnEventLandingAfterEjection(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventLandingAfterEjection" ><strong>STORAGE:OnEventLandingAfterEjection(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs shortly after the landing animation of an ejected pilot touching the ground and standing up.</p>
@@ -4753,7 +5069,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventLandingQualityMark" ><strong>IDENTIFIABLE:OnEventLandingQualityMark(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventLandingQualityMark" ><strong>STORAGE:OnEventLandingQualityMark(EventData)</strong></a></h2>
 </div>
     
 <p>Landing quality mark.</p>
@@ -4789,7 +5105,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventMarkAdded" ><strong>IDENTIFIABLE:OnEventMarkAdded(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventMarkAdded" ><strong>STORAGE:OnEventMarkAdded(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a new mark was added.</p>
@@ -4826,7 +5142,7 @@ MarkID: ID of the mark. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventMarkChange" ><strong>IDENTIFIABLE:OnEventMarkChange(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventMarkChange" ><strong>STORAGE:OnEventMarkChange(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark text was changed.</p>
@@ -4863,7 +5179,7 @@ MarkID: ID of the mark. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventMarkRemoved" ><strong>IDENTIFIABLE:OnEventMarkRemoved(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventMarkRemoved" ><strong>STORAGE:OnEventMarkRemoved(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mark was removed.</p>
@@ -4900,7 +5216,7 @@ MarkID: ID of the mark. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventMissionEnd" ><strong>IDENTIFIABLE:OnEventMissionEnd(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventMissionEnd" ><strong>STORAGE:OnEventMissionEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission ends
@@ -4934,7 +5250,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventMissionStart" ><strong>IDENTIFIABLE:OnEventMissionStart(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventMissionStart" ><strong>STORAGE:OnEventMissionStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a mission starts
@@ -4968,7 +5284,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventParatrooperLanding" ><strong>IDENTIFIABLE:OnEventParatrooperLanding(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventParatrooperLanding" ><strong>STORAGE:OnEventParatrooperLanding(EventData)</strong></a></h2>
 </div>
     
 <p>Weapon add.</p>
@@ -5005,7 +5321,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventPilotDead" ><strong>IDENTIFIABLE:OnEventPilotDead(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventPilotDead" ><strong>STORAGE:OnEventPilotDead(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the pilot of an aircraft is killed.</p>
@@ -5043,7 +5359,7 @@ initiator : The unit that the pilot has died in. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventPlayerEnterAircraft" ><strong>IDENTIFIABLE:OnEventPlayerEnterAircraft(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventPlayerEnterAircraft" ><strong>STORAGE:OnEventPlayerEnterAircraft(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when a player enters a slot and takes control of an aircraft.</p>
@@ -5081,7 +5397,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventPlayerEnterUnit" ><strong>IDENTIFIABLE:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventPlayerEnterUnit" ><strong>STORAGE:OnEventPlayerEnterUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player assumes direct control of a unit.</p>
@@ -5119,7 +5435,7 @@ initiator : The unit that is being taken control of. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventPlayerLeaveUnit" ><strong>IDENTIFIABLE:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventPlayerLeaveUnit" ><strong>STORAGE:OnEventPlayerLeaveUnit(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any player relieves control of a unit to the AI.</p>
@@ -5156,7 +5472,7 @@ initiator : The unit that the player left. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventRefueling" ><strong>IDENTIFIABLE:OnEventRefueling(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventRefueling" ><strong>STORAGE:OnEventRefueling(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft connects with a tanker and begins taking on fuel.</p>
@@ -5193,7 +5509,7 @@ initiator : The unit that is receiving fuel. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventRefuelingStop" ><strong>IDENTIFIABLE:OnEventRefuelingStop(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventRefuelingStop" ><strong>STORAGE:OnEventRefuelingStop(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft is finished taking fuel.</p>
@@ -5230,7 +5546,7 @@ initiator : The unit that was receiving fuel. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventScore" ><strong>IDENTIFIABLE:OnEventScore(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventScore" ><strong>STORAGE:OnEventScore(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any modification to the "Score" as seen on the debrief menu would occur.</p>
@@ -5267,7 +5583,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventShootingEnd" ><strong>IDENTIFIABLE:OnEventShootingEnd(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventShootingEnd" ><strong>STORAGE:OnEventShootingEnd(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit stops firing its weapon.</p>
@@ -5305,7 +5621,7 @@ initiator : The unit that was doing the shooting. </p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventShootingStart" ><strong>IDENTIFIABLE:OnEventShootingStart(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventShootingStart" ><strong>STORAGE:OnEventShootingStart(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when any unit begins firing a weapon that has a high rate of fire.</p>
@@ -5344,7 +5660,7 @@ target: The unit that is being targeted.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventShot" ><strong>IDENTIFIABLE:OnEventShot(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventShot" ><strong>STORAGE:OnEventShot(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs whenever any unit in a mission fires a weapon.</p>
@@ -5381,7 +5697,7 @@ Have a look at the class <a href="Core.Event.html##(EVENT)">Core.Event#EVENT</a>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventTakeoff" ><strong>IDENTIFIABLE:OnEventTakeoff(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventTakeoff" ><strong>STORAGE:OnEventTakeoff(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when an aircraft takes off from an airbase, farp, or ship.</p>
@@ -5419,7 +5735,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventTriggerZone" ><strong>IDENTIFIABLE:OnEventTriggerZone(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventTriggerZone" ><strong>STORAGE:OnEventTriggerZone(EventData)</strong></a></h2>
 </div>
     
 <p>Trigger zone.</p>
@@ -5455,7 +5771,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).OnEventUnitLost" ><strong>IDENTIFIABLE:OnEventUnitLost(EventData)</strong></a></h2>
+<h2><a id="#(STORAGE).OnEventUnitLost" ><strong>STORAGE:OnEventUnitLost(EventData)</strong></a></h2>
 </div>
     
 <p>Occurs when the game thinks an object is destroyed.</p>
@@ -5496,7 +5812,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).ScheduleOnce" ><strong>IDENTIFIABLE:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(STORAGE).ScheduleOnce" ><strong>STORAGE:ScheduleOnce(Start, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -5569,7 +5885,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).ScheduleRepeat" ><strong>IDENTIFIABLE:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
+<h2><a id="#(STORAGE).ScheduleRepeat" ><strong>STORAGE:ScheduleRepeat(Start, Repeat, RandomizeFactor, Stop, SchedulerFunction, ...)</strong></a></h2>
 </div>
     
 <p>Schedule a new time event.</p>
@@ -5681,7 +5997,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).ScheduleStop" ><strong>IDENTIFIABLE:ScheduleStop(SchedulerID)</strong></a></h2>
+<h2><a id="#(STORAGE).ScheduleStop" ><strong>STORAGE:ScheduleStop(SchedulerID)</strong></a></h2>
 </div>
     
 <p>Stops the Schedule.</p>
@@ -5714,7 +6030,7 @@ place: Object from where the AI took-off from. Can be an Airbase Object, FARP, o
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).SetEventPriority" ><strong>IDENTIFIABLE:SetEventPriority(EventPriority)</strong></a></h2>
+<h2><a id="#(STORAGE).SetEventPriority" ><strong>STORAGE:SetEventPriority(EventPriority)</strong></a></h2>
 </div>
     
 <p>Set the Class <a href="Core.Event.html">Core.Event</a> processing Priority.</p>
@@ -5762,7 +6078,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).SetState" ><strong>IDENTIFIABLE:SetState(Object, Key, Value)</strong></a></h2>
+<h2><a id="#(STORAGE).SetState" ><strong>STORAGE:SetState(Object, Key, Value)</strong></a></h2>
 </div>
     
 <p>Set a state or property of the Object given a Key and a Value.</p>
@@ -5831,7 +6147,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).T" ><strong>IDENTIFIABLE:T(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).T" ><strong>STORAGE:T(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 1.</p>
@@ -5866,7 +6182,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).T2" ><strong>IDENTIFIABLE:T2(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).T2" ><strong>STORAGE:T2(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 2.</p>
@@ -5901,7 +6217,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).T3" ><strong>IDENTIFIABLE:T3(Arguments)</strong></a></h2>
+<h2><a id="#(STORAGE).T3" ><strong>STORAGE:T3(Arguments)</strong></a></h2>
 </div>
     
 <p>Trace a function logic level 3.</p>
@@ -5936,7 +6252,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceAll" ><strong>IDENTIFIABLE:TraceAll(TraceAll)</strong></a></h2>
+<h2><a id="#(STORAGE).TraceAll" ><strong>STORAGE:TraceAll(TraceAll)</strong></a></h2>
 </div>
     
 <p>Trace all methods in MOOSE</p>
@@ -5969,7 +6285,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceClass" ><strong>IDENTIFIABLE:TraceClass(Class)</strong></a></h2>
+<h2><a id="#(STORAGE).TraceClass" ><strong>STORAGE:TraceClass(Class)</strong></a></h2>
 </div>
     
 <p>Set tracing for a class</p>
@@ -6002,7 +6318,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceClassMethod" ><strong>IDENTIFIABLE:TraceClassMethod(Class, Method)</strong></a></h2>
+<h2><a id="#(STORAGE).TraceClassMethod" ><strong>STORAGE:TraceClassMethod(Class, Method)</strong></a></h2>
 </div>
     
 <p>Set tracing for a specific method of  class</p>
@@ -6048,7 +6364,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceLevel" ><strong>IDENTIFIABLE:TraceLevel(Level)</strong></a></h2>
+<h2><a id="#(STORAGE).TraceLevel" ><strong>STORAGE:TraceLevel(Level)</strong></a></h2>
 </div>
     
 <p>Set trace level</p>
@@ -6079,7 +6395,7 @@ reflecting the order of the classes subscribed to the Event to be processed.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceOff" ><strong>IDENTIFIABLE:TraceOff()</strong></a></h2>
+<h2><a id="#(STORAGE).TraceOff" ><strong>STORAGE:TraceOff()</strong></a></h2>
 </div>
     
 <p>Set trace off.</p>
@@ -6102,7 +6418,7 @@ BASE:TraceOff()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceOn" ><strong>IDENTIFIABLE:TraceOn()</strong></a></h2>
+<h2><a id="#(STORAGE).TraceOn" ><strong>STORAGE:TraceOn()</strong></a></h2>
 </div>
     
 <p>Set trace on.</p>
@@ -6125,7 +6441,7 @@ BASE:TraceOn()</code></pre>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).TraceOnOff" ><strong>IDENTIFIABLE:TraceOnOff(TraceOnOff)</strong></a></h2>
+<h2><a id="#(STORAGE).TraceOnOff" ><strong>STORAGE:TraceOnOff(TraceOnOff)</strong></a></h2>
 </div>
     
 <p>Set trace on or off
@@ -6173,7 +6489,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).UnHandleEvent" ><strong>IDENTIFIABLE:UnHandleEvent(EventID)</strong></a></h2>
+<h2><a id="#(STORAGE).UnHandleEvent" ><strong>STORAGE:UnHandleEvent(EventID)</strong></a></h2>
 </div>
     
 <p>UnSubscribe to a DCS event.</p>
@@ -6217,7 +6533,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE)._F" ><strong>IDENTIFIABLE:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(STORAGE)._F" ><strong>STORAGE:_F(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function call.</p>
@@ -6272,7 +6588,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE)._T" ><strong>IDENTIFIABLE:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
+<h2><a id="#(STORAGE)._T" ><strong>STORAGE:_T(Arguments, DebugInfoCurrentParam, DebugInfoFromParam)</strong></a></h2>
 </div>
     
 <p>Trace a function logic.</p>
@@ -6324,7 +6640,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(IDENTIFIABLE).onEvent" ><strong>IDENTIFIABLE:onEvent(event)</strong></a></h2>
+<h2><a id="#(STORAGE).onEvent" ><strong>STORAGE:onEvent(event)</strong></a></h2>
 </div>
     
 <p>The main event handling function...</p>
@@ -6358,10 +6674,69 @@ When moose is loading dynamically (for moose class development), tracing is swit
 </div>
 
         </div>
+      <div onclick="myFunction('#Types##STORAGE.Liquid')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(STORAGE.Liquid)">Type <strong>STORAGE.Liquid</strong></a></h2></div>
+        <div id= "#Types##STORAGE.Liquid" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Liquid types.</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STORAGE.Liquid).DIESEL" ><strong>STORAGE.Liquid.DIESEL</strong></a>
+    
+<p>Diesel (3).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STORAGE.Liquid).GASOLINE" ><strong>STORAGE.Liquid.GASOLINE</strong></a>
+    
+<p>Aviation gasoline (1).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STORAGE.Liquid).JETFUEL" ><strong>STORAGE.Liquid.JETFUEL</strong></a>
+    
+<p>Jet fuel (0).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(STORAGE.Liquid).MW50" ><strong>STORAGE.Liquid.MW50</strong></a>
+    
+<p>MW50 (2).</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/MOOSE.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/Wrapper_Storage.png')";
 }
 </script>
 
