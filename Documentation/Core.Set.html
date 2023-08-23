@@ -1659,6 +1659,13 @@
     <li>Trigger events when objects in the SET change a zone presence.</li>
 </ul>
 
+<h2>Notes on <code>FilterPrefixes()</code>:</h2>
+
+<p>This filter always looks for a <strong>partial match</strong> somewhere in the given field. LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+Have a read through the following to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a>. <br/>
+For example, setting a filter like so <code>FilterPrefixes("Huey")</code> is perfectly all right, whilst <code>FilterPrefixes("UH-1H Al-Assad")</code> might not be due to the minus signs. A quick fix here is to use a dot (.) 
+in place of the special character, or escape it with a percentage sign (%), i.e. either <code>FilterPrefixes("UH.1H Al.Assad")</code> or <code>FilterPrefixes("UH%-1H Al%-Assad")</code> will give you the expected results.</p>
+
 <hr/>
 
 <h3>Author: <strong>FlightControl</strong></h3>
@@ -1845,7 +1852,8 @@ Filter criteria are defined by:</p>
 
 <ul>
     <li><a href="##(SET_CARGO).FilterCoalitions">SET_CARGO.FilterCoalitions</a>: Builds the SET_CARGO with the cargos belonging to the coalition(s).</li>
-    <li><a href="##(SET_CARGO).FilterPrefixes">SET_CARGO.FilterPrefixes</a>: Builds the SET_CARGO with the cargos containing the same string(s). <strong>ATTENTION</strong> Bad naming convention as this <em>does not</em> only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_CARGO).FilterPrefixes">SET_CARGO.FilterPrefixes</a>: Builds the SET_CARGO with the cargos containing the same string(s). <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
     <li><a href="##(SET_CARGO).FilterTypes">SET_CARGO.FilterTypes</a>: Builds the SET_CARGO with the cargos belonging to the cargo type(s).</li>
     <li><a href="##(SET_CARGO).FilterCountries">SET_CARGO.FilterCountries</a>: Builds the SET_CARGO with the cargos belonging to the country(ies).</li>
 </ul>
@@ -1929,7 +1937,8 @@ Filter criteria are defined by:</p>
     <li><a href="##(SET_CLIENT).FilterCategories">SET_CLIENT.FilterCategories</a>: Builds the SET_CLIENT with the clients belonging to the category(ies).</li>
     <li><a href="##(SET_CLIENT).FilterTypes">SET_CLIENT.FilterTypes</a>: Builds the SET_CLIENT with the clients belonging to the client type(s).</li>
     <li><a href="##(SET_CLIENT).FilterCountries">SET_CLIENT.FilterCountries</a>: Builds the SET_CLIENT with the clients belonging to the country(ies).</li>
-    <li><a href="##(SET_CLIENT).FilterPrefixes">SET_CLIENT.FilterPrefixes</a>: Builds the SET_CLIENT with the clients containing the same string(s) in their unit/pilot name. <strong>ATTENTION!</strong> Bad naming convention as this <em>does not</em> only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_CLIENT).FilterPrefixes">SET_CLIENT.FilterPrefixes</a>: Builds the SET_CLIENT with the clients containing the same string(s) in their unit/pilot name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
     <li><a href="##(SET_CLIENT).FilterActive">SET_CLIENT.FilterActive</a>: Builds the SET_CLIENT with the units that are only active. Units that are inactive (late activation) won't be included in the set!</li>
     <li><a href="##(SET_CLIENT).FilterZones">SET_CLIENT.FilterZones</a>: Builds the SET_CLIENT with the clients within a <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>.</li>
 </ul>
@@ -2012,7 +2021,8 @@ Filter criteria are defined by:</p>
     <li><a href="##(SET_GROUP).FilterCoalitions">SET_GROUP.FilterCoalitions</a>: Builds the SET_GROUP with the groups belonging to the coalition(s).</li>
     <li><a href="##(SET_GROUP).FilterCategories">SET_GROUP.FilterCategories</a>: Builds the SET_GROUP with the groups belonging to the category(ies).</li>
     <li><a href="##(SET_GROUP).FilterCountries">SET_GROUP.FilterCountries</a>: Builds the SET_GROUP with the groups belonging to the country(ies).</li>
-    <li><a href="##(SET_GROUP).FilterPrefixes">SET_GROUP.FilterPrefixes</a>: Builds the SET_GROUP with the groups <em>containing</em> the given string in the group name. <strong>Attention!</strong> Bad naming convention, as this not really filtering <em>prefixes</em>.</li>
+    <li><a href="##(SET_GROUP).FilterPrefixes">SET_GROUP.FilterPrefixes</a>: Builds the SET_GROUP with the groups <em>containing</em> the given string in the group name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
     <li><a href="##(SET_GROUP).FilterActive">SET_GROUP.FilterActive</a>: Builds the SET_GROUP with the groups that are only active. Groups that are inactive (late activation) won't be included in the set!</li>
 </ul>
 
@@ -2164,7 +2174,8 @@ Filter criteria are defined by:</p>
     <li><a href="##(SET_OPSGROUP).FilterCoalitions">SET_OPSGROUP.FilterCoalitions</a>: Builds the SET_OPSGROUP with the groups belonging to the coalition(s).</li>
     <li><a href="##(SET_OPSGROUP).FilterCategories">SET_OPSGROUP.FilterCategories</a>: Builds the SET_OPSGROUP with the groups belonging to the category(ies).</li>
     <li><a href="##(SET_OPSGROUP).FilterCountries">SET_OPSGROUP.FilterCountries</a>: Builds the SET_OPSGROUP with the groups belonging to the country(ies).</li>
-    <li><a href="##(SET_OPSGROUP).FilterPrefixes">SET_OPSGROUP.FilterPrefixes</a>: Builds the SET_OPSGROUP with the groups <em>containing</em> the given string in the group name. <strong>Attention!</strong> Bad naming convention, as this not really filtering <em>prefixes</em>.</li>
+    <li><a href="##(SET_OPSGROUP).FilterPrefixes">SET_OPSGROUP.FilterPrefixes</a>: Builds the SET_OPSGROUP with the groups <em>containing</em> the given string in the group name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
     <li><a href="##(SET_OPSGROUP).FilterActive">SET_OPSGROUP.FilterActive</a>: Builds the SET_OPSGROUP with the groups that are only active. Groups that are inactive (late activation) won't be included in the set!</li>
 </ul>
 
@@ -2264,7 +2275,8 @@ These methods take a single ZONE name or an array of ZONE names to be added or r
 Filter criteria are defined by:</p>
 
 <ul>
-    <li><a href="##(SET_OPSZONE).FilterPrefixes">SET_OPSZONE.FilterPrefixes</a>: Builds the SET_OPSZONE with the zones having a certain text pattern in their name. <strong>ATTENTION!</strong> Bad naming convention as this <em>does not</em> only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_OPSZONE).FilterPrefixes">SET_OPSZONE.FilterPrefixes</a>: Builds the SET_OPSZONE with the zones having a certain text pattern in their name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
 </ul>
 
 <p>Once the filter criteria have been set for the SET_OPSZONE, you can start filtering using:</p>
@@ -2334,7 +2346,8 @@ Filter criteria are defined by:</p>
     <li><a href="##(SET_PLAYER).FilterCategories">SET_PLAYER.FilterCategories</a>: Builds the SET_PLAYER with the clients belonging to the category(ies).</li>
     <li><a href="##(SET_PLAYER).FilterTypes">SET_PLAYER.FilterTypes</a>: Builds the SET_PLAYER with the clients belonging to the client type(s).</li>
     <li><a href="##(SET_PLAYER).FilterCountries">SET_PLAYER.FilterCountries</a>: Builds the SET_PLAYER with the clients belonging to the country(ies).</li>
-    <li><a href="##(SET_PLAYER).FilterPrefixes">SET_PLAYER.FilterPrefixes</a>: Builds the SET_PLAYER with the clients sharing the same string(s) in their unit/pilot name. <strong>ATTENTION</strong> Bad naming convention as this <em>does not</em> only filter prefixes.</li>
+    <li><a href="##(SET_PLAYER).FilterPrefixes">SET_PLAYER.FilterPrefixes</a>: Builds the SET_PLAYER with the clients sharing the same string(s) in their unit/pilot name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
 </ul>
 
 <p>Once the filter criteria have been set for the SET_PLAYER, you can start filtering using:</p>
@@ -2495,7 +2508,8 @@ Filter criteria are defined by:</p>
     <li><a href="##(SET_STATIC).FilterCategories">SET_STATIC.FilterCategories</a>: Builds the SET_STATIC with the units belonging to the category(ies).</li>
     <li><a href="##(SET_STATIC).FilterTypes">SET_STATIC.FilterTypes</a>: Builds the SET_STATIC with the units belonging to the unit type(s).</li>
     <li><a href="##(SET_STATIC).FilterCountries">SET_STATIC.FilterCountries</a>: Builds the SET_STATIC with the units belonging to the country(ies).</li>
-    <li><a href="##(SET_STATIC).FilterPrefixes">SET_STATIC.FilterPrefixes</a>: Builds the SET_STATIC with the units containing the same string(s) in their name. <strong>ATTENTION</strong> bad naming convention as this <em>does not</em>* only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_STATIC).FilterPrefixes">SET_STATIC.FilterPrefixes</a>: Builds the SET_STATIC with the units containing the same string(s) in their name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
     <li><a href="##(SET_STATIC).FilterZones">SET_STATIC.FilterZones</a>: Builds the SET_STATIC with the units within a <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>.</li>
 </ul>
 
@@ -2590,7 +2604,8 @@ Filter criteria are defined by:</p>
     <li><a href="##(SET_UNIT).FilterCategories">SET_UNIT.FilterCategories</a>: Builds the SET_UNIT with the units belonging to the category(ies).</li>
     <li><a href="##(SET_UNIT).FilterTypes">SET_UNIT.FilterTypes</a>: Builds the SET_UNIT with the units belonging to the unit type(s).</li>
     <li><a href="##(SET_UNIT).FilterCountries">SET_UNIT.FilterCountries</a>: Builds the SET_UNIT with the units belonging to the country(ies).</li>
-    <li><a href="##(SET_UNIT).FilterPrefixes">SET_UNIT.FilterPrefixes</a>: Builds the SET_UNIT with the units sharing the same string(s) in their name. <strong>ATTENTION!</strong> Bad naming convention as this <em>does not</em> only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_UNIT).FilterPrefixes">SET_UNIT.FilterPrefixes</a>: Builds the SET_UNIT with the units sharing the same string(s) in their name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
     <li><a href="##(SET_UNIT).FilterActive">SET_UNIT.FilterActive</a>: Builds the SET_UNIT with the units that are only active. Units that are inactive (late activation) won't be included in the set!</li>
     <li><a href="##(SET_UNIT).FilterZones">SET_UNIT.FilterZones</a>: Builds the SET_UNIT with the units within a <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>.</li>
 </ul>
@@ -2712,7 +2727,8 @@ These methods take a single ZONE name or an array of ZONE names to be added or r
 Filter criteria are defined by:</p>
 
 <ul>
-    <li><a href="##(SET_ZONE).FilterPrefixes">SET_ZONE.FilterPrefixes</a>: Builds the SET_ZONE with the zones having a certain text pattern in their name. <strong>ATTENTION!</strong> Bad naming convention as this <em>does not</em> only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_ZONE).FilterPrefixes">SET_ZONE.FilterPrefixes</a>: Builds the SET_ZONE with the zones having a certain text pattern in their name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
 </ul>
 
 <p>Once the filter criteria have been set for the SET_ZONE, you can start filtering using:</p>
@@ -2775,7 +2791,8 @@ These methods take a single ZONE name or an array of ZONE names to be added or r
 Filter criteria are defined by:</p>
 
 <ul>
-    <li><a href="##(SET_ZONE_GOAL).FilterPrefixes">SET_ZONE_GOAL.FilterPrefixes</a>: Builds the SET_ZONE_GOAL with the zones having a certain text pattern in their name. <strong>ATTENTION!</strong> Bad naming convention as this <em>does not</em> only filter <em>prefixes</em>.</li>
+    <li><a href="##(SET_ZONE_GOAL).FilterPrefixes">SET_ZONE_GOAL.FilterPrefixes</a>: Builds the SET_ZONE_GOAL with the zones having a certain text pattern in their name. <strong>Attention!</strong> LUA regular expression apply here, so special characters in names like minus, dot, hash (#) etc might lead to unexpected results. 
+    Have a read through here to understand the application of regular expressions: <a href="https://riptutorial.com/lua/example/20315/lua-pattern-matching">LUA regular expressions</a></li>
 </ul>
 
 <p>Once the filter criteria have been set for the SET_ZONE_GOAL, you can start filtering using:</p>
