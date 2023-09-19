@@ -1663,6 +1663,8 @@ The parameter <em>frequency</em> is the frequency the ATIS broadcasts in MHz.</p
 
 <h2>Subtitles</h2>
 
+<p><strong>Note</strong> Subtitles are not displayed when using SRS. The DCS mechanic to show subtitles (top left screen), is via the function call that plays a sound file from a UNIT, hence this doesn't work here.</p>
+
 <p>Currently, DCS allows for displaying subtitles of radio transmissions only from airborne units, <em>i.e.</em> airplanes and helicopters. Therefore, if you want to have subtitles, it is necessary to place an
 additional aircraft on the ATIS airport and set it to uncontrolled. This unit can then function as a radio relay to transmit messages with subtitles. These subtitles will only be displayed, if the
 player has tuned in the correct ATIS frequency.</p>
@@ -1853,10 +1855,84 @@ atisAbuDhabi:Start()
 
 <pre><code>atis=ATIS:New("Batumi", 305, radio.modulation.AM)
 atis:SetSRS("D:\\DCS\\_SRS\\", "male", "en-US")
-atis:Start()
+atis:Start()  
 </code></pre>
 
-<p>This uses a male voice with US accent. It requires SRS to be installed in the `D:\DCS_SRS` directory. Not that backslashes need to be escaped or simply use slashes (as in linux).</p>
+<p>This uses a male voice with US accent. It requires SRS to be installed in the `D:\DCS_SRS` directory. Note that backslashes need to be escaped or simply use slashes (as in linux).</p>
+
+<h3>SRS Localization</h3>
+
+<p> You can localize the SRS output, all you need is to provide a table of translations and set the <code>locale</code> of your instance. You need to provide the translations in your script <strong>before you instantiate your ATIS</strong>.
+ The German localization (already provided in the code) e.g. looks like follows:</p>
+
+<pre><code>     ATIS.Messages.DE =
+       {
+         HOURS = "Uhr",
+         TIME = "Zeit",
+         NOCLOUDINFO = "Informationen über Wolken nicht verfuegbar",
+         OVERCAST = "Geschlossene Wolkendecke",
+         BROKEN = "Stark bewoelkt",
+         SCATTERED = "Bewoelkt",
+         FEWCLOUDS = "Leicht bewoelkt",
+         NOCLOUDS = "Klar",
+         AIRPORT = "Flughafen",
+         INFORMATION ="Information",
+         SUNRISEAT = "Sonnenaufgang um %s lokaler Zeit",
+         SUNSETAT = "Sonnenuntergang um %s lokaler Zeit",
+         WINDFROMMS = "Wind aus %s mit %s m/s",
+         WINDFROMKNOTS = "Wind aus %s mit %s Knoten",
+         GUSTING = "boeig",
+         VISIKM = "Sichtweite %s km",
+         VISISM = "Sichtweite %s Meilen",
+         RAIN = "Regen",
+         TSTORM = "Gewitter",
+         SNOW = "Schnee",
+         SSTROM = "Schneesturm",
+         FOG = "Nebel",
+         DUST = "Staub",
+         PHENOMENA = "Wetter Phaenomene",
+         CLOUDBASEM = "Wolkendecke von %s bis %s Meter",
+         CLOUDBASEFT = "Wolkendecke von %s bis %s Fuß",
+         TEMPERATURE = "Temperatur",
+         DEWPOINT = "Taupunkt",
+         ALTIMETER = "Hoehenmesser",
+         ACTIVERUN = "Aktive Startbahn",
+         LEFT = "Links",
+         RIGHT = "Rechts",
+         RWYLENGTH = "Startbahn",
+         METERS = "Meter",
+         FEET = "Fuß",
+         ELEVATION = "Hoehe",
+         TOWERFREQ = "Kontrollturm Frequenz",
+         ILSFREQ = "ILS Frequenz",
+         OUTERNDB = "Aeussere NDB Frequenz",
+         INNERNDB = "Innere NDB Frequenz",
+         VORFREQ = "VOR Frequenz",
+         VORFREQTTS = "V O R Frequenz",
+         TACANCH = "TACAN Kanal %d Xaver",
+         RSBNCH = "RSBN Kanal",
+         PRMGCH = "PRMG Kanal",
+         ADVISE = "Hinweis bei Erstkontakt, Sie haben Informationen",
+         STATUTE = "englische Meilen",
+         DEGREES = "Grad Celsius",
+         FAHRENHEIT = "Grad Fahrenheit",
+         INCHHG = "Inches H G",
+         MMHG = "Millimeter H G",
+         HECTO = "Hektopascal",
+         METERSPER = "Meter pro Sekunde",
+         TACAN = "Tackan",
+         FARP = "Farp",
+         DELIMITER = "Komma", -- decimal delimiter
+       }
+</code></pre>
+
+<p>Then set up your ATIS and set the locale:</p>
+
+<pre><code>     atis=ATIS:New("Batumi", 305, radio.modulation.AM)
+     atis:SetSRS("D:\\DCS\\_SRS\\", "female", "de_DE")
+     atis:SetLocale("de")
+     atis:Start()    
+</code></pre>
 
 <h2>FARPS</h2>
 
@@ -2031,6 +2107,12 @@ atis:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).Messages">ATIS.Messages</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).New">ATIS:New(AirbaseName, Frequency, Modulation)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new ATIS class object for a specific airbase.</p>
@@ -2130,6 +2212,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetImperialUnits">ATIS:SetImperialUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set unit system to imperial units.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).SetLocale">ATIS:SetLocale(locale)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set locale for localized text-to-sound output via SRS, defaults to "en".</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2331,6 +2419,12 @@ atis:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS)._InitLocalization">ATIS:_InitLocalization()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Init localization</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).__Broadcast">ATIS:__Broadcast(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Broadcast" after a delay.</p>
@@ -2409,6 +2503,12 @@ atis:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).gettext">ATIS.gettext</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Gettext for localization</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).ils">ATIS.ils</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Table of ILS frequencies (can be runway specific).</p>
@@ -2418,6 +2518,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).lid">ATIS.lid</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Class id string for output to DCS log file.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS).locale">ATIS.locale</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Current locale</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3494,7 +3600,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.ICAOPhraseology).Sinai">ATIS.ICAOPhraseology.Sinai</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.ICAOPhraseology).SinaiMap">ATIS.ICAOPhraseology.SinaiMap</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>true.</p>
 </td>
@@ -3592,7 +3698,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).Sinai">ATIS.RunwayM2T.Sinai</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).SinaiMao">ATIS.RunwayM2T.SinaiMao</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>+5° (East).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ATIS.RunwayM2T).SinaiMap">ATIS.RunwayM2T.SinaiMap</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -4173,6 +4285,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).Messages" ><strong>ATIS.Messages</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).PmmHg" ><strong>ATIS.PmmHg</strong></a>
     
@@ -4327,6 +4450,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
+<a id="#(ATIS).gettext" ><strong>ATIS.gettext</strong></a>
+    
+<p>Gettext for localization</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(ATIS).ils" ><strong>ATIS.ils</strong></a>
     
@@ -4342,6 +4476,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(ATIS).lid" ><strong>ATIS.lid</strong></a>
     
 <p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ATIS).locale" ><strong>ATIS.locale</strong></a>
+    
+<p>Current locale</p>
 
 </div>
 
@@ -5964,6 +6109,50 @@ For example, use this if there are two runways with the same directions.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS).SetLocale" ><strong>ATIS:SetLocale(locale)</strong></a></h2>
+</div>
+    
+<p>Set locale for localized text-to-sound output via SRS, defaults to "en".</p>
+
+<div id= "#Functions##SetLocale" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>locale</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Locale for localized text-to-sound output via SRS, defaults to "en".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS).SetMagneticDeclination" ><strong>ATIS:SetMagneticDeclination(magvar)</strong></a></h2>
 </div>
     
@@ -6331,7 +6520,7 @@ For example, use this if there are two runways with the same directions.</p>
 
     
 <p>This is used to approximately calculate the dew point.
-Note that the dew point is only an artificial information as DCS does not have an atmospheric model that includes humidity (yet). </p>
+Note that the dew point is only an artificial information as DCS does not have an atmospheric model that includes humidity (yet).</p>
 
 <div id= "#Functions##SetRelativeHumidity" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6349,7 +6538,7 @@ Note that the dew point is only an artificial information as DCS does not have a
           </div>
           <div class="w3-half">
               
-<p>Relative Humidity, i.e. a number between 0 and 100 %. Default is 50 %. </p>
+<p>Relative Humidity, i.e. a number between 0 and 100 %. Default is 50 %.</p>
 
           </div>
         </div>
@@ -7331,6 +7520,36 @@ Note that the dew point is only an artificial information as DCS does not have a
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ATIS)._InitLocalization" ><strong>ATIS:_InitLocalization()</strong></a></h2>
+</div>
+    
+<p>[Internal] Init localization</p>
+
+<div id= "#Functions##_InitLocalization" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ATIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ATIS)">#ATIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ATIS).__Broadcast" ><strong>ATIS:__Broadcast(delay)</strong></a></h2>
 </div>
     
@@ -7914,6 +8133,17 @@ Note that the dew point is only an artificial information as DCS does not have a
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).Messages" ><strong>ATIS.Messages</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).PmmHg" ><strong>ATIS.PmmHg</strong></a>
     
@@ -8068,6 +8298,17 @@ Note that the dew point is only an artificial information as DCS does not have a
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
+<a id="#(ATIS).gettext" ><strong>ATIS.gettext</strong></a>
+    
+<p>Gettext for localization</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(ATIS).ils" ><strong>ATIS.ils</strong></a>
     
@@ -8083,6 +8324,17 @@ Note that the dew point is only an artificial information as DCS does not have a
 <a id="#(ATIS).lid" ><strong>ATIS.lid</strong></a>
     
 <p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ATIS).locale" ><strong>ATIS.locale</strong></a>
+    
+<p>Current locale</p>
 
 </div>
 
@@ -9920,6 +10172,17 @@ Note that the dew point is only an artificial information as DCS does not have a
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ATIS).Messages" ><strong>ATIS.Messages</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #boolean
 <a id="#(ATIS).PmmHg" ><strong>ATIS.PmmHg</strong></a>
     
@@ -10074,6 +10337,17 @@ Note that the dew point is only an artificial information as DCS does not have a
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.TextAndSound.html##(TEXTANDSOUND)">Core.TextAndSound#TEXTANDSOUND</a>
+<a id="#(ATIS).gettext" ><strong>ATIS.gettext</strong></a>
+    
+<p>Gettext for localization</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(ATIS).ils" ><strong>ATIS.ils</strong></a>
     
@@ -10089,6 +10363,17 @@ Note that the dew point is only an artificial information as DCS does not have a
 <a id="#(ATIS).lid" ><strong>ATIS.lid</strong></a>
     
 <p>Class id string for output to DCS log file.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(ATIS).locale" ><strong>ATIS.locale</strong></a>
+    
+<p>Current locale</p>
 
 </div>
 
@@ -13855,7 +14140,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(ATIS.ICAOPhraseology).Sinai" ><strong>ATIS.ICAOPhraseology.Sinai</strong></a>
+<a id="#(ATIS.ICAOPhraseology).SinaiMap" ><strong>ATIS.ICAOPhraseology.SinaiMap</strong></a>
     
 <p>true.</p>
 
@@ -14017,7 +14302,18 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(ATIS.RunwayM2T).Sinai" ><strong>ATIS.RunwayM2T.Sinai</strong></a>
+<a id="#(ATIS.RunwayM2T).SinaiMao" ><strong>ATIS.RunwayM2T.SinaiMao</strong></a>
+    
+<p>+5° (East).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(ATIS.RunwayM2T).SinaiMap" ><strong>ATIS.RunwayM2T.SinaiMap</strong></a>
     
 
 
