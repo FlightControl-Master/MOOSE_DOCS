@@ -2922,7 +2922,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetBRCintoWind">AIRBOSS:GetBRCintoWind()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetBRCintoWind">AIRBOSS:GetBRCintoWind(vdeck)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get base recovery course (BRC) when the carrier would head into the wind.</p>
 </td>
@@ -2958,7 +2958,13 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind">AIRBOSS:GetHeadingIntoWind(magnetic, coord)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind">AIRBOSS:GetHeadingIntoWind(vdeck, magnetic, coord)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get true (or magnetic) heading of carrier into the wind.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind_old">AIRBOSS:GetHeadingIntoWind_old(magnetic, coord)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
 </td>
@@ -11462,7 +11468,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).GetBRCintoWind" ><strong>AIRBOSS:GetBRCintoWind()</strong></a></h2>
+<h2><a id="#(AIRBOSS).GetBRCintoWind" ><strong>AIRBOSS:GetBRCintoWind(vdeck)</strong></a></h2>
 </div>
     
 <p>Get base recovery course (BRC) when the carrier would head into the wind.</p>
@@ -11476,6 +11482,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>AIRBOSS</p>
 </div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>vdeck</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Desired wind velocity over deck in knots.</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -11677,7 +11697,89 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).GetHeadingIntoWind" ><strong>AIRBOSS:GetHeadingIntoWind(magnetic, coord)</strong></a></h2>
+<h2><a id="#(AIRBOSS).GetHeadingIntoWind" ><strong>AIRBOSS:GetHeadingIntoWind(vdeck, magnetic, coord)</strong></a></h2>
+</div>
+    
+<p>Get true (or magnetic) heading of carrier into the wind.</p>
+
+    
+<p>This accounts for the angled runway.
+Implementation based on <a href="https://magwo.github.io/carrier-cruise/">Mags &amp; Bambi</a>.</p>
+
+<div id= "#Functions##GetHeadingIntoWind" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>vdeck</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Desired wind velocity over deck in knots.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>magnetic</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, calculate magnetic heading. By default true heading is returned.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>coord</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Coordinate from which heading is calculated. Default is current carrier position.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Carrier heading in degrees.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Carrier speed in knots to reach desired wind speed on deck.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).GetHeadingIntoWind_old" ><strong>AIRBOSS:GetHeadingIntoWind_old(magnetic, coord)</strong></a></h2>
 </div>
     
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
@@ -11685,7 +11787,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
     
 <p>This accounts for the angled runway.</p>
 
-<div id= "#Functions##GetHeadingIntoWind" class="w3-show w3-white">
+<div id= "#Functions##GetHeadingIntoWind_old" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -40464,9 +40566,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
     
 
 
-    
-<p> Set case of f</p>
-
 </div>
 
 </div>   
@@ -40522,6 +40621,20 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(AIRBOSS.PlayerData).finalscore" ><strong>AIRBOSS.PlayerData.finalscore</strong></a>
     
 <p>Final score if points are averaged over multiple passes.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(AIRBOSS.PlayerData).flag" ><strong>AIRBOSS.PlayerData.flag</strong></a>
+    
+
+
+    
+<p> Also decrease flag for section members of flight.</p>
 
 </div>
 
@@ -40684,7 +40797,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
 
     
-<p> Make player section lead if he was not before.</p>
+<p> Set section lead of player flight.</p>
 
 </div>
 
@@ -40707,6 +40820,9 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(AIRBOSS.PlayerData).stable" ><strong>AIRBOSS.PlayerData.stable</strong></a>
     
 
+
+    
+<p> Set Stable Hover</p>
 
 </div>
 
