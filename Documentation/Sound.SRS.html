@@ -1738,6 +1738,52 @@ For voices there are enumerators in this class to help you out on voice names:</
 
 <p>Use <a href="##(MSRS).SetVolume">MSRS.SetVolume</a> to define the SRS volume. Defaults to 1.0. Allowed values are between 0.0 and 1.0, from silent to loudest.</p>
 
+<h2>Set DCS-gRPC as an alternative to 'DCS-SR-ExternalAudio.exe' for TTS</h2>
+
+<p>Use <a href="##(MSRS).SetDefaultBackendGRPC">MSRS.SetDefaultBackendGRPC</a> to enable <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC</a> as an alternate backend for transmitting text-to-speech over SRS.
+This can be useful if 'DCS-SR-ExternalAudio.exe' cannot be used in the environment, or to use Azure or AWS clouds for TTS.  Note that DCS-gRPC does not (yet?) support
+all of the features and options available with 'DCS-SR-ExternalAudio.exe'. Of note, only text-to-speech is supported and it it cannot be used to transmit audio files.</p>
+
+<p>DCS-gRPC must be installed and configured per the <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC documentation</a> and already running via either the 'autostart' mechanism 
+or a Lua call to 'GRPC.load()' prior to use of the alternate DCS-gRPC backend. If a cloud TTS provider is being used, the API key must be set via the 'Config\dcs-grpc.lua' 
+configuration file prior DCS-gRPC being started. DCS-gRPC can be used both with DCS dedicated server and regular DCS installations.</p>
+
+<p>To use the default local Windows TTS with DCS-gRPC, Windows 2019 Server (or newer) or Windows 10/11 are required.  Voices for non-local languages and dialects may need to
+be explicitly installed.</p>
+
+<p>To set the MSRS class to use the DCS-gRPC backend for all future instances, call the function <code>MSRS.SetDefaultBackendGRPC()</code>.</p>
+
+<p><strong>Note</strong> - When using other classes that use MSRS with the alternate DCS-gRPC backend, pass them strings instead of nil values for non-applicable fields with filesystem paths, 
+such as the SRS path or Google credential path. This will help maximize compatibility with other classes that were written for the default backend.</p>
+
+<p>Basic Play Text-To-Speech example using alternate DCS-gRPC backend (DCS-gRPC not previously started):</p>
+
+<pre><code>-- Start DCS-gRPC
+GRPC.load()
+-- Select the alternate DCS-gRPC backend for new MSRS instances
+MSRS.SetDefaultBackendGRPC()
+-- Create a SOUNDTEXT object.
+local text=SOUNDTEXT:New("All Enemies destroyed")  
+-- MOOSE SRS 
+local msrs=MSRS:New('', 305.0)
+-- Text-to speech with default voice after 30 seconds.
+msrs:PlaySoundText(text, 30)
+</code></pre>
+
+<p>Basic example of using another class (ATIS) with SRS and the DCS-gRPC backend (DCS-gRPC not previously started):</p>
+
+<pre><code>-- Start DCS-gRPC
+GRPC.load()
+-- Select the alternate DCS-gRPC backend for new MSRS instances
+MSRS.SetDefaultBackendGRPC()
+-- Create new ATIS as usual
+atis=ATIS:New("Nellis", 251, radio.modulation.AM)
+-- ATIS:SetSRS() expects a string for the SRS path even though it is not needed with DCS-gRPC
+atis:SetSRS('')
+-- Start ATIS
+atis:Start()
+</code></pre>
+
 
 </div>
 
@@ -1776,6 +1822,12 @@ For voices there are enumerators in this class to help you out on voice names:</
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).APIKey">MSRS.APIKey</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).AddFrequencies">MSRS:AddFrequencies(Frequencies)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add frequencies.</p>
@@ -1785,6 +1837,12 @@ For voices there are enumerators in this class to help you out on voice names:</
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).AddModulations">MSRS:AddModulations(Modulations)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add modulations.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).AltBackend">MSRS.AltBackend</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table containing functions and variables to enable an alternate backend to transmit to SRS.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1848,7 +1906,7 @@ For voices there are enumerators in this class to help you out on voice names:</
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).New">MSRS:New(PathToSRS, Frequency, Modulation, Volume)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).New">MSRS:New(PathToSRS, Frequency, Modulation, Volume, AltBackend)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new MSRS object.</p>
 </td>
@@ -1884,6 +1942,12 @@ For voices there are enumerators in this class to help you out on voice names:</
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).ResetDefaultBackend">MSRS.ResetDefaultBackend()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Restores default SRS backend (DCS-SR-ExternalAudio.exe) to be used by all new MSRS class instances to transmit over SRS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetCoalition">MSRS:SetCoalition(Coalition)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set coalition.</p>
@@ -1902,6 +1966,24 @@ For voices there are enumerators in this class to help you out on voice names:</
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetDefaultBackend">MSRS.SetDefaultBackend(Backend)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets an alternate SRS backend to be used by MSRS to transmit over SRS for all new MSRS class instances.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetDefaultBackendGRPC">MSRS.SetDefaultBackendGRPC()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Sets DCS-gRPC as the default SRS backend for all new MSRS class instances.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetDefaultVoice">MSRS:SetDefaultVoice(Voice)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set to use a specific voice.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetFrequencies">MSRS:SetFrequencies(Frequencies)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set frequencies.</p>
@@ -1915,6 +1997,12 @@ For voices there are enumerators in this class to help you out on voice names:</
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetGoogle">MSRS:SetGoogle(PathToCredentials)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use google text-to-speech.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetGoogleAPIKey">MSRS:SetGoogleAPIKey(APIKey)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Use google text-to-speech.</p>
 </td>
@@ -1980,6 +2068,12 @@ For voices there are enumerators in this class to help you out on voice names:</
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS)._NewAltBackend">MSRS:_NewAltBackend(A, Backend)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Adds or replaces functions and variables in the current MSRS class instance to enable an alternate backends for transmitting to SRS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).coalition">MSRS.coalition</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Coalition of the transmission.</p>
@@ -1995,6 +2089,12 @@ For voices there are enumerators in this class to help you out on voice names:</
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).culture">MSRS.culture</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Culture. Default "en-GB".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).defaultVoice">MSRS.defaultVoice</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2043,6 +2143,12 @@ For voices there are enumerators in this class to help you out on voice names:</
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).port">MSRS.port</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Port. Default 5002.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).provider">MSRS.provider</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2681,7 +2787,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE).NewTransmission">MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE).NewTransmission">MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation, gender, culture, voice, volume, label)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new transmission and add it to the radio queue.</p>
 </td>
@@ -3320,6 +3426,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).culture">MSRSQUEUE.Transmission.culture</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Voice culture</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).duration">MSRSQUEUE.Transmission.duration</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Duration in seconds.</p>
@@ -3332,6 +3444,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).gender">MSRSQUEUE.Transmission.gender</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Voice gender</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).interval">MSRSQUEUE.Transmission.interval</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Interval in seconds before next transmission.</p>
@@ -3341,6 +3459,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).isplaying">MSRSQUEUE.Transmission.isplaying</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, transmission is currently playing.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).label">MSRSQUEUE.Transmission.label</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Label to be used</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3379,6 +3503,49 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <p>Text to be transmitted.</p>
 </td>
           </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).voice">MSRSQUEUE.Transmission.voice</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Voice if any</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).volume">MSRSQUEUE.Transmission.volume</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Volume</p>
+</td>
+          </tr>
+        </table>
+        </div>
+
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(MSRS_BACKEND_DCSGRPC)">Type <strong>MSRS_BACKEND_DCSGRPC</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(MSRS_BACKEND_DCSGRPC)">MSRS_BACKEND_DCSGRPC</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from MSRS_BACKEND_DCSGRPC</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS_BACKEND_DCSGRPC).Functions">MSRS_BACKEND_DCSGRPC.Functions</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>A table of functions that will add or replace the default MSRS class functions.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS_BACKEND_DCSGRPC).Vars">MSRS_BACKEND_DCSGRPC.Vars</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>A table of variables that will add or replace the default MSRS class variables.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS_BACKEND_DCSGRPC).version">MSRS_BACKEND_DCSGRPC.version</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Version number of this alternate backend.</p>
+</td>
+          </tr>
         </table>
         </div>
 
@@ -3397,6 +3564,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MSRS).APIKey" ><strong>MSRS.APIKey</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MSRS).AltBackend" ><strong>MSRS.AltBackend</strong></a>
+    
+<p>Table containing functions and variables to enable an alternate backend to transmit to SRS.</p>
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -3459,6 +3648,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MSRS).culture" ><strong>MSRS.culture</strong></a>
     
 <p>Culture. Default "en-GB".</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MSRS).defaultVoice" ><strong>MSRS.defaultVoice</strong></a>
+    
+
 
 </div>
 
@@ -3547,6 +3747,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MSRS).port" ><strong>MSRS.port</strong></a>
     
 <p>Port. Default 5002.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRS).provider" ><strong>MSRS.provider</strong></a>
+    
+
 
 </div>
 
@@ -3922,7 +4133,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MSRS).New" ><strong>MSRS:New(PathToSRS, Frequency, Modulation, Volume)</strong></a></h2>
+<h2><a id="#(MSRS).New" ><strong>MSRS:New(PathToSRS, Frequency, Modulation, Volume, AltBackend)</strong></a></h2>
 </div>
     
 <p>Create a new MSRS object.</p>
@@ -3983,6 +4194,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Volume - 1.0 is max, 0.0 is silence</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>AltBackend</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional table containing tables 'Functions' and 'Vars' which add/replace functions and variables for the MSRS instance to allow alternate backends for transmitting to SRS.</p>
 
           </div>
         </div>
@@ -4381,6 +4605,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MSRS).ResetDefaultBackend" ><strong>MSRS.ResetDefaultBackend()</strong></a></h2>
+</div>
+    
+<p>Restores default SRS backend (DCS-SR-ExternalAudio.exe) to be used by all new MSRS class instances to transmit over SRS.</p>
+
+<div id= "#Functions##ResetDefaultBackend" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns 'true' on success.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MSRS).SetCoalition" ><strong>MSRS:SetCoalition(Coalition)</strong></a></h2>
 </div>
     
@@ -4513,6 +4767,127 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetDefaultBackend" ><strong>MSRS.SetDefaultBackend(Backend)</strong></a></h2>
+</div>
+    
+<p>Sets an alternate SRS backend to be used by MSRS to transmit over SRS for all new MSRS class instances.</p>
+
+<div id= "#Functions##SetDefaultBackend" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Backend</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>A table containing a table <code>Functions</code> with new/replacement class functions and <code>Vars</code> with new/replacement variables. </p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns 'true' on success.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetDefaultBackendGRPC" ><strong>MSRS.SetDefaultBackendGRPC()</strong></a></h2>
+</div>
+    
+<p>Sets DCS-gRPC as the default SRS backend for all new MSRS class instances.</p>
+
+<div id= "#Functions##SetDefaultBackendGRPC" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Returns 'true' on success.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetDefaultVoice" ><strong>MSRS:SetDefaultVoice(Voice)</strong></a></h2>
+</div>
+    
+<p>Set to use a specific voice.</p>
+
+    
+<p>Will override gender and culture settings. </p>
+
+<div id= "#Functions##SetDefaultVoice" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Voice.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MSRS).SetFrequencies" ><strong>MSRS:SetFrequencies(Frequencies)</strong></a></h2>
 </div>
     
@@ -4616,12 +4991,57 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #string
             <strong><strong>PathToCredentials</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
 <p>Full path to the google credentials JSON file, e.g. "C:\Users\username\Downloads\service-account-file.json".</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetGoogleAPIKey" ><strong>MSRS:SetGoogleAPIKey(APIKey)</strong></a></h2>
+</div>
+    
+<p>Use google text-to-speech.</p>
+
+<div id= "#Functions##SetGoogleAPIKey" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>APIKey</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>API Key, usually a string of length 40 with characters and numbers.</p>
 
           </div>
         </div>
@@ -5176,9 +5596,85 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </div>
 </div>
 
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS)._NewAltBackend" ><strong>MSRS:_NewAltBackend(A, Backend)</strong></a></h2>
+</div>
+    
+<p>Adds or replaces functions and variables in the current MSRS class instance to enable an alternate backends for transmitting to SRS.</p>
+
+<div id= "#Functions##_NewAltBackend" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>A</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>table containing a table <code>Functions</code> with new/replacement class functions and <code>Vars</code> with new/replacement variables. </p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Backend</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MSRS).APIKey" ><strong>MSRS.APIKey</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MSRS).AltBackend" ><strong>MSRS.AltBackend</strong></a>
+    
+<p>Table containing functions and variables to enable an alternate backend to transmit to SRS.</p>
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -5241,6 +5737,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MSRS).culture" ><strong>MSRS.culture</strong></a>
     
 <p>Culture. Default "en-GB".</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MSRS).defaultVoice" ><strong>MSRS.defaultVoice</strong></a>
+    
+
 
 </div>
 
@@ -5329,6 +5836,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MSRS).port" ><strong>MSRS.port</strong></a>
     
 <p>Port. Default 5002.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRS).provider" ><strong>MSRS.provider</strong></a>
+    
+
 
 </div>
 
@@ -9046,7 +9564,7 @@ This can be used to submit multiple TTS messages and the class takes care that t
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MSRSQUEUE).NewTransmission" ><strong>MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation)</strong></a></h2>
+<h2><a id="#(MSRSQUEUE).NewTransmission" ><strong>MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation, gender, culture, voice, volume, label)</strong></a></h2>
 </div>
     
 <p>Create a new transmission and add it to the radio queue.</p>
@@ -9185,6 +9703,71 @@ This can be used to submit multiple TTS messages and the class takes care that t
           <div class="w3-half">
               
 <p>Radio modulation if other then MSRS default.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>gender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Gender of the voice</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>culture</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Culture of the voice</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Specific voice</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>volume</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Volume setting</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>label</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Label to be used</p>
 
           </div>
         </div>
@@ -12781,6 +13364,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(MSRSQUEUE.Transmission).culture" ><strong>MSRSQUEUE.Transmission.culture</strong></a>
+    
+<p>Voice culture</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MSRSQUEUE.Transmission).duration" ><strong>MSRSQUEUE.Transmission.duration</strong></a>
     
@@ -12803,6 +13397,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #string
+<a id="#(MSRSQUEUE.Transmission).gender" ><strong>MSRSQUEUE.Transmission.gender</strong></a>
+    
+<p>Voice gender</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(MSRSQUEUE.Transmission).interval" ><strong>MSRSQUEUE.Transmission.interval</strong></a>
     
@@ -12818,6 +13423,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(MSRSQUEUE.Transmission).isplaying" ><strong>MSRSQUEUE.Transmission.isplaying</strong></a>
     
 <p>If true, transmission is currently playing.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRSQUEUE.Transmission).label" ><strong>MSRSQUEUE.Transmission.label</strong></a>
+    
+<p>Label to be used</p>
 
 </div>
 
@@ -12884,6 +13500,82 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(MSRSQUEUE.Transmission).text" ><strong>MSRSQUEUE.Transmission.text</strong></a>
     
 <p>Text to be transmitted.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRSQUEUE.Transmission).voice" ><strong>MSRSQUEUE.Transmission.voice</strong></a>
+    
+<p>Voice if any</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MSRSQUEUE.Transmission).volume" ><strong>MSRSQUEUE.Transmission.volume</strong></a>
+    
+<p>Volume</p>
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##MSRS_BACKEND_DCSGRPC')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(MSRS_BACKEND_DCSGRPC)">Type <strong>MSRS_BACKEND_DCSGRPC</strong></a></h2></div>
+        <div id= "#Types##MSRS_BACKEND_DCSGRPC" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Alternate backend for MSRS to enable text-to-speech via DCS-gRPC.</p>
+
+  
+<h3>Author: <strong>dogjutsu</strong></h3>
+<p>A table containing functions and variables for MSRS to use DCS-gRPC <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC</a> 0.7.0 or newer as a backend to transmit over SRS.
+This is not a standalone class. Instead, variables and functions under the <code>Vars</code> and <code>Functions</code> tables get added to or replace MSRS variables/functions when activated.</p>
+
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MSRS_BACKEND_DCSGRPC).Functions" ><strong>MSRS_BACKEND_DCSGRPC.Functions</strong></a>
+    
+<p>A table of functions that will add or replace the default MSRS class functions.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MSRS_BACKEND_DCSGRPC).Vars" ><strong>MSRS_BACKEND_DCSGRPC.Vars</strong></a>
+    
+<p>A table of variables that will add or replace the default MSRS class variables.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MSRS_BACKEND_DCSGRPC).version" ><strong>MSRS_BACKEND_DCSGRPC.version</strong></a>
+    
+<p>Version number of this alternate backend.</p>
 
 </div>
 
