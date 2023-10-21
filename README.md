@@ -1,3 +1,5 @@
+[![Moose-Includes](https://github.com/FlightControl-Master/MOOSE/actions/workflows/build-includes.yml/badge.svg?branch=master)](https://github.com/FlightControl-Master/MOOSE/actions/workflows/build-includes.yml)
+
 # MOOSE Framework
 
 MOOSE is a **M**ission **O**bject **O**riented **S**cripting **E**nvironment, and is meant for mission designers and mission hosters.
