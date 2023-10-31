@@ -22,7 +22,7 @@ You are assumed to be familar with at least the basics of GitHub (branches, comm
 Moose is in fact located on **three repositories** :
 
 * [**MOOSE**](https://github.com/FlightControl-Master/MOOSE) contains the Moose's **code**, the **documentation** and the file necessary to the **setup**
-* [**MOOSE_MISSIONS**](https://github.com/FlightControl-Master/MOOSE_MISSIONS) contains the **test missions**. Be aware that the [master-release branch](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master-release) contains the statically loaded test missions, while the [master branch](https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/master) contains their dynamically loaded counterparts. will want to create a local repository for this one and to sync it.
+* [**MOOSE_MISSIONS**](https://github.com/FlightControl-Master/MOOSE_MISSIONS) contains the **demo missions**
 * [**MOOSE_PRESENTATIONS**](https://github.com/FlightControl-Master/MOOSE_PRESENTATIONS) contains bits and bob related to Moose, like Moose's logos and PowerPoint files to present a specific feature of Moose.
 
 ## 1.2) Branches
@@ -77,7 +77,7 @@ To ensure a good degree of **consistency** in Moose's code, we follow the follow
 
 # 4) The Luadoc
 
-The **Luadoc system** is not only **useful for the contributor** to understand the code, but **also the mission designer**, as it used to automatically generate the [HTML documentation](http://flightcontrol-master.github.io/MOOSE/Documentation/index.html).
+The **Luadoc system** is not only **useful for the contributor** to understand the code, but **also the mission designer**, as it used to automatically generate the [HTML documentation](http://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/index.html).
 It thus needs to follow some strict standards.
 Keep in mind the following informations :
 

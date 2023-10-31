@@ -244,7 +244,7 @@ you'll have to include this **Moose.lua** file into your missions:
   2. In the mission editor, create a new trigger.
   3. Name the trigger Moose Load and let it execute only at MISSION START.
   4. Add an action DO SCRIPT FILE (without a condition, so the middle column must be empty).
-  5. In the action, browse to the **[Moose.lua](https://github.com/FlightControl-Master/MOOSE/tree/master/Moose%20Mission%20Setup)** file in the **Moose Mission Setup** directory, and include this file within your mission.
+  5. In the action, browse to the **Moose.lua** file and include this file within your mission.
   6. Make sure that the "Moose Load" trigger is completely at the top of your mission.
 
 Voila, MOOSE is now included in your mission. During the execution of this mission, all MOOSE classes will be loaded, and all MOOSE initializations will be exectuted before any other mission action is executed.

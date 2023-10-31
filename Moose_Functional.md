@@ -18,7 +18,7 @@ The ATC_GROUND classes monitor airbase traffic and regulate speed while taxiing.
   * Kick speeding players during taxi.
 
 
-## 2. [**ARTY**](Documentation/Functional.Arty.html)
+## 2. [**ARTY**](Documentation/Functional.Artillery.html)
 
 ![Arty](Images\Artillery.JPG)
 
@@ -154,7 +154,7 @@ The RANGE class enables easy set up of bombing and strafing ranges within DCS Wo
   * Range information and weather report at the range can be reported via radio menu.
 
 
-## 9. [**RAT**](Documentation/Functional.Rat.html)
+## 9. [**RAT**](Documentation/Functional.RAT.html)
 
 ![rat](Images\RAT.JPG)
 

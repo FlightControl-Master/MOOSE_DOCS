@@ -14,7 +14,9 @@ You are going to learn :
 
 This might be a bit daunting at first, but the rewards in term of simplified workflow and direct access to new features is well worth the effort! If you have any problem during the setup or at any other point, don't hesitate to ask the [community](Communities) for help!
 
-This guide assumes that **you already setup your development environment**, like a "normal" mission designer. Which means Lua Development Tools (LDT) is installed on your computer, and you already know how to create a mission using MOOSE. If it is not the case, please follow the instructions [here](http://flightcontrol-master.github.io/MOOSE/Usage_Guide.html) before proceeding.
+This guide assumes that **you already setup your development environment**, like a "normal" mission designer.
+Which means Lua Development Tools (LDT) is installed on your computer, and you already know how to create a mission using MOOSE.
+If it is not the case, please follow the instructions [here](http://flightcontrol-master.github.io/MOOSE/Moose_Setup_Guide.html) before proceeding.
 
 # 1) Installation
 
@@ -29,7 +31,7 @@ Since the MOOSE code is evolving very rapidely between Releases, we store the MO
 
 Link the MOOSE repository on GITHUB to your freshly installed GITHUB desktop. 
 This is done by browing to the [MOOSE repository at GITHUB](https://github.com/FlightControl-Master/MOOSE), and selecting the green button **Clone or Download** -> **Open in Desktop**.
-![](Installation/GitHub_Clone.jpg)
+![](Installation/GitHub_Clone.JPG)
 
 Specify a local directory on your PC where you want to store the MOOSE repository contents.
 Sync the MOOSE repository to a defined local MOOSE directory on your PC using GITHUB desktop (press the sync button).

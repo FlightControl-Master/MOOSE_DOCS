@@ -168,7 +168,7 @@ Defines an extensive API to manage 3D points in the DCS World 3D simulation spac
 **The coordinate system classes are essential to understand. Learn this!**
 
 
-## 9. [**RADIO**](Documentation/Core.Radio.html)
+## 9. [**RADIO**](Documentation/Sound.Radio.html)
 
 ![RADIO](Images\Core_Radio.JPG)
 
@@ -331,7 +331,7 @@ Manage user flags to interact with the mission editor trigger system and server 
 **User flags are the method to set or retrieve the value of flags as set in the mission editor.**
 
 
-## 18. [**USERSOUND**](Documentation/Core.UserSound.html)
+## 18. [**USERSOUND**](Documentation/Sound.UserSound.html)
 
 ![USERSOUND](Images\Core_Usersound.JPG)
 

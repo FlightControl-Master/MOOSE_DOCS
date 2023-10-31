@@ -97,7 +97,7 @@ You should have at least on your disk:
 This is the **debug client**. The source is part of the LDT debug suite, but has been modified to work together with the DCS World scripting engine.
 You need to copy this file to the root directory of your DCS World installation in Program Files.
 
-![](Debugging/DEBUG_debugger.JPG)
+![](Debugging/DEBUG_Debugger.JPG)
 
 By example, the location of debugger.lua is here on my DCS World installation PC.
 
@@ -242,7 +242,7 @@ First we setup the Debug as your "favorite", so that it is easy for your to repe
 Click on the "Bug" icon that you'll find in the task bar. The "Bug" icon is the place where you will start your **debug listener**.
 However, first, click on Organize Favorites. You need to do this one time only.
 
-![](Debugging/DEBUG_Add Favorites.JPG)
+![](Debugging/DEBUG_Add_Favorites.JPG)
 
 Just click on the Debug Name that you entered (for me DCS 1.5) in the Debug Configuration window and it will be added ot your favorites.
 I did already that, so it was already added as an example in the previous picture.
