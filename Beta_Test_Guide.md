@@ -16,7 +16,7 @@ This might be a bit daunting at first, but the rewards in term of simplified wor
 
 This guide assumes that **you already setup your development environment**, like a "normal" mission designer.
 Which means Lua Development Tools (LDT) is installed on your computer, and you already know how to create a mission using MOOSE.
-If it is not the case, please follow the instructions [here](http://flightcontrol-master.github.io/MOOSE/Moose_Setup_Guide.html) before proceeding.
+If it is not the case, please follow the instructions [here](http://flightcontrol-master.github.io/MOOSE_DOCS/Moose_Setup_Guide.html) before proceeding.
 
 # 1) Installation
 
