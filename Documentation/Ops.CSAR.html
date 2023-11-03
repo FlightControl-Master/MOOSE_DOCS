@@ -1746,21 +1746,21 @@ Create a late-activated single infantry unit as template in the mission editor a
     mycsar.PilotWeight = 80 --  Loaded pilots weigh 80kgs each
 </code></pre>
 
-<h2>2.1 Experimental Features</h2>
+<h2>2.1 SRS Features and Other Features</h2>
 
-<pre><code>  WARNING - Here\'ll be dragons!
-  DANGER - For this to work you need to de-sanitize your mission environment (all three entries) in &lt;DCS root&gt;\Scripts\MissionScripting.lua
-  Needs SRS =&gt; 1.9.6 to work (works on the **server** side of SRS)
-  mycsar.useSRS = false -- Set true to use FF\'s SRS integration
+<pre><code>  mycsar.useSRS = false -- Set true to use FF\'s SRS integration
   mycsar.SRSPath = "C:\\Progra~1\\DCS-SimpleRadio-Standalone\\" -- adjust your own path in your SRS installation -- server(!)
   mycsar.SRSchannel = 300 -- radio channel
   mycsar.SRSModulation = radio.modulation.AM -- modulation
   mycsar.SRSport = 5002  -- and SRS Server port
   mycsar.SRSCulture = "en-GB" -- SRS voice culture
-  mycsar.SRSVoice = nil -- SRS voice, relevant for Google TTS
+  mycsar.SRSVoice = nil -- SRS voice for downed pilot, relevant for Google TTS
   mycsar.SRSGPathToCredentials = nil -- Path to your Google credentials json file, set this if you want to use Google TTS
   mycsar.SRSVolume = 1 -- Volume, between 0 and 1
   mycsar.SRSGender = "male" -- male or female voice
+  mycsar.CSARVoice = MSRS.Voices.Google.Standard.en_US_Standard_A -- SRS voice for CSAR Controller, relevant for Google TTS
+  mycsar.CSARVoiceMS = MSRS.Voices.Microsoft.Hedda -- SRS voice for CSAR Controller, relevant for MS Desktop TTS
+  mycsar.coordinate -- Coordinate from which CSAR TTS is sending. Defaults to a random MASH object position
   --
   mycsar.csarUsePara = false -- If set to true, will use the LandingAfterEjection Event instead of Ejection. Requires mycsar.enableForAI to be set to true. --shagrat
   mycsar.wetfeettemplate = "man in floating thingy" -- if you use a mod to have a pilot in a rescue float, put the template name in here for wet feet spawns. Note: in conjunction with csarUsePara this might create dual ejected pilots in edge cases.
@@ -1895,6 +1895,18 @@ Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).BeaconTimer">CSAR.BeaconTimer</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).CSARVoice">CSAR.CSARVoice</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).CSARVoiceMS">CSAR.CSARVoiceMS</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2470,6 +2482,12 @@ Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).coordinate">CSAR.coordinate</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).coordtype">CSAR.coordtype</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2585,12 +2603,6 @@ Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).inTransitGroups">CSAR.inTransitGroups</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).index">CSAR.index</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3930,6 +3942,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(CSAR).CSARVoice" ><strong>CSAR.CSARVoice</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).CSARVoiceMS" ><strong>CSAR.CSARVoiceMS</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(CSAR).CallsignTranslations" ><strong>CSAR.CallsignTranslations</strong></a>
     
 
@@ -3965,7 +3999,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -4054,7 +4088,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
 <a id="#(CSAR).SRSQueue" ><strong>CSAR.SRSQueue</strong></a>
     
 
@@ -4300,6 +4334,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CSAR).coordinate" ><strong>CSAR.coordinate</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).coordtype" ><strong>CSAR.coordtype</strong></a>
     
@@ -4378,13 +4423,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -4406,8 +4448,22 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -4533,17 +4589,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -4704,7 +4749,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
 <a id="#(CSAR).msrs" ><strong>CSAR.msrs</strong></a>
     
 
@@ -4758,6 +4803,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
+    
+
+
+    
+<p> counter for saved pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CSAR).rescuehoverdistance" ><strong>CSAR.rescuehoverdistance</strong></a>
     
 
@@ -4775,6 +4834,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> added 0.1.11r1</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+    
+
+
+    
+<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -9912,6 +9985,28 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(CSAR).CSARVoice" ><strong>CSAR.CSARVoice</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).CSARVoiceMS" ><strong>CSAR.CSARVoiceMS</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(CSAR).CallsignTranslations" ><strong>CSAR.CallsignTranslations</strong></a>
     
 
@@ -9947,7 +10042,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -10036,7 +10131,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
 <a id="#(CSAR).SRSQueue" ><strong>CSAR.SRSQueue</strong></a>
     
 
@@ -10282,6 +10377,17 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CSAR).coordinate" ><strong>CSAR.coordinate</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).coordtype" ><strong>CSAR.coordtype</strong></a>
     
@@ -10360,13 +10466,10 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -10388,8 +10491,22 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -10515,17 +10632,6 @@ callsigns from playername or group name.</p>
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -10686,7 +10792,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
 <a id="#(CSAR).msrs" ><strong>CSAR.msrs</strong></a>
     
 
@@ -10740,6 +10846,20 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
+    
+
+
+    
+<p> counter for saved pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CSAR).rescuehoverdistance" ><strong>CSAR.rescuehoverdistance</strong></a>
     
 
@@ -10757,6 +10877,20 @@ callsigns from playername or group name.</p>
 
     
 <p> added 0.1.11r1</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+    
+
+
+    
+<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
@@ -12379,6 +12513,28 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(CSAR).CSARVoice" ><strong>CSAR.CSARVoice</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CSAR).CSARVoiceMS" ><strong>CSAR.CSARVoiceMS</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(CSAR).CallsignTranslations" ><strong>CSAR.CallsignTranslations</strong></a>
     
 
@@ -12414,7 +12570,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).FreeVHFFrequencies" ><strong>CSAR.FreeVHFFrequencies</strong></a>
     
 
@@ -12503,7 +12659,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Sound.SRS.html##(MSRSQUEUE)">Sound.SRS#MSRSQUEUE</a>
 <a id="#(CSAR).SRSQueue" ><strong>CSAR.SRSQueue</strong></a>
     
 
@@ -12749,6 +12905,17 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+<a id="#(CSAR).coordinate" ><strong>CSAR.coordinate</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CSAR).coordtype" ><strong>CSAR.coordtype</strong></a>
     
@@ -12827,13 +12994,10 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CSAR).csarUnits" ><strong>CSAR.csarUnits</strong></a>
     
 
-
-    
-<p> table of CSAR unit names</p>
 
 </div>
 
@@ -12855,8 +13019,22 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -12982,17 +13160,6 @@ callsigns from playername or group name.</p>
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -13153,7 +13320,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    <a href="Sound.SRS.html##(MSRS)">Sound.SRS#MSRS</a>
 <a id="#(CSAR).msrs" ><strong>CSAR.msrs</strong></a>
     
 
@@ -13207,6 +13374,20 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CSAR).rescuedpilots" ><strong>CSAR.rescuedpilots</strong></a>
+    
+
+
+    
+<p> counter for saved pilots</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CSAR).rescuehoverdistance" ><strong>CSAR.rescuehoverdistance</strong></a>
     
 
@@ -13224,6 +13405,20 @@ callsigns from playername or group name.</p>
 
     
 <p> added 0.1.11r1</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).rescues" ><strong>CSAR.rescues</strong></a>
+    
+
+
+    
+<p> counter for successful rescue landings at FARP/AFB/MASH</p>
 
 </div>
 
