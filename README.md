@@ -1,6 +1,6 @@
 [![Moose-Includes](https://github.com/FlightControl-Master/MOOSE/actions/workflows/build-includes.yml/badge.svg?branch=master)](https://github.com/FlightControl-Master/MOOSE/actions/workflows/build-includes.yml)
 
-![MOOSE Banner](Images\MOOSE.JPG)
+<img src="Images\MOOSE.JPG" alt="MOOSE" style="width:600px;"/>
 
 You can find documentation for MOOSE in the following places:
 
