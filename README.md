@@ -12,6 +12,8 @@ You can find documentation for MOOSE in the following places:
   - Visit our new documentation at the [MOOSE GitHub page].
 - Overview of all [MOOSE repositories] on GitHub.
 
+<br/>
+
 [MOOSE_DOCS]: https://flightcontrol-master.github.io/MOOSE_DOCS/Documentation/index.html
 [MOOSE_DOCS_DEVELOP]: https://flightcontrol-master.github.io/MOOSE_DOCS_DEVELOP/Documentation/index.html
 [archive]: https://flightcontrol-master.github.io/MOOSE/archive/
