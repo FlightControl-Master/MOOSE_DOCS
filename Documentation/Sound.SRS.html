@@ -1741,6 +1741,10 @@ For voices there are enumerators in this class to help you out on voice names:</
 
 <p>Use <a href="##(MSRS).SetVolume">MSRS.SetVolume</a> to define the SRS volume. Defaults to 1.0. Allowed values are between 0.0 and 1.0, from silent to loudest.</p>
 
+<h2>Config file for many variables, auto-loaded by Moose</h2>
+
+<p>See <a href="##(MSRS).LoadConfigFile">MSRS.LoadConfigFile</a> for details on how to set this up.</p>
+
 <h2>Set DCS-gRPC as an alternative to 'DCS-SR-ExternalAudio.exe' for TTS</h2>
 
 <p>Use <a href="##(MSRS).SetDefaultBackendGRPC">MSRS.SetDefaultBackendGRPC</a> to enable <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC</a> as an alternate backend for transmitting text-to-speech over SRS.
@@ -2031,13 +2035,13 @@ atis:Start()
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetGoogle">MSRS:SetGoogle(PathToCredentials)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Use google text-to-speech.</p>
+<p>Use google text-to-speech credentials.</p>
 </td>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetGoogleAPIKey">MSRS:SetGoogleAPIKey(APIKey)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Use google text-to-speech.</p>
+<p>gRPC Backend: Use google text-to-speech set the API key.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2062,6 +2066,18 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetPort">MSRS:SetPort(Port)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set port.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetTTSProviderGoogle">MSRS:SetTTSProviderGoogle()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use Google text-to-speech as default.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetTTSProviderMicrosoft">MSRS:SetTTSProviderMicrosoft()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use Microsoft text-to-speech as default.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2194,6 +2210,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).secret">MSRS.secret</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).ttsprovider">MSRS.ttsprovider</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Default provider TTS backend, e.g. "Google" or "Microsoft", default is Microsoft</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3999,6 +4021,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #string
+<a id="#(MSRS).ttsprovider" ><strong>MSRS.ttsprovider</strong></a>
+    
+<p>Default provider TTS backend, e.g. "Google" or "Microsoft", default is Microsoft</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
 <a id="#(MSRS).version" ><strong>MSRS.version</strong></a>
     
 <p>MSRS class version.</p>
@@ -4423,18 +4456,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
          -- Moose MSRS default Config
          MSRS_Config = {
-           Path = "C:\\Program Files\\DCS-SimpleRadio-Standalone", -- adjust as needed
+           Path = "C:\\Program Files\\DCS-SimpleRadio-Standalone", -- adjust as needed, note double  \\
            Port = 5002, -- adjust as needed
            Frequency = {127,243}, -- must be a table, 1..n entries!
            Modulation = {0,0}, -- must be a table, 1..n entries, one for each frequency!
-           Volume = 1.0,
+           Volume = 1.0, -- 0.0 to 1.0
            Coalition = 0,  -- 0 = Neutral, 1 = Red, 2 = Blue
-           Coordinate = {0,0,0}, -- x,y,alt - optional
+           Coordinate = {0,0,0}, -- x,y,altitude - optional, all in meters
            Culture = "en-GB",
            Gender = "male",
-           Google = "C:\\Program Files\\DCS-SimpleRadio-Standalone\\yourfilename.json", -- path to google json key file - optional
+           Google = "C:\\Program Files\\DCS-SimpleRadio-Standalone\\yourfilename.json", -- path to google json key file - optional.
            Label = "MSRS",
            Voice = "Microsoft Hazel Desktop",
+           Provider = "Microsoft", -- this is the default TTS provider, e.g. "Google" or "Microsoft"
            -- gRPC (optional)
            GRPC = { -- see https://github.com/DCS-gRPC/rust-server
              coalition = "blue", -- blue, red, neutral
@@ -4451,9 +4485,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
            }
          }
  
- 3) Load the config into the MSRS raw class before you do anything else:
+ 3) The config file is automatically loaded when Moose starts. YOu can also load the config into the MSRS raw class manually before you do anything else:
  
         MSRS.LoadConfigFile() -- Note the "." here
+
+ Optionally, your might want to provide a specific path and filename:
+ 
+        MSRS.LoadConfigFile(nil,MyPath,MyFilename) -- Note the "." here
         
  This will populate variables for the MSRS raw class and all instances you create with e.g. `mysrs = MSRS:New()`
  Optionally you can also load this per **single instance** if so needed, i.e.
@@ -5356,7 +5394,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(MSRS).SetGoogle" ><strong>MSRS:SetGoogle(PathToCredentials)</strong></a></h2>
 </div>
     
-<p>Use google text-to-speech.</p>
+<p>Use google text-to-speech credentials.</p>
+
+    
+<p>Also sets Google as default TTS provider.</p>
 
 <div id= "#Functions##SetGoogle" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5400,7 +5441,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(MSRS).SetGoogleAPIKey" ><strong>MSRS:SetGoogleAPIKey(APIKey)</strong></a></h2>
 </div>
     
-<p>Use google text-to-speech.</p>
+<p>gRPC Backend: Use google text-to-speech set the API key.</p>
 
 <div id= "#Functions##SetGoogleAPIKey" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -5601,6 +5642,66 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetTTSProviderGoogle" ><strong>MSRS:SetTTSProviderGoogle()</strong></a></h2>
+</div>
+    
+<p>Use Google text-to-speech as default.</p>
+
+<div id= "#Functions##SetTTSProviderGoogle" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetTTSProviderMicrosoft" ><strong>MSRS:SetTTSProviderMicrosoft()</strong></a></h2>
+</div>
+    
+<p>Use Microsoft text-to-speech as default.</p>
+
+<div id= "#Functions##SetTTSProviderMicrosoft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -6303,6 +6404,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MSRS).secret" ><strong>MSRS.secret</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRS).ttsprovider" ><strong>MSRS.ttsprovider</strong></a>
+    
+<p>Default provider TTS backend, e.g. "Google" or "Microsoft", default is Microsoft</p>
 
 </div>
 
