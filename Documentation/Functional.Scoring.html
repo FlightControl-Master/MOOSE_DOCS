@@ -1692,6 +1692,7 @@ Scores can be reported for your user, or an overall score can be reported of all
 <h3>Contributions:</h3>
 
 <ul>
+    <li><strong>Applevangelist</strong>: Additional functionality, fixes.</li>
     <li><strong>Wingthor (TAW)</strong>: Testing &amp; Advice.</li>
     <li><strong>Dutch-Baron (TAW)</strong>: Testing &amp; Advice.</li>
     <li><strong>Whisper</strong>: Testing and Advice.</li>
@@ -1755,11 +1756,13 @@ The penalties will be given in a scale from 0 to 40.</p>
 <p>Special targets can be set that will give extra scores to the players when these are destroyed.
 Use the methods <a href="##(SCORING).AddUnitScore">SCORING.AddUnitScore</a>() and <a href="##(SCORING).RemoveUnitScore">SCORING.RemoveUnitScore</a>() to specify a special additional score for a specific <a href="Wrapper.Unit.html">Wrapper.Unit</a>s.
 Use the methods <a href="##(SCORING).AddStaticScore">SCORING.AddStaticScore</a>() and <a href="##(SCORING).RemoveStaticScore">SCORING.RemoveStaticScore</a>() to specify a special additional score for a specific <a href="Wrapper.Static.html">Wrapper.Static</a>s.
-Use the method <a href="##(SCORING).SetGroupGroup">SCORING.SetGroupGroup</a>() to specify a special additional score for a specific <a href="Wrapper.Group.html">Wrapper.Group</a>s.</p>
+Use the method <a href="##(SCORING).AddScoreSetGroup">SCORING.AddScoreSetGroup</a>() to specify a special additional score for a specific <a href="Wrapper.Group.html">Wrapper.Group</a>s gathered in a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
 
 <pre><code> local Scoring = SCORING:New( "Scoring File" )
  Scoring:AddUnitScore( UNIT:FindByName( "Unit #001" ), 200 )
  Scoring:AddStaticScore( STATIC:FindByName( "Static #1" ), 100 )
+ local GroupSet = SET_GROUP:New():FilterPrefixes("RAT"):FilterStart()
+ Scoring:AddScoreSetGroup( GroupSet, 100)
 </code></pre>
 
 <p>The above grants an additional score of 200 points for Unit #001 and an additional 100 points of Static #1 if these are destroyed.
@@ -1905,6 +1908,12 @@ Various methods exist to configure:</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddScoreSetGroup">SCORING:AddScoreSetGroup(Set, Score)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Specify a special additional score for a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).AddStaticScore">SCORING:AddStaticScore(ScoreStatic, Score)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add a <a href="Wrapper.Static.html">Wrapper.Static</a> for additional scoring when the <a href="Wrapper.Static.html">Wrapper.Static</a> is destroyed.</p>
@@ -2043,13 +2052,13 @@ Various methods exist to configure:</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OnKillPvE">SCORING:OnKillPvE(Player, TargetUnitName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, PlayerThreatLevel)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OnKillPvE">SCORING:OnKillPvE(#, TargetUnitName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, Player, PlayerThreatLevel)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Handles the event when one player kill another player</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OnKillPvP">SCORING:OnKillPvP(Player, TargetPlayerName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, PlayerThreatLevel)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(SCORING).OnKillPvP">SCORING:OnKillPvP(#, TargetPlayerName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, Player, PlayerThreatLevel)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Handles the event when one player kill another player</p>
 </td>
@@ -2896,10 +2905,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #boolean
 <a id="#(SCORING).AutoSave" ><strong>SCORING.AutoSave</strong></a>
     
 
+
+    
+<p> Create the CSV file.</p>
 
 </div>
 
@@ -3094,7 +3106,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #boolean
 <a id="#(SCORING).penaltyoncoalitionchange" ><strong>SCORING.penaltyoncoalitionchange</strong></a>
     
 
@@ -3105,7 +3117,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #boolean
 <a id="#(SCORING).penaltyonfratricide" ><strong>SCORING.penaltyonfratricide</strong></a>
     
 
@@ -3297,6 +3309,63 @@ The Score can be both positive and negative.</p>
           <div class="w3-half">
               
 <p>The <a href="Wrapper.Group.html">Wrapper.Group</a> for which each <a href="Wrapper.Unit.html">Wrapper.Unit</a> a Score is given.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Score</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The Score value.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(SCORING)">#SCORING</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(SCORING).AddScoreSetGroup" ><strong>SCORING:AddScoreSetGroup(Set, Score)</strong></a></h2>
+</div>
+    
+<p>Specify a special additional score for a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
+
+<div id= "#Functions##AddScoreSetGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>SCORING</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
+            <strong><strong>Set</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a> for which each <a href="Wrapper.Unit.html">Wrapper.Unit</a> in each Group a Score is given.</p>
 
           </div>
         </div>
@@ -3838,7 +3907,7 @@ Note that a zone can be a polygon or a moving zone.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCORING).OnKillPvE" ><strong>SCORING:OnKillPvE(Player, TargetUnitName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, PlayerThreatLevel)</strong></a></h2>
+<h2><a id="#(SCORING).OnKillPvE" ><strong>SCORING:OnKillPvE(#, TargetUnitName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, Player, PlayerThreatLevel)</strong></a></h2>
 </div>
     
 <p>Handles the event when one player kill another player</p>
@@ -3853,13 +3922,13 @@ Note that a zone can be a polygon or a moving zone.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="##(PLAYER)">#PLAYER</a>
-            <strong><strong>Player</strong></strong>
+                <a href="##(Wrapper.Client)">#Wrapper.Client</a>
+            <strong><strong>#</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>the ataching player</p>
+<p>LIENT Player the atacking player</p>
 
           </div>
         </div>
@@ -3879,7 +3948,7 @@ Note that a zone can be a polygon or a moving zone.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="##(bool)">#bool</a>
+                #boolean
             <strong><strong>IsTeamKill</strong></strong>
             </p>
           </div>
@@ -3926,6 +3995,16 @@ Note that a zone can be a polygon or a moving zone.</p>
               
 <p>The score based on both threat levels</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Player</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -3946,7 +4025,7 @@ Note that a zone can be a polygon or a moving zone.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(SCORING).OnKillPvP" ><strong>SCORING:OnKillPvP(Player, TargetPlayerName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, PlayerThreatLevel)</strong></a></h2>
+<h2><a id="#(SCORING).OnKillPvP" ><strong>SCORING:OnKillPvP(#, TargetPlayerName, IsTeamKill, TargetThreatLevel, PlayerThreatLevelThread, Score, Player, PlayerThreatLevel)</strong></a></h2>
 </div>
     
 <p>Handles the event when one player kill another player</p>
@@ -3961,13 +4040,13 @@ Note that a zone can be a polygon or a moving zone.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="##(PLAYER)">#PLAYER</a>
-            <strong><strong>Player</strong></strong>
+                <a href="##(Wrapper.Client)">#Wrapper.Client</a>
+            <strong><strong>#</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               
-<p>the ataching player</p>
+<p>LIENT Player the atacking player</p>
 
           </div>
         </div>
@@ -3987,7 +4066,7 @@ Note that a zone can be a polygon or a moving zone.</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="##(bool)">#bool</a>
+                #boolean
             <strong><strong>IsTeamKill</strong></strong>
             </p>
           </div>
@@ -4034,6 +4113,16 @@ Note that a zone can be a polygon or a moving zone.</p>
               
 <p>The score based on both threat levels</p>
 
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Player</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -5753,10 +5842,13 @@ The scale magnifies the scores given to the players.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #boolean
 <a id="#(SCORING).AutoSave" ><strong>SCORING.AutoSave</strong></a>
     
 
+
+    
+<p> Create the CSV file.</p>
 
 </div>
 
@@ -5951,7 +6043,7 @@ The scale magnifies the scores given to the players.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #boolean
 <a id="#(SCORING).penaltyoncoalitionchange" ><strong>SCORING.penaltyoncoalitionchange</strong></a>
     
 
@@ -5962,7 +6054,7 @@ The scale magnifies the scores given to the players.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #boolean
 <a id="#(SCORING).penaltyonfratricide" ><strong>SCORING.penaltyonfratricide</strong></a>
     
 
