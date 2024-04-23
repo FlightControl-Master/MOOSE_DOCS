@@ -1679,504 +1679,195 @@
      </div>
    </div>
   </nav>
-  
-<img src="..\Images\AI_Ground_Control_Intercept.JPG" alt="Banner Image"/>   
-<div  id="content">
+  <div  id="content">
   <div class="w3-container w3-theme-d5" id="module_title">
-    <h1>Module <strong>AI.AI_A2A_Gci</strong></h1>
+    <h1>Module <strong>Shapes.CUBE</strong></h1>
   </div>
   <div class="w3-container w3-white" id="module_description">
     
-<p><strong>AI</strong> - Models the process of Ground Controlled Interception (GCI) for airplanes.</p>
 
-    
-
-<p>This is a class used in the <a href="AI.AI_A2A_Dispatcher.html">AI.AI_A2A_Dispatcher</a>.</p>
+<h3>Author: <strong>nielsvaes/coconutcockpit</strong></h3>
 
 <hr/>
-
-<h3>Author: <strong>FlightControl</strong></h3>
-
-<hr/>
-
 
   </div>
   <div class="w3-container w3-theme-d2"><h2><strong>Global(s)</strong></h2></div>
   <div class="w3-theme-d2 w3-margin-top ">
-    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##AI_A2A_GCI')">
+    <table class="w3-table w3-left-align w3-theme-d2" onclick="myFunction('#Globals##CUBE')">
       <tr>
-        <td class="style="width:40%;"><p><h2>Global <strong>AI_A2A_GCI</strong></h2></p></td>
+        <td class="style="width:40%;"><p><h2>Global <strong>CUBE</strong></h2></p></td>
         <td class="style="width:60%;">
-<p>Implements the core functions to intercept intruders.</p>
+
 </td>
       </tr>
     </table>
   </div>
-  <div id= "#Globals##AI_A2A_GCI" class="w3-container w3-white w3-padding-small">
+  <div id= "#Globals##CUBE" class="w3-container w3-white w3-padding-small">
     <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="##(AI_A2A_GCI)">#AI_A2A_GCI</a>
-<a id="AI_A2A_GCI" ><strong>AI_A2A_GCI</strong></a>
+    <a href="##(CUBE)">#CUBE</a>
+<a id="CUBE" ><strong>CUBE</strong></a>
     
-<p>Implements the core functions to intercept intruders.</p>
-
-    
-<p>Use the Engage trigger to intercept intruders.</p>
-
-<p>The AI_A2A_GCI is assigned a <a href="Wrapper.Group.html">Wrapper.Group</a> and this must be done before the AI_A2A_GCI process can be started using the <strong>Start</strong> event.</p>
-
-<p>The AI will fly towards the random 3D point within the patrol zone, using a random speed within the given altitude and speed limits.
-Upon arrival at the 3D point, a new random 3D point will be selected within the patrol zone using the given limits.</p>
-
-<p>This cycle will continue.</p>
-
-<p>During the patrol, the AI will detect enemy targets, which are reported through the <strong>Detected</strong> event.</p>
-
-<p>When enemies are detected, the AI will automatically engage the enemy.</p>
-
-<p>Until a fuel or damage threshold has been reached by the AI, or when the AI is commanded to RTB.
-When the fuel threshold has been reached, the airplane will fly towards the nearest friendly airbase and will land.</p>
-
-<h2>1. AI_A2A_GCI constructor</h2>
-
-<ul>
-    <li><a href="##(AI_A2A_GCI).New">AI_A2A_GCI.New</a>(): Creates a new AI_A2A_GCI object.</li>
-</ul>
-
-<h2>2. AI_A2A_GCI is a FSM</h2>
-
-<h3>2.1 AI_A2A_GCI States</h3>
-
-<ul>
-    <li><strong>None</strong> ( Group ): The process is not started yet.</li>
-    <li><strong>Patrolling</strong> ( Group ): The AI is patrolling the Patrol Zone.</li>
-    <li><strong>Engaging</strong> ( Group ): The AI is engaging the bogeys.</li>
-    <li><strong>Returning</strong> ( Group ): The AI is returning to Base..</li>
-</ul>
-
-<h3>2.2 AI_A2A_GCI Events</h3>
-
-<ul>
-    <li>**<a href="AI.AI_Patrol.html##(AI_PATROL_ZONE).Start">AI.AI_Patrol#AI_PATROL_ZONE.Start</a>**: Start the process.</li>
-    <li>**<a href="AI.AI_Patrol.html##(AI_PATROL_ZONE).Route">AI.AI_Patrol#AI_PATROL_ZONE.Route</a>**: Route the AI to a new random 3D point within the Patrol Zone.</li>
-    <li>**<a href="##(AI_A2A_GCI).Engage">AI_A2A_GCI.Engage</a>**: Let the AI engage the bogeys.</li>
-    <li>**<a href="##(AI_A2A_GCI).Abort">AI_A2A_GCI.Abort</a>**: Aborts the engagement and return patrolling in the patrol zone.</li>
-    <li>**<a href="AI.AI_Patrol.html##(AI_PATROL_ZONE).RTB">AI.AI_Patrol#AI_PATROL_ZONE.RTB</a>**: Route the AI to the home base.</li>
-    <li>**<a href="AI.AI_Patrol.html##(AI_PATROL_ZONE).Detect">AI.AI_Patrol#AI_PATROL_ZONE.Detect</a>**: The AI is detecting targets.</li>
-    <li>**<a href="AI.AI_Patrol.html##(AI_PATROL_ZONE).Detected">AI.AI_Patrol#AI_PATROL_ZONE.Detected</a>**: The AI has detected new targets.</li>
-    <li>**<a href="##(AI_A2A_GCI).Destroy">AI_A2A_GCI.Destroy</a>**: The AI has destroyed a bogey <a href="Wrapper.Unit.html">Wrapper.Unit</a>.</li>
-    <li>**<a href="##(AI_A2A_GCI).Destroyed">AI_A2A_GCI.Destroyed</a>**: The AI has destroyed all bogeys <a href="Wrapper.Unit.html">Wrapper.Unit</a>s assigned in the CAS task.</li>
-    <li><strong>Status</strong> ( Group ): The AI is checking status (fuel and damage). When the thresholds have been reached, the AI will RTB.</li>
-</ul>
-
-<h1>Developer Note</h1>
-
-<p>Note while this class still works, it is no longer supported as the original author stopped active development of MOOSE
-Therefore, this class is considered to be deprecated</p>
-
-<hr/>
 
 
 </div>
 
   </div>
   <div class="w3-container w3-theme-l2 w3-margin-top"><h2><strong>Type(s)</strong></h2></div>  
-      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2A_GCI)">Type <strong>AI_A2A_GCI</strong></a></h2></div>
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CUBE)">Type <strong>CUBE</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
-     <strong><a href="##(AI_A2A_GCI)">AI_A2A_GCI</a></strong>
-, extends <strong><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></strong>
+     <strong><a href="##(CUBE)">CUBE</a></strong>
    </div>
         <div class="w3-card w3-margin">
         <table class="w3-table w3-border-bottom w3-border-theme-l2">
           <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AI_A2A_GCI</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from CUBE</th>
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).CreateAttackUnitTasks">AI_A2A_GCI:CreateAttackUnitTasks(AttackSetUnit, DefenderGroup, EngageAltitude)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CUBE).ClassName">CUBE.ClassName</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Evaluate the attack and create an AttackUnitTask list.</p>
+<p>Name of the class.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).New">AI_A2A_GCI:New(AIIntercept, EngageMinSpeed, EngageMaxSpeed, EngageFloorAltitude, EngageCeilingAltitude, EngageAltType)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates a new AI_A2A_GCI object</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).New2">AI_A2A_GCI:New2(AIIntercept, EngageMinSpeed, EngageMaxSpeed, EngageFloorAltitude, EngageCeilingAltitude, EngageAltType)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates a new AI_A2A_GCI object</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterStart">AI_A2A_GCI:onafterStart(AIIntercept, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>onafter State Transition for Event Patrol.</p>
-</td>
-          </tr>
-        </table>
-        </div>
-        <div class="w3-card w3-margin">
-        <table class="w3-table w3-border-bottom w3-border-theme-l2">
-          <tr class="w3-theme-l1">
-            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from AI_AIR_ENGAGE</th>
-            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Abort">AI_A2A_GCI:Abort()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Synchronous Event Trigger for Event Abort.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Accomplish">AI_A2A_GCI:Accomplish()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Synchronous Event Trigger for Event Accomplish.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Accomplished">AI_A2A_GCI.Accomplished</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CUBE).ContainsPoint">CUBE:ContainsPoint(point, cube_points)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Destroy">AI_A2A_GCI:Destroy()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CUBE).Coords">CUBE.Coords</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Synchronous Event Trigger for Event Destroy.</p>
+<p>coordinates of the line</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Engage">AI_A2A_GCI:Engage()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Synchronous Event Trigger for Event Engage.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).EngageAltType">AI_A2A_GCI.EngageAltType</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CUBE).GetCenter">CUBE:GetCenter()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).EngageCeilingAltitude">AI_A2A_GCI.EngageCeilingAltitude</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CUBE).New">CUBE:New(p1, p2, p3, p4, p5, p6, p7, p8)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Points need to be added in the following order:
+- p1 -> p4 make up the front face of the cube
+- p5 -> p8 make up the back face of the cube
+-        p1 connects to p5
+-        p2 connects to p6
+-        p3 connects to p7
+-        p4 connects to p8
+-
+-         8-----------7
+-        /|          /|
+-       / |         / |
+-      4--+--------3  |
+-      |  |        |  |
+-      |  |        |  |
+-      |  |        |  |
+-      |  5--------+--6
+-      | /         | /
+-      |/          |/
+-      1-----------2
+-</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).EngageFloorAltitude">AI_A2A_GCI.EngageFloorAltitude</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CUBE).Points">CUBE.Points</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).EngageMaxSpeed">AI_A2A_GCI.EngageMaxSpeed</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).EngageMinSpeed">AI_A2A_GCI.EngageMinSpeed</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).EngageRoute">AI_A2A_GCI:EngageRoute()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Synchronous Event Trigger for Event EngageRoute.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Engaging">AI_A2A_GCI.Engaging</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Fired">AI_A2A_GCI:Fired()</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Synchronous Event Trigger for Event Fired.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).New">AI_A2A_GCI:New(AI_Air, AIGroup, EngageMinSpeed, EngageMaxSpeed, EngageFloorAltitude, EngageCeilingAltitude, EngageAltType)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Creates a new AI_AIR_ENGAGE object</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnAfterAbort">AI_A2A_GCI:OnAfterAbort(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event Abort.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnAfterAccomplish">AI_A2A_GCI:OnAfterAccomplish(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event Accomplish.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnAfterDestroy">AI_A2A_GCI:OnAfterDestroy(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event Destroy.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnAfterEngage">AI_A2A_GCI:OnAfterEngage(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event Engage.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnAfterEngageRoute">AI_A2A_GCI:OnAfterEngageRoute(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event EngageRoute.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnAfterFired">AI_A2A_GCI:OnAfterFired(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnAfter Transition Handler for Event Fired.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnBeforeAbort">AI_A2A_GCI:OnBeforeAbort(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnBefore Transition Handler for Event Abort.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnBeforeAccomplish">AI_A2A_GCI:OnBeforeAccomplish(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnBefore Transition Handler for Event Accomplish.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnBeforeDestroy">AI_A2A_GCI:OnBeforeDestroy(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnBefore Transition Handler for Event Destroy.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnBeforeEngage">AI_A2A_GCI:OnBeforeEngage(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnBefore Transition Handler for Event Engage.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnBeforeEngageRoute">AI_A2A_GCI:OnBeforeEngageRoute(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnBefore Transition Handler for Event EngageRoute.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnBeforeFired">AI_A2A_GCI:OnBeforeFired(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnBefore Transition Handler for Event Fired.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnEnterEngaging">AI_A2A_GCI:OnEnterEngaging(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnEnter Transition Handler for State Engaging.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnEventDead">AI_A2A_GCI:OnEventDead(EventData)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).OnLeaveEngaging">AI_A2A_GCI:OnLeaveEngaging(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>OnLeave Transition Handler for State Engaging.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).Resume">AI_A2A_GCI.Resume(AIEngage, Fsm)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).__Abort">AI_A2A_GCI:__Abort(Delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Asynchronous Event Trigger for Event Abort.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).__Accomplish">AI_A2A_GCI:__Accomplish(Delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Asynchronous Event Trigger for Event Accomplish.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).__Destroy">AI_A2A_GCI:__Destroy(Delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Asynchronous Event Trigger for Event Destroy.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).__Engage">AI_A2A_GCI:__Engage(Delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Asynchronous Event Trigger for Event Engage.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).__EngageRoute">AI_A2A_GCI:__EngageRoute(Delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Asynchronous Event Trigger for Event EngageRoute.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).__Fired">AI_A2A_GCI:__Fired(Delay)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Asynchronous Event Trigger for Event Fired.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).___Engage">AI_A2A_GCI.___Engage(AIGroup, Fsm, AttackSetUnit)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).___EngageRoute">AI_A2A_GCI.___EngageRoute(AIGroup, Fsm, AttackSetUnit)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterAbort">AI_A2A_GCI:onafterAbort(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>onafter event handler for Abort event.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterAccomplish">AI_A2A_GCI:onafterAccomplish(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterDestroy">AI_A2A_GCI:onafterDestroy(AIGroup, From, Event, To, EventData)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterEngage">AI_A2A_GCI:onafterEngage(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>onafter event handler for Engage event.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterEngageRoute">AI_A2A_GCI:onafterEngageRoute(DefenderGroup, From, Event, To, AttackSetUnit)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onafterStart">AI_A2A_GCI:onafterStart(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>onafter event handler for Start event.</p>
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AI_A2A_GCI).onbeforeEngage">AI_A2A_GCI:onbeforeEngage(AIGroup, From, Event, To)</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>onbefore event handler for Engage event.</p>
+<p>points of the line</p>
 </td>
           </tr>
         </table>
         </div>
 
-    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI.AI_A2A_Gci)" >Type <strong>AI.AI_A2A_Gci</strong></a></h2></div>
+    <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(Shapes.CUBE)" >Type <strong>Shapes.CUBE</strong></a></h2></div>
     <div class="w3-container w3-white w3-padding-16" id="module_current_type">
       <div class="w3-white" id="record_type">
 </div>
 
     </div>
-      <div onclick="myFunction('#Types##AI_A2A_GCI')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(AI_A2A_GCI)">Type <strong>AI_A2A_GCI</strong></a></h2></div>
-        <div id= "#Types##AI_A2A_GCI" class="w3-container w3-white w3-padding-16" id="module_other_types">
+      <div onclick="myFunction('#Types##CUBE')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CUBE)">Type <strong>CUBE</strong></a></h2></div>
+        <div id= "#Types##CUBE" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
+  
+<p>LINE class.</p>
+
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CUBE).ClassName" ><strong>CUBE.ClassName</strong></a>
+    
+<p>Name of the class.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CUBE).Coords" ><strong>CUBE.Coords</strong></a>
+    
+<p>coordinates of the line</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CUBE).Points" ><strong>CUBE.Points</strong></a>
+    
+<p>points of the line</p>
+
+</div>
+
+</div>   
 <div class="functions  w3-container w3-theme-l2">
   <h2>Function(s)</h2>
 </div>  
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).CreateAttackUnitTasks" ><strong>AI_A2A_GCI:CreateAttackUnitTasks(AttackSetUnit, DefenderGroup, EngageAltitude)</strong></a></h2>
+<h2><a id="#(CUBE).ContainsPoint" ><strong>CUBE:ContainsPoint(point, cube_points)</strong></a></h2>
 </div>
     
-<p>Evaluate the attack and create an AttackUnitTask list.</p>
 
-<div id= "#Functions##CreateAttackUnitTasks" class="w3-show w3-white">
+
+<div id= "#Functions##ContainsPoint" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_A2A_GCI</p>
+<p>CUBE</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Set.html##(SET_UNIT)">Core.Set#SET_UNIT</a>
-            <strong><strong>AttackSetUnit</strong></strong>
+            <strong><strong>point</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              
-<p>The set of units to attack.</p>
-
+              <p></p>
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>DefenderGroup</strong></strong>
+            <strong><strong>cube_points</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              
-<p>The group of defenders.</p>
-
+              <p></p>
           </div>
         </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>EngageAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The altitude to engage the targets.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_A2A_GCI)">#AI_A2A_GCI</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>self</p>
-
-      </div>
-    </div>
 </div>
 
 </div>
@@ -2185,23 +1876,60 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).New" ><strong>AI_A2A_GCI:New(AIIntercept, EngageMinSpeed, EngageMaxSpeed, EngageFloorAltitude, EngageCeilingAltitude, EngageAltType)</strong></a></h2>
+<h2><a id="#(CUBE).GetCenter" ><strong>CUBE:GetCenter()</strong></a></h2>
 </div>
     
-<p>Creates a new AI_A2A_GCI object</p>
+
+
+<div id= "#Functions##GetCenter" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CUBE</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CUBE).New" ><strong>CUBE:New(p1, p2, p3, p4, p5, p6, p7, p8)</strong></a></h2>
+</div>
+    
+<p>Points need to be added in the following order:
+- p1 -> p4 make up the front face of the cube
+- p5 -> p8 make up the back face of the cube
+-        p1 connects to p5
+-        p2 connects to p6
+-        p3 connects to p7
+-        p4 connects to p8
+-
+-         8-----------7
+-        /|          /|
+-       / |         / |
+-      4--+--------3  |
+-      |  |        |  |
+-      |  |        |  |
+-      |  |        |  |
+-      |  5--------+--6
+-      | /         | /
+-      |/          |/
+-      1-----------2
+-</p>
 
 <div id= "#Functions##New" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
-<p>AI_A2A_GCI</p>
+<p>CUBE</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIIntercept</strong></strong>
+            <strong><strong>p1</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -2211,104 +1939,7 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="DCS.html##(Speed)">DCS#Speed</a>
-            <strong><strong>EngageMinSpeed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The minimum speed of the <a href="Wrapper.Group.html">Wrapper.Group</a> in km/h when engaging a target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Speed)">DCS#Speed</a>
-            <strong><strong>EngageMaxSpeed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The maximum speed of the <a href="Wrapper.Group.html">Wrapper.Group</a> in km/h when engaging a target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Altitude)">DCS#Altitude</a>
-            <strong><strong>EngageFloorAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The lowest altitude in meters where to execute the engagement.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Altitude)">DCS#Altitude</a>
-            <strong><strong>EngageCeilingAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The highest altitude in meters where to execute the engagement.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(AltitudeType)">DCS#AltitudeType</a>
-            <strong><strong>EngageAltType</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The altitude type ("RADIO"=="AGL", "BARO"=="ASL"). Defaults to "RADIO".</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_A2A_GCI)">#AI_A2A_GCI</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).New2" ><strong>AI_A2A_GCI:New2(AIIntercept, EngageMinSpeed, EngageMaxSpeed, EngageFloorAltitude, EngageCeilingAltitude, EngageAltType)</strong></a></h2>
-</div>
-    
-<p>Creates a new AI_A2A_GCI object</p>
-
-<div id= "#Functions##New2" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_A2A_GCI</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIIntercept</strong></strong>
+            <strong><strong>p2</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -2318,1539 +1949,7 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="DCS.html##(Speed)">DCS#Speed</a>
-            <strong><strong>EngageMinSpeed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The minimum speed of the <a href="Wrapper.Group.html">Wrapper.Group</a> in km/h when engaging a target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Speed)">DCS#Speed</a>
-            <strong><strong>EngageMaxSpeed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The maximum speed of the <a href="Wrapper.Group.html">Wrapper.Group</a> in km/h when engaging a target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Altitude)">DCS#Altitude</a>
-            <strong><strong>EngageFloorAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The lowest altitude in meters where to execute the engagement.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Altitude)">DCS#Altitude</a>
-            <strong><strong>EngageCeilingAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The highest altitude in meters where to execute the engagement.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(AltitudeType)">DCS#AltitudeType</a>
-            <strong><strong>EngageAltType</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The altitude type ("RADIO"=="AGL", "BARO"=="ASL"). Defaults to "RADIO".</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_A2A_GCI)">#AI_A2A_GCI</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterStart" ><strong>AI_A2A_GCI:onafterStart(AIIntercept, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>onafter State Transition for Event Patrol.</p>
-
-<div id= "#Functions##onafterStart" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p>AI_A2A_GCI</p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIIntercept</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The AI Group managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-<div class="fields w3-container w3-theme-l2">
-  <h2>Field(s)</h2>
-</div>
-<div class="functions  w3-container w3-theme-l2">
-  <h2>Function(s)</h2>
-</div>  
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).Abort" ><strong>AI_A2A_GCI:Abort()</strong></a></h2>
-</div>
-    
-<p>Synchronous Event Trigger for Event Abort.</p>
-
-<div id= "#Functions##Abort" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).Accomplish" ><strong>AI_A2A_GCI:Accomplish()</strong></a></h2>
-</div>
-    
-<p>Synchronous Event Trigger for Event Accomplish.</p>
-
-<div id= "#Functions##Accomplish" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).Destroy" ><strong>AI_A2A_GCI:Destroy()</strong></a></h2>
-</div>
-    
-<p>Synchronous Event Trigger for Event Destroy.</p>
-
-<div id= "#Functions##Destroy" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).Engage" ><strong>AI_A2A_GCI:Engage()</strong></a></h2>
-</div>
-    
-<p>Synchronous Event Trigger for Event Engage.</p>
-
-<div id= "#Functions##Engage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).EngageRoute" ><strong>AI_A2A_GCI:EngageRoute()</strong></a></h2>
-</div>
-    
-<p>Synchronous Event Trigger for Event EngageRoute.</p>
-
-<div id= "#Functions##EngageRoute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).Fired" ><strong>AI_A2A_GCI:Fired()</strong></a></h2>
-</div>
-    
-<p>Synchronous Event Trigger for Event Fired.</p>
-
-<div id= "#Functions##Fired" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).New" ><strong>AI_A2A_GCI:New(AI_Air, AIGroup, EngageMinSpeed, EngageMaxSpeed, EngageFloorAltitude, EngageCeilingAltitude, EngageAltType)</strong></a></h2>
-</div>
-    
-<p>Creates a new AI_AIR_ENGAGE object</p>
-
-<div id= "#Functions##New" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="AI.AI_Air.html##(AI_AIR)">AI.AI_Air#AI_AIR</a>
-            <strong><strong>AI_Air</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The AI_AIR FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The AI group.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Speed)">DCS#Speed</a>
-            <strong><strong>EngageMinSpeed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional, default = 50% of max speed) The minimum speed of the <a href="Wrapper.Group.html">Wrapper.Group</a> in km/h when engaging a target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Speed)">DCS#Speed</a>
-            <strong><strong>EngageMaxSpeed</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional, default = 75% of max speed) The maximum speed of the <a href="Wrapper.Group.html">Wrapper.Group</a> in km/h when engaging a target.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Altitude)">DCS#Altitude</a>
-            <strong><strong>EngageFloorAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional, default = 1000m ) The lowest altitude in meters where to execute the engagement.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(Altitude)">DCS#Altitude</a>
-            <strong><strong>EngageCeilingAltitude</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional, default = 1500m ) The highest altitude in meters where to execute the engagement.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="DCS.html##(AltitudeType)">DCS#AltitudeType</a>
-            <strong><strong>EngageAltType</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The altitude type ("RADIO"=="AGL", "BARO"=="ASL"). Defaults to "RADIO".</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p><a href="##(AI_AIR_ENGAGE)">#AI_AIR_ENGAGE</a>:</p>
-      </div>
-      <div class="w3-half">
-        
-
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnAfterAbort" ><strong>AI_A2A_GCI:OnAfterAbort(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event Abort.</p>
-
-<div id= "#Functions##OnAfterAbort" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnAfterAccomplish" ><strong>AI_A2A_GCI:OnAfterAccomplish(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event Accomplish.</p>
-
-<div id= "#Functions##OnAfterAccomplish" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnAfterDestroy" ><strong>AI_A2A_GCI:OnAfterDestroy(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event Destroy.</p>
-
-<div id= "#Functions##OnAfterDestroy" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnAfterEngage" ><strong>AI_A2A_GCI:OnAfterEngage(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event Engage.</p>
-
-<div id= "#Functions##OnAfterEngage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnAfterEngageRoute" ><strong>AI_A2A_GCI:OnAfterEngageRoute(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event EngageRoute.</p>
-
-<div id= "#Functions##OnAfterEngageRoute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnAfterFired" ><strong>AI_A2A_GCI:OnAfterFired(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnAfter Transition Handler for Event Fired.</p>
-
-<div id= "#Functions##OnAfterFired" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnBeforeAbort" ><strong>AI_A2A_GCI:OnBeforeAbort(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnBefore Transition Handler for Event Abort.</p>
-
-<div id= "#Functions##OnBeforeAbort" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnBeforeAccomplish" ><strong>AI_A2A_GCI:OnBeforeAccomplish(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnBefore Transition Handler for Event Accomplish.</p>
-
-<div id= "#Functions##OnBeforeAccomplish" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnBeforeDestroy" ><strong>AI_A2A_GCI:OnBeforeDestroy(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnBefore Transition Handler for Event Destroy.</p>
-
-<div id= "#Functions##OnBeforeDestroy" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnBeforeEngage" ><strong>AI_A2A_GCI:OnBeforeEngage(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnBefore Transition Handler for Event Engage.</p>
-
-<div id= "#Functions##OnBeforeEngage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnBeforeEngageRoute" ><strong>AI_A2A_GCI:OnBeforeEngageRoute(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnBefore Transition Handler for Event EngageRoute.</p>
-
-<div id= "#Functions##OnBeforeEngageRoute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnBeforeFired" ><strong>AI_A2A_GCI:OnBeforeFired(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnBefore Transition Handler for Event Fired.</p>
-
-<div id= "#Functions##OnBeforeFired" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnEnterEngaging" ><strong>AI_A2A_GCI:OnEnterEngaging(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnEnter Transition Handler for State Engaging.</p>
-
-<div id= "#Functions##OnEnterEngaging" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnEventDead" ><strong>AI_A2A_GCI:OnEventDead(EventData)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param #AI_AIR_ENGAGE self
- @param Core.Event#EVENTDATA EventData</p>
-
-<div id= "#Functions##OnEventDead" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>EventData</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).OnLeaveEngaging" ><strong>AI_A2A_GCI:OnLeaveEngaging(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>OnLeave Transition Handler for State Engaging.</p>
-
-<div id= "#Functions##OnLeaveEngaging" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-    <h2><strong>Return value:</strong></h2>
-    <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#boolean:</p>
-      </div>
-      <div class="w3-half">
-        
-<p>Return false to cancel Transition.</p>
-
-      </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).Resume" ><strong>AI_A2A_GCI.Resume(AIEngage, Fsm)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param Wrapper.Group#GROUP AIEngage</p>
-
-<div id= "#Functions##Resume" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>AIEngage</strong></strong>
+            <strong><strong>p3</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -3860,238 +1959,7 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>Fsm</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).__Abort" ><strong>AI_A2A_GCI:__Abort(Delay)</strong></a></h2>
-</div>
-    
-<p>Asynchronous Event Trigger for Event Abort.</p>
-
-<div id= "#Functions##__Abort" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The delay in seconds.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).__Accomplish" ><strong>AI_A2A_GCI:__Accomplish(Delay)</strong></a></h2>
-</div>
-    
-<p>Asynchronous Event Trigger for Event Accomplish.</p>
-
-<div id= "#Functions##__Accomplish" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The delay in seconds.  </p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).__Destroy" ><strong>AI_A2A_GCI:__Destroy(Delay)</strong></a></h2>
-</div>
-    
-<p>Asynchronous Event Trigger for Event Destroy.</p>
-
-<div id= "#Functions##__Destroy" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The delay in seconds.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).__Engage" ><strong>AI_A2A_GCI:__Engage(Delay)</strong></a></h2>
-</div>
-    
-<p>Asynchronous Event Trigger for Event Engage.</p>
-
-<div id= "#Functions##__Engage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The delay in seconds.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).__EngageRoute" ><strong>AI_A2A_GCI:__EngageRoute(Delay)</strong></a></h2>
-</div>
-    
-<p>Asynchronous Event Trigger for Event EngageRoute.</p>
-
-<div id= "#Functions##__EngageRoute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The delay in seconds.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).__Fired" ><strong>AI_A2A_GCI:__Fired(Delay)</strong></a></h2>
-</div>
-    
-<p>Asynchronous Event Trigger for Event Fired.</p>
-
-<div id= "#Functions##__Fired" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #number
-            <strong><strong>Delay</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The delay in seconds.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).___Engage" ><strong>AI_A2A_GCI.___Engage(AIGroup, Fsm, AttackSetUnit)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param Wrapper.Group#GROUP AIControllable</p>
-
-<div id= "#Functions##___Engage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>AIGroup</strong></strong>
+            <strong><strong>p4</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -4101,7 +1969,7 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>Fsm</strong></strong>
+            <strong><strong>p5</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -4111,40 +1979,7 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>AttackSetUnit</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).___EngageRoute" ><strong>AI_A2A_GCI.___EngageRoute(AIGroup, Fsm, AttackSetUnit)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param Wrapper.Group#GROUP AIControllable</p>
-
-<div id= "#Functions##___EngageRoute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>AIGroup</strong></strong>
+            <strong><strong>p6</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -4154,7 +1989,7 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>Fsm</strong></strong>
+            <strong><strong>p7</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -4164,522 +1999,11 @@ Therefore, this class is considered to be deprecated</p>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-            <strong><strong>AttackSetUnit</strong></strong>
+            <strong><strong>p8</strong></strong>
             </p>
           </div>
           <div class="w3-half">
               <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterAbort" ><strong>AI_A2A_GCI:onafterAbort(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>onafter event handler for Abort event.</p>
-
-<div id= "#Functions##onafterAbort" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The AI Group managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterAccomplish" ><strong>AI_A2A_GCI:onafterAccomplish(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param #AI_AIR_ENGAGE self
- @param Wrapper.Group#GROUP AIGroup The Group Object managed by the FSM.
- @param #string From The From State string.
- @param #string Event The Event string.
- @param #string To The To State string.</p>
-
-<div id= "#Functions##onafterAccomplish" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterDestroy" ><strong>AI_A2A_GCI:onafterDestroy(AIGroup, From, Event, To, EventData)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param #AI_AIR_ENGAGE self
- @param Wrapper.Group#GROUP AIGroup The Group Object managed by the FSM.
- @param #string From The From State string.
- @param #string Event The Event string.
- @param #string To The To State string.
- @param Core.Event#EVENTDATA EventData</p>
-
-<div id= "#Functions##onafterDestroy" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>EventData</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterEngage" ><strong>AI_A2A_GCI:onafterEngage(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>onafter event handler for Engage event.</p>
-
-<div id= "#Functions##onafterEngage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The AI Group managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterEngageRoute" ><strong>AI_A2A_GCI:onafterEngageRoute(DefenderGroup, From, Event, To, AttackSetUnit)</strong></a></h2>
-</div>
-    
-
-
-    
-<p> @param #AI_AIR_ENGAGE self
- @param Wrapper.Group#GROUP DefenderGroup The GroupGroup managed by the FSM.
- @param #string From The From State string.
- @param #string Event The Event string.
- @param #string To The To State string.
- @param Core.Set#SET_UNIT AttackSetUnit Unit set to be attacked.</p>
-
-<div id= "#Functions##onafterEngageRoute" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>DefenderGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-            <strong><strong>AttackSetUnit</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onafterStart" ><strong>AI_A2A_GCI:onafterStart(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>onafter event handler for Start event.</p>
-
-<div id= "#Functions##onafterStart" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The AI group managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
-          </div>
-        </div>
-</div>
-
-</div>
-</div>
-
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-<div class="w3-theme-l2">
-<h2><a id="#(AI_A2A_GCI).onbeforeEngage" ><strong>AI_A2A_GCI:onbeforeEngage(AIGroup, From, Event, To)</strong></a></h2>
-</div>
-    
-<p>onbefore event handler for Engage event.</p>
-
-<div id= "#Functions##onbeforeEngage" class="w3-show w3-white">
-  <div class="w3-container w3-white" id="functiontype">
-   <h2><strong>Defined in:</strong></h2>
-   <div class="w3-margin-left">
-<p><a href="AI.AI_Air_Engage.html##(AI_AIR_ENGAGE)">AI.AI_Air_Engage#AI_AIR_ENGAGE</a></p>
-</div>
-    <h2><strong>Parameters:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
-            <strong><strong>AIGroup</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The group Object managed by the FSM.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>From</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The From State string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>Event</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The Event string.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>To</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>The To State string.</p>
-
           </div>
         </div>
 </div>
@@ -4693,7 +2017,7 @@ Therefore, this class is considered to be deprecated</p>
 </div>
 <script>
 function myLoadFunction() {
-    document.getElementById("myHeader").style.backgroundImage = "url('../Images/AI_Ground_Control_Intercept.JPG')";
+    document.getElementById("myHeader").style.backgroundImage = "url('../Images/')";
 }
 </script>
 
