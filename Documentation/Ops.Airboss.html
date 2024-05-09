@@ -3043,7 +3043,13 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind_old">AIRBOSS:GetHeadingIntoWind_old(magnetic, coord)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind_new">AIRBOSS:GetHeadingIntoWind_new(vdeck, magnetic, coord)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get true (or magnetic) heading of carrier into the wind.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).GetHeadingIntoWind_old">AIRBOSS:GetHeadingIntoWind_old(vdeck, magnetic, coord)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
 </td>
@@ -3646,6 +3652,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetInitialMaxAlt">AIRBOSS:SetInitialMaxAlt(MaxAltitude)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set max altitude to register flights in the initial zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).SetIntoWindLegacy">AIRBOSS:SetIntoWindLegacy(SwitchOn)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set if old into wind calculation is used when carrier turns into the wind for a recovery.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5608,6 +5620,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).initialmaxalt">AIRBOSS.initialmaxalt</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Max altitude in meters to register in the inital zone.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).intowindold">AIRBOSS.intowindold</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, use old into wind calculation.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -10270,6 +10288,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).intowindold" ><strong>AIRBOSS.intowindold</strong></a>
+    
+<p>If true, use old into wind calculation.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
 <a id="#(AIRBOSS).landingcoord" ><strong>AIRBOSS.landingcoord</strong></a>
     
@@ -11788,8 +11817,7 @@ The true bearing can be obtained by setting the <em>TrueNorth</em> parameter to 
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
 
     
-<p>This accounts for the angled runway.
-Implementation based on <a href="https://magwo.github.io/carrier-cruise/">Mags &amp; Bambi</a>.</p>
+<p>This accounts for the angled runway.</p>
 
 <div id= "#Functions##GetHeadingIntoWind" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -11864,7 +11892,89 @@ Implementation based on <a href="https://magwo.github.io/carrier-cruise/">Mags &
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(AIRBOSS).GetHeadingIntoWind_old" ><strong>AIRBOSS:GetHeadingIntoWind_old(magnetic, coord)</strong></a></h2>
+<h2><a id="#(AIRBOSS).GetHeadingIntoWind_new" ><strong>AIRBOSS:GetHeadingIntoWind_new(vdeck, magnetic, coord)</strong></a></h2>
+</div>
+    
+<p>Get true (or magnetic) heading of carrier into the wind.</p>
+
+    
+<p>This accounts for the angled runway.
+Implementation based on <a href="https://magwo.github.io/carrier-cruise/">Mags &amp; Bambi</a>.</p>
+
+<div id= "#Functions##GetHeadingIntoWind_new" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>vdeck</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Desired wind velocity over deck in knots.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>magnetic</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true, calculate magnetic heading. By default true heading is returned.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>coord</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Coordinate from which heading is calculated. Default is current carrier position.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Carrier heading in degrees.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Carrier speed in knots to reach desired wind speed on deck.</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).GetHeadingIntoWind_old" ><strong>AIRBOSS:GetHeadingIntoWind_old(vdeck, magnetic, coord)</strong></a></h2>
 </div>
     
 <p>Get true (or magnetic) heading of carrier into the wind.</p>
@@ -11879,6 +11989,19 @@ Implementation based on <a href="https://magwo.github.io/carrier-cruise/">Mags &
 <p>AIRBOSS</p>
 </div>
     <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>vdeck</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Desired wind velocity over deck in knots.</p>
+
+          </div>
+        </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
@@ -12133,7 +12256,7 @@ Implementation based on <a href="https://magwo.github.io/carrier-cruise/">Mags &
           </div>
           <div class="w3-half">
               
-<p>Altitude ASL in meters. Default 15 m.</p>
+<p>Altitude ASL in meters. Default 18 m.</p>
 
           </div>
         </div>
@@ -15297,6 +15420,50 @@ So best stick to the defaults up to 30 degrees.</p>
           <div class="w3-half">
               
 <p>Max altitude in feet. Default 1300 ft.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(AIRBOSS)">#AIRBOSS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS).SetIntoWindLegacy" ><strong>AIRBOSS:SetIntoWindLegacy(SwitchOn)</strong></a></h2>
+</div>
+    
+<p>Set if old into wind calculation is used when carrier turns into the wind for a recovery.</p>
+
+<div id= "#Functions##SetIntoWindLegacy" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>SwitchOn</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If <code>true</code> or <code>nil</code>, use old into wind calculation.</p>
 
           </div>
         </div>
@@ -30491,6 +30658,17 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(AIRBOSS).intowindold" ><strong>AIRBOSS.intowindold</strong></a>
+    
+<p>If true, use old into wind calculation.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
 <a id="#(AIRBOSS).landingcoord" ><strong>AIRBOSS.landingcoord</strong></a>
     
@@ -33585,6 +33763,17 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <a id="#(AIRBOSS).initialmaxalt" ><strong>AIRBOSS.initialmaxalt</strong></a>
     
 <p>Max altitude in meters to register in the inital zone.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(AIRBOSS).intowindold" ><strong>AIRBOSS.intowindold</strong></a>
+    
+<p>If true, use old into wind calculation.</p>
 
 </div>
 
@@ -40693,6 +40882,9 @@ When moose is loading dynamically (for moose class development), tracing is swit
     
 
 
+    
+<p> Set case of f</p>
+
 </div>
 
 </div>   
@@ -40756,6 +40948,20 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
+<a id="#(AIRBOSS.PlayerData).flag" ><strong>AIRBOSS.PlayerData.flag</strong></a>
+    
+
+
+    
+<p> Decrease stack/flag. Human player needs to take care himself.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
 <a id="#(AIRBOSS.PlayerData).grade" ><strong>AIRBOSS.PlayerData.grade</strong></a>
     
 
@@ -40773,17 +40979,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(AIRBOSS.PlayerData).groove" ><strong>AIRBOSS.PlayerData.groove</strong></a>
     
 <p>Data table at each position in the groove. Elements are of type <a href="##(AIRBOSS).GrooveData">AIRBOSS.GrooveData</a>.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(AIRBOSS.PlayerData).holding" ><strong>AIRBOSS.PlayerData.holding</strong></a>
-    
-
 
 </div>
 
@@ -40920,9 +41115,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
     
 
 
-    
-<p> Make player section lead if he was not before.</p>
-
 </div>
 
 </div>   
@@ -40944,6 +41136,9 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(AIRBOSS.PlayerData).stable" ><strong>AIRBOSS.PlayerData.stable</strong></a>
     
 
+
+    
+<p> Set Stable Hover</p>
 
 </div>
 
