@@ -1900,11 +1900,40 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
      my_ctld.nobuildmenu = false -- if set to true effectively enforces to have engineers build/repair stuff for you.
      my_ctld.RadioSound = "beacon.ogg" -- -- this sound will be hearable if you tune in the beacon frequency. Add the sound file to your miz.
      my_ctld.RadioSoundFC3 = "beacon.ogg" -- this sound will be hearable by FC3 users (actually all UHF radios); change to something like "beaconsilent.ogg" and add the sound file to your miz if you don't want to annoy FC3 pilots.
+     my_ctld.enableChinhookGCLoading = true -- this will effectively suppress the crate load and drop menus for CTLD for the Chinhook
 </code></pre>
 
-<h2>2.1 User functions</h2>
+<h2>2.1 CH-47 Chinhook support</h2>
 
-<h3>2.1.1 Adjust or add chopper unit-type capabilities</h3>
+<p>The Chinhook comes with the option to use the ground crew menu to load and unload cargo into the Helicopter itself for better immersion. As well, it can sling-load cargo from ground. The cargo you can actually <strong>create</strong>
+from this menu is limited to contain items from the airbase or FARP's resources warehouse and can take a number of shapes (static shapes in the category of cargo) independent of their contents. If you unload this
+kind of cargo with the ground crew, the contents will be "absorbed" into the airbase or FARP you landed at, and the cargo static will be removed after ca 2 mins. </p>
+
+<h2>2.1.1 Moose CTLD created crate cargo</h2>
+
+<p>Given the correct shape, Moose created cargo can be either loaded with the ground crew or via the F10 CTLD menu. <strong>It is strongly recommend to either use the ground crew or CTLD to load/unload cargo</strong>. Mix and match will not work here.
+Static shapes loadable <em>into</em> the Chinhook are at the time of writing:</p>
+
+<pre><code> * Ammo crate (type "ammo_cargo")
+ * M117 bomb crate (type name "m117_cargo")
+ * Dual shell fuel barrels (type name "barrels")
+ * UH-1H net (type name "uh1h_cargo")
+</code></pre>
+
+<p>All other kinds of cargo can be sling-loaded.</p>
+
+<h2>2.1.2 Recommended settings</h2>
+
+<pre><code>     my_ctld.basetype = "ammo_cargo"
+     my_ctld.forcehoverload = false -- no hover autoload, leads to cargo complications with ground crew created cargo items
+     my_ctld.pilotmustopendoors = true -- crew must open back loading door 50% (horizontal) or more
+     my_ctld.enableslingload = true -- will set cargo items as sling-loadable
+     my_ctld.enableChinhookGCLoading = true -- will effectively suppress the crate load and drop menus for CTLD for the Chinhook
+</code></pre>
+
+<h2>2.2 User functions</h2>
+
+<h3>2.2.1 Adjust or add chopper unit-type capabilities</h3>
 
 <p>Use this function to adjust what a heli type can or cannot do:</p>
 
@@ -1929,9 +1958,13 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
    ["MH-60R"] = {type="MH-60R", crates=true, troops=true, cratelimit = 2, trooplimit = 20, length = 16, cargoweightlimit = 3500}, -- 4t cargo, 20 (unsec) seats
    ["SH-60B"] = {type="SH-60B", crates=true, troops=true, cratelimit = 2, trooplimit = 20, length = 16, cargoweightlimit = 3500}, -- 4t cargo, 20 (unsec) seats
    ["Bronco-OV-10A"] = {type="Bronco-OV-10A", crates= false, troops=true, cratelimit = 0, trooplimit = 5, length = 13, cargoweightlimit = 1450},
+   ["Bronco-OV-10A"] = {type="Bronco-OV-10A", crates= false, troops=true, cratelimit = 0, trooplimit = 5, length = 13, cargoweightlimit = 1450},
+   ["OH-6A"] = {type="OH-6A", crates=false, troops=true, cratelimit = 0, trooplimit = 4, length = 7, cargoweightlimit = 550},
+   ["OH-58D"] = {type="OH58D", crates=false, troops=false, cratelimit = 0, trooplimit = 0, length = 14, cargoweightlimit = 400},
+   ["CH-47Fbl1"] = {type="CH-47Fbl1", crates=true, troops=true, cratelimit = 4, trooplimit = 31, length = 20, cargoweightlimit = 8000},
 </code></pre>
 
-<h3>2.1.2 Activate and deactivate zones</h3>
+<h3>2.2.2 Activate and deactivate zones</h3>
 
 <p>Activate a zone:</p>
 
@@ -1945,7 +1978,7 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
    my_ctld:DeactivateZone(Name,CTLD.CargoZoneType.DROP)
 </code></pre>
 
-<h2>2.1.3 Limit and manage available resources</h2>
+<h2>2.2.3 Limit and manage available resources</h2>
 
 <p> When adding generic cargo types, you can effectively limit how many units can be dropped/build by the players, e.g.</p>
 
@@ -2692,7 +2725,13 @@ for FARP vehicles, so -- services are goin to work (e.g. for the blue side: an u
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).IsHercules">CTLD:IsHercules(Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>(Internal) Function to check if a unit is a Hercules C-130.</p>
+<p>(Internal) Function to check if a unit is a Hercules C-130 or a Bronco.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).IsHook">CTLD:IsHook(Unit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Function to check if a unit is a CH-47</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2798,7 +2837,7 @@ for FARP vehicles, so -- services are goin to work (e.g. for the blue side: an u
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterTroopsRTB">CTLD:OnAfterTroopsRTB(From, Event, To, Group, Unit, ZoneName, ZoneObject)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).OnAfterTroopsRTB">CTLD:OnAfterTroopsRTB(From, Event, To, Group, Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>FSM Function OnAfterTroopsRTB.</p>
 </td>
@@ -3435,6 +3474,12 @@ for FARP vehicles, so -- services are goin to work (e.g. for the blue side: an u
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).droppedbeacontimeout">CTLD.droppedbeacontimeout</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).enableChinhookGCLoading">CTLD.enableChinhookGCLoading</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -5121,6 +5166,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetStaticResourceMap">CTLD_CARGO:GetStaticResourceMap()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get Resource Map information table</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetStock">CTLD_CARGO:GetStock()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get Stock.</p>
@@ -5235,9 +5286,21 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).ResourceMap">CTLD_CARGO.ResourceMap</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Resource Map information table if it has been set for static cargo items.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).SetHasMoved">CTLD_CARGO:SetHasMoved(moved)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set HasMoved.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).SetStaticResourceMap">CTLD_CARGO:SetStaticResourceMap(ResourceMap)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Add Resource Map information table</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -7908,7 +7971,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -7933,10 +7996,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
+
+    
+<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -7980,7 +8046,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -8080,10 +8146,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -8113,13 +8182,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -8383,6 +8449,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).droppedbeacontimeout" ><strong>CTLD.droppedbeacontimeout</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CTLD).enableChinhookGCLoading" ><strong>CTLD.enableChinhookGCLoading</strong></a>
+    
+
+
+    
+<p> Chinhook</p>
 
 </div>
 
@@ -9491,6 +9571,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD_CARGO)">#CTLD_CARGO</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>CargoObject</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -10663,9 +10754,51 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <h2><a id="#(CTLD).IsHercules" ><strong>CTLD:IsHercules(Unit)</strong></a></h2>
 </div>
     
-<p>(Internal) Function to check if a unit is a Hercules C-130.</p>
+<p>(Internal) Function to check if a unit is a Hercules C-130 or a Bronco.</p>
 
 <div id= "#Functions##IsHercules" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).IsHook" ><strong>CTLD:IsHook(Unit)</strong></a></h2>
+</div>
+    
+<p>(Internal) Function to check if a unit is a CH-47</p>
+
+<div id= "#Functions##IsHook" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -12053,7 +12186,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD).OnAfterTroopsRTB" ><strong>CTLD:OnAfterTroopsRTB(From, Event, To, Group, Unit, ZoneName, ZoneObject)</strong></a></h2>
+<h2><a id="#(CTLD).OnAfterTroopsRTB" ><strong>CTLD:OnAfterTroopsRTB(From, Event, To, Group, Unit)</strong></a></h2>
 </div>
     
 <p>FSM Function OnAfterTroopsRTB.</p>
@@ -12127,32 +12260,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <div class="w3-half">
               
 <p>Unit Object.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #string
-            <strong><strong>ZoneName</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Name of the Zone where the Troops have been RTB'd.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a>
-            <strong><strong>ZoneObject</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>of the Zone where the Troops have been RTB'd.</p>
 
           </div>
         </div>
@@ -13218,7 +13325,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a>
+                <a href="Core.Zone.html##(ZONE_Radius)">Core.Zone#ZONE_Radius</a>
             <strong><strong>ZoneObject</strong></strong>
             </p>
           </div>
@@ -14786,7 +14893,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         </div>
         <div class="w3-half">
           
-<p>Table of crates</p>
+<p>Crates Table of crates</p>
 
         </div>
         <div class="w3-half">
@@ -14795,6 +14902,22 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-half">
           
 <p>Number Number of crates found</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>CratesGC Table of crates possibly loaded by GC</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>NumberGC Number of crates possibly loaded by GC</p>
 
         </div>
     </div>
@@ -18243,7 +18366,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
-                <a href="Core.Zone.html##(ZONE_RADIUS)">Core.Zone#ZONE_RADIUS</a>
+                <a href="Core.Zone.html##(ZONE_Radius)">Core.Zone#ZONE_Radius</a>
             <strong><strong>ZoneObject</strong></strong>
             </p>
           </div>
@@ -18369,7 +18492,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -18394,10 +18517,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
+
+    
+<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -18441,7 +18567,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -18541,10 +18667,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -18574,13 +18703,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -18844,6 +18970,20 @@ However, if you create a new folder inside the miz file, which contains the soun
 <a id="#(CTLD).droppedbeacontimeout" ><strong>CTLD.droppedbeacontimeout</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CTLD).enableChinhookGCLoading" ><strong>CTLD.enableChinhookGCLoading</strong></a>
+    
+
+
+    
+<p> Chinhook</p>
 
 </div>
 
@@ -20786,7 +20926,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).DroppedTroops" ><strong>CTLD.DroppedTroops</strong></a>
     
 
@@ -20811,10 +20951,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
 
+
+    
+<p>holds #CTLD_ENGINEERING objects</p>
 
 </div>
 
@@ -20858,7 +21001,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeUHFFrequencies" ><strong>CTLD.FreeUHFFrequencies</strong></a>
     
 
@@ -20958,10 +21101,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -20991,13 +21137,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -21261,6 +21404,20 @@ However, if you create a new folder inside the miz file, which contains the soun
 <a id="#(CTLD).droppedbeacontimeout" ><strong>CTLD.droppedbeacontimeout</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(CTLD).enableChinhookGCLoading" ><strong>CTLD.enableChinhookGCLoading</strong></a>
+    
+
+
+    
+<p> Chinhook</p>
 
 </div>
 
@@ -25964,6 +26121,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(CTLD_CARGO).ResourceMap" ><strong>CTLD_CARGO.ResourceMap</strong></a>
+    
+<p>Resource Map information table if it has been set for static cargo items.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(CTLD_CARGO).Stock" ><strong>CTLD_CARGO.Stock</strong></a>
     
@@ -26358,6 +26526,36 @@ When moose is loading dynamically (for moose class development), tracing is swit
       <div class="w3-half">
         
 <p>Positionable</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).GetStaticResourceMap" ><strong>CTLD_CARGO:GetStaticResourceMap()</strong></a></h2>
+</div>
+    
+<p>Get Resource Map information table</p>
+
+<div id= "#Functions##GetStaticResourceMap" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>ResourceMap</p>
 
       </div>
     </div>
@@ -26887,6 +27085,48 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).SetStaticResourceMap" ><strong>CTLD_CARGO:SetStaticResourceMap(ResourceMap)</strong></a></h2>
+</div>
+    
+<p>Add Resource Map information table</p>
+
+<div id= "#Functions##SetStaticResourceMap" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>ResourceMap</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD_CARGO)">#CTLD_CARGO</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD_CARGO).SetStock" ><strong>CTLD_CARGO:SetStock(Number)</strong></a></h2>
 </div>
     
@@ -27172,6 +27412,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD_CARGO).Positionable" ><strong>CTLD_CARGO.Positionable</strong></a>
     
 <p>Representation of cargo in the mission.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD_CARGO).ResourceMap" ><strong>CTLD_CARGO.ResourceMap</strong></a>
+    
+<p>Resource Map information table if it has been set for static cargo items.</p>
 
 </div>
 
@@ -30798,17 +31049,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #string
 <a id="#(CTLD_ENGINEERING).lid" ><strong>CTLD_ENGINEERING.lid</strong></a>
     
@@ -31453,17 +31693,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
     #string
 <a id="#(CTLD_ENGINEERING).Version" ><strong>CTLD_ENGINEERING.Version</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
-<a id="#(CTLD_ENGINEERING).currwpt" ><strong>CTLD_ENGINEERING.currwpt</strong></a>
     
 
 
