@@ -1870,6 +1870,7 @@ Create a late-activated single infantry unit as template in the mission editor a
   mycsar.csarUsePara = false -- If set to true, will use the LandingAfterEjection Event instead of Ejection. Requires mycsar.enableForAI to be set to true. --shagrat
   mycsar.wetfeettemplate = "man in floating thingy" -- if you use a mod to have a pilot in a rescue float, put the template name in here for wet feet spawns. Note: in conjunction with csarUsePara this might create dual ejected pilots in edge cases.
   mycsar.allowbronco = false  -- set to true to use the Bronco mod as a CSAR plane
+  mycsar.CreateRadioBeacons = true -- set to false to disallow creating ADF radio beacons.
 </code></pre>
 
 <h2>3. Results</h2>
@@ -2197,7 +2198,7 @@ Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).SpawnCASEVAC">CSAR:SpawnCASEVAC(Point, Coalition, Description, addBeacon, Nomessage, Unitname, Typename, Forcedesc)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).SpawnCASEVAC">CSAR:SpawnCASEVAC(Point, Coalition, Description, Nomessage, Unitname, Typename, Forcedesc)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Function to add a CSAR object into the scene at a zone coordinate.</p>
 </td>
@@ -2419,7 +2420,7 @@ Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._RefreshRadioBeacons">CSAR:_RefreshRadioBeacons(_args)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR)._RefreshRadioBeacons">CSAR:_RefreshRadioBeacons()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Helper function to (re-)add beacon to downed pilot.</p>
 </td>
@@ -2708,12 +2709,6 @@ Dropped troop noMessage and forcedesc parameters aren't saved.      </p>
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).inTransitGroups">CSAR.inTransitGroups</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CSAR).index">CSAR.index</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -4534,7 +4529,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+    
 <a id="#(CSAR).coordinate" ><strong>CSAR.coordinate</strong></a>
     
 
@@ -4651,8 +4646,22 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -4778,17 +4787,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -6237,7 +6235,7 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR).SpawnCASEVAC" ><strong>CSAR:SpawnCASEVAC(Point, Coalition, Description, addBeacon, Nomessage, Unitname, Typename, Forcedesc)</strong></a></h2>
+<h2><a id="#(CSAR).SpawnCASEVAC" ><strong>CSAR:SpawnCASEVAC(Point, Coalition, Description, Nomessage, Unitname, Typename, Forcedesc)</strong></a></h2>
 </div>
     
 <p>Function to add a CSAR object into the scene at a zone coordinate.</p>
@@ -6286,19 +6284,6 @@ callsigns from playername or group name.</p>
           <div class="w3-half">
               
 <p>(optional) Description.</p>
-
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #boolean
-            <strong><strong>addBeacon</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>(optional) yes or no.</p>
 
           </div>
         </div>
@@ -6580,6 +6565,17 @@ callsigns from playername or group name.</p>
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CSAR)">#CSAR</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -8247,7 +8243,7 @@ callsigns from playername or group name.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CSAR)._RefreshRadioBeacons" ><strong>CSAR:_RefreshRadioBeacons(_args)</strong></a></h2>
+<h2><a id="#(CSAR)._RefreshRadioBeacons" ><strong>CSAR:_RefreshRadioBeacons()</strong></a></h2>
 </div>
     
 <p>(Internal) Helper function to (re-)add beacon to downed pilot.</p>
@@ -8258,20 +8254,17 @@ callsigns from playername or group name.</p>
    <div class="w3-margin-left">
 <p>CSAR</p>
 </div>
-    <h2><strong>Parameter:</strong></h2>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                #table
-            <strong><strong>_args</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              
-<p>Arguments</p>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CSAR)">#CSAR</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
-          </div>
-        </div>
+      </div>
+    </div>
 </div>
 
 </div>
@@ -10677,7 +10670,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+    
 <a id="#(CSAR).coordinate" ><strong>CSAR.coordinate</strong></a>
     
 
@@ -10794,8 +10787,22 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -10921,17 +10928,6 @@ callsigns from playername or group name.</p>
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
@@ -13216,7 +13212,7 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+    
 <a id="#(CSAR).coordinate" ><strong>CSAR.coordinate</strong></a>
     
 
@@ -13333,8 +13329,22 @@ callsigns from playername or group name.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CSAR).downedPilots" ><strong>CSAR.downedPilots</strong></a>
+    
+
+
+    
+<p> Replacement woundedGroups</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CSAR).downedpilotcounter" ><strong>CSAR.downedpilotcounter</strong></a>
     
 
 
@@ -13460,17 +13470,6 @@ callsigns from playername or group name.</p>
 
     
 <p> contain a table for each SAR with all units he has with the original names</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CSAR).index" ><strong>CSAR.index</strong></a>
-    
-
 
 </div>
 
