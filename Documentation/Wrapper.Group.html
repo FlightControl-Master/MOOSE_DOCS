@@ -2111,9 +2111,9 @@ Use the following Zone validation methods on the group:</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(GROUP).GetCustomCallSign">GROUP:GetCustomCallSign(ShortCallsign, Keepnumber, CallsignTranslations)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(GROUP).GetCustomCallSign">GROUP:GetCustomCallSign(ShortCallsign, Keepnumber, CallsignTranslations, CustomFunction, ...)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
+<p>Get TTS friendly, optionally customized callsign mainly for <strong>player groups</strong>.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6763,10 +6763,14 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(GROUP).GetCustomCallSign" ><strong>GROUP:GetCustomCallSign(ShortCallsign, Keepnumber, CallsignTranslations)</strong></a></h2>
+<h2><a id="#(GROUP).GetCustomCallSign" ><strong>GROUP:GetCustomCallSign(ShortCallsign, Keepnumber, CallsignTranslations, CustomFunction, ...)</strong></a></h2>
 </div>
     
+<p>Get TTS friendly, optionally customized callsign mainly for <strong>player groups</strong>.</p>
 
+    
+<p>A customized callsign is taken from the #GROUP name, after an optional '#' sign, e.g. "Aerial 1-1#Ghostrider" resulting in "Ghostrider 9", or,
+if that isn't available, from the playername, as set in the mission editor main screen under Logbook, after an optional '|' sign (actually, more of a personal call sign), e.g. "Apple|Moose" results in "Moose 9 1". Options see below.</p>
 
 <div id= "#Functions##GetCustomCallSign" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -6778,33 +6782,105 @@ Ship:Destroy( false ) -- Don't generate an event upon destruction.
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #boolean
             <strong><strong>ShortCallsign</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>Return a shortened customized callsign, i.e. "Ghostrider 9" and not "Ghostrider 9 1"</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #boolean
             <strong><strong>Keepnumber</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>(Player only) Return customized callsign, incl optional numbers at the end, e.g. "Aerial 1-1#Ghostrider 109" results in "Ghostrider 109", if you want to e.g. use historical US Navy Callsigns</p>
+
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
           <div class="w3-half">
             <p>
+                #table
             <strong><strong>CallsignTranslations</strong></strong>
             </p>
           </div>
           <div class="w3-half">
-              <p></p>
+              
+<p>(Optional) Table to translate between DCS standard callsigns and bespoke ones. Overrides personal/parsed callsigns if set
+callsigns from playername or group name.</p>
+
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(func)">#func</a>
+            <strong><strong>CustomFunction</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) For player names only(!). If given, this function will return the callsign. Needs to take the groupname and the playername as first arguments.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(arg)">#arg</a>
+            <strong><strong>...</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Comma separated arguments to add to the CustomFunction call after groupname and playername.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Callsign</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>           -- suppose there are three groups with one (client) unit each:
+           -- Slot 1               -- with mission editor callsign Enfield-1
+           -- Slot 2 # Apollo 403  -- with mission editor callsign Enfield-2
+           -- Slot 3 | Apollo      -- with mission editor callsign Enfield-3
+           -- Slot 4 | Apollo      -- with mission editor callsign Devil-4
+           -- and suppose these Custom CAP Flight Callsigns for use with TTS are set
+           mygroup:GetCustomCallSign(true,false,{
+             Devil = 'Bengal',
+             Snake = 'Winder',
+             Colt = 'Camelot',
+             Enfield = 'Victory',
+             Uzi = 'Evil Eye'
+           })
+           -- then GetCustomCallsign will return
+           -- Enfield-1 for Slot 1
+           -- Apollo for Slot 2 or Apollo 403 if Keepnumber is set
+           -- Apollo for Slot 3
+           -- Bengal-4 for Slot 4
+
+           -- Using a custom function (for player units **only**):
+           -- Imagine your playernames are looking like so: "[Squadname] | Cpt Apple" and you only want to have the last word as callsign, i.e. "Apple" here. Then this custom function will return this:
+           local callsign = mygroup:GetCustomCallSign(true,false,nil,function(groupname,playername) return string.match(playername,"([%a]+)$") end)
+</code></pre>
+
 </div>
 
 </div>
