@@ -2282,9 +2282,9 @@ The method <a href="##(CONTROLLABLE).SetTaskWaypoint">CONTROLLABLE.SetTaskWaypoi
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).IsTargetDetected">CONTROLLABLE:IsTargetDetected(DCSObject, self, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CONTROLLABLE).IsTargetDetected">CONTROLLABLE:IsTargetDetected(DCSObject, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Check if a target is detected.</p>
+<p>Check if a DCS object (unit or static) is detected by the controllable.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -7768,14 +7768,16 @@ If <strong>at least one</strong> detection method is specified, only the methods
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CONTROLLABLE).IsTargetDetected" ><strong>CONTROLLABLE:IsTargetDetected(DCSObject, self, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</strong></a></h2>
+<h2><a id="#(CONTROLLABLE).IsTargetDetected" ><strong>CONTROLLABLE:IsTargetDetected(DCSObject, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</strong></a></h2>
 </div>
     
-<p>Check if a target is detected.</p>
+<p>Check if a DCS object (unit or static) is detected by the controllable.</p>
 
     
-<p>The optional parametes specify the detection methods that can be applied.
-If <strong>no</strong> detection method is given, the detection will use <strong>all</strong> the available methods by default.
+<p>Note that after a target is detected it remains "detected" for a certain amount of time, even if the controllable cannot "see" the target any more with it's sensors.
+The optional parametes specify the detection methods that can be applied.</p>
+
+<p>If <strong>no</strong> detection method is given, the detection will use <strong>all</strong> the available methods by default.
 If <strong>at least one</strong> detection method is specified, only the methods set to <em>true</em> will be used.</p>
 
 <div id= "#Functions##IsTargetDetected" class="w3-show w3-white">
@@ -7796,17 +7798,6 @@ If <strong>at least one</strong> detection method is specified, only the methods
               
 <p>The DCS object that is checked.</p>
 
-          </div>
-        </div>
-        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
-          <div class="w3-half">
-            <p>
-                <a href="##(CONTROLLABLE)">#CONTROLLABLE</a>
-            <strong><strong>self</strong></strong>
-            </p>
-          </div>
-          <div class="w3-half">
-              <p></p>
           </div>
         </div>
         <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
@@ -7894,7 +7885,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>True if target is detected.</p>
+<p><code>true</code> if target is detected.</p>
 
         </div>
         <div class="w3-half">
@@ -7902,7 +7893,23 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>True if target is visible by line of sight.</p>
+<p><code>true</code> if target is <em>currently</em> visible by line of sight. Target must be detected (first parameter returns <code>true</code>).</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p><code>true</code> if target type is known. Target must be detected (first parameter returns <code>true</code>).</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p><code>true</code> if distance to target is known. Target must be detected (first parameter returns <code>true</code>).</p>
 
         </div>
         <div class="w3-half">
@@ -7910,23 +7917,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>Mission time when target was detected.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>True if target type is known.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>True if distance to target is known.</p>
+<p>Mission time in seconds when target was last detected. Only present if the target is currently not visible (second parameter returns <code>false</code>) otherwise <code>nil</code> is returned.</p>
 
         </div>
         <div class="w3-half">
@@ -7934,7 +7925,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>Last known position vector of the target.</p>
+<p>Last known position vector of the target. Only present if the target is currently not visible (second parameter returns <code>false</code>) otherwise <code>nil</code> is returned.</p>
 
         </div>
         <div class="w3-half">
@@ -7942,7 +7933,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>Last known velocity vector of the target.</p>
+<p>Last known velocity vector of the target. Only present if the target is currently not visible (second parameter returns <code>false</code>) otherwise <code>nil</code> is returned.</p>
 
         </div>
     </div>
@@ -7960,8 +7951,9 @@ If <strong>at least one</strong> detection method is specified, only the methods
 <p>Check if a certain UNIT is detected by the controllable.</p>
 
     
-<p>The optional parametes specify the detection methods that can be applied.
-If <strong>no</strong> detection method is given, the detection will use <strong>all</strong> the available methods by default.
+<p>The optional parametes specify the detection methods that can be applied.</p>
+
+<p>If <strong>no</strong> detection method is given, the detection will use <strong>all</strong> the available methods by default.
 If <strong>at least one</strong> detection method is specified, only the methods set to <em>true</em> will be used.</p>
 
 <div id= "#Functions##IsUnitDetected" class="w3-show w3-white">
@@ -8069,7 +8061,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>True if target is detected.</p>
+<p><code>true</code> if target is detected.</p>
 
         </div>
         <div class="w3-half">
@@ -8077,7 +8069,23 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>True if target is visible by line of sight.</p>
+<p><code>true</code> if target is <em>currently</em> visible by line of sight. Target must be detected (first parameter returns <code>true</code>).</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p><code>true</code> if target type is known. Target must be detected (first parameter returns <code>true</code>).</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#boolean:</p>
+        </div>
+        <div class="w3-half">
+          
+<p><code>true</code> if distance to target is known. Target must be detected (first parameter returns <code>true</code>).</p>
 
         </div>
         <div class="w3-half">
@@ -8085,23 +8093,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>Mission time when target was detected.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>True if target type is known.</p>
-
-        </div>
-        <div class="w3-half">
-          <p>#boolean:</p>
-        </div>
-        <div class="w3-half">
-          
-<p>True if distance to target is known.</p>
+<p>Mission time in seconds when target was last detected. Only present if the target is currently not visible (second parameter returns <code>false</code>) otherwise <code>nil</code> is returned.</p>
 
         </div>
         <div class="w3-half">
@@ -8109,7 +8101,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>Last known position vector of the target.</p>
+<p>Last known position vector of the target. Only present if the target is currently not visible (second parameter returns <code>false</code>) otherwise <code>nil</code> is returned.</p>
 
         </div>
         <div class="w3-half">
@@ -8117,7 +8109,7 @@ If <strong>at least one</strong> detection method is specified, only the methods
         </div>
         <div class="w3-half">
           
-<p>Last known velocity vector of the target.</p>
+<p>Last known velocity vector of the target. Only present if the target is currently not visible (second parameter returns <code>false</code>) otherwise <code>nil</code> is returned.</p>
 
         </div>
     </div>
