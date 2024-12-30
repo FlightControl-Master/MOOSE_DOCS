@@ -1866,6 +1866,39 @@ UTILS.PrintTableToLog(weapons)
 
 <p>The currently available weapon items are available in the <code>ENUMS.Storage.weapons</code>, e.g. <code>ENUMS.Storage.weapons.bombs.Mk_82Y</code>.</p>
 
+<h1>Persistence</h1>
+
+<p>The contents of the storage can be saved to and read from disk. For this to function, <code>io</code> and <code>lfs</code> need to be desanitized in <code>MissionScripting.lua</code>.</p>
+
+<h2>Save once</h2>
+
+<h3>To save once, e.g. this is sufficient:</h3>
+
+<pre><code> -- Filenames created are the Filename given amended by "_Liquids", "_Aircraft" and "_Weapons" followed by a ".csv". Only Storage NOT set to unlimited will be saved.
+ local Path = "C:\\Users\\UserName\\Saved Games\\DCS\\Missions\\"
+ local Filename = "Batumi"
+ storage:SaveToFile(Path,Filename)
+</code></pre>
+
+<h3>Autosave</h3>
+
+<pre><code> storage:StartAutoSave(Path,Filename,300,true) -- save every 300 secs/5 mins starting in 5 mins, load the existing storage - if any - first if the last parameter is **not** `false`.
+</code></pre>
+
+<h3>Stop Autosave</h3>
+
+<pre><code> storage:StopAutoSave() -- stop the scheduler.
+</code></pre>
+
+<h3>Load back with e.g.</h3>
+
+<pre><code> -- Filenames searched for the Filename given amended by "_Liquids", "_Aircraft" and "_Weapons" followed by a ".csv". Only Storage NOT set to unlimited will be loaded.
+ local Path = "C:\\Users\\UserName\\Saved Games\\DCS\\Missions\\"
+ local Filename = "Batumi"
+ storage:LoadFromFile(Path,Filename)
+</code></pre>
+
+
 
 </div>
 
