@@ -2079,6 +2079,17 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
    end
 </code></pre>
 
+<ul>
+    <li><h2>3.6 OnAfterHelicopterLost</h2></li>
+</ul>
+
+<p>   This function is called when a player has deployed left a unit or crashed/died:</p>
+
+<pre><code>   function my_ctld:OnAfterHelicopterLost(From, Event, To, Unitname, Cargotable)
+     ... your code here ...
+   end  
+</code></pre>
+
 <h2>3.6 OnAfterCratesBuild, OnAfterCratesRepaired</h2>
 
 <p>   This function is called when a player has build a vehicle or FOB:</p>
@@ -3171,6 +3182,12 @@ If you use units build by multiple templates, they will effectively double on lo
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._CleanupTrackedCrates">CTLD:_CleanupTrackedCrates(crateIdsToRemove)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to clean up tracked cargo crates</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._CountStockPlusInHeloPlusAliveGroups">CTLD:_CountStockPlusInHeloPlusAliveGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>User - Count both the stock and groups in the field for available cargo types.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5293,6 +5310,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetRelativeStock">CTLD_CARGO:GetRelativeStock()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get relative Stock.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetStaticResourceMap">CTLD_CARGO:GetStaticResourceMap()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get Resource Map information table</p>
@@ -5308,6 +5331,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetStock">CTLD_CARGO:GetStock()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get Stock.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).GetStock0">CTLD_CARGO:GetStock0()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Get Stock0.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5476,6 +5505,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).Stock">CTLD_CARGO.Stock</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Number of builds available, -1 for unlimited.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD_CARGO).Stock0">CTLD_CARGO.Stock0</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Initial stock, if any given.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -8456,7 +8491,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -8589,10 +8624,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #string
+    
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
+
+    
+<p> Folderpath.</p>
 
 </div>
 
@@ -15729,6 +15767,52 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD)._CountStockPlusInHeloPlusAliveGroups" ><strong>CTLD:_CountStockPlusInHeloPlusAliveGroups()</strong></a></h2>
+</div>
+    
+<p>User - Count both the stock and groups in the field for available cargo types.</p>
+
+    
+<p>Counts only limited cargo items and only troops and vehicle/FOB crates!</p>
+
+<div id= "#Functions##_CountStockPlusInHeloPlusAliveGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Table A table of contents with numbers.</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>     The index is the unique cargo name.
+     Each entry in the returned table contains a table with the following entries:
+     
+     {
+         Stock0 -- number of original stock when the cargo entry was created.
+         Stock -- number of currently available stock.
+         StockR -- relative number of available stock, e.g. 75 (percent).
+         Infield -- number of groups alive in the field of this kind.
+         Inhelo -- number of troops/crates in any helo alive. Can be with decimals &lt; 1 if e.g. you have cargo that need 4 crates, but you have 2 loaded.
+         Sum -- sum is stock + infield + inhelo.
+       }</code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD)._EventHandler" ><strong>CTLD:_EventHandler(EventData)</strong></a></h2>
 </div>
     
@@ -19636,7 +19720,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -19769,10 +19853,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #string
+    
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
+
+    
+<p> Folderpath.</p>
 
 </div>
 
@@ -22116,7 +22203,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -22249,10 +22336,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #string
+    
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
+
+    
+<p> Folderpath.</p>
 
 </div>
 
@@ -27396,6 +27486,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD.UnitTypeCapabilities).length" ><strong>CTLD.UnitTypeCapabilities.length</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD.UnitTypeCapabilities).trooplimit" ><strong>CTLD.UnitTypeCapabilities.trooplimit</strong></a>
     
 <p>Number of troop units transportable.</p>
@@ -27684,6 +27785,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD_CARGO).Stock" ><strong>CTLD_CARGO.Stock</strong></a>
     
 <p>Number of builds available, -1 for unlimited.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD_CARGO).Stock0" ><strong>CTLD_CARGO.Stock0</strong></a>
+    
+<p>Initial stock, if any given.</p>
 
 </div>
 
@@ -28140,6 +28252,36 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).GetRelativeStock" ><strong>CTLD_CARGO:GetRelativeStock()</strong></a></h2>
+</div>
+    
+<p>Get relative Stock.</p>
+
+<div id= "#Functions##GetRelativeStock" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Stock Percentage like 75, or -1 if unlimited.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD_CARGO).GetStaticResourceMap" ><strong>CTLD_CARGO:GetStaticResourceMap()</strong></a></h2>
 </div>
     
@@ -28234,7 +28376,37 @@ When moose is loading dynamically (for moose class development), tracing is swit
       </div>
       <div class="w3-half">
         
-<p>Stock</p>
+<p>Stock or -1 if unlimited.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD_CARGO).GetStock0" ><strong>CTLD_CARGO:GetStock0()</strong></a></h2>
+</div>
+    
+<p>Get Stock0.</p>
+
+<div id= "#Functions##GetStock0" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD_CARGO</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Stock0 or -1 if unlimited.</p>
 
       </div>
     </div>
@@ -29210,6 +29382,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD_CARGO).Stock" ><strong>CTLD_CARGO.Stock</strong></a>
     
 <p>Number of builds available, -1 for unlimited.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD_CARGO).Stock0" ><strong>CTLD_CARGO.Stock0</strong></a>
+    
+<p>Initial stock, if any given.</p>
 
 </div>
 
