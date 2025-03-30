@@ -1957,7 +1957,6 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
    ["MH-60R"] = {type="MH-60R", crates=true, troops=true, cratelimit = 2, trooplimit = 20, length = 16, cargoweightlimit = 3500}, -- 4t cargo, 20 (unsec) seats
    ["SH-60B"] = {type="SH-60B", crates=true, troops=true, cratelimit = 2, trooplimit = 20, length = 16, cargoweightlimit = 3500}, -- 4t cargo, 20 (unsec) seats
    ["Bronco-OV-10A"] = {type="Bronco-OV-10A", crates= false, troops=true, cratelimit = 0, trooplimit = 5, length = 13, cargoweightlimit = 1450},
-   ["Bronco-OV-10A"] = {type="Bronco-OV-10A", crates= false, troops=true, cratelimit = 0, trooplimit = 5, length = 13, cargoweightlimit = 1450},
    ["OH-6A"] = {type="OH-6A", crates=false, troops=true, cratelimit = 0, trooplimit = 4, length = 7, cargoweightlimit = 550},
    ["OH58D"] = {type="OH58D", crates=false, troops=false, cratelimit = 0, trooplimit = 0, length = 14, cargoweightlimit = 400},
    ["CH-47Fbl1"] = {type="CH-47Fbl1", crates=true, troops=true, cratelimit = 4, trooplimit = 31, length = 20, cargoweightlimit = 8000},
@@ -2137,11 +2136,11 @@ Currently limited CTLD_CARGO troops, which are build from <strong>one</strong> t
 
 <h2>4.7 List Inventory</h2>
 
-<p>Lists invetory of available units to drop or build.</p>
+<p>Lists inventory of available units to drop or build.</p>
 
-<h2>5. Support for Hercules mod by Anubis</h2>
+<h2>5. Support for fixed wings</h2>
 
-<p>Basic support for the Hercules mod By Anubis has been build into CTLD - that is you can load/drop/build the same way and for the same objects as 
+<p>Basic support for the Hercules mod By Anubis has been build into CTLD, as well as Bronco and Mosquito - that is you can load/drop/build the same way and for the same objects as 
 the helicopters (main method). 
 To cover objects and troops which can be loaded from the groud crew Rearm/Refuel menu (F8), you need to use <a href="##(CTLD_HERCULES).New">CTLD_HERCULES.New</a>() and link
 this object to your CTLD setup (alternative method). In this case, do <strong>not</strong> use the <code>Hercules_Cargo.lua</code> or <code>Hercules_Cargo_CTLD.lua</code> which are part of the mod 
@@ -2154,14 +2153,14 @@ in your mission!</p>
 
 <p>Enable these options for Hercules support:</p>
 
-<pre><code>         my_ctld.enableHercules = true
-         my_ctld.HercMinAngels = 155 -- for troop/cargo drop via chute in meters, ca 470 ft
-         my_ctld.HercMaxAngels = 2000 -- for troop/cargo drop via chute in meters, ca 6000 ft
-         my_ctld.HercMaxSpeed = 77 -- 77mps or 270kph or 150kn
+<pre><code>         my_ctld.enableFixedWing = true
+         my_ctld.FixedMinAngels = 155 -- for troop/cargo drop via chute in meters, ca 470 ft
+         my_ctld.FixedMaxAngels = 2000 -- for troop/cargo drop via chute in meters, ca 6000 ft
+         my_ctld.FixedMaxSpeed = 77 -- 77mps or 270kph or 150kn
 </code></pre>
 
-<p>Hint: you can <strong>only</strong> airdrop from the Hercules if you are "in parameters", i.e. at or below <code>HercMaxSpeed</code> and in the AGL bracket between
-<code>HercMinAngels</code> and <code>HercMaxAngels</code>!</p>
+<p>Hint: you can <strong>only</strong> airdrop from the Hercules if you are "in parameters", i.e. at or below <code>FixedMaxSpeed</code> and in the AGLFixedMinAngelseen
+<code>FixedMinAngels</code> and <code>FixedMaxAngels</code>!</p>
 
 <p>Also, the following options need to be set to <code>true</code>:</p>
 
@@ -2170,9 +2169,9 @@ in your mission!</p>
 
 <h3>5.2 Integrate Hercules ground crew (F8 Menu) loadable objects (alternative method, use either the above OR this method, NOT both!)</h3>
 
-<p>Integrate to your CTLD instance like so, where <code>my_ctld</code> is a previously created CTLD instance:</p>
+<p>Taking another approach, integrate to your CTLD instance like so, where <code>my_ctld</code> is a previously created CTLD instance:</p>
 
-<pre><code>       my_ctld.enableHercules = false -- avoid dual loading via CTLD F10 and F8 ground crew
+<pre><code>       my_ctld.enableFixedWing = false -- avoid dual loading via CTLD F10 and F8 ground crew
        local herccargo = CTLD_HERCULES:New("blue", "Hercules Test", my_ctld)
 </code></pre>
 
@@ -2395,6 +2394,12 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddAllowedFixedWingType">CTLD:AddAllowedFixedWingType(typename)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(User) Add a new fixed wing type to the list of allowed types.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).AddCTLDZone">CTLD:AddCTLDZone(Name, Type, Color, Active, HasBeacon, Shiplength, Shipwidth)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User function - Creates and adds a #CTLD.CargoZone zone for this CTLD instance.</p>
@@ -2605,6 +2610,30 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FixedMaxAngels">CTLD.FixedMaxAngels</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FixedMaxSpeed">CTLD.FixedMaxSpeed</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FixedMinAngels">CTLD.FixedMinAngels</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FixedWingTypes">CTLD.FixedWingTypes</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).FlareColor">CTLD.FlareColor</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2665,24 +2694,6 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).HercMaxAngels">CTLD.HercMaxAngels</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).HercMaxSpeed">CTLD.HercMaxSpeed</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).HercMinAngels">CTLD.HercMinAngels</a></p></td>
-            <td class="summary w3-half w3-container" style="word-wrap: break-word">
-
-</td>
-          </tr>
-          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).InjectStaticFromTemplate">CTLD:InjectStaticFromTemplate(Zone, Template, Mass)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(User) Inject static cargo objects.</p>
@@ -2719,9 +2730,9 @@ If you use units build by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).IsHercules">CTLD:IsHercules(Unit)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).IsFixedWing">CTLD:IsFixedWing(Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>(Internal) Function to check if a unit is a Hercules C-130 or a Bronco.</p>
+<p>(Internal) Function to check if a unit is an allowed fixed wing.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3560,6 +3571,12 @@ If you use units build by multiple templates, they will effectively double on lo
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).enableChinookGCLoading">CTLD.enableChinookGCLoading</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).enableFixedWing">CTLD.enableFixedWing</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -4960,6 +4977,37 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CTLD.FixedWingTypes)">Type <strong>CTLD.FixedWingTypes</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(CTLD.FixedWingTypes)">CTLD.FixedWingTypes</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from CTLD.FixedWingTypes</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD.FixedWingTypes).Bronco">CTLD.FixedWingTypes.Bronco</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD.FixedWingTypes).Hercules">CTLD.FixedWingTypes.Hercules</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD.FixedWingTypes).Mosquito">CTLD.FixedWingTypes.Mosquito</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CTLD.LoadedCargo)">Type <strong>CTLD.LoadedCargo</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
      <strong><a href="##(CTLD.LoadedCargo)">CTLD.LoadedCargo</a></strong>
@@ -5088,6 +5136,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD.UnitTypeCapabilities).Mi-8MTV2">CTLD.UnitTypeCapabilities.Mi-8MTV2</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD.UnitTypeCapabilities).MosquitoFBMkVI">CTLD.UnitTypeCapabilities.MosquitoFBMkVI</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -8399,6 +8453,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -8459,20 +8524,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
-    
-
-
-    
-<p>use as counter</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
@@ -8501,6 +8552,59 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).FixedMaxAngels" ><strong>CTLD.FixedMaxAngels</strong></a>
+    
+
+
+    
+<p> for troop/cargo drop via chute</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).FixedMaxSpeed" ><strong>CTLD.FixedMaxSpeed</strong></a>
+    
+
+
+    
+<p> 280 kph or 150kn eq 77 mps</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).FixedMinAngels" ><strong>CTLD.FixedMinAngels</strong></a>
+    
+
+
+    
+<p> for troop/cargo drop via chute</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(CTLD.FixedWingTypes)">#CTLD.FixedWingTypes</a>
+<a id="#(CTLD).FixedWingTypes" ><strong>CTLD.FixedWingTypes</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(CTLD).FlareColor" ><strong>CTLD.FlareColor</strong></a>
     
@@ -8512,7 +8616,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -8541,48 +8645,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMaxAngels" ><strong>CTLD.HercMaxAngels</strong></a>
-    
-
-
-    
-<p> for troop/cargo drop via chute</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMaxSpeed" ><strong>CTLD.HercMaxSpeed</strong></a>
-    
-
-
-    
-<p> 280 kph or 150kn eq 77 mps</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMinAngels" ><strong>CTLD.HercMinAngels</strong></a>
-    
-
-
-    
-<p> for troop/cargo drop via chute</p>
 
 </div>
 
@@ -8670,13 +8732,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -8723,30 +8782,8 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
     
 
 
@@ -8995,12 +9032,23 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).enableFixedWing" ><strong>CTLD.enableFixedWing</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).enableHercules" ><strong>CTLD.enableHercules</strong></a>
     
 
 
     
-<p> added support Hercules Mod</p>
+<p> deprecated</p>
 
 </div>
 
@@ -9332,7 +9380,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -9369,6 +9417,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(CTLD).usesubcats" ><strong>CTLD.usesubcats</strong></a>
     
 
+
+    
+<p> sub categories</p>
 
 </div>
 
@@ -9463,6 +9514,50 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).AddAllowedFixedWingType" ><strong>CTLD:AddAllowedFixedWingType(typename)</strong></a></h2>
+</div>
+    
+<p>(User) Add a new fixed wing type to the list of allowed types.</p>
+
+<div id= "#Functions##AddAllowedFixedWingType" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>typename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The typename to add. Can be handed as Wrapper.Unit#UNIT object. Do NOT forget to <code>myctld:SetUnitCapabilities()</code> for this type!</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -11566,12 +11661,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD).IsHercules" ><strong>CTLD:IsHercules(Unit)</strong></a></h2>
+<h2><a id="#(CTLD).IsFixedWing" ><strong>CTLD:IsFixedWing(Unit)</strong></a></h2>
 </div>
     
-<p>(Internal) Function to check if a unit is a Hercules C-130 or a Bronco.</p>
+<p>(Internal) Function to check if a unit is an allowed fixed wing.</p>
 
-<div id= "#Functions##IsHercules" class="w3-show w3-white">
+<div id= "#Functions##IsFixedWing" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -20080,6 +20175,17 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -20140,20 +20246,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
-    
-
-
-    
-<p>use as counter</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
@@ -20182,6 +20274,59 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).FixedMaxAngels" ><strong>CTLD.FixedMaxAngels</strong></a>
+    
+
+
+    
+<p> for troop/cargo drop via chute</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).FixedMaxSpeed" ><strong>CTLD.FixedMaxSpeed</strong></a>
+    
+
+
+    
+<p> 280 kph or 150kn eq 77 mps</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).FixedMinAngels" ><strong>CTLD.FixedMinAngels</strong></a>
+    
+
+
+    
+<p> for troop/cargo drop via chute</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(CTLD.FixedWingTypes)">#CTLD.FixedWingTypes</a>
+<a id="#(CTLD).FixedWingTypes" ><strong>CTLD.FixedWingTypes</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(CTLD).FlareColor" ><strong>CTLD.FlareColor</strong></a>
     
@@ -20193,7 +20338,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -20222,48 +20367,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> Beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMaxAngels" ><strong>CTLD.HercMaxAngels</strong></a>
-    
-
-
-    
-<p> for troop/cargo drop via chute</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMaxSpeed" ><strong>CTLD.HercMaxSpeed</strong></a>
-    
-
-
-    
-<p> 280 kph or 150kn eq 77 mps</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMinAngels" ><strong>CTLD.HercMinAngels</strong></a>
-    
-
-
-    
-<p> for troop/cargo drop via chute</p>
 
 </div>
 
@@ -20351,13 +20454,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -20404,30 +20504,8 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
     
 
 
@@ -20676,12 +20754,23 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).enableFixedWing" ><strong>CTLD.enableFixedWing</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).enableHercules" ><strong>CTLD.enableHercules</strong></a>
     
 
 
     
-<p> added support Hercules Mod</p>
+<p> deprecated</p>
 
 </div>
 
@@ -21013,7 +21102,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -21050,6 +21139,9 @@ However, if you create a new folder inside the miz file, which contains the soun
 <a id="#(CTLD).usesubcats" ><strong>CTLD.usesubcats</strong></a>
     
 
+
+    
+<p> sub categories</p>
 
 </div>
 
@@ -22605,6 +22697,17 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
+<a id="#(CTLD).CrateCounter" ><strong>CTLD.CrateCounter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
 <a id="#(CTLD).CrateDistance" ><strong>CTLD.CrateDistance</strong></a>
     
 
@@ -22665,20 +22768,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(CTLD).Engineers" ><strong>CTLD.Engineers</strong></a>
-    
-
-
-    
-<p>use as counter</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).EngineersInField" ><strong>CTLD.EngineersInField</strong></a>
     
@@ -22707,6 +22796,59 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).FixedMaxAngels" ><strong>CTLD.FixedMaxAngels</strong></a>
+    
+
+
+    
+<p> for troop/cargo drop via chute</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).FixedMaxSpeed" ><strong>CTLD.FixedMaxSpeed</strong></a>
+    
+
+
+    
+<p> 280 kph or 150kn eq 77 mps</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD).FixedMinAngels" ><strong>CTLD.FixedMinAngels</strong></a>
+    
+
+
+    
+<p> for troop/cargo drop via chute</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    <a href="##(CTLD.FixedWingTypes)">#CTLD.FixedWingTypes</a>
+<a id="#(CTLD).FixedWingTypes" ><strong>CTLD.FixedWingTypes</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
 <a id="#(CTLD).FlareColor" ><strong>CTLD.FlareColor</strong></a>
     
@@ -22718,7 +22860,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -22747,48 +22889,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> Beacons</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMaxAngels" ><strong>CTLD.HercMaxAngels</strong></a>
-    
-
-
-    
-<p> for troop/cargo drop via chute</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMaxSpeed" ><strong>CTLD.HercMaxSpeed</strong></a>
-    
-
-
-    
-<p> 280 kph or 150kn eq 77 mps</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).HercMinAngels" ><strong>CTLD.HercMinAngels</strong></a>
-    
-
-
-    
-<p> for troop/cargo drop via chute</p>
 
 </div>
 
@@ -22876,13 +22976,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -22929,30 +23026,8 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD).TroopCounter" ><strong>CTLD.TroopCounter</strong></a>
     
 
 
@@ -23201,12 +23276,23 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).enableFixedWing" ><strong>CTLD.enableFixedWing</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).enableHercules" ><strong>CTLD.enableHercules</strong></a>
     
 
 
     
-<p> added support Hercules Mod</p>
+<p> deprecated</p>
 
 </div>
 
@@ -23538,7 +23624,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -23575,6 +23661,9 @@ However, if you create a new folder inside the miz file, which contains the soun
 <a id="#(CTLD).usesubcats" ><strong>CTLD.usesubcats</strong></a>
     
 
+
+    
+<p> sub categories</p>
 
 </div>
 
@@ -27697,6 +27786,54 @@ When moose is loading dynamically (for moose class development), tracing is swit
 </div>
 
         </div>
+      <div onclick="myFunction('#Types##CTLD.FixedWingTypes')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CTLD.FixedWingTypes)">Type <strong>CTLD.FixedWingTypes</strong></a></h2></div>
+        <div id= "#Types##CTLD.FixedWingTypes" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+  
+<p>Allowed Fixed Wing Types</p>
+
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CTLD.FixedWingTypes).Bronco" ><strong>CTLD.FixedWingTypes.Bronco</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CTLD.FixedWingTypes).Hercules" ><strong>CTLD.FixedWingTypes.Hercules</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(CTLD.FixedWingTypes).Mosquito" ><strong>CTLD.FixedWingTypes.Mosquito</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
+</div>
+
+        </div>
       <div onclick="myFunction('#Types##CTLD.LoadedCargo')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(CTLD.LoadedCargo)">Type <strong>CTLD.LoadedCargo</strong></a></h2></div>
         <div id= "#Types##CTLD.LoadedCargo" class="w3-container w3-white w3-padding-16" id="module_other_types">
           <div class="w3-white" id="record_type">
@@ -27906,6 +28043,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
     #table
 <a id="#(CTLD.UnitTypeCapabilities).Mi-8MTV2" ><strong>CTLD.UnitTypeCapabilities.Mi-8MTV2</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD.UnitTypeCapabilities).MosquitoFBMkVI" ><strong>CTLD.UnitTypeCapabilities.MosquitoFBMkVI</strong></a>
     
 
 
@@ -39522,7 +39670,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
       <h2><strong>Usage:</strong></h2>
     <pre class="example"><code>Integrate to your CTLD instance like so, where `my_ctld` is a previously created CTLD instance:
            
-           my_ctld.enableHercules = false -- avoid dual loading via CTLD F10 and F8 ground crew
+           my_ctld.enableFixedWing = false -- avoid dual loading via CTLD F10 and F8 ground crew
            local herccargo = CTLD_HERCULES:New("blue", "Hercules Test", my_ctld)
            
 You also need: 
