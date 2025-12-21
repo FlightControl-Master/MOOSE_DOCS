@@ -1346,19 +1346,22 @@
      <div class="w3-col s12 m6 l4">
        <div class="w3-card-4 w3-white w3-margin-16">
          <div class="w3-display-container w3-text-white w3-text-shadow">
+           <img src= "../Images/AI_Air_To_Ground_Dispatching.JPG" alt="Image">
+           <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.EasyAG.html">Ops.EasyAG</a></strong></h2></div>
+         </div>
+         <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
+<p><strong>Ops</strong> - Create your A2G Defenses.</p>
+</p></div>
+       </div>         
+     </div>
+     <div class="w3-col s12 m6 l4">
+       <div class="w3-card-4 w3-white w3-margin-16">
+         <div class="w3-display-container w3-text-white w3-text-shadow">
            <img src= "../Images/AI_Combat_Air_Patrol.JPG" alt="Image">
            <div class="w3-display-bottommiddle" style="word-break:break-word;"><h2><strong><a href="Ops.EasyGCICAP.html">Ops.EasyGCICAP</a></strong></h2></div>
          </div>
          <div class="w3-container w3-padding w3-white picturebox" style="word-break:break-word;"><p>
-<h2>Easy CAP/GCI Class, based on OPS classes</h2>
-
-<h2>Documentation:</h2>
-
-<p>https://flightcontrol-master.github.io/MOOSE_DOCS_DEVELOP/Documentation/Ops.EasyGCICAP.html</p>
-
-<h2>Example Missions:</h2>
-
-<p>Demo missions can be found on <a href="https://github.com/FlightControl-Master/MOOSE_MISSIONS/tree/develop/Ops/EasyGCICAP">github</a>.</p>
+<p><strong>Ops</strong> - Create your A2A Defenses.</p>
 </p></div>
        </div>         
      </div>
@@ -2509,7 +2512,28 @@ Enable this option with e.g., setting the tag to be used to "TARGET":</p>
 <p>Set a marker on the map and add the following text to create targets from it: "TARGET". This is effectively the same as adding a COORDINATE object as target.
 The marker can be deleted any time.</p>
 
-<h2>9 Discussion</h2>
+<h2>9 Single Task Persistence for mission designer added tasks</h2>
+
+<p>The class can persist the state of single tasks of type BOMBING, PRECISIONBOMBING, ARTY and SEAD, i.e. tasks which have a GROUND(!) GROUP, UNIT, STATIC or SCENERY as target.
+This requires the task to have a unique(!) menu name set, a TARGET which already exists on the map at mission start(!), and a flag that this task is actually to be persisted.
+Also, you need to desanitize the mission scripting environment, i.e. "lfs" and "io" must be available so we can write to disk.</p>
+
+<pre><code>       -- First, we need to enable on the PLAYERTASKCONTROLLER itself
+       taskmanager:EnableTaskPersistance([[C:\Users\myname\Saved Games\DCS\Missions\MyMisionFolder\]],"Mission Tasks.csv") -- Path and Filename
+
+       -- Then, we can design a task marking mission progress that we want to persist
+       local RussianRadios = SET_STATIC:New():FilterPrefixes("Comms Tower Russia"):FilterOnce()
+
+       local RadioTask = PLAYERTASK:New(AUFTRAG.Type.BOMBING,RussianRadios,true,5,"Bombing")
+       RadioTask:SetMenuName("Neutralize Comms Towers") -- UNIQUE menu name so we can find the task later!
+       RadioTask:AddFreetext("Find and neutralize the two communication towers near NB70 East of Fulda on Streufelsberg!")
+       RadioTask:AddFreetextTTS("Find and neutralize the two communication towers naer N;B;7;zero; East of Fulda on Streufelsberg!")
+       RadioTask:EnablePersistance() -- Enable persistence for this task
+
+       taskmanager:AddPlayerTaskToQueue(RadioTask,true,false)
+</code></pre>
+
+<h2>10 Discussion</h2>
 
 <p>If you have questions or suggestions, please visit the <a href="https://discord.gg/AeYAkHP">MOOSE Discord</a> #ops-playertask channel.  </p>
 
@@ -2659,6 +2683,12 @@ The marker can be deleted any time.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASK).CountClients">PLAYERTASK:CountClients()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Count clients</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASK).EnablePersistance">PLAYERTASK:EnablePersistance()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Set this task for persistance, if persistance is enabled on the PLAYERTASKCONTROLLER instance.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2869,6 +2899,12 @@ The marker can be deleted any time.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASK).OnAfterSuccess">PLAYERTASK:OnAfterSuccess(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On After "Success" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASK).PersistMe">PLAYERTASK.PersistMe</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -4140,6 +4176,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).AddCorridorZone">PLAYERTASKCONTROLLER:AddCorridorZone(CorridorZone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Add an corridor zone to INTEL detection.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).AddCorridorZoneSet">PLAYERTASKCONTROLLER:AddCorridorZoneSet(CorridorZoneSet)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Add an corridor SET_ZONE to INTEL detection.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).AddPlayerTaskToQueue">PLAYERTASKCONTROLLER:AddPlayerTaskToQueue(PlayerTask, Silent, TaskFilter)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Add a PLAYERTASK object to the list of (open) tasks</p>
@@ -4230,6 +4278,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).ClearPersistedData">PLAYERTASKCONTROLLER:ClearPersistedData()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).ClientFilter">PLAYERTASKCONTROLLER.ClientFilter</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -4290,6 +4344,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).DisableTaskPersistance">PLAYERTASKCONTROLLER:DisableTaskPersistance()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Disable Task persistance (for specific gound target tasks)</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnableBuddyLasing">PLAYERTASKCONTROLLER:EnableBuddyLasing(Recce)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Allow precision laser-guided bombing on statics and "high-value" ground units (MBT etc) with player units lasing.</p>
@@ -4317,6 +4377,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnableTaskInfoMenu">PLAYERTASKCONTROLLER:EnableTaskInfoMenu()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Enable extra menu to show task detail information before joining</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).EnableTaskPersistance">PLAYERTASKCONTROLLER:EnableTaskPersistance(Path, Filename, KgsOfTNT)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Enable Task persistance (for specific gound target tasks)</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4620,6 +4686,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).RemoveCorridorZone">PLAYERTASKCONTROLLER:RemoveCorridorZone(CorridorZone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Remove an corridor zone from INTEL detection.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).RemoveRejectZone">PLAYERTASKCONTROLLER:RemoveRejectZone(RejectZone)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Remove a reject zone from INTEL detection.</p>
@@ -4635,6 +4707,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).SRSQueue">PLAYERTASKCONTROLLER.SRSQueue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).SceneryExplosivesAmount">PLAYERTASKCONTROLLER.SceneryExplosivesAmount</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Kgs of TNT to explode scenery on task persistance loading</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4677,6 +4755,18 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).SetClusterRadius">PLAYERTASKCONTROLLER:SetClusterRadius(Radius)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[User] Set the cluster radius if you want to use target clusters rather than single group detection.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).SetCorridorZoneFloorAndCeiling">PLAYERTASKCONTROLLER:SetCorridorZoneFloorAndCeiling(Floor, Ceiling)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set corridor zone floor and ceiling in FEET.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).SetCorridorZoneFloorAndCeilingMeters">PLAYERTASKCONTROLLER:SetCorridorZoneFloorAndCeilingMeters(Floor, Ceiling)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Function to set corridor zone floor and ceiling in METERS.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4872,6 +4962,30 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TaskPersistance">PLAYERTASKCONTROLLER.TaskPersistance</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Table for persistance data</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TaskPersistanceFilename">PLAYERTASKCONTROLLER.TaskPersistanceFilename</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>File name for persisting tasks</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TaskPersistancePath">PLAYERTASKCONTROLLER.TaskPersistancePath</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>File path for persisting tasks</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TaskPersistanceSwitch">PLAYERTASKCONTROLLER.TaskPersistanceSwitch</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Switch for persisting tasks</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TaskQueue">PLAYERTASKCONTROLLER.TaskQueue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -4881,6 +4995,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TasksPerPlayer">PLAYERTASKCONTROLLER.TasksPerPlayer</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).TasksPersistable">PLAYERTASKCONTROLLER.TasksPersistable</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>List of persistable tasks</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4953,6 +5073,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._ActiveTaskInfo">PLAYERTASKCONTROLLER:_ActiveTaskInfo(Task, Group, Client)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Show active task info</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._AddPersistenceData">PLAYERTASKCONTROLLER:_AddPersistenceData(Task)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5082,6 +5208,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._LoadTasksPersisted">PLAYERTASKCONTROLLER:_LoadTasksPersisted()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._MarkTask">PLAYERTASKCONTROLLER:_MarkTask(Group, Client)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Mark task on F10 map</p>
@@ -5091,6 +5223,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._RemoveMenuEntriesForTask">PLAYERTASKCONTROLLER:_RemoveMenuEntriesForTask(Task, Client)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] _RemoveMenuEntriesForTask</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._SaveTasksPersisted">PLAYERTASKCONTROLLER:_SaveTasksPersisted()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5125,6 +5263,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._UpdateJoinMenuTemplate">PLAYERTASKCONTROLLER:_UpdateJoinMenuTemplate()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER)._UpdateTargetsAlive">PLAYERTASKCONTROLLER:_UpdateTargetsAlive(Task, TargetsLeft)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -5220,7 +5364,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).onafterTaskAdded">PLAYERTASKCONTROLLER:onafterTaskAdded(From, Event, To, Task)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PLAYERTASKCONTROLLER).onafterTaskAdded">PLAYERTASKCONTROLLER:onafterTaskAdded(From, Event, To, Task, Silent)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] On after task added</p>
 </td>
@@ -6192,6 +6336,61 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         </table>
         </div>
 
+      <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PersistenceData)">Type <strong>PersistenceData</strong></a></h2></div>
+         <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
+     <strong><a href="##(PersistenceData)">PersistenceData</a></strong>
+   </div>
+        <div class="w3-card w3-margin">
+        <table class="w3-table w3-border-bottom w3-border-theme-l2">
+          <tr class="w3-theme-l1">
+            <th class="w3-half w3-left-align w3-container w3-padding-16"word-wrap: break-word">Fields and Methods inherited from PersistenceData</th>
+            <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).ID">PersistenceData.ID</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).InitialTargets">PersistenceData.InitialTargets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).Name">PersistenceData.Name</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).Targetsleft">PersistenceData.Targetsleft</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).Task">PersistenceData.Task</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).Type">PersistenceData.Type</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(PersistenceData).updated">PersistenceData.updated</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+        </table>
+        </div>
+
       <div class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(SeadAttributes)">Type <strong>SeadAttributes</strong></a></h2></div>
          <div class="w3-card-4 w3-padding w3-margin w3-theme-l1">
      <strong><a href="##(SeadAttributes)">SeadAttributes</a></strong>
@@ -6368,6 +6567,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #table
 <a id="#(PLAYERTASK).NextTaskSuccess" ><strong>PLAYERTASK.NextTaskSuccess</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASK).PersistMe" ><strong>PLAYERTASK.PersistMe</strong></a>
     
 
 
@@ -7290,6 +7500,36 @@ playerTaskManager:AddPlayerTaskToQueue(mytask)</code></pre>
       <div class="w3-half">
         
 <p>clientcount</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASK).EnablePersistance" ><strong>PLAYERTASK:EnablePersistance()</strong></a></h2>
+</div>
+    
+<p>[User] Set this task for persistance, if persistance is enabled on the PLAYERTASKCONTROLLER instance.</p>
+
+<div id= "#Functions##EnablePersistance" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASK</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASK)">#PLAYERTASK</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self </p>
 
       </div>
     </div>
@@ -10142,6 +10382,17 @@ playerTaskManager:AddPlayerTaskToQueue(mytask)</code></pre>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(PLAYERTASK).PersistMe" ><strong>PLAYERTASK.PersistMe</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(PLAYERTASK).PlayerTaskNr" ><strong>PLAYERTASK.PlayerTaskNr</strong></a>
     
@@ -11908,6 +12159,17 @@ playerTaskManager:AddPlayerTaskToQueue(mytask)</code></pre>
 
     #table
 <a id="#(PLAYERTASK).NextTaskSuccess" ><strong>PLAYERTASK.NextTaskSuccess</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASK).PersistMe" ><strong>PLAYERTASK.PersistMe</strong></a>
     
 
 
@@ -16525,6 +16787,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(PLAYERTASKCONTROLLER).SceneryExplosivesAmount" ><strong>PLAYERTASKCONTROLLER.SceneryExplosivesAmount</strong></a>
+    
+<p>Kgs of TNT to explode scenery on task persistance loading</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(Scores)">#Scores</a>
 <a id="#(PLAYERTASKCONTROLLER).Scores" ><strong>PLAYERTASKCONTROLLER.Scores</strong></a>
     
@@ -16613,6 +16886,50 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistance" ><strong>PLAYERTASKCONTROLLER.TaskPersistance</strong></a>
+    
+<p>Table for persistance data</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistanceFilename" ><strong>PLAYERTASKCONTROLLER.TaskPersistanceFilename</strong></a>
+    
+<p>File name for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistancePath" ><strong>PLAYERTASKCONTROLLER.TaskPersistancePath</strong></a>
+    
+<p>File path for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistanceSwitch" ><strong>PLAYERTASKCONTROLLER.TaskPersistanceSwitch</strong></a>
+    
+<p>Switch for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
 <a id="#(PLAYERTASKCONTROLLER).TaskQueue" ><strong>PLAYERTASKCONTROLLER.TaskQueue</strong></a>
     
@@ -16628,6 +16945,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(PLAYERTASKCONTROLLER).TasksPerPlayer" ><strong>PLAYERTASKCONTROLLER.TasksPerPlayer</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PLAYERTASKCONTROLLER).TasksPersistable" ><strong>PLAYERTASKCONTROLLER.TasksPersistable</strong></a>
+    
+<p>List of persistable tasks</p>
 
 </div>
 
@@ -17206,6 +17534,100 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).AddCorridorZone" ><strong>PLAYERTASKCONTROLLER:AddCorridorZone(CorridorZone)</strong></a></h2>
+</div>
+    
+<p>[User] Add an corridor zone to INTEL detection.</p>
+
+    
+<p>You need to set up detection with <a href="##(PLAYERTASKCONTROLLER).SetupIntel">PLAYERTASKCONTROLLER.SetupIntel</a>() <strong>before</strong> using this.</p>
+
+<div id= "#Functions##AddCorridorZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>CorridorZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Add a zone to the corridor zone set.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).AddCorridorZoneSet" ><strong>PLAYERTASKCONTROLLER:AddCorridorZoneSet(CorridorZoneSet)</strong></a></h2>
+</div>
+    
+<p>[User] Add an corridor SET_ZONE to INTEL detection.</p>
+
+    
+<p>You need to set up detection with <a href="##(PLAYERTASKCONTROLLER).SetupIntel">PLAYERTASKCONTROLLER.SetupIntel</a>() <strong>before</strong> using this.</p>
+
+<div id= "#Functions##AddCorridorZoneSet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Set.html##(SET_ZONE)">Core.Set#SET_ZONE</a>
+            <strong><strong>CorridorZoneSet</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Add a SET_ZONE to the corridor zone set.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER).AddPlayerTaskToQueue" ><strong>PLAYERTASKCONTROLLER:AddPlayerTaskToQueue(PlayerTask, Silent, TaskFilter)</strong></a></h2>
 </div>
     
@@ -17650,6 +18072,25 @@ Can optionally be handed as Ops.ArmyGroup#ARMYGROUP - <strong>Note</strong> migh
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).ClearPersistedData" ><strong>PLAYERTASKCONTROLLER:ClearPersistedData()</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##ClearPersistedData" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER).DisableBuddyLasing" ><strong>PLAYERTASKCONTROLLER:DisableBuddyLasing()</strong></a></h2>
 </div>
     
@@ -17767,6 +18208,36 @@ Can optionally be handed as Ops.ArmyGroup#ARMYGROUP - <strong>Note</strong> migh
 <p>[User] Disable extra menu to show task detail information before joining</p>
 
 <div id= "#Functions##DisableTaskInfoMenu" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).DisableTaskPersistance" ><strong>PLAYERTASKCONTROLLER:DisableTaskPersistance()</strong></a></h2>
+</div>
+    
+<p>[User] Disable Task persistance (for specific gound target tasks)</p>
+
+<div id= "#Functions##DisableTaskPersistance" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -18070,6 +18541,76 @@ Can optionally be handed as Ops.ArmyGroup#ARMYGROUP - <strong>Note</strong> migh
    <div class="w3-margin-left">
 <p>PLAYERTASKCONTROLLER</p>
 </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).EnableTaskPersistance" ><strong>PLAYERTASKCONTROLLER:EnableTaskPersistance(Path, Filename, KgsOfTNT)</strong></a></h2>
+</div>
+    
+<p>[User] Enable Task persistance (for specific gound target tasks)</p>
+
+<div id= "#Functions##EnableTaskPersistance" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Path</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Path where to save the task data</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Filename</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>File name under which to save the task data</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>KgsOfTNT</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Explosives kgs used to remove scenery for persistence, defaults to 300</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -19222,6 +19763,53 @@ Can optionally be handed as Ops.ArmyGroup#ARMYGROUP - <strong>Note</strong> migh
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).RemoveCorridorZone" ><strong>PLAYERTASKCONTROLLER:RemoveCorridorZone(CorridorZone)</strong></a></h2>
+</div>
+    
+<p>[User] Remove an corridor zone from INTEL detection.</p>
+
+    
+<p>You need to set up detection with <a href="##(PLAYERTASKCONTROLLER).SetupIntel">PLAYERTASKCONTROLLER.SetupIntel</a>() <strong>before</strong> using this.</p>
+
+<div id= "#Functions##RemoveCorridorZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>CorridorZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Remove this zone from the corridor zone set.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER).RemoveRejectZone" ><strong>PLAYERTASKCONTROLLER:RemoveRejectZone(RejectZone)</strong></a></h2>
 </div>
     
@@ -19482,6 +20070,120 @@ callsigns from playername or group name.</p>
           <div class="w3-half">
               
 <p>Target cluster radius in kilometers. Default is 0.5km.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).SetCorridorZoneFloorAndCeiling" ><strong>PLAYERTASKCONTROLLER:SetCorridorZoneFloorAndCeiling(Floor, Ceiling)</strong></a></h2>
+</div>
+    
+<p>Function to set corridor zone floor and ceiling in FEET.</p>
+
+<div id= "#Functions##SetCorridorZoneFloorAndCeiling" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Floor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Floor altitude ASL in feet.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Ceiling</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Ceiling altitude ASL in feet.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(PLAYERTASKCONTROLLER)">#PLAYERTASKCONTROLLER</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER).SetCorridorZoneFloorAndCeilingMeters" ><strong>PLAYERTASKCONTROLLER:SetCorridorZoneFloorAndCeilingMeters(Floor, Ceiling)</strong></a></h2>
+</div>
+    
+<p>Function to set corridor zone floor and ceiling in METERS.</p>
+
+<div id= "#Functions##SetCorridorZoneFloorAndCeilingMeters" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Floor</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Floor altitude ASL in meters.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Ceiling</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Ceiling altitude ASL in meters.</p>
 
           </div>
         </div>
@@ -20967,6 +21669,37 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER)._AddPersistenceData" ><strong>PLAYERTASKCONTROLLER:_AddPersistenceData(Task)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##_AddPersistenceData" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(PLAYERTASK)">#PLAYERTASK</a>
+            <strong><strong>Task</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER)._AddTask" ><strong>PLAYERTASKCONTROLLER:_AddTask(Target)</strong></a></h2>
 </div>
     
@@ -21812,6 +22545,25 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER)._LoadTasksPersisted" ><strong>PLAYERTASKCONTROLLER:_LoadTasksPersisted()</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##_LoadTasksPersisted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER)._MarkTask" ><strong>PLAYERTASKCONTROLLER:_MarkTask(Group, Client)</strong></a></h2>
 </div>
     
@@ -21910,6 +22662,25 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 
       </div>
     </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER)._SaveTasksPersisted" ><strong>PLAYERTASKCONTROLLER:_SaveTasksPersisted()</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##_SaveTasksPersisted" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
 </div>
 
 </div>
@@ -22212,6 +22983,48 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(PLAYERTASKCONTROLLER)._UpdateTargetsAlive" ><strong>PLAYERTASKCONTROLLER:_UpdateTargetsAlive(Task, TargetsLeft)</strong></a></h2>
+</div>
+    
+
+
+<div id= "#Functions##_UpdateTargetsAlive" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>PLAYERTASKCONTROLLER</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Ops.PlayerTask.html##(PLASERTASK)">Ops.PlayerTask#PLASERTASK</a>
+            <strong><strong>Task</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>TargetsLeft</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(PLAYERTASKCONTROLLER).onafterStart" ><strong>PLAYERTASKCONTROLLER:onafterStart(From, Event, To)</strong></a></h2>
 </div>
     
@@ -22404,7 +23217,7 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(PLAYERTASKCONTROLLER).onafterTaskAdded" ><strong>PLAYERTASKCONTROLLER:onafterTaskAdded(From, Event, To, Task)</strong></a></h2>
+<h2><a id="#(PLAYERTASKCONTROLLER).onafterTaskAdded" ><strong>PLAYERTASKCONTROLLER:onafterTaskAdded(From, Event, To, Task, Silent)</strong></a></h2>
 </div>
     
 <p>[Internal] On after task added</p>
@@ -22454,6 +23267,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
             <p>
                 <a href="Ops.PlayerTask.html##(PLAYERTASK)">Ops.PlayerTask#PLAYERTASK</a>
             <strong><strong>Task</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Silent</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -23415,6 +24239,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(PLAYERTASKCONTROLLER).SceneryExplosivesAmount" ><strong>PLAYERTASKCONTROLLER.SceneryExplosivesAmount</strong></a>
+    
+<p>Kgs of TNT to explode scenery on task persistance loading</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(Scores)">#Scores</a>
 <a id="#(PLAYERTASKCONTROLLER).Scores" ><strong>PLAYERTASKCONTROLLER.Scores</strong></a>
     
@@ -23503,6 +24338,50 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistance" ><strong>PLAYERTASKCONTROLLER.TaskPersistance</strong></a>
+    
+<p>Table for persistance data</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistanceFilename" ><strong>PLAYERTASKCONTROLLER.TaskPersistanceFilename</strong></a>
+    
+<p>File name for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistancePath" ><strong>PLAYERTASKCONTROLLER.TaskPersistancePath</strong></a>
+    
+<p>File path for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistanceSwitch" ><strong>PLAYERTASKCONTROLLER.TaskPersistanceSwitch</strong></a>
+    
+<p>Switch for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
 <a id="#(PLAYERTASKCONTROLLER).TaskQueue" ><strong>PLAYERTASKCONTROLLER.TaskQueue</strong></a>
     
@@ -23518,6 +24397,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <a id="#(PLAYERTASKCONTROLLER).TasksPerPlayer" ><strong>PLAYERTASKCONTROLLER.TasksPerPlayer</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PLAYERTASKCONTROLLER).TasksPersistable" ><strong>PLAYERTASKCONTROLLER.TasksPersistable</strong></a>
+    
+<p>List of persistable tasks</p>
 
 </div>
 
@@ -25801,6 +26691,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(PLAYERTASKCONTROLLER).SceneryExplosivesAmount" ><strong>PLAYERTASKCONTROLLER.SceneryExplosivesAmount</strong></a>
+    
+<p>Kgs of TNT to explode scenery on task persistance loading</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(Scores)">#Scores</a>
 <a id="#(PLAYERTASKCONTROLLER).Scores" ><strong>PLAYERTASKCONTROLLER.Scores</strong></a>
     
@@ -25889,6 +26790,50 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistance" ><strong>PLAYERTASKCONTROLLER.TaskPersistance</strong></a>
+    
+<p>Table for persistance data</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistanceFilename" ><strong>PLAYERTASKCONTROLLER.TaskPersistanceFilename</strong></a>
+    
+<p>File name for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistancePath" ><strong>PLAYERTASKCONTROLLER.TaskPersistancePath</strong></a>
+    
+<p>File path for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PLAYERTASKCONTROLLER).TaskPersistanceSwitch" ><strong>PLAYERTASKCONTROLLER.TaskPersistanceSwitch</strong></a>
+    
+<p>Switch for persisting tasks</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Utilities.FiFo.html##(FIFO)">Utilities.FiFo#FIFO</a>
 <a id="#(PLAYERTASKCONTROLLER).TaskQueue" ><strong>PLAYERTASKCONTROLLER.TaskQueue</strong></a>
     
@@ -25904,6 +26849,17 @@ If you don't want SEAD tasks generated, use as follows where "mycontroller" is y
 <a id="#(PLAYERTASKCONTROLLER).TasksPerPlayer" ><strong>PLAYERTASKCONTROLLER.TasksPerPlayer</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(PLAYERTASKCONTROLLER).TasksPersistable" ><strong>PLAYERTASKCONTROLLER.TasksPersistable</strong></a>
+    
+<p>List of persistable tasks</p>
 
 </div>
 
@@ -29977,6 +30933,95 @@ When moose is loading dynamically (for moose class development), tracing is swit
 </div>
 </div>
 
+</div>
+
+        </div>
+      <div onclick="myFunction('#Types##PersistenceData')" class="w3-container w3-theme-l2 w3-margin-top"><h2><a id="#(PersistenceData)">Type <strong>PersistenceData</strong></a></h2></div>
+        <div id= "#Types##PersistenceData" class="w3-container w3-white w3-padding-16" id="module_other_types">
+          <div class="w3-white" id="record_type">
+<div class="fields w3-container w3-theme-l2">
+  <h2>Field(s)</h2>
+</div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PersistenceData).ID" ><strong>PersistenceData.ID</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PersistenceData).InitialTargets" ><strong>PersistenceData.InitialTargets</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PersistenceData).Name" ><strong>PersistenceData.Name</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(PersistenceData).Targetsleft" ><strong>PersistenceData.Targetsleft</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(PersistenceData).Task" ><strong>PersistenceData.Task</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(PersistenceData).Type" ><strong>PersistenceData.Type</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(PersistenceData).updated" ><strong>PersistenceData.updated</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div class="functions  w3-container w3-theme-l2">
+  <h2>Function(s)</h2>
+</div>  
 </div>
 
         </div>
