@@ -1556,7 +1556,6 @@ force without resources and transportation is defenseless.</p>
 <hr/>
 
 <h3>Author: <strong>funkyfranky</strong></h3>
-<h3>Co-author: FlightControl (cargo dispatcher classes)</h3>
 
 <hr/>
 
@@ -1632,16 +1631,7 @@ It also alliviates the problem of limited parking spots at smaller airbases.</p>
 </ul>
 
 <p>Furthermore, ground assets can be transferred between warehouses by transport units. These are APCs, helicopters and airplanes. The transportation process is modeled
-in a realistic way by using the corresponding cargo dispatcher classes, i.e.</p>
-
-<ul>
-    <li><a href="AI.AI_Cargo_Dispatcher_APC.html##(AI_DISPATCHER_APC)">AI.AI_Cargo_Dispatcher_APC#AI_DISPATCHER_APC</a></li>
-    <li><a href="AI.AI_Cargo_Dispatcher_Helicopter.html##(AI_DISPATCHER_HELICOPTER)">AI.AI_Cargo_Dispatcher_Helicopter#AI_DISPATCHER_HELICOPTER</a></li>
-    <li><a href="AI.AI_Cargo_Dispatcher_Airplane.html##(AI_DISPATCHER_AIRPLANE)">AI.AI_Cargo_Dispatcher_Airplane#AI_DISPATCHER_AIRPLANE</a></li>
-</ul>
-
-<p>Depending on which cargo dispatcher is used (ground or airbore), similar considerations like in the self propelled case are necessary. Howver, note that
-the dispatchers as of yet cannot use user defined off road paths for example since they are classes of their own and use a different routing logic.</p>
+in a realistic way by using the <a href="Ops.OpsTransport.html##(OPSTRANSPORT)">Ops.OpsTransport#OPSTRANSPORT</a> class.</p>
 
 <hr/>
 
@@ -1738,19 +1728,6 @@ However, in the current DCS version (2.5.3) a mortar unit has a weight of 5 tons
  of 630 kg. This is important as groups cannot be split between carrier units when transporting, i.e. the total weight of the whole group must be smaller than the
  cargo bay of the transport carrier.</p>
 
-<h3>Setting the Load Radius</h3>
-<p>Boading and loading of cargo into a carrier is modeled in a realistic fashion in the AI_CARGO\DISPATCHER classes, which are used inernally by the WAREHOUSE class.
-Meaning that troops (cargo) will board, i.e. run or drive to the carrier, and only once they are in close proximity to the transporter they will be loaded (disappear).</p>
-
-<p>Unfortunately, there are some situations where problems can occur. For example, in DCS tanks have the strong tentendcy not to drive around obstacles but rather to roll over them.
-I have seen cases where an aircraft of the same coalition as the tank was in its way and the tank drove right through the plane waiting on a parking spot and destroying it.</p>
-
-<p>As a workaround it is possible to set a larger load radius so that the cargo units are despawned further away from the carrier via the optional <strong>loadradius</strong> parameter:</p>
-
-<pre><code>warehouseBatumi:AddAsset("Leopard 2", nil, nil, nil, nil, 250)
-</code></pre>
-
-<p>Adding the asset like this will cause the units to be loaded into the carrier already at a distance of 250 meters.</p>
 
 <h3>Setting the AI Skill</h3>
 
@@ -2014,7 +1991,7 @@ can use a polygon zone (see <a href="Core.Zone.html##(ZONE_POLYGON)">Core.Zone#Z
 and the road connection is less than 3 km.</p>
 
 <p>The user can set the road connection manually with the <a href="##(WAREHOUSE).SetRoadConnection">WAREHOUSE.SetRoadConnection</a> function. This is only functional for self propelled assets at the moment
-and not if using the AI dispatcher classes since these have a different logic to find the route.</p>
+and not if using the OPSTRANSPORT class since this has a different logic to find the route.</p>
 
 <h2>Off Road Connections</h2>
 
@@ -2127,7 +2104,7 @@ from the queue or considered to be valid but cannot be executed at this very mom
 
 <h2>Cargo Bay and Weight Limitations</h2>
 
-<p>The transportation of cargo is handled by the AI_Dispatcher classes. These take the cargo bay of a carrier and the weight of
+<p>The transportation of cargo is handled by the <code>OPSTRANSPORT</code> class. This takes the cargo bay of a carrier and the weight of
 the cargo into account so that a carrier can only load a realistic amount of cargo.</p>
 
 <p>However, if troops are supposed to be transported between warehouses, there is one important limitations one has to keep in mind.
