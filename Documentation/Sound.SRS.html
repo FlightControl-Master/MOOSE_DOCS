@@ -1520,7 +1520,8 @@
 <ul>
     <li>This script needs SRS version >= 1.9.6</li>
     <li>You need to de-sanitize os, io and lfs in the missionscripting.lua</li>
-    <li>Optional: DCS-gRPC as backend to communicate with SRS (vide infra)</li>
+    <li>Optional: DCS-gRPC as backend to communicate with SRS (via infra)</li>
+    <li>Optional: HOUNDTTS as backend to communicate with SRS (via infra)</li>
 </ul>
 
 <h2>Knwon Issues</h2>
@@ -1531,7 +1532,7 @@
 expecially in VR but unavoidable (if you have a solution, please feel free to share!).</p>
 
 <p>NOTE that this is not an issue if the mission is running on a server.
-Also NOTE that using DCS-gRPC as backend will avoid the pop-up window.</p>
+Also NOTE that using DCS-gRPC and Hound-TTS as backend create no pop-up window.</p>
 
 <h1>Play Sound Files</h1>
 
@@ -1648,14 +1649,31 @@ msrs:SetProviderOptionsAmazon(AccessKey, Region)
 <p>The default interface to SRS is via calling the 'DCS-SR-ExternalAudio.exe'. As noted above, this has the unavoidable drawback that a pop-up briefly appears
 and DCS might be put out of focus.</p>
 
+<h2>Hound TTS as an alternative to 'DCS-SR-ExternalAudio.exe' for TTS</h2>
+
+<p>An alternative interface to SRS is <a href="https://github.com/uriba107/HoundTTS/releases">Hound-TTS</a>. This does not call an exe file and therefore avoids the annoying pop-up window.
+In addition to Windows and Google cloud, it also offers Piper local voice creation and others as providers for TTS.</p>
+
+<p>Use <a href="##(MSRS).SetDefaultBackendHound">MSRS.SetDefaultBackendHound</a> to enable <a href="https://github.com/uriba107/HoundTTS/releases">Hound-TTS</a> as an alternate backend.
+This can be useful if the popup should be avoided or to use Piper or others for TTS. Please note, only text-to-speech is supported and it it cannot be used to transmit audio files.</p>
+
+<p>Hound TTS must be installed and configured per the <a href="https://github.com/uriba107/HoundTTS#installation">Hound TTS</a> prior to use. 
+If a cloud TTS provider is being used, the API key(s) must be set as per the documentation.
+Hound TTS can be used both with DCS dedicated server and regular DCS installations.</p>
+
+<p>To use the default local Windows TTS with Hound TTS, Windows 2019 Server (or newer) or Windows 10/11 are required.  Voices for non-local languages and dialects may need to
+be explicitly installed.</p>
+
+<p>To set the MSRS class to use the Hound TTS backend for all future instances, call the function <code>MSRS.SetDefaultBackendHound()</code>.</p>
+
 <h2>DCS-gRPC as an alternative to 'DCS-SR-ExternalAudio.exe' for TTS</h2>
 
 <p>Another interface to SRS is <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC</a>. This does not call an exe file and therefore avoids the annoying pop-up window.
 In addition to Windows and Google cloud, it also offers Microsoft Azure and Amazon Web Service as providers for TTS.</p>
 
-<p>Use <a href="##(MSRS).SetDefaultBackendGRPC">MSRS.SetDefaultBackendGRPC</a> to enable <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC</a> as an alternate backend for transmitting text-to-speech over SRS.
-This can be useful if 'DCS-SR-ExternalAudio.exe' cannot be used in the environment or to use Azure or AWS clouds for TTS.  Note that DCS-gRPC does not (yet?) support
-all of the features and options available with 'DCS-SR-ExternalAudio.exe'. Of note, only text-to-speech is supported and it it cannot be used to transmit audio files.</p>
+<p>Use <a href="##(MSRS).SetDefaultBackendGRPC">MSRS.SetDefaultBackendGRPC</a> to enable <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC</a> as an alternate backend.
+This can be useful if 'DCS-SR-ExternalAudio.exe' cannot be used in the environment or to use Azure or AWS clouds for TTS.  Note that DCS-gRPC does not support
+all of the features and options available with 'DCS-SR-ExternalAudio.exe'. Also note, only text-to-speech is supported and it it cannot be used to transmit audio files.</p>
 
 <p>DCS-gRPC must be installed and configured per the <a href="https://github.com/DCS-gRPC/rust-server">DCS-gRPC documentation</a> and already running via either the 'autostart' mechanism
 or a Lua call to 'GRPC.load()' prior to use of the alternate DCS-gRPC backend. If a cloud TTS provider is being used, the API key must be set via the 'Config\dcs-grpc.lua'
@@ -1672,13 +1690,13 @@ such as the SRS path or Google credential path. This will help maximize compatib
 <p>Basic Play Text-To-Speech example using alternate DCS-gRPC backend (DCS-gRPC not previously started):</p>
 
 <pre><code>-- Start DCS-gRPC
-GRPC.load()
+GRPC.load() -- not needed if you set gRPC to auto-start
 -- Select the alternate DCS-gRPC backend for new MSRS instances
 MSRS.SetDefaultBackendGRPC()
 -- Create a SOUNDTEXT object.
 local text=SOUNDTEXT:New("All Enemies destroyed")
 -- MOOSE SRS
-local msrs=MSRS:New('', 305.0)
+local msrs=MSRS:New('ExampleInstance', 305.0)
 -- Text-to speech with default voice after 30 seconds.
 msrs:PlaySoundText(text, 30)
 </code></pre>
@@ -1686,7 +1704,7 @@ msrs:PlaySoundText(text, 30)
 <p>Basic example of using another class (ATIS) with SRS and the DCS-gRPC backend (DCS-gRPC not previously started):</p>
 
 <pre><code>-- Start DCS-gRPC
-GRPC.load()
+GRPC.load() -- not needed if you set gRPC to auto-start
 -- Select the alternate DCS-gRPC backend for new MSRS instances
 MSRS.SetDefaultBackendGRPC()
 -- Create new ATIS as usual
@@ -1879,13 +1897,13 @@ atis:Start()
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).PlayText">MSRS:PlayText(Text, Delay, Coordinate)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).PlayText">MSRS:PlayText(Text, Delay, Coordinate, Speed)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Play text message via MSRS.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).PlayTextExt">MSRS:PlayTextExt(Text, Delay, Frequencies, Modulations, Gender, Culture, Voice, Volume, Label, Coordinate)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).PlayTextExt">MSRS:PlayTextExt(Text, Delay, Frequencies, Modulations, Gender, Culture, Voice, Volume, Label, Coordinate, Speed)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Play text message via MSRS with explicitly specified options.</p>
 </td>
@@ -1912,6 +1930,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetBackendGRPC">MSRS:SetBackendGRPC()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set DCS-gRPC as backend to communicate with SRS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetBackendHound">MSRS:SetBackendHound()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set Hound-TTS as backend to communicate with SRS.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1948,6 +1972,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetDefaultBackendGRPC">MSRS:SetDefaultBackendGRPC()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set DCS-gRPC to be the default backend.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetDefaultBackendHound">MSRS:SetDefaultBackendHound()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set Hound-TTS to be the default backend.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2053,6 +2083,12 @@ atis:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetTTSProviderPiper">MSRS:SetTTSProviderPiper()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use Piper to provide text-to-speech.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetVoice">MSRS:SetVoice(Voice)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set to use a specific voice.</p>
@@ -2074,6 +2110,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetVoiceGoogle">MSRS:SetVoiceGoogle(Voice)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set to use a specific voice if Google is use as provider.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetVoicePiper">MSRS:SetVoicePiper(Voice)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set to use a specific voice if Piper is used as provider (only Hound-TTS backend).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2137,9 +2179,33 @@ atis:Start()
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS)._HoundSpeechTime">MSRS._HoundSpeechTime(MSRS, Message, Speed, UseGoogle, self)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Hound speech time calculator.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS)._HoundTestTone">MSRS._HoundTestTone(MSRS, Frequencies, Modulations, Coalition, self)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Hound Test Tone function, sends a 2-second 440 Hz sine wave tone directly over SRS, bypassing the TTS engine entirely.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS)._HoundTextToSpeech">MSRS:_HoundTextToSpeech(Message, Frequencies, Modulations, Volume, Label, Coalition, Point, Speed, Gender, Culture, Voice, UseGoogle)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Hound TTS Function Wrapper</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS)._HoundTransmit">MSRS:_HoundTransmit(Message, Transmission_params, Provider_params)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Hound Transmit Function Wrapper</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).backend">MSRS.backend</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Backend used as interface to SRS (MSRS.Backend.SRSEXE or MSRS.Backend.GRPC).</p>
+<p>Backend used as interface to SRS (MSRS.Backend.SRSEXE, MSRS.Backend.HOUND or MSRS.Backend.GRPC).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2217,7 +2283,7 @@ atis:Start()
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).provider">MSRS.provider</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Provider of TTS (win, gcloud, azure, amazon).</p>
+<p>Provider of TTS (win, gcloud, azure, amazon, ...).</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2874,7 +2940,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS.Backend).GRPC">MSRS.Backend.GRPC</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Use DCS-gRPC.</p>
+<p>Use Hound-TTS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS.Backend).HOUND">MSRS.Backend.HOUND</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2985,6 +3057,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS.Provider).GOOGLE">MSRS.Provider.GOOGLE</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Google (<code>gcloud</code>).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS.Provider).PIPER">MSRS.Provider.PIPER</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Piper local voice service. Only possible with Hound-TTS backend.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3172,7 +3250,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE).NewTransmission">MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation, gender, culture, voice, volume, label, coordinate)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE).NewTransmission">MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation, gender, culture, voice, volume, label, coordinate, speed)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create a new transmission and add it to the radio queue.</p>
 </td>
@@ -3949,6 +4027,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).speed">MSRSQUEUE.Transmission.speed</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Speed to be used</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRSQUEUE.Transmission).subduration">MSRSQUEUE.Transmission.subduration</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Duration of the subtitle being displayed.</p>
@@ -4107,7 +4191,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #string
 <a id="#(MSRS).backend" ><strong>MSRS.backend</strong></a>
     
-<p>Backend used as interface to SRS (MSRS.Backend.SRSEXE or MSRS.Backend.GRPC).</p>
+<p>Backend used as interface to SRS (MSRS.Backend.SRSEXE, MSRS.Backend.HOUND or MSRS.Backend.GRPC).</p>
 
 </div>
 
@@ -4239,7 +4323,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #string
 <a id="#(MSRS).provider" ><strong>MSRS.provider</strong></a>
     
-<p>Provider of TTS (win, gcloud, azure, amazon).</p>
+<p>Provider of TTS (win, gcloud, azure, amazon, ...).</p>
 
 </div>
 
@@ -4818,7 +4902,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     MSRS_Config = {
       Path = "C:\\Program Files\\DCS-SimpleRadio-Standalone\\ExternalAudio", -- Path to SRS install directory.
       Port = 5002,            -- Port of SRS server. Default 5002.
-      Backend = "srsexe",     -- Interface to SRS: "srsexe" or "grpc".
+      Backend = "srsexe",     -- Interface to SRS: "srsexe" or "grpc" or "hound".
       Frequency = {127, 243}, -- Default frequences. Must be a table 1..n entries!
       Modulation = {0,0},     -- Default modulations. Must be a table, 1..n entries, one for each frequency!
       Volume = 1.0,           -- Default volume [0,1].
@@ -4828,7 +4912,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
       Gender = "male",
       Voice = "Microsoft Hazel Desktop", -- Voice that is used if no explicit provider voice is specified.
       Label = "MSRS",   
-      Provider = "win", --Provider for generating TTS (win, gcloud, azure, aws).      
+      Provider = "win", --Provider for generating TTS (win, gcloud, azure, aws, piper).      
       -- Windows
       win = {
         voice = "Microsoft Hazel Desktop",
@@ -5093,7 +5177,7 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MSRS).PlayText" ><strong>MSRS:PlayText(Text, Delay, Coordinate)</strong></a></h2>
+<h2><a id="#(MSRS).PlayText" ><strong>MSRS:PlayText(Text, Delay, Coordinate, Speed)</strong></a></h2>
 </div>
     
 <p>Play text message via MSRS.</p>
@@ -5144,6 +5228,17 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -5163,7 +5258,7 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MSRS).PlayTextExt" ><strong>MSRS:PlayTextExt(Text, Delay, Frequencies, Modulations, Gender, Culture, Voice, Volume, Label, Coordinate)</strong></a></h2>
+<h2><a id="#(MSRS).PlayTextExt" ><strong>MSRS:PlayTextExt(Text, Delay, Frequencies, Modulations, Gender, Culture, Voice, Volume, Label, Coordinate, Speed)</strong></a></h2>
 </div>
     
 <p>Play text message via MSRS with explicitly specified options.</p>
@@ -5305,6 +5400,19 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Speed.</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -5440,6 +5548,36 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
 <p>Set DCS-gRPC as backend to communicate with SRS.</p>
 
 <div id= "#Functions##SetBackendGRPC" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetBackendHound" ><strong>MSRS:SetBackendHound()</strong></a></h2>
+</div>
+    
+<p>Set Hound-TTS as backend to communicate with SRS.</p>
+
+<div id= "#Functions##SetBackendHound" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -5666,6 +5804,25 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
 <p>Set DCS-gRPC to be the default backend.</p>
 
 <div id= "#Functions##SetDefaultBackendGRPC" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetDefaultBackendHound" ><strong>MSRS:SetDefaultBackendHound()</strong></a></h2>
+</div>
+    
+<p>Set Hound-TTS to be the default backend.</p>
+
+<div id= "#Functions##SetDefaultBackendHound" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -6049,10 +6206,11 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
     <li><code>MSRS.Provider.WINDOWS</code>: Microsoft Windows (default)</li>
     <li><code>MSRS.Provider.GOOGLE</code>: Google Cloud</li>
     <li><code>MSRS.Provider.AZURE</code>: Microsoft Azure (only with DCS-gRPC backend)</li>
-    <li><code>MSRS.Provier.AMAZON</code>: Amazon Web Service (only with DCS-gRPC backend)</li>
+    <li><code>MSRS.Provider.AMAZON</code>: Amazon Web Service (only with DCS-gRPC backend)</li>
+    <li><code>MSRS.Provider.PIPER</code>: Piper Voices (only with Hound-TTS backend)</li>
 </ul>
 
-<p>Note that all providers except Microsoft Windows need as additonal information the credentials of your account.</p>
+<p>Note that all providers except Microsoft Windows and Piper need as additonal information the credentials of your account.</p>
 
 
 <div id= "#Functions##SetProvider" class="w3-show w3-white">
@@ -6504,6 +6662,39 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetTTSProviderPiper" ><strong>MSRS:SetTTSProviderPiper()</strong></a></h2>
+</div>
+    
+<p>Use Piper to provide text-to-speech.</p>
+
+    
+<p>Only supported if used in combination with Hound-TTS as backend.</p>
+
+<div id= "#Functions##SetTTSProviderPiper" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MSRS).SetVoice" ><strong>MSRS:SetVoice(Voice)</strong></a></h2>
 </div>
     
@@ -6670,6 +6861,53 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
           <div class="w3-half">
               
 <p>Voice. Default <code>MSRS.Voices.Google.Standard.en_GB_Standard_A</code>.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetVoicePiper" ><strong>MSRS:SetVoicePiper(Voice)</strong></a></h2>
+</div>
+    
+<p>Set to use a specific voice if Piper is used as provider (only Hound-TTS backend).</p>
+
+    
+<p>Note that this will override any gender and culture settings.</p>
+
+<div id= "#Functions##SetVoicePiper" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p><a href="https://rhasspy.github.io/piper-samples/">Piper Voices</a>. Default <code>"en_US-ryan-low"</code>.</p>
 
           </div>
         </div>
@@ -7352,6 +7590,455 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MSRS)._HoundSpeechTime" ><strong>MSRS._HoundSpeechTime(MSRS, Message, Speed, UseGoogle, self)</strong></a></h2>
+</div>
+    
+<p>Hound speech time calculator.</p>
+
+    
+<p>Use to determine how long it takes to speak something out.</p>
+
+<div id= "#Functions##_HoundSpeechTime" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MSRS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>self</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The message to measure. Can also be handed as string lenght.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The speed to use, defaults to 1.0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>UseGoogle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If to use google. Default: no.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>self</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS)._HoundTestTone" ><strong>MSRS._HoundTestTone(MSRS, Frequencies, Modulations, Coalition, self)</strong></a></h2>
+</div>
+    
+<p>Hound Test Tone function, sends a 2-second 440 Hz sine wave tone directly over SRS, bypassing the TTS engine entirely.</p>
+
+    
+<p>Use this to verify the SRS connection is working before debugging TTS issues.</p>
+
+<div id= "#Functions##_HoundTestTone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>MSRS</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>self</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Frequencies</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The table of frequencies to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Modulations</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The table of modulations to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coalition to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>self</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS)._HoundTextToSpeech" ><strong>MSRS:_HoundTextToSpeech(Message, Frequencies, Modulations, Volume, Label, Coalition, Point, Speed, Gender, Culture, Voice, UseGoogle)</strong></a></h2>
+</div>
+    
+<p>Hound TTS Function Wrapper</p>
+
+<div id= "#Functions##_HoundTextToSpeech" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The text to speak.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Frequencies</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The table of frequencies to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Modulations</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The table of modulations to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Volume</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The volume to use, defaults to 1.0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Label</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The label to use, defaults to "MSRS".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Coalition</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The coalition to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Point.html##(COORDINATE)">Core.Point#COORDINATE</a>
+            <strong><strong>Point</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) The point from which the voice is sent.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) How fast to speak, defaults to 1.0.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Gender</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Gender to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Culture</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Culture to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Voice</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Voice to use.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>UseGoogle</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) If to use Google TTS.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>SpeechTime Speech time in seconds.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS)._HoundTransmit" ><strong>MSRS:_HoundTransmit(Message, Transmission_params, Provider_params)</strong></a></h2>
+</div>
+    
+<p>Hound Transmit Function Wrapper</p>
+
+<div id= "#Functions##_HoundTransmit" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Message</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The message to speak</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Transmission_params</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Transmission parameter table, see below</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Provider_params</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Provider parameter table, see below</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+      </div>
+      <div class="w3-half">
+        
+<p>SpeechTime Speech time in seconds.</p>
+
+      </div>
+    </div>
+      <h2><strong>Usage:</strong></h2>
+    <pre class="example"><code>-- #table Transmission_params
+  | Field       | Type     | Default             | Description                              |
+  | ----------- | -------- | ------------------- | ---------------------------------------- |
+  | transmitter | string   | `"srs"`             | Transmitter type. Currently only `"srs"` |
+  | freqs       | string   | `"251.0"`           | Frequency in MHz, comma-separated        |
+  | modulations | string   | `"AM"`              | `AM` or `FM`, comma-separated            |
+  | coalition   | number   | `0`                 | 0=spectator, 1=red, 2=blue               |
+  | name        | string   | `"HoundTTS"`        | Client name shown in SRS                 |
+  | point       | Vec3/nil | `nil`               | DCS position for geo-location            |
+  | volume      | number   | `1.0`               | 0.0 – 1.0                                |
+  | encrypt     | boolean  | `false`             | Enable SRS encryption                    |
+  | encKey      | number   | `0`                 | Encryption key (0–255, must match SRS)   |
+  | host        | string   | `HoundTTS.SRS_HOST` | SRS server IP                            |
+  | port        | number   | `HoundTTS.SRS_PORT` | SRS server port                          |
+
+-- #table Provider_params
+  | Field    | Type   | Default                     | Description                                                                        |
+  | -------- | ------ | --------------------------- | ---------------------------------------------------------------------------------- |
+  | provider | string | `HoundTTS.DEFAULT_PROVIDER` | `"piper"` / `"sapi"` / `"azure"` / `"google"` / `"elevenlabs"`                     |
+  | voice    | string | `HoundTTS.DEFAULT_VOICE`    | Piper model name, SAPI voice name, Azure/Google voice name, or ElevenLabs voice ID |
+  | culture  | string | `HoundTTS.DEFAULT_CULTURE`  | BCP-47 locale e.g. `"en-US"`, `"en-GB"` (used by SAPI, Azure, Google)              |
+  | gender   | string | `HoundTTS.DEFAULT_GENDER`   | `"male"` / `"female"` (used by SAPI, Google)                                       |
+  | speed    | number | `1.0`                       | Speech rate (0.5 = half speed, 1.0 = normal, 2.0 = double speed)                   |
+  </code></pre>
+
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MSRS).getSpeechTime" ><strong>MSRS.getSpeechTime(length, speed, isGoogle)</strong></a></h2>
 </div>
     
@@ -7549,7 +8236,7 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
     #string
 <a id="#(MSRS).backend" ><strong>MSRS.backend</strong></a>
     
-<p>Backend used as interface to SRS (MSRS.Backend.SRSEXE or MSRS.Backend.GRPC).</p>
+<p>Backend used as interface to SRS (MSRS.Backend.SRSEXE, MSRS.Backend.HOUND or MSRS.Backend.GRPC).</p>
 
 </div>
 
@@ -7681,7 +8368,7 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
     #string
 <a id="#(MSRS).provider" ><strong>MSRS.provider</strong></a>
     
-<p>Provider of TTS (win, gcloud, azure, amazon).</p>
+<p>Provider of TTS (win, gcloud, azure, amazon, ...).</p>
 
 </div>
 
@@ -11520,7 +12207,18 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #string
 <a id="#(MSRS.Backend).GRPC" ><strong>MSRS.Backend.GRPC</strong></a>
     
-<p>Use DCS-gRPC.</p>
+<p>Use Hound-TTS.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRS.Backend).HOUND" ><strong>MSRS.Backend.HOUND</strong></a>
+    
+
 
 </div>
 
@@ -11711,6 +12409,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(MSRS.Provider).GOOGLE" ><strong>MSRS.Provider.GOOGLE</strong></a>
     
 <p>Google (<code>gcloud</code>).</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRS.Provider).PIPER" ><strong>MSRS.Provider.PIPER</strong></a>
+    
+<p>Piper local voice service. Only possible with Hound-TTS backend.</p>
 
 </div>
 
@@ -12228,7 +12937,7 @@ This can be used to submit multiple TTS messages and the class takes care that t
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MSRSQUEUE).NewTransmission" ><strong>MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation, gender, culture, voice, volume, label, coordinate)</strong></a></h2>
+<h2><a id="#(MSRSQUEUE).NewTransmission" ><strong>MSRSQUEUE:NewTransmission(text, duration, msrs, tstart, interval, subgroups, subtitle, subduration, frequency, modulation, gender, culture, voice, volume, label, coordinate, speed)</strong></a></h2>
 </div>
     
 <p>Create a new transmission and add it to the radio queue.</p>
@@ -12445,6 +13154,19 @@ This can be used to submit multiple TTS messages and the class takes care that t
           <div class="w3-half">
               
 <p>Coordinate to be used</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Speed to be used</p>
 
           </div>
         </div>
@@ -16577,6 +17299,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(MSRSQUEUE.Transmission).msrs" ><strong>MSRSQUEUE.Transmission.msrs</strong></a>
     
 <p>MOOSE SRS object.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(MSRSQUEUE.Transmission).speed" ><strong>MSRSQUEUE.Transmission.speed</strong></a>
+    
+<p>Speed to be used</p>
 
 </div>
 
