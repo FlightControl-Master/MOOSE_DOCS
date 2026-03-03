@@ -1622,7 +1622,7 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
 
 <h2>2. Options</h2>
 
-<p>The following options are available (with their defaults). Only set the ones you want changed:</p>
+<p>The following options are available (with their defaults). Don't waste your time adding those in your script if your not going to change the value.</p>
 
 <pre><code>     my_ctld.useprefix = true -- (DO NOT SWITCH THIS OFF UNLESS YOU KNOW WHAT YOU ARE DOING!) Adjust **before** starting CTLD. If set to false, *all* choppers of the coalition side will be enabled for CTLD.
      my_ctld.CrateDistance = 35 -- List and Load crates in this radius only.
@@ -1670,6 +1670,8 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
      my_ctld.validateAndRepositionUnits = false -- Uses Disposition and other logic to find better ground positions for ground units avoiding trees, water, roads, runways, map scenery, statics and other units in the area. (Default is false)
      my_ctld.loadSavedCrates = true -- Load back crates (STATIC) from the save file. Useful for mission restart cleanup. (Default is true)
      my_ctld.UseC130LoadAndUnload = false -- When set to true, forces the C-130 player to use the C-130J built system to load the cargo onboard and to unload. (Default is false)
+     my_ctld.UseC130DynamicCargoAutoBuild = false -- When true (and UseC130LoadAndUnload is true), C-130 DynamicCargo unload completion is bridged to CTLD engineer-path auto-build.
+     my_ctld.C130DynamicCargoAutoBuildMergeSeconds = 10 -- Merge window in seconds for C-130 auto-build handoff; ready sets from same C-130 are batched into one engineer build call.
      my_ctld.locale = "en" -- Language locale to use, available are "en" (default), "de" and "fr"
 </code></pre>
 
@@ -1697,7 +1699,7 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
 
 <p>All other kinds of cargo can be sling-loaded.</p>
 
-<h2>2.1.2 Recommended settings</h2>
+<h2>2.1.3 Recommended settings</h2>
 
 <pre><code>     my_ctld.onestepmenu = true -- This will enable Get and load, drop and build, etc. All will be done in one step. works for every module except the C-130J-30 with my_ctld.UseC130LoadAndUnload = true
      my_ctld.C130basetype = "cds_crate" -- This can be changed to other cargo. This is only for the C-130J-30
@@ -1709,11 +1711,56 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
      my_ctld.movecratesbeforebuild = true -- leave as is at the pain of building crate still **inside** of the Hook.
      my_ctld.nobuildinloadzones = true -- don't build where you load.
      my_ctld.ChinookTroopCircleRadius = 5 -- Radius for troops dropping in a nice circle. Adjust to your planned squad size for the Chinook.
+     my_ctld.CrateDistance = 65 -- Distance from the aircraft and the max range where we will detect cargo. Default 35.
+     my_ctld.PackDistance = 65 -- Distance from the aircraft and the max range where we will detect units to pack. Default 35.
 </code></pre>
 
-<h2>2.2 User functions</h2>
+<h2>2.2 C-130J-30 support and cargo airdrop auto-build.</h2>
 
-<h3>2.2.1 Adjust or add chopper unit-type capabilities</h3>
+<h3>Important</h3>
+<p> <strong>Important:</strong> This auto-build flow only applies to cargo obtained via CTLD <strong>Get Crates</strong>.
+ Cargo spawned from the C-130 <strong>Loadsheet</strong> is <strong>not</strong> tracked by this feature.</p>
+
+<p>The C-130J-30 can auto-build airdropped CTLD cargo when this feature is enabled.
+This allows players to airdrop build cargo without manually deploying engineers.</p>
+
+<p>CTLD tracks supported C-130 cargo from the moment it is spawned via "Get Crates".
+After a valid airdrop and landing, CTLD automatically starts the build.</p>
+
+<p>If multiple compatible cargo sets are dropped close together, CTLD waits briefly
+(10 seconds by default) and then processes them together.</p>
+
+<h3>Required settings</h3>
+
+<pre><code>     my_ctld.UseC130LoadAndUnload = true -- This option forces C-130 cargo loading/unloading through the C-130J-30 load system.
+     my_ctld.UseC130DynamicCargoAutoBuild = true -- When true (and UseC130LoadAndUnload is true), C-130 DynamicCargo unload completion is bridged to CTLD engineer-path auto-build.
+     my_ctld.enableFixedWing = true -- This will activate the fixed-wing related functions, including the auto-build for airdropped cargo.
+</code></pre>
+
+<p>Adding cargo in your config for the C-130 can be deeply customized. For example you can have a cargo shape only used for the C-130 while all other aircraft will get something else.</p>
+
+<pre><code>    my_ctld:AddCratesCargoNoMove("IRIS T System", {"CTLD_CARGO_IRISTSLM_System"}, CTLD_CARGO.Enum.FOB, 3, 2800, 10, "SAM/AAA", nil,nil,nil,nil,"cds_crate",nil, "iso_container_small")
+</code></pre>
+
+<p>In the example above:
+- <code>AddCratesCargoNoMove</code> means the built unit/group will not receive an auto-move command after spawn.
+- <code>IRIS T System</code> is the menu/display name.
+- <code>CTLD_CARGO_IRISTSLM_System</code> is the mission editor template.
+- <code>CTLD_CARGO.Enum.FOB</code> defines the cargo/build type. FOB builds keep the mission-editor orientation.
+- <code>3</code> is crates required, <code>2800</code> is per-crate mass (kg), and <code>10</code> is stock.
+- <code>SAM/AAA</code> is the submenu label (used when <code>my_ctld.usesubcats = true</code>).
+- <code>cds_crate</code> is the default cargo shape for non-C130 aircraft when provided; if omitted, CTLD falls back to <code>my_ctld.basetype</code>.
+- <code>iso_container_small</code> is the C-130-specific cargo shape override, even if <code>my_ctld.C130basetype</code> is set to something else.
+- <strong>Important:</strong> If you do not want to set stock (the <code>10</code> parameter), pass <code>nil</code> in that position. Keep <code>nil</code> placeholders for skipped parameters before later values.</p>
+
+
+<p>Notes:
+- This is a C-130J-30 workflow.
+- Regular CTLD behavior for other aircraft remains unchanged.</p>
+
+<h2>2.3 User functions</h2>
+
+<h3>2.3.1 Adjust or add chopper unit-type capabilities</h3>
 
 <p>Use this function to adjust what a heli type can or cannot do:</p>
 
@@ -1744,7 +1791,7 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
    ["CH-47Fbl1"] = {type="CH-47Fbl1", crates=true, troops=true, cratelimit = 4, trooplimit = 31, length = 20, cargoweightlimit = 8000},
 </code></pre>
 
-<h3>2.2.2 Activate and deactivate zones</h3>
+<h3>2.3.2 Activate and deactivate zones</h3>
 
 <p>Activate a zone:</p>
 
@@ -1758,7 +1805,7 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
    my_ctld:DeactivateZone(Name,CTLD.CargoZoneType.DROP)
 </code></pre>
 
-<h2>2.2.3 Limit and manage available resources</h2>
+<h2>2.3.3 Limit and manage available resources</h2>
 
 <p> When adding generic cargo types, you can effectively limit how many units can be dropped/build by the players, e.g.</p>
 
@@ -1784,7 +1831,7 @@ Static shapes loadable <em>into</em> the Chinook and thus to <strong>be avoided 
 <p> Notes:
  Troops dropped back into a LOAD zone will effectively be added to the stock. Crates lost in e.g. a heli crash are just that - lost.</p>
 
-<h2>2.2.4 Create own SET_GROUP to manage CTLD Pilot groups</h2>
+<h2>2.3.4 Create own SET_GROUP to manage CTLD Pilot groups</h2>
 
 <pre><code>         -- Parameter: Set The SET_GROUP object created by the mission designer/user to represent the CTLD pilot groups.
          -- Needs to be set before starting the CTLD instance.
@@ -2039,19 +2086,6 @@ as CTLD_Cargo, the following line has to be added. NoCrates, PerCrateMass, Stock
 
 <p>So if the Vulcan in the example now needs six crates to complete, you have to bring two Hercs with three Vulcan crates each and drop them very close together...</p>
 
-<p> ### 5.4 C-130J-30 support</p>
-
-<p> The C130-J-30 will work only by setting up</p>
-
-<pre><code>         my_ctld.enableFixedWing = true -- false by default.
-
-         -- The rest below is default values but can be changed to something else.
-
-         my_ctld.C130basetype = "cds_crate" -- this is default.
-         my_ctld.FixedMinAngels = 155 -- for troop/cargo drop via chute in meters, ca 470 ft
-         my_ctld.FixedMaxAngels = 2000 -- for troop/cargo drop via chute in meters, ca 6000 ft
-         my_ctld.FixedMaxSpeed = 77 -- 77mps or 270kph or 150kn
-</code></pre>
 
 
 <p> You can also enable my_ctld.UseC130LoadAndUnload and set it to true, false is default, this means you will not be able to get and load items but rather "Get" only.
@@ -2325,6 +2359,12 @@ If you use units built by multiple templates, they will effectively double on lo
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).BCModulation">CTLD.BCModulation</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).C130DynamicCargoAutoBuildMergeSeconds">CTLD.C130DynamicCargoAutoBuildMergeSeconds</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -3158,6 +3198,12 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).UseC130DynamicCargoAutoBuild">CTLD.UseC130DynamicCargoAutoBuild</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).UseC130LoadAndUnload">CTLD.UseC130LoadAndUnload</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -3224,7 +3270,7 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildCrates">CTLD:_BuildCrates(Group, Unit, Engineering, MultiDrop)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildCrates">CTLD:_BuildCrates(Group, Unit, Engineering, MultiDrop, NotifyGroup)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to build nearby crates.</p>
 </td>
@@ -3233,6 +3279,138 @@ If you use units built by multiple templates, they will effectively double on lo
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._BuildObjectFromCrates">CTLD:_BuildObjectFromCrates(Group, Unit, Build, Repair, RepairLocation, MultiDrop)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to actually SPAWN buildables in the mission.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoCleanupSet">CTLD:_C130DcAutoCleanupSet(SetId, Result)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Cleanup C-130 DynamicCargo auto-build set.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoCreateProxyCargo">CTLD:_C130DcAutoCreateProxyCargo(SetData, Entry, DynamicCargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Create CTLD cargo proxy from landed DynamicCargo for build handoff.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoEnsureState">CTLD:_C130DcAutoEnsureState()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Ensure C-130 DynamicCargo auto-build runtime state tables exist.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoFilterCrates">CTLD:_C130DcAutoFilterCrates(Crates, |, SetIdOrScope)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Filter crate list to the currently active C-130 auto-build set.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoFlushOwnerBatch">CTLD:_C130DcAutoFlushOwnerBatch(OwnerKey)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Flush queued ready sets for a specific owner key.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoGetCarrierGroupName">CTLD:_C130DcAutoGetCarrierGroupName(DynamicCargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Get best-effort group name from dynamic cargo event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoGetCarrierUnitName">CTLD:_C130DcAutoGetCarrierUnitName(DynamicCargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Get best-effort unit name from dynamic cargo event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoGetMappedEntry">CTLD:_C130DcAutoGetMappedEntry(DynamicCargoName)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Get mapped C-130 DynamicCargo auto-build entry.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoGetOwnerKey">CTLD:_C130DcAutoGetOwnerKey(SetData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Get C-130 auto-build batch owner key.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoIsBuildableCargo">CTLD:_C130DcAutoIsBuildableCargo(Cargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Check whether cargo type is eligible for C-130 DynamicCargo auto-build.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoIsC130Event">CTLD:_C130DcAutoIsC130Event(DynamicCargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Check whether this dynamic cargo event belongs to C-130J transport.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoOnDynamicLoaded">CTLD:_C130DcAutoOnDynamicLoaded(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Handle DynamicCargoLoaded for mapped C-130 auto-build sets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoOnDynamicRemoved">CTLD:_C130DcAutoOnDynamicRemoved(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Handle DynamicCargoRemoved for mapped C-130 auto-build sets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoOnDynamicUnloaded">CTLD:_C130DcAutoOnDynamicUnloaded(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Handle DynamicCargoUnloaded for mapped C-130 auto-build sets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoQueueReadySet">CTLD:_C130DcAutoQueueReadySet(SetId)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Queue a ready set for merge-window handoff.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoRegisterDynamicCargo">CTLD:_C130DcAutoRegisterDynamicCargo(Positionable)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Register one spawned C-130 CTLD crate in DynamicCargo database and emit NewDynamicCargo.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoRegisterEntry">CTLD:_C130DcAutoRegisterEntry(SetId, Cargo)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Register one spawned crate entry inside a C-130 DynamicCargo auto-build set.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoRegisterSet">CTLD:_C130DcAutoRegisterSet(Group, Unit, Cargo, PickupZone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Register a new C-130 DynamicCargo auto-build set.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoResolveEntry">CTLD:_C130DcAutoResolveEntry(DynamicCargo, PreferLoaded)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Resolve closest pending/loaded set entry for a dynamic cargo event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoSpawnBuildHelperForSets">CTLD:_C130DcAutoSpawnBuildHelperForSets(OwnerKey, SetIds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Spawn one helper infantry group and handoff build for multiple sets.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoTick">CTLD:_C130DcAutoTick()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) C-130 DynamicCargo auto-build housekeeping tick.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._C130DcAutoTryCompleteSet">CTLD:_C130DcAutoTryCompleteSet(SetId)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Try to complete a C-130 DynamicCargo auto-build set.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3665,6 +3843,42 @@ If you use units built by multiple templates, they will effectively double on lo
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).__Stop">CTLD:__Stop(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Stop" after a delay.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._c130DcAutoActiveSetId">CTLD._c130DcAutoActiveSetId</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._c130DcAutoBatches">CTLD._c130DcAutoBatches</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._c130DcAutoMap">CTLD._c130DcAutoMap</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._c130DcAutoSeq">CTLD._c130DcAutoSeq</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._c130DcAutoSets">CTLD._c130DcAutoSets</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._c130DcAutoTimer">CTLD._c130DcAutoTimer</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -5692,6 +5906,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).C130DynamicCargoAutoBuildMergeSeconds" ><strong>CTLD.C130DynamicCargoAutoBuildMergeSeconds</strong></a>
+    
+
+
+    
+<p> merge ready C-130 auto-build sets from the same aircraft for this many seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD).C130basetype" ><strong>CTLD.C130basetype</strong></a>
     
@@ -5800,7 +6028,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -5936,7 +6164,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -5958,7 +6186,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -6027,10 +6255,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -6186,6 +6417,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).UseC130DynamicCargoAutoBuild" ><strong>CTLD.UseC130DynamicCargoAutoBuild</strong></a>
+    
+
+
+    
+<p> when true, bridge DynamicCargo C-130 transport states to CTLD auto-build via engineer path.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).UseC130LoadAndUnload" ><strong>CTLD.UseC130LoadAndUnload</strong></a>
     
 
@@ -6233,7 +6478,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(CTLD).UserSetGroup" ><strong>CTLD.UserSetGroup</strong></a>
+<a id="#(CTLD).VehicleMoveFormation" ><strong>CTLD.VehicleMoveFormation</strong></a>
     
 
 
@@ -6394,6 +6639,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -6697,6 +6953,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CTLD).onestepmenu" ><strong>CTLD.onestepmenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD).pickupZones" ><strong>CTLD.pickupZones</strong></a>
     
@@ -6745,7 +7012,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> noob catch</p>
+<p> time to repairor build a unit/group</p>
 
 </div>
 
@@ -6855,7 +7122,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -14407,7 +14674,7 @@ Return true to allow the request, or false to block it. When blocked, _LoadTroop
           </div>
           <div class="w3-half">
               
-<p>(Optional) Frequency to be used. Can also be given as a table of multiple frequencies, e.g. 30 or {30,124.5}. Defaults to {30,124.5}. There needs to be exactly the same number of modulations!</p>
+<p>Frequency to be used. Can also be given as a table of multiple frequencies, e.g. 30 or {30,124.5}. Defaults to {30,124.5}. There needs to be exactly the same number of modulations!</p>
 
           </div>
         </div>
@@ -14420,7 +14687,7 @@ Return true to allow the request, or false to block it. When blocked, _LoadTroop
           </div>
           <div class="w3-half">
               
-<p>(Optional) Modulation to be used. Can also be given as a table of multiple modulations, e.g. radio.modulation.AM or {radio.modulation.FM,radio.modulation.AM}. There needs to be exactly the same number of frequencies!</p>
+<p>Modulation to be used. Can also be given as a table of multiple modulations, e.g. radio.modulation.AM or {radio.modulation.FM,radio.modulation.AM}. There needs to be exactly the same number of frequencies!</p>
 
           </div>
         </div>
@@ -14433,7 +14700,7 @@ Return true to allow the request, or false to block it. When blocked, _LoadTroop
           </div>
           <div class="w3-half">
               
-<p>(Optional) Defaults to "C:\Program Files\DCS-SimpleRadio-Standalone\ExternalAudio"</p>
+<p>Defaults to "C:\Program Files\DCS-SimpleRadio-Standalone\ExternalAudio"</p>
 
           </div>
         </div>
@@ -14920,7 +15187,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can load crates. Default false.</p>
+<p>Unit can load crates. Default false.</p>
 
           </div>
         </div>
@@ -14933,7 +15200,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can load troops. Default false.</p>
+<p>Unit can load troops. Default false.</p>
 
           </div>
         </div>
@@ -14946,7 +15213,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can carry number of crates. Default 0.</p>
+<p>Unit can carry number of crates. Default 0.</p>
 
           </div>
         </div>
@@ -14959,7 +15226,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can carry number of troops. Default 0.</p>
+<p>Unit can carry number of troops. Default 0.</p>
 
           </div>
         </div>
@@ -14972,7 +15239,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit lenght (in metres) for the load radius. Default 20.</p>
+<p>Unit lenght (in metres) for the load radius. Default 20.</p>
 
           </div>
         </div>
@@ -14985,7 +15252,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Maxmimum weight in kgs this helo can carry. Default 500.</p>
+<p>Maxmimum weight in kgs this helo can carry. Default 500.</p>
 
           </div>
         </div>
@@ -15202,7 +15469,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can load crates. Default false.</p>
+<p>Unit can load crates. Default false.</p>
 
           </div>
         </div>
@@ -15215,7 +15482,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can load troops. Default false.</p>
+<p>Unit can load troops. Default false.</p>
 
           </div>
         </div>
@@ -15228,7 +15495,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can carry number of crates. Default 0.</p>
+<p>Unit can carry number of crates. Default 0.</p>
 
           </div>
         </div>
@@ -15241,7 +15508,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit can carry number of troops. Default 0.</p>
+<p>Unit can carry number of troops. Default 0.</p>
 
           </div>
         </div>
@@ -15254,7 +15521,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Unit lenght (in metres) for the load radius. Default 20.</p>
+<p>Unit lenght (in metres) for the load radius. Default 20.</p>
 
           </div>
         </div>
@@ -15267,7 +15534,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Maxmimum weight in kgs this helo can carry. Default 500.</p>
+<p>Maxmimum weight in kgs this helo can carry. Default 500.</p>
 
           </div>
         </div>
@@ -15543,7 +15810,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD)._BuildCrates" ><strong>CTLD:_BuildCrates(Group, Unit, Engineering, MultiDrop)</strong></a></h2>
+<h2><a id="#(CTLD)._BuildCrates" ><strong>CTLD:_BuildCrates(Group, Unit, Engineering, MultiDrop, NotifyGroup)</strong></a></h2>
 </div>
     
 <p>(Internal) Function to build nearby crates.</p>
@@ -15600,6 +15867,19 @@ However, if you create a new folder inside the miz file, which contains the soun
           <div class="w3-half">
               
 <p>If true and not engineering or FOB, vary position a bit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>NotifyGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Optional group to receive engineer/autobuild messages.</p>
 
           </div>
         </div>
@@ -15695,6 +15975,1054 @@ However, if you create a new folder inside the miz file, which contains the soun
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoCleanupSet" ><strong>CTLD:_C130DcAutoCleanupSet(SetId, Result)</strong></a></h2>
+</div>
+    
+<p>(Internal) Cleanup C-130 DynamicCargo auto-build set.</p>
+
+<div id= "#Functions##_C130DcAutoCleanupSet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>SetId</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Result</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoCreateProxyCargo" ><strong>CTLD:_C130DcAutoCreateProxyCargo(SetData, Entry, DynamicCargo)</strong></a></h2>
+</div>
+    
+<p>(Internal) Create CTLD cargo proxy from landed DynamicCargo for build handoff.</p>
+
+<div id= "#Functions##_C130DcAutoCreateProxyCargo" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SetData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Entry</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.DynamicCargo.html##(DYNAMICCARGO)">Wrapper.DynamicCargo#DYNAMICCARGO</a>
+            <strong><strong>DynamicCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD_CARGO)">#CTLD_CARGO</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>ProxyCargo</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoEnsureState" ><strong>CTLD:_C130DcAutoEnsureState()</strong></a></h2>
+</div>
+    
+<p>(Internal) Ensure C-130 DynamicCargo auto-build runtime state tables exist.</p>
+
+<div id= "#Functions##_C130DcAutoEnsureState" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoFilterCrates" ><strong>CTLD:_C130DcAutoFilterCrates(Crates, |, SetIdOrScope)</strong></a></h2>
+</div>
+    
+<p>(Internal) Filter crate list to the currently active C-130 auto-build set.</p>
+
+<div id= "#Functions##_C130DcAutoFilterCrates" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>Crates</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>|</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>table SetIdOrScope</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>SetIdOrScope</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Filtered</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>Count</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoFlushOwnerBatch" ><strong>CTLD:_C130DcAutoFlushOwnerBatch(OwnerKey)</strong></a></h2>
+</div>
+    
+<p>(Internal) Flush queued ready sets for a specific owner key.</p>
+
+<div id= "#Functions##_C130DcAutoFlushOwnerBatch" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>OwnerKey</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoGetCarrierGroupName" ><strong>CTLD:_C130DcAutoGetCarrierGroupName(DynamicCargo)</strong></a></h2>
+</div>
+    
+<p>(Internal) Get best-effort group name from dynamic cargo event.</p>
+
+<div id= "#Functions##_C130DcAutoGetCarrierGroupName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.DynamicCargo.html##(DYNAMICCARGO)">Wrapper.DynamicCargo#DYNAMICCARGO</a>
+            <strong><strong>DynamicCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Group name</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoGetCarrierUnitName" ><strong>CTLD:_C130DcAutoGetCarrierUnitName(DynamicCargo)</strong></a></h2>
+</div>
+    
+<p>(Internal) Get best-effort unit name from dynamic cargo event.</p>
+
+<div id= "#Functions##_C130DcAutoGetCarrierUnitName" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.DynamicCargo.html##(DYNAMICCARGO)">Wrapper.DynamicCargo#DYNAMICCARGO</a>
+            <strong><strong>DynamicCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Unit name</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoGetMappedEntry" ><strong>CTLD:_C130DcAutoGetMappedEntry(DynamicCargoName)</strong></a></h2>
+</div>
+    
+<p>(Internal) Get mapped C-130 DynamicCargo auto-build entry.</p>
+
+<div id= "#Functions##_C130DcAutoGetMappedEntry" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>DynamicCargoName</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>SetData</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>EntryData</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoGetOwnerKey" ><strong>CTLD:_C130DcAutoGetOwnerKey(SetData)</strong></a></h2>
+</div>
+    
+<p>(Internal) Get C-130 auto-build batch owner key.</p>
+
+<div id= "#Functions##_C130DcAutoGetOwnerKey" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SetData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Owner key</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoIsBuildableCargo" ><strong>CTLD:_C130DcAutoIsBuildableCargo(Cargo)</strong></a></h2>
+</div>
+    
+<p>(Internal) Check whether cargo type is eligible for C-130 DynamicCargo auto-build.</p>
+
+<div id= "#Functions##_C130DcAutoIsBuildableCargo" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoIsC130Event" ><strong>CTLD:_C130DcAutoIsC130Event(DynamicCargo)</strong></a></h2>
+</div>
+    
+<p>(Internal) Check whether this dynamic cargo event belongs to C-130J transport.</p>
+
+<div id= "#Functions##_C130DcAutoIsC130Event" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.DynamicCargo.html##(DYNAMICCARGO)">Wrapper.DynamicCargo#DYNAMICCARGO</a>
+            <strong><strong>DynamicCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoOnDynamicLoaded" ><strong>CTLD:_C130DcAutoOnDynamicLoaded(EventData)</strong></a></h2>
+</div>
+    
+<p>(Internal) Handle DynamicCargoLoaded for mapped C-130 auto-build sets.</p>
+
+<div id= "#Functions##_C130DcAutoOnDynamicLoaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Handled</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoOnDynamicRemoved" ><strong>CTLD:_C130DcAutoOnDynamicRemoved(EventData)</strong></a></h2>
+</div>
+    
+<p>(Internal) Handle DynamicCargoRemoved for mapped C-130 auto-build sets.</p>
+
+<div id= "#Functions##_C130DcAutoOnDynamicRemoved" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Handled</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoOnDynamicUnloaded" ><strong>CTLD:_C130DcAutoOnDynamicUnloaded(EventData)</strong></a></h2>
+</div>
+    
+<p>(Internal) Handle DynamicCargoUnloaded for mapped C-130 auto-build sets.</p>
+
+<div id= "#Functions##_C130DcAutoOnDynamicUnloaded" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Handled</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoQueueReadySet" ><strong>CTLD:_C130DcAutoQueueReadySet(SetId)</strong></a></h2>
+</div>
+    
+<p>(Internal) Queue a ready set for merge-window handoff.</p>
+
+<div id= "#Functions##_C130DcAutoQueueReadySet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>SetId</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoRegisterDynamicCargo" ><strong>CTLD:_C130DcAutoRegisterDynamicCargo(Positionable)</strong></a></h2>
+</div>
+    
+<p>(Internal) Register one spawned C-130 CTLD crate in DynamicCargo database and emit NewDynamicCargo.</p>
+
+<div id= "#Functions##_C130DcAutoRegisterDynamicCargo" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Positionable.html##(POSITIONABLE)">Wrapper.Positionable#POSITIONABLE</a>
+            <strong><strong>Positionable</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.DynamicCargo.html##(DYNAMICCARGO)">Wrapper.DynamicCargo#DYNAMICCARGO</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>DynamicCargo</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoRegisterEntry" ><strong>CTLD:_C130DcAutoRegisterEntry(SetId, Cargo)</strong></a></h2>
+</div>
+    
+<p>(Internal) Register one spawned crate entry inside a C-130 DynamicCargo auto-build set.</p>
+
+<div id= "#Functions##_C130DcAutoRegisterEntry" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>SetId</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoRegisterSet" ><strong>CTLD:_C130DcAutoRegisterSet(Group, Unit, Cargo, PickupZone)</strong></a></h2>
+</div>
+    
+<p>(Internal) Register a new C-130 DynamicCargo auto-build set.</p>
+
+<div id= "#Functions##_C130DcAutoRegisterSet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>PickupZone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Set id or nil</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoResolveEntry" ><strong>CTLD:_C130DcAutoResolveEntry(DynamicCargo, PreferLoaded)</strong></a></h2>
+</div>
+    
+<p>(Internal) Resolve closest pending/loaded set entry for a dynamic cargo event.</p>
+
+<div id= "#Functions##_C130DcAutoResolveEntry" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.DynamicCargo.html##(DYNAMICCARGO)">Wrapper.DynamicCargo#DYNAMICCARGO</a>
+            <strong><strong>DynamicCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>PreferLoaded</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>If true only loaded-state entries are considered.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>SetData</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>EntryData</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoSpawnBuildHelperForSets" ><strong>CTLD:_C130DcAutoSpawnBuildHelperForSets(OwnerKey, SetIds)</strong></a></h2>
+</div>
+    
+<p>(Internal) Spawn one helper infantry group and handoff build for multiple sets.</p>
+
+<div id= "#Functions##_C130DcAutoSpawnBuildHelperForSets" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>OwnerKey</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>SetIds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoTick" ><strong>CTLD:_C130DcAutoTick()</strong></a></h2>
+</div>
+    
+<p>(Internal) C-130 DynamicCargo auto-build housekeeping tick.</p>
+
+<div id= "#Functions##_C130DcAutoTick" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._C130DcAutoTryCompleteSet" ><strong>CTLD:_C130DcAutoTryCompleteSet(SetId)</strong></a></h2>
+</div>
+    
+<p>(Internal) Try to complete a C-130 DynamicCargo auto-build set.</p>
+
+<div id= "#Functions##_C130DcAutoTryCompleteSet" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>SetId</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Outcome</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -16052,7 +17380,7 @@ However, if you create a new folder inside the miz file, which contains the soun
           </div>
           <div class="w3-half">
               
-<p>(Optional) Percentage below which to restock, used in conjunction with Restock (must be true). Defaults to 75 (percent).</p>
+<p>Percentage below which to restock, used in conjunction with Restock (must be true). Defaults to 75 (percent).</p>
 
           </div>
         </div>
@@ -21271,6 +22599,20 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).C130DynamicCargoAutoBuildMergeSeconds" ><strong>CTLD.C130DynamicCargoAutoBuildMergeSeconds</strong></a>
+    
+
+
+    
+<p> merge ready C-130 auto-build sets from the same aircraft for this many seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD).C130basetype" ><strong>CTLD.C130basetype</strong></a>
     
@@ -21379,7 +22721,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -21515,7 +22857,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -21537,7 +22879,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -21606,10 +22948,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -21765,6 +23110,20 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).UseC130DynamicCargoAutoBuild" ><strong>CTLD.UseC130DynamicCargoAutoBuild</strong></a>
+    
+
+
+    
+<p> when true, bridge DynamicCargo C-130 transport states to CTLD auto-build via engineer path.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).UseC130LoadAndUnload" ><strong>CTLD.UseC130LoadAndUnload</strong></a>
     
 
@@ -21812,7 +23171,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(CTLD).UserSetGroup" ><strong>CTLD.UserSetGroup</strong></a>
+<a id="#(CTLD).VehicleMoveFormation" ><strong>CTLD.VehicleMoveFormation</strong></a>
     
 
 
@@ -21973,6 +23332,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -22276,6 +23646,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CTLD).onestepmenu" ><strong>CTLD.onestepmenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD).pickupZones" ><strong>CTLD.pickupZones</strong></a>
     
@@ -22324,7 +23705,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 
 
     
-<p> noob catch</p>
+<p> time to repairor build a unit/group</p>
 
 </div>
 
@@ -22434,7 +23815,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -24047,6 +25428,20 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(CTLD).C130DynamicCargoAutoBuildMergeSeconds" ><strong>CTLD.C130DynamicCargoAutoBuildMergeSeconds</strong></a>
+    
+
+
+    
+<p> merge ready C-130 auto-build sets from the same aircraft for this many seconds.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(CTLD).C130basetype" ><strong>CTLD.C130basetype</strong></a>
     
@@ -24155,7 +25550,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).CtldUnits" ><strong>CTLD.CtldUnits</strong></a>
     
 
@@ -24291,7 +25686,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeFMFrequencies" ><strong>CTLD.FreeFMFrequencies</strong></a>
     
 
@@ -24313,7 +25708,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
     
 
@@ -24382,10 +25777,13 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
+
+    
+<p> tables</p>
 
 </div>
 
@@ -24541,6 +25939,20 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
+<a id="#(CTLD).UseC130DynamicCargoAutoBuild" ><strong>CTLD.UseC130DynamicCargoAutoBuild</strong></a>
+    
+
+
+    
+<p> when true, bridge DynamicCargo C-130 transport states to CTLD auto-build via engineer path.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
 <a id="#(CTLD).UseC130LoadAndUnload" ><strong>CTLD.UseC130LoadAndUnload</strong></a>
     
 
@@ -24588,7 +26000,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(CTLD).UserSetGroup" ><strong>CTLD.UserSetGroup</strong></a>
+<a id="#(CTLD).VehicleMoveFormation" ><strong>CTLD.VehicleMoveFormation</strong></a>
     
 
 
@@ -24749,6 +26161,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -25052,6 +26475,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(CTLD).onestepmenu" ><strong>CTLD.onestepmenu</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD).pickupZones" ><strong>CTLD.pickupZones</strong></a>
     
@@ -25100,7 +26534,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 
 
     
-<p> noob catch</p>
+<p> time to repairor build a unit/group</p>
 
 </div>
 
@@ -25210,7 +26644,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -29861,17 +31295,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD.UnitTypeCapabilities).crates" ><strong>CTLD.UnitTypeCapabilities.crates</strong></a>
     
 <p>Can transport crate.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD.UnitTypeCapabilities).length" ><strong>CTLD.UnitTypeCapabilities.length</strong></a>
-    
-
 
 </div>
 
