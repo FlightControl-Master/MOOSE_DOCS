@@ -1589,9 +1589,44 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).DisableHuntingPatrol">ARMYGROUP:DisableHuntingPatrol()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Disable hunting patrol behavior.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).Disengage">ARMYGROUP:Disengage()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Disengage".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).EnableHuntingPatrol">ARMYGROUP:EnableHuntingPatrol(Zone, Speed, Formation, Interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Enable hunting patrol behavior for this ARMYGROUP.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).EnableHuntingPatrolForGroup">ARMYGROUP.EnableHuntingPatrolForGroup(group, zone, speed, formation, interval)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<h2>Optional helper: convenience wrapper for your campaign code</h2>
+<p>Example usage in your ArmyManagement:</p>
+
+<p>  local group = GROUP:FindByName("MyDefenseGroup")
+  local army  = ARMYGROUP:New(group)
+  army:SetPatrolAdInfinitum(true)
+  army:EnableHuntingPatrol(myZone, 20, "Off Road", 5)</p>
+
+<p>ARMYGROUP will:</p>
+
+<ul>
+    <li>patrol its waypoints forever</li>
+    <li>periodically scan myZone</li>
+    <li>when an enemy appears, EngageTarget()</li>
+    <li>when target dies, Disengage() and resume patrol</li>
+</ul>
+
+<hr/>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1622,6 +1657,18 @@
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).GetClosestRoadDist">ARMYGROUP:GetClosestRoadDist()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get 2D distance to the closest road.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).HuntingEnemySet">ARMYGROUP.HuntingEnemySet</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).HuntingPatrol">ARMYGROUP.HuntingPatrol</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Module table</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -1841,6 +1888,21 @@
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._HuntingPatrolFindEnemyInZone">ARMYGROUP:_HuntingPatrolFindEnemyInZone(Zone)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<h2>Internal: find one enemy ground unit inside a zone</h2>
+<p>Very simple: build a SET_UNIT, filter by coalition and zone,
+and pick the closest unit to this ARMYGROUP.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._HuntingPatrolUpdate">ARMYGROUP:_HuntingPatrolUpdate()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<h2>Internal: periodic update</h2>
+<p>This is called by the TIMER created in EnableHuntingPatrol().</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP)._InitGroup">ARMYGROUP:_InitGroup(Template, Delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Initialize group parameters.</p>
@@ -1968,6 +2030,42 @@
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).groupinitialized">ARMYGROUP.groupinitialized</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).hp_formation">ARMYGROUP.hp_formation</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).hp_interval">ARMYGROUP.hp_interval</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).hp_speed">ARMYGROUP.hp_speed</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).hp_target">ARMYGROUP.hp_target</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).hp_timer">ARMYGROUP.hp_timer</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(ARMYGROUP).hp_zone">ARMYGROUP.hp_zone</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -6637,6 +6735,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ARMYGROUP).HuntingPatrol" ><strong>ARMYGROUP.HuntingPatrol</strong></a>
+    
+<p>Module table</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ARMYGROUP).TsuppressAve" ><strong>ARMYGROUP.TsuppressAve</strong></a>
     
@@ -6724,6 +6833,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_interval" ><strong>ARMYGROUP.hp_interval</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_zone" ><strong>ARMYGROUP.hp_zone</strong></a>
+    
+
 
 </div>
 
@@ -7748,6 +7879,36 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).DisableHuntingPatrol" ><strong>ARMYGROUP:DisableHuntingPatrol()</strong></a></h2>
+</div>
+    
+<p>Disable hunting patrol behavior.</p>
+
+<div id= "#Functions##DisableHuntingPatrol" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ARMYGROUP)">#ARMYGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(ARMYGROUP).Disengage" ><strong>ARMYGROUP:Disengage()</strong></a></h2>
 </div>
     
@@ -7759,6 +7920,202 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
    <div class="w3-margin-left">
 <p>ARMYGROUP</p>
 </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).EnableHuntingPatrol" ><strong>ARMYGROUP:EnableHuntingPatrol(Zone, Speed, Formation, Interval)</strong></a></h2>
+</div>
+    
+<p>Enable hunting patrol behavior for this ARMYGROUP.</p>
+
+<div id= "#Functions##EnableHuntingPatrol" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE_BASE)">Core.Zone#ZONE_BASE</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The zone to hunt inside.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Speed in knots when engaging.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Formation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Formation used during engagement (optional).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Scan interval in seconds (optional, default 5).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ARMYGROUP)">#ARMYGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP).EnableHuntingPatrolForGroup" ><strong>ARMYGROUP.EnableHuntingPatrolForGroup(group, zone, speed, formation, interval)</strong></a></h2>
+</div>
+    
+<h2>Optional helper: convenience wrapper for your campaign code</h2>
+<p>Example usage in your ArmyManagement:</p>
+
+<p>  local group = GROUP:FindByName("MyDefenseGroup")
+  local army  = ARMYGROUP:New(group)
+  army:SetPatrolAdInfinitum(true)
+  army:EnableHuntingPatrol(myZone, 20, "Off Road", 5)</p>
+
+<p>ARMYGROUP will:</p>
+
+<ul>
+    <li>patrol its waypoints forever</li>
+    <li>periodically scan myZone</li>
+    <li>when an enemy appears, EngageTarget()</li>
+    <li>when target dies, Disengage() and resume patrol</li>
+</ul>
+
+<hr/>
+
+<div id= "#Functions##EnableHuntingPatrolForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The GROUP object to be made into an ARMYGROUP and send hunting.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The zone object where to search for enemies.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>speed</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Speed in knots when engaging.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>formation</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Formation used during engagement (optional).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>interval</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Scan interval in seconds (optional, default 5).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ARMYGROUP)">#ARMYGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>ArmyGroup The new ArmyGroup.</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -9459,6 +9816,98 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
           </div>
         </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(ARMYGROUP)">#ARMYGROUP</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP)._HuntingPatrolFindEnemyInZone" ><strong>ARMYGROUP:_HuntingPatrolFindEnemyInZone(Zone)</strong></a></h2>
+</div>
+    
+<h2>Internal: find one enemy ground unit inside a zone</h2>
+<p>Very simple: build a SET_UNIT, filter by coalition and zone,
+and pick the closest unit to this ARMYGROUP.</p>
+
+    
+<hr/>
+
+<div id= "#Functions##_HuntingPatrolFindEnemyInZone" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Zone.html##(ZONE)">Core.Zone#ZONE</a>
+            <strong><strong>Zone</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The zont to look at</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Enemy The nearest enemy UNIT in zone</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(ARMYGROUP)._HuntingPatrolUpdate" ><strong>ARMYGROUP:_HuntingPatrolUpdate()</strong></a></h2>
+</div>
+    
+<h2>Internal: periodic update</h2>
+<p>This is called by the TIMER created in EnableHuntingPatrol().</p>
+
+    
+<p>It:</p>
+
+<ul>
+    <li>checks if group is alive &amp; combat-ready  </li>
+    <li>if a target is locked, checks if it is still alive    </li>
+    <li>if no target, scans the zone for enemies and locks one</li>
+    <li>uses ARMYGROUP:EngageTarget() / Disengage()   </li>
+</ul>
+
+<hr/>
+
+<div id= "#Functions##_HuntingPatrolUpdate" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>ARMYGROUP</p>
+</div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -12170,6 +12619,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ARMYGROUP).HuntingPatrol" ><strong>ARMYGROUP.HuntingPatrol</strong></a>
+    
+<p>Module table</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ARMYGROUP).TsuppressAve" ><strong>ARMYGROUP.TsuppressAve</strong></a>
     
@@ -12257,6 +12717,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_interval" ><strong>ARMYGROUP.hp_interval</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_zone" ><strong>ARMYGROUP.hp_zone</strong></a>
+    
+
 
 </div>
 
@@ -32647,6 +33129,17 @@ Optionally, you can calculate the current max weight possible, which accounts fo
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ARMYGROUP).HuntingPatrol" ><strong>ARMYGROUP.HuntingPatrol</strong></a>
+    
+<p>Module table</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ARMYGROUP).TsuppressAve" ><strong>ARMYGROUP.TsuppressAve</strong></a>
     
@@ -32734,6 +33227,28 @@ Optionally, you can calculate the current max weight possible, which accounts fo
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_interval" ><strong>ARMYGROUP.hp_interval</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_zone" ><strong>ARMYGROUP.hp_zone</strong></a>
+    
+
 
 </div>
 
@@ -34464,6 +34979,17 @@ Optionally, you can calculate the current max weight possible, which accounts fo
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #table
+<a id="#(ARMYGROUP).HuntingPatrol" ><strong>ARMYGROUP.HuntingPatrol</strong></a>
+    
+<p>Module table</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #number
 <a id="#(ARMYGROUP).TsuppressAve" ><strong>ARMYGROUP.TsuppressAve</strong></a>
     
@@ -34551,6 +35077,28 @@ Optionally, you can calculate the current max weight possible, which accounts fo
 
     
 <p> Init done.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_interval" ><strong>ARMYGROUP.hp_interval</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(ARMYGROUP).hp_zone" ><strong>ARMYGROUP.hp_zone</strong></a>
+    
+
 
 </div>
 
