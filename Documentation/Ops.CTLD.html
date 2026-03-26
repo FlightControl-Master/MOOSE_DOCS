@@ -1668,6 +1668,7 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
      my_ctld.onestepmenu = false -- When set to true, the menu will create Drop and build, Get and load, Pack and remove, Pack and load, Pack. it will be a 1 step solution.
      my_ctld.VehicleMoveFormation = AI.Task.VehicleFormation.VEE -- When a group moves to a MOVE zone, then it takes this formation. Can be a table of formations, which are then randomly chosen. Defaults to "Vee".
      my_ctld.validateAndRepositionUnits = false -- Uses Disposition and other logic to find better ground positions for ground units avoiding trees, water, roads, runways, map scenery, statics and other units in the area. (Default is false)
+     my_ctld.maxUnloadTroopsAllowed = -1 -- Max troops allowed to be unloaded at once. Set to -1 for unlimited (Default). This is a soft limit, that is, if you have more troops in the heli, it will still unload them. Ex. prevent players from spamming troops on the ground and causing performance issues.
      my_ctld.loadSavedCrates = true -- Load back crates (STATIC) from the save file. Useful for mission restart cleanup. (Default is true)
      my_ctld.UseC130LoadAndUnload = false -- When set to true, forces the C-130 player to use the C-130J built system to load the cargo onboard and to unload. (Default is false)
      my_ctld.UseC130DynamicCargoAutoBuild = false -- When true (and UseC130LoadAndUnload is true), C-130 DynamicCargo unload completion is bridged to CTLD engineer-path auto-build.
@@ -2420,6 +2421,18 @@ If you use units built by multiple templates, they will effectively double on lo
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).CanHoverLoad">CTLD:CanHoverLoad(Unit)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Check if a unit is in a load zone and is hovering in parameters.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).CanUnloadAllTroops">CTLD:CanUnloadAllTroops(The, The, LoadedCargo, IsGrounded, IsHoverUnload, Group, Unit)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Override this function to check if troops can be unloaded.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).CanUnloadSingleTroopByID">CTLD:CanUnloadSingleTroopByID(Group, Unit, ChunkID, Quantity, LoadedCargo, IsGrounded, IsHoverUnload)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Override this function to check if we can unload a single Troop group by ID.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4104,6 +4117,12 @@ If you use units built by multiple templates, they will effectively double on lo
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).maxUnitsNearby">CTLD.maxUnitsNearby</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).maxUnloadTroopsAllowed">CTLD.maxUnloadTroopsAllowed</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -6254,13 +6273,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
-
-    
-<p> tables</p>
 
 </div>
 
@@ -6368,17 +6384,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
     
@@ -6477,18 +6482,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(CTLD).VehicleMoveFormation" ><strong>CTLD.VehicleMoveFormation</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CTLD)._c130DcAutoActiveSetId" ><strong>CTLD._c130DcAutoActiveSetId</strong></a>
+<a id="#(CTLD).UserSetGroup" ><strong>CTLD.UserSetGroup</strong></a>
     
 
 
@@ -6649,17 +6643,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> #1570</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
-    
-
 
 </div>
 
@@ -7104,6 +7087,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
+    
+<p> message suppression</p>
+
 </div>
 
 </div>   
@@ -7121,7 +7107,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -9799,6 +9785,247 @@ Return true to allow the request, or false to block it. When blocked, _LoadTroop
       <div class="w3-half">
         
 <p>Outcome</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).CanUnloadAllTroops" ><strong>CTLD:CanUnloadAllTroops(The, The, LoadedCargo, IsGrounded, IsHoverUnload, Group, Unit)</strong></a></h2>
+</div>
+    
+<p>Override this function to check if troops can be unloaded.</p>
+
+    
+<p>This does not prevent returning troops to base.</p>
+
+<div id= "#Functions##CanUnloadAllTroops" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>The</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>group trying to unload</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>The</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>unit trying to unload</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>LoadedCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Table of loaded cargo, see #CTLD.LoadedCargo</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IsGrounded</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Is the unit on the ground</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IsHoverUnload</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Is the unit hovering in parameters for hover unload</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>True if troops can be unloaded, false to prevent unloading</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).CanUnloadSingleTroopByID" ><strong>CTLD:CanUnloadSingleTroopByID(Group, Unit, ChunkID, Quantity, LoadedCargo, IsGrounded, IsHoverUnload)</strong></a></h2>
+</div>
+    
+<p>Override this function to check if we can unload a single Troop group by ID.</p>
+
+<div id= "#Functions##CanUnloadSingleTroopByID" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft group.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>Unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The aircraft unit.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ChunkID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>the Cargo ID</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Quantity</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>the quantity to unload</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>LoadedCargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>the current loaded cargo table for this unit</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IsGrounded</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>whether the unit is currently grounded</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>IsHoverUnload</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>whether the unit is currently in hover-unload state</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>true if we can unload, false if not</p>
 
       </div>
     </div>
@@ -23013,13 +23240,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
-
-    
-<p> tables</p>
 
 </div>
 
@@ -23127,17 +23351,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
     
@@ -23236,18 +23449,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(CTLD).VehicleMoveFormation" ><strong>CTLD.VehicleMoveFormation</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CTLD)._c130DcAutoActiveSetId" ><strong>CTLD._c130DcAutoActiveSetId</strong></a>
+<a id="#(CTLD).UserSetGroup" ><strong>CTLD.UserSetGroup</strong></a>
     
 
 
@@ -23408,17 +23610,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> #1570</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
-    
-
 
 </div>
 
@@ -23863,6 +24054,9 @@ However, if you create a new folder inside the miz file, which contains the soun
     
 
 
+    
+<p> message suppression</p>
+
 </div>
 
 </div>   
@@ -23880,7 +24074,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -25842,13 +26036,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
+    
 <a id="#(CTLD).PilotGroups" ><strong>CTLD.PilotGroups</strong></a>
     
 
-
-    
-<p> tables</p>
 
 </div>
 
@@ -25956,17 +26147,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(CTLD).Spawned_Cargo" ><strong>CTLD.Spawned_Cargo</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(CTLD).Spawned_Crates" ><strong>CTLD.Spawned_Crates</strong></a>
     
@@ -26065,18 +26245,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     
-<a id="#(CTLD).VehicleMoveFormation" ><strong>CTLD.VehicleMoveFormation</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(CTLD)._c130DcAutoActiveSetId" ><strong>CTLD._c130DcAutoActiveSetId</strong></a>
+<a id="#(CTLD).UserSetGroup" ><strong>CTLD.UserSetGroup</strong></a>
     
 
 
@@ -26237,17 +26406,6 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> #1570</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #table
-<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
-    
-
 
 </div>
 
@@ -26692,6 +26850,9 @@ However, if you create a new folder inside the miz file, which contains the soun
     
 
 
+    
+<p> message suppression</p>
+
 </div>
 
 </div>   
@@ -26709,7 +26870,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
+    
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -31360,17 +31521,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD.UnitTypeCapabilities).crates" ><strong>CTLD.UnitTypeCapabilities.crates</strong></a>
     
 <p>Can transport crate.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(CTLD.UnitTypeCapabilities).length" ><strong>CTLD.UnitTypeCapabilities.length</strong></a>
-    
-
 
 </div>
 
