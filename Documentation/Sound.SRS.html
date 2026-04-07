@@ -1494,7 +1494,7 @@
 
 <h1>The MSRS Concept</h1>
 
-<p>This class allows to broadcast sound files or text via Simple Radio Standalone (SRS).</p>
+<p>This class allows to broadcast sound files or text to speech via Simple Radio Standalone (SRS).</p>
 </td>
       </tr>
     </table>
@@ -1511,28 +1511,25 @@
 
 <h1>The MSRS Concept</h1>
 
-<p>This class allows to broadcast sound files or text via Simple Radio Standalone (SRS).</p>
+<p>This class allows to broadcast sound files or text to speech via Simple Radio Standalone (SRS).</p>
 
     
 
 <h2>Prerequisites</h2>
 
 <ul>
-    <li>This script needs SRS version >= 1.9.6</li>
     <li>You need to de-sanitize os, io and lfs in the missionscripting.lua</li>
-    <li>Optional: DCS-gRPC as backend to communicate with SRS (via infra)</li>
-    <li>Optional: HOUNDTTS as backend to communicate with SRS (via infra)</li>
+    <li>Optional but recommended: HOUND TTS as backend to communicate with SRS (via plugin)</li>
+    <li>Optional: DCS-gRPC as backend to communicate with SRS (via plugin)</li>
 </ul>
 
-<h2>Knwon Issues</h2>
+<h2>Known Issues</h2>
 
-<h3>Pop-up Window</h3>
+<h3>Pop-up Window (with backend windows)</h3>
 
 <p>The text-to-speech conversion of SRS is done via an external exe file. When this file is called, a windows <code>cmd</code> window is briefly opended. That puts DCS out of focus, which is annoying,
-expecially in VR but unavoidable (if you have a solution, please feel free to share!).</p>
+expecially in VR, but unavoidable unless you use HOUD or gRPC as backends.</p>
 
-<p>NOTE that this is not an issue if the mission is running on a server.
-Also NOTE that using DCS-gRPC and Hound-TTS as backend create no pop-up window.</p>
 
 <h1>Play Sound Files</h1>
 
@@ -1594,16 +1591,17 @@ Note that this is only a factor if SRS server has line-of-sight and/or distance 
 
 <p>See <a href="##(MSRS).LoadConfigFile">MSRS.LoadConfigFile</a> for details on how to set this up.</p>
 
-<h2>TTS Providers</h2>
+<h2>TTS (text-to-speech) Providers</h2>
 
-<p>The default provider for generating speech from text is the native Windows TTS service. Note that you need to install the voices you want to use.</p>
+<p>The <strong>currently recommended</strong> backend is HOUND TTS (no pop-ups), which has a wide variety of TTS providers.
+The <em>default</em> provider for generating speech from text is the native Windows TTS service. Note that you need to install the voices you want to use.</p>
 
 <p><strong>Pro-Tip</strong> - use the command line with power shell to call <code>DCS-SR-ExternalAudio.exe</code> - it will tell you what is missing
 and also the Google Console error, in case you have missed a step in setting up your Google TTS.
 For example, <code>.\DCS-SR-ExternalAudio.exe -t "Text Message" -f 255 -m AM -c 2 -s 2 -z -G "Path_To_You_Google.Json"</code>
 plays a message on 255 MHz AM for the blue coalition in-game.</p>
 
-<h3>Google</h3>
+<h3>Google (best speech synthesis)</h3>
 
 <p>In order to use Google Cloud for TTS you need to use <a href="##(MSRS).SetProvider">MSRS.SetProvider</a> and <a href="##(MSRS).SetProviderOptionsGoogle">MSRS.SetProviderOptionsGoogle</a> functions:</p>
 
@@ -1644,6 +1642,13 @@ msrs:SetProviderOptionsAmazon(AccessKey, Region)
 
 <p>You can set the voice to use with Azure via <a href="##(MSRS).SetVoiceAzure">MSRS.SetVoiceAzure</a>.</p>
 
+<h3>Piper, OpenAI and further provider options [Only HOUND backend]</h3>
+
+<p>You can use further providers with HOUND TTS as a backend, see <a href="https://github.com/uriba107/HoundTTS/releases">Hound-TTS</a> for setup.</p>
+
+<pre><code>msrs:SetProvider(MSRS.Provider.PIPER) -- e.g. for piper
+</code></pre>
+
 <h2>Backend</h2>
 
 <p>The default interface to SRS is via calling the 'DCS-SR-ExternalAudio.exe'. As noted above, this has the unavoidable drawback that a pop-up briefly appears
@@ -1651,13 +1656,13 @@ and DCS might be put out of focus.</p>
 
 <h2>Hound TTS as an alternative to 'DCS-SR-ExternalAudio.exe' for TTS</h2>
 
-<p>An alternative interface to SRS is <a href="https://github.com/uriba107/HoundTTS/releases">Hound-TTS</a>. This does not call an exe file and therefore avoids the annoying pop-up window.
+<p>the recommended alternative interface to SRS is <a href="https://github.com/uriba107/HoundTTS/releases">Hound-TTS</a>. This does not call an exe file and therefore avoids the annoying pop-up window.
 In addition to Windows and Google cloud, it also offers Piper local voice creation and others as providers for TTS.</p>
 
 <p>Use <a href="##(MSRS).SetDefaultBackendHound">MSRS.SetDefaultBackendHound</a> to enable <a href="https://github.com/uriba107/HoundTTS/releases">Hound-TTS</a> as an alternate backend.
 This can be useful if the popup should be avoided or to use Piper or others for TTS. Please note, only text-to-speech is supported and it it cannot be used to transmit audio files.</p>
 
-<p>Hound TTS must be installed and configured per the <a href="https://github.com/uriba107/HoundTTS#installation">Hound TTS</a> prior to use. 
+<p>Hound TTS must be installed and configured per the <a href="https://github.com/uriba107/HoundTTS#installation">Hound TTS</a> GitHub prior to use. 
 If a cloud TTS provider is being used, the API key(s) must be set as per the documentation.
 Hound TTS can be used both with DCS dedicated server and regular DCS installations.</p>
 
@@ -2116,6 +2121,12 @@ atis:Start()
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetTTSProviderMicrosoft">MSRS:SetTTSProviderMicrosoft()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Use Microsoft to provide text-to-speech.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS).SetTTSProviderOpenAI">MSRS:SetTTSProviderOpenAI()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Use OpenAI to provide text-to-speech.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3110,7 +3121,13 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS.Provider).KITTEN">MSRS.Provider.KITTEN</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Kitten voice server. Only possible with Hound-TTS backend.</p>
+<p>Kitten voice server. Only possible with Hound-TTS backend. Superseded by OpenAI</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MSRS.Provider).OPENAI">MSRS.Provider.OPENAI</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>OpenAI voice server. Only possible with Hound-TTS backend.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -6889,6 +6906,39 @@ set the path to the exe file via <a href="##(MSRS).SetPath">MSRS.SetPath</a>.</p
 <p>Use Microsoft to provide text-to-speech.</p>
 
 <div id= "#Functions##SetTTSProviderMicrosoft" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MSRS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MSRS)">#MSRS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MSRS).SetTTSProviderOpenAI" ><strong>MSRS:SetTTSProviderOpenAI()</strong></a></h2>
+</div>
+    
+<p>Use OpenAI to provide text-to-speech.</p>
+
+    
+<p>Only supported if used in combination with Hound-TTS as backend.</p>
+
+<div id= "#Functions##SetTTSProviderOpenAI" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
    <div class="w3-margin-left">
@@ -12749,7 +12799,18 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #string
 <a id="#(MSRS.Provider).KITTEN" ><strong>MSRS.Provider.KITTEN</strong></a>
     
-<p>Kitten voice server. Only possible with Hound-TTS backend.</p>
+<p>Kitten voice server. Only possible with Hound-TTS backend. Superseded by OpenAI</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #string
+<a id="#(MSRS.Provider).OPENAI" ><strong>MSRS.Provider.OPENAI</strong></a>
+    
+<p>OpenAI voice server. Only possible with Hound-TTS backend.</p>
 
 </div>
 
