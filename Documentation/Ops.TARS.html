@@ -2861,7 +2861,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS.PlatformParams).duration">TARS.PlatformParams.duration</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Total film per sortie (seconds).</p>
+<p>Remaining expositions (shots) for this sortie.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2928,6 +2928,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS.PlatformParams).optimalRange">TARS.PlatformParams.optimalRange</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Detection radius (m) at <code>optimalAlt</code>.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS.PlatformParams).overlap">TARS.PlatformParams.overlap</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p> Optional frame overlap 0–1 (default 0.5). Used by <code>_CalcInterval</code>.</p>
 </td>
           </tr>
         </table>
@@ -3050,7 +3056,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).CaptureData">TARS_SESSION:CaptureData()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>[INTERNAL] Starts the 10-second capture loop.</p>
+<p>[INTERNAL] Starts the dynamic-interval capture loop.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3066,7 +3072,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).FindTargets">TARS_SESSION:FindTargets()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).FindTargets">TARS_SESSION:FindTargets(self)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[INTERNAL] earches for targets in a sphere ahead of the aircraft.</p>
 </td>
@@ -3096,6 +3102,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION)._CalcInterval">TARS_SESSION:_CalcInterval(unit, params)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[INTERNAL] Calculates the capture interval in seconds based on current speed and altitude.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION)._CalcVisualRange">TARS_SESSION:_CalcVisualRange(params, altitude)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[INTERNAL] Two-segment linear interpolation for visual-recon helicopter range.</p>
@@ -3114,7 +3126,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION)._OffsetCalc">TARS_SESSION:_OffsetCalc(unit, params)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION)._OffsetCalc">TARS_SESSION:_OffsetCalc(unit, params, center_shift)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[INTERNAL] Calculates the 2-D ground point ahead of the aircraft.</p>
 </td>
@@ -3182,7 +3194,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).duration">TARS_SESSION.duration</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Remaining film in seconds.</p>
+<p>Total expositions (shots) available per sortie.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3201,6 +3213,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).groupID">TARS_SESSION.groupID</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Numeric group ID.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).isInEllipse">TARS_SESSION.isInEllipse(ox, oz, cx, cz, a, b, heading_rad)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[INTERNAL] Checks a point is inside of an elipse</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -10499,7 +10517,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #number
 <a id="#(TARS.PlatformParams).duration" ><strong>TARS.PlatformParams.duration</strong></a>
     
-<p>Total film per sortie (seconds).</p>
+<p>Remaining expositions (shots) for this sortie.</p>
 
 </div>
 
@@ -10621,6 +10639,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(TARS.PlatformParams).optimalRange" ><strong>TARS.PlatformParams.optimalRange</strong></a>
     
 <p>Detection radius (m) at <code>optimalAlt</code>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(TARS.PlatformParams).overlap" ><strong>TARS.PlatformParams.overlap</strong></a>
+    
+<p> Optional frame overlap 0–1 (default 0.5). Used by <code>_CalcInterval</code>.</p>
 
 </div>
 
@@ -10900,7 +10929,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #number
 <a id="#(TARS_SESSION).duration" ><strong>TARS_SESSION.duration</strong></a>
     
-<p>Remaining film in seconds.</p>
+<p>Total expositions (shots) available per sortie.</p>
 
 </div>
 
@@ -11159,7 +11188,11 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <h2><a id="#(TARS_SESSION).CaptureData" ><strong>TARS_SESSION:CaptureData()</strong></a></h2>
 </div>
     
-<p>[INTERNAL] Starts the 10-second capture loop.</p>
+<p>[INTERNAL] Starts the dynamic-interval capture loop.</p>
+
+    
+<p>The first tick fires after 2 seconds; subsequent ticks are spaced by
+<code>_CalcInterval()</code> which adapts to the aircraft's current speed and altitude.</p>
 
 <div id= "#Functions##CaptureData" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -11181,7 +11214,11 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <p>[INTERNAL] Main capture tick.</p>
 
     
-<p>Scheduled via <code>timer.scheduleFunction</code>.</p>
+<p>Scheduled dynamically via <code>timer.scheduleFunction</code>.
+The interval between ticks is calculated from the aircraft's current speed
+and camera footprint via <code>_CalcInterval()</code>, ensuring adequate frame overlap
+regardless of whether the platform is a slow helicopter or a fast jet.
+<code>duration</code> is decremented by the actual interval each tick.</p>
 
 <div id= "#Functions##CaptureLoop" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -11226,7 +11263,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(TARS_SESSION).FindTargets" ><strong>TARS_SESSION:FindTargets()</strong></a></h2>
+<h2><a id="#(TARS_SESSION).FindTargets" ><strong>TARS_SESSION:FindTargets(self)</strong></a></h2>
 </div>
     
 <p>[INTERNAL] earches for targets in a sphere ahead of the aircraft.</p>
@@ -11237,16 +11274,37 @@ When moose is loading dynamically (for moose class development), tracing is swit
    <div class="w3-margin-left">
 <p>TARS_SESSION</p>
 </div>
-    <h2><strong>Return value:</strong></h2>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(TARS_SESSION)">#TARS_SESSION</a>
+            <strong><strong>self</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
-      <div class="w3-half">
-        <p>#table:</p>
-      </div>
-      <div class="w3-half">
-        
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
+<p><code>[unitName] = Wrapper.Unit#UNIT</code>
+- [INTERNAL] Searches for targets in an elliptical footprint ahead of the aircraft.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#table:</p>
+        </div>
+        <div class="w3-half">
+          
 <p><code>[unitName] = Wrapper.Unit#UNIT</code></p>
 
-      </div>
+        </div>
     </div>
 </div>
 
@@ -11423,6 +11481,68 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(TARS_SESSION)._CalcInterval" ><strong>TARS_SESSION:_CalcInterval(unit, params)</strong></a></h2>
+</div>
+    
+<p>[INTERNAL] Calculates the capture interval in seconds based on current speed and altitude.</p>
+
+    
+<p>Uses the camera footprint width and the configured overlap to determine how long
+the aircraft needs to travel before the next frame is needed.
+Clamped between 5 and 120 seconds to prevent extreme values.</p>
+
+<div id= "#Functions##_CalcInterval" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TARS_SESSION</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Unit.html##(UNIT)">Wrapper.Unit#UNIT</a>
+            <strong><strong>unit</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The recon aircraft.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(TARS.PlatformParams)">#TARS.PlatformParams</a>
+            <strong><strong>params</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Platform parameter table.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>interval Capture interval in seconds.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(TARS_SESSION)._CalcVisualRange" ><strong>TARS_SESSION:_CalcVisualRange(params, altitude)</strong></a></h2>
 </div>
     
@@ -11564,7 +11684,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(TARS_SESSION)._OffsetCalc" ><strong>TARS_SESSION:_OffsetCalc(unit, params)</strong></a></h2>
+<h2><a id="#(TARS_SESSION)._OffsetCalc" ><strong>TARS_SESSION:_OffsetCalc(unit, params, center_shift)</strong></a></h2>
 </div>
     
 <p>[INTERNAL] Calculates the 2-D ground point ahead of the aircraft.</p>
@@ -11598,14 +11718,27 @@ When moose is loading dynamically (for moose class development), tracing is swit
               <p></p>
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>center_shift</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>shift value</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
-        <p><a href="DCS.html##(Vec2)">DCS#Vec2</a>:</p>
+        <p>#table:</p>
       </div>
       <div class="w3-half">
         
-<p><code>{ x, z }</code> ahead of the aircraft.</p>
+<p><code>{ x, z, MSL, alt }</code> ahead of the aircraft.</p>
 
       </div>
     </div>
@@ -11686,6 +11819,107 @@ When moose is loading dynamically (for moose class development), tracing is swit
       <div class="w3-half">
         
 
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(TARS_SESSION).isInEllipse" ><strong>TARS_SESSION.isInEllipse(ox, oz, cx, cz, a, b, heading_rad)</strong></a></h2>
+</div>
+    
+<p>[INTERNAL] Checks a point is inside of an elipse</p>
+
+<div id= "#Functions##isInEllipse" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>TARS_SESSION</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>ox</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>oz</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>cx</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>cz</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>a</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>b</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>heading_rad</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>IsInElipse</p>
 
       </div>
     </div>
@@ -11802,7 +12036,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
     #number
 <a id="#(TARS_SESSION).duration" ><strong>TARS_SESSION.duration</strong></a>
     
-<p>Remaining film in seconds.</p>
+<p>Total expositions (shots) available per sortie.</p>
 
 </div>
 
