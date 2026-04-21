@@ -1517,8 +1517,8 @@ your mission before loading.</p>
    After the debrief the <strong>TARS validation</strong> item reappears for the next sortie.</p>
 
 <h2>Localization</h2>
-<p>All player-facing strings are defined in <code>TARS.Messages</code> using a table.</p>
 
+<p>All player-facing strings are defined in <code>TARS.Messages</code> using a table.</p>
 
 <h2>Platforms and Settings</h2>
 
@@ -1534,10 +1534,15 @@ your mission before loading.</p>
 <pre><code>   TARS_Instance.reconTypes["F-16C_50"] = true
    TARS_Instance.parameters["F-16C_50"] = {
        minAlt=300, maxAlt=8000, maxRoll=10, maxPitch=15, -- Note altitude is AGL!
-       fov=35, duration=300, offset=math.rad(20),
+       fov=35, duration=300, offset=math.rad(20), -- fov = field of view, duration = # max of photos, offset = camera angle in Radians
        name="F-16C with RECCE pod"
    }
 </code></pre>
+
+<h3>Optical System Parameters Demonstrator</h3>
+
+<p>The optical system is like a torchlight, the further away from the ground you are, the larger is the area covered. One underestimated effect is however, that on flat land,
+because at angle, you actually cover an elliptic area. <a href="https://applevangelist.github.io/TARS_Optical/tars_optics.html">You can checkout the effects of various parameters on this demonstrator</a>.</p>
 
 <h3>Available Platforms are</h3>
 
@@ -1566,9 +1571,9 @@ your mission before loading.</p>
 <h3>Film and detection settings</h3>
 
 <pre><code>   TARS.filmLimitEnabled = true
-     TARS.filmLimitMax     = 25        -- max 25 captured objects
-     TARS.detectUnits      = true      -- capture UNIT objects
-     TARS.detectStatics    = false     -- capture STATIC objects incl. of FARPs
+   TARS.filmLimitMax     = 25        -- max 25 captured objects
+   TARS.detectUnits      = true      -- capture UNIT objects
+   TARS.detectStatics    = false     -- capture STATIC objects incl. of FARPs
 </code></pre>
 
 <h3>Target UNIT Filters</h3>
@@ -1578,7 +1583,10 @@ your mission before loading.</p>
 
 <h3>Target UNIT Name Filters</h3>
 
-<pre><code>   TARS.targetNameFilter = { enabled = true, keywords = { [coalition.side.BLUE] = { "USA" }, [coalition.side.RED]  = { "USSR" },},}    
+<p>You always only detect UNITs of the other coalition. E.g. below - a RED unit would only detect BLUE units which have "Hawk" somewhere in the UNIT name.
+Name keywords are tested independent of capitalization, it doesn't matter if it is Hawk, HAWK, or hAwK.</p>
+
+<pre><code>   TARS.targetNameFilter = { enabled = true, keywords = { [coalition.side.BLUE] = { "Hawk" }, [coalition.side.RED]  = { "Scud" },},}    
 </code></pre>
 
 <h3>Target STATIC Filters</h3>
@@ -1598,6 +1606,7 @@ your mission before loading.</p>
    TARS.landingDelay    = 30         -- check valid landing after this many seconds
    TARS.debriefDelay    = 60         -- show debriefing after this many seconds
    TARS.landingDistance = 2500       -- land closer than this many meters to a friendly base for debrief
+   TARS.PilotParameterHelper = false -- show helper checks on pitch/roll/AGL parameters
 </code></pre>
 
 <h2>SRS integration</h2>
@@ -1760,6 +1769,12 @@ another sortie in the same slot without rejoining.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS).OutMark">TARS:OutMark(snap, coa)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[INTERNAL] Places a coalition F10 map marker for a detected target snapshot.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS).PilotParameterHelper">TARS.PilotParameterHelper</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, there will be messages about the correct parameters to the UNIT.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3084,6 +3099,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).PilotParameterHelper">TARS_SESSION.PilotParameterHelper</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>If true, there will be messages about the correct parameters to the UNIT.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(TARS_SESSION).ReturnReconTargets">TARS_SESSION:ReturnReconTargets()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[INTERNAL] Publishes all captured targets as F10 coalition marks.</p>
@@ -3976,6 +3997,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(TARS).Messages" ><strong>TARS.Messages</strong></a>
     
 <p>Nested localization table: <code>TARS.Messages[locale][messageID] = string</code>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TARS).PilotParameterHelper" ><strong>TARS.PilotParameterHelper</strong></a>
+    
+<p>If true, there will be messages about the correct parameters to the UNIT.</p>
 
 </div>
 
@@ -6196,6 +6228,17 @@ Passes extra arguments through <code>string.format</code> when provided.</p>
 <a id="#(TARS).Messages" ><strong>TARS.Messages</strong></a>
     
 <p>Nested localization table: <code>TARS.Messages[locale][messageID] = string</code>.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TARS).PilotParameterHelper" ><strong>TARS.PilotParameterHelper</strong></a>
+    
+<p>If true, there will be messages about the correct parameters to the UNIT.</p>
 
 </div>
 
@@ -10838,6 +10881,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #boolean
+<a id="#(TARS_SESSION).PilotParameterHelper" ><strong>TARS_SESSION.PilotParameterHelper</strong></a>
+    
+<p>If true, there will be messages about the correct parameters to the UNIT.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(TARS_SESSION).ammo" ><strong>TARS_SESSION.ammo</strong></a>
     
@@ -11938,6 +11992,17 @@ Clamped between 5 and 120 seconds to prevent extreme values.</p>
 <a id="#(TARS_SESSION).Callback" ><strong>TARS_SESSION.Callback</strong></a>
     
 <p>The TARS Callback object for menu functions etc.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #boolean
+<a id="#(TARS_SESSION).PilotParameterHelper" ><strong>TARS_SESSION.PilotParameterHelper</strong></a>
+    
+<p>If true, there will be messages about the correct parameters to the UNIT.</p>
 
 </div>
 
