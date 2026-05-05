@@ -1684,7 +1684,9 @@ Create the late-activated troops, vehicles, that will make up your deployable fo
      my_ctld.UseC130LoadAndUnload = false -- When set to true, forces the C-130 player to use the C-130J built system to load the cargo onboard and to unload. (Default is false)
      my_ctld.UseC130DynamicCargoAutoBuild = false -- When true (and UseC130LoadAndUnload is true), C-130 DynamicCargo unload completion is bridged to CTLD engineer-path auto-build.
      my_ctld.C130DynamicCargoAutoBuildMergeSeconds = 0 -- Merge window in seconds for C-130 auto-build handoff; set to 0 to disable batching (default).
-     my_ctld.locale = "en" -- Language locale to use, available are "en" (default), "de", "fr", "es" and "ru"
+     my_ctld.locale = "en" -- Language locale to use.
+                           -- Supported: "en" English (default), "de" German, "fr" French, "es" Spanish,
+                           --            "pt-br" Brazilian Portuguese, "ru" Russian, "tr" Turkish, "zh-cn" Simplified Chinese (Mainland China), "zh-tw" Traditional Chinese (Taiwan).
 </code></pre>
 
 <h2>2.1 CH-47 Chinook support</h2>
@@ -2453,6 +2455,12 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).CargoDisplayFormatter">CTLD.CargoDisplayFormatter</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).CargoZoneType">CTLD.CargoZoneType</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2696,6 +2704,12 @@ If you use units built by multiple templates, they will effectively double on lo
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).GetStockUnits">CTLD:GetStockUnits()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>User - function to get a table of units in stock (C-130 "Get units")</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).GroupLocaleResolver">CTLD.GroupLocaleResolver</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -3086,6 +3100,18 @@ If you use units built by multiple templates, they will effectively double on lo
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SRSQueue">CTLD.SRSQueue</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SetCargoDisplayFormatter">CTLD:SetCargoDisplayFormatter(Formatter)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Set a formatter used for CTLD cargo menu labels.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD).SetGroupLocaleResolver">CTLD:SetGroupLocaleResolver(Resolver)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[User] Set a resolver used to select a CTLD locale for group-specific menus and messages.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3533,6 +3559,12 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._FormatCargoDisplayText">CTLD:_FormatCargoDisplayText(BaseText, Cargo, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Format cargo display text for menus.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._FormatCrateStockSuffix">CTLD:_FormatCrateStockSuffix(cargoObj, stockSummary)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to format crate stock suffix for menu text.</p>
@@ -3575,6 +3607,12 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetCargoDisplayNameForGroup">CTLD:_GetCargoDisplayNameForGroup(Cargo, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Resolve and format cargo label for a group-specific CTLD interaction.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetCrateQuantity">CTLD:_GetCrateQuantity(Group, Unit, cargoObj, quantity)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to request N*crates for a cargo type.</p>
@@ -3599,9 +3637,21 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetEntryForGroup">CTLD:_GetEntryForGroup(ID, Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Resolve a localized text entry for a group-specific CTLD interaction.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetFMBeacon">CTLD:_GetFMBeacon(Name)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Function to obtain a valid FM frequency.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetLocaleForGroup">CTLD:_GetLocaleForGroup(Group)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Resolve the locale to use for a group-specific CTLD interaction.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -3611,7 +3661,7 @@ If you use units built by multiple templates, they will effectively double on lo
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetMenuPluralSuffix">CTLD:_GetMenuPluralSuffix(Count, Kind)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(CTLD)._GetMenuPluralSuffix">CTLD:_GetMenuPluralSuffix(Count, Kind, Group)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -6016,6 +6066,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD).CargoDisplayFormatter" ><strong>CTLD.CargoDisplayFormatter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(CTLD.CargoZoneType)">#CTLD.CargoZoneType</a>
 <a id="#(CTLD).CargoZoneType" ><strong>CTLD.CargoZoneType</strong></a>
     
@@ -6257,8 +6318,19 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).GroupLocaleResolver" ><strong>CTLD.GroupLocaleResolver</strong></a>
     
 
 
@@ -6359,13 +6431,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -6545,6 +6614,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD)._c130DcAutoActiveSetId" ><strong>CTLD._c130DcAutoActiveSetId</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD)._c130DcAutoBatches" ><strong>CTLD._c130DcAutoBatches</strong></a>
     
@@ -6569,6 +6649,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #table
 <a id="#(CTLD)._c130DcAutoSets" ><strong>CTLD._c130DcAutoSets</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD)._troopsByName" ><strong>CTLD._troopsByName</strong></a>
     
 
 
@@ -6729,6 +6820,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -6913,7 +7015,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).locale" ><strong>CTLD.locale</strong></a>
     
 
@@ -7080,7 +7182,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
 
     
-<p> time to repairor build a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -7173,6 +7275,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     
 
 
+    
+<p> message suppression</p>
+
 </div>
 
 </div>   
@@ -7190,7 +7295,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -14981,6 +15086,101 @@ Return true to allow the request, or false to block it. When blocked, _LoadTroop
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD).SetCargoDisplayFormatter" ><strong>CTLD:SetCargoDisplayFormatter(Formatter)</strong></a></h2>
+</div>
+    
+<p>[User] Set a formatter used for CTLD cargo menu labels.</p>
+
+    
+<p>If unset, CTLD keeps using the resolved cargo display name as before.</p>
+
+<div id= "#Functions##SetCargoDisplayFormatter" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>Formatter</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Function called as <code>Formatter(self, BaseText, Cargo, Group)</code> and expected to return display text.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD).SetGroupLocaleResolver" ><strong>CTLD:SetGroupLocaleResolver(Resolver)</strong></a></h2>
+</div>
+    
+<p>[User] Set a resolver used to select a CTLD locale for group-specific menus and messages.</p>
+
+    
+<p>Supported locales: "en", "de", "fr", "es", "pt-br", "ru", "tr", "zh-cn", "zh-tw".
+If unset, CTLD keeps using <code>self.locale</code> as before.</p>
+
+<div id= "#Functions##SetGroupLocaleResolver" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>Resolver</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Function called as <code>Resolver(self, Group)</code> and expected to return a locale string.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(CTLD)">#CTLD</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD).SetOwnSetPilotGroups" ><strong>CTLD:SetOwnSetPilotGroups(Set)</strong></a></h2>
 </div>
     
@@ -18344,6 +18544,76 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD)._FormatCargoDisplayText" ><strong>CTLD:_FormatCargoDisplayText(BaseText, Cargo, Group)</strong></a></h2>
+</div>
+    
+<p>(Internal) Format cargo display text for menus.</p>
+
+<div id= "#Functions##_FormatCargoDisplayText" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>BaseText</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Resolved default cargo display text.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Cargo object.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Cargo display text.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD)._FormatCrateStockSuffix" ><strong>CTLD:_FormatCrateStockSuffix(cargoObj, stockSummary)</strong></a></h2>
 </div>
     
@@ -18623,6 +18893,63 @@ However, if you create a new folder inside the miz file, which contains the soun
       <div class="w3-half">
         
 <p>Cargo label</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._GetCargoDisplayNameForGroup" ><strong>CTLD:_GetCargoDisplayNameForGroup(Cargo, Group)</strong></a></h2>
+</div>
+    
+<p>(Internal) Resolve and format cargo label for a group-specific CTLD interaction.</p>
+
+<div id= "#Functions##_GetCargoDisplayNameForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="##(CTLD_CARGO)">#CTLD_CARGO</a>
+            <strong><strong>Cargo</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Cargo object or cargo name.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Cargo display text.</p>
 
       </div>
     </div>
@@ -18937,6 +19264,63 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(CTLD)._GetEntryForGroup" ><strong>CTLD:_GetEntryForGroup(ID, Group)</strong></a></h2>
+</div>
+    
+<p>(Internal) Resolve a localized text entry for a group-specific CTLD interaction.</p>
+
+<div id= "#Functions##_GetEntryForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>ID</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Translation entry ID.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Localized text entry.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(CTLD)._GetFMBeacon" ><strong>CTLD:_GetFMBeacon(Name)</strong></a></h2>
 </div>
     
@@ -18970,6 +19354,50 @@ However, if you create a new folder inside the miz file, which contains the soun
       <div class="w3-half">
         
 <p>Beacon Beacon table.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(CTLD)._GetLocaleForGroup" ><strong>CTLD:_GetLocaleForGroup(Group)</strong></a></h2>
+</div>
+    
+<p>(Internal) Resolve the locale to use for a group-specific CTLD interaction.</p>
+
+<div id= "#Functions##_GetLocaleForGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>CTLD</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>Group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Group object.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#string:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Locale string.</p>
 
       </div>
     </div>
@@ -19023,7 +19451,7 @@ However, if you create a new folder inside the miz file, which contains the soun
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(CTLD)._GetMenuPluralSuffix" ><strong>CTLD:_GetMenuPluralSuffix(Count, Kind)</strong></a></h2>
+<h2><a id="#(CTLD)._GetMenuPluralSuffix" ><strong>CTLD:_GetMenuPluralSuffix(Count, Kind, Group)</strong></a></h2>
 </div>
     
 
@@ -19049,6 +19477,16 @@ However, if you create a new folder inside the miz file, which contains the soun
           <div class="w3-half">
             <p>
             <strong><strong>Kind</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+            <strong><strong>Group</strong></strong>
             </p>
           </div>
           <div class="w3-half">
@@ -23529,6 +23967,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD).CargoDisplayFormatter" ><strong>CTLD.CargoDisplayFormatter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(CTLD.CargoZoneType)">#CTLD.CargoZoneType</a>
 <a id="#(CTLD).CargoZoneType" ><strong>CTLD.CargoZoneType</strong></a>
     
@@ -23770,8 +24219,19 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).GroupLocaleResolver" ><strong>CTLD.GroupLocaleResolver</strong></a>
     
 
 
@@ -23872,13 +24332,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -24058,6 +24515,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD)._c130DcAutoActiveSetId" ><strong>CTLD._c130DcAutoActiveSetId</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD)._c130DcAutoBatches" ><strong>CTLD._c130DcAutoBatches</strong></a>
     
@@ -24082,6 +24550,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     #table
 <a id="#(CTLD)._c130DcAutoSets" ><strong>CTLD._c130DcAutoSets</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD)._troopsByName" ><strong>CTLD._troopsByName</strong></a>
     
 
 
@@ -24242,6 +24721,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -24426,7 +24916,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).locale" ><strong>CTLD.locale</strong></a>
     
 
@@ -24593,7 +25083,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 
 
     
-<p> time to repairor build a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -24686,6 +25176,9 @@ However, if you create a new folder inside the miz file, which contains the soun
     
 
 
+    
+<p> message suppression</p>
+
 </div>
 
 </div>   
@@ -24703,7 +25196,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -26355,6 +26848,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD).CargoDisplayFormatter" ><strong>CTLD.CargoDisplayFormatter</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="##(CTLD.CargoZoneType)">#CTLD.CargoZoneType</a>
 <a id="#(CTLD).CargoZoneType" ><strong>CTLD.CargoZoneType</strong></a>
     
@@ -26596,8 +27100,19 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #table
 <a id="#(CTLD).FreeVHFFrequencies" ><strong>CTLD.FreeVHFFrequencies</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(CTLD).GroupLocaleResolver" ><strong>CTLD.GroupLocaleResolver</strong></a>
     
 
 
@@ -26698,13 +27213,10 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).RadioPath" ><strong>CTLD.RadioPath</strong></a>
     
 
-
-    
-<p> Folderpath.</p>
 
 </div>
 
@@ -26884,6 +27396,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(CTLD)._c130DcAutoActiveSetId" ><strong>CTLD._c130DcAutoActiveSetId</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #table
 <a id="#(CTLD)._c130DcAutoBatches" ><strong>CTLD._c130DcAutoBatches</strong></a>
     
@@ -26908,6 +27431,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     #table
 <a id="#(CTLD)._c130DcAutoSets" ><strong>CTLD._c130DcAutoSets</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD)._troopsByName" ><strong>CTLD._troopsByName</strong></a>
     
 
 
@@ -27068,6 +27602,17 @@ However, if you create a new folder inside the miz file, which contains the soun
 
     
 <p> #1570</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(CTLD).droppedBeacons" ><strong>CTLD.droppedBeacons</strong></a>
+    
+
 
 </div>
 
@@ -27252,7 +27797,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #string
 <a id="#(CTLD).locale" ><strong>CTLD.locale</strong></a>
     
 
@@ -27419,7 +27964,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 
 
     
-<p> time to repairor build a unit/group</p>
+<p> noob catch</p>
 
 </div>
 
@@ -27512,6 +28057,9 @@ However, if you create a new folder inside the miz file, which contains the soun
     
 
 
+    
+<p> message suppression</p>
+
 </div>
 
 </div>   
@@ -27529,7 +28077,7 @@ However, if you create a new folder inside the miz file, which contains the soun
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
+    #number
 <a id="#(CTLD).troopdropzoneradius" ><strong>CTLD.troopdropzoneradius</strong></a>
     
 
@@ -32180,6 +32728,17 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(CTLD.UnitTypeCapabilities).crates" ><strong>CTLD.UnitTypeCapabilities.crates</strong></a>
     
 <p>Can transport crate.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(CTLD.UnitTypeCapabilities).length" ><strong>CTLD.UnitTypeCapabilities.length</strong></a>
+    
+
 
 </div>
 
