@@ -2083,7 +2083,7 @@ to the <em>carriername</em> of the first parameter.</p>
     <li>ICSL channel is set to 1, see <a href="##(AIRBOSS).SetICLS">AIRBOSS.SetICLS</a>,</li>
     <li>LSO radio is set to 264 MHz FM, see <a href="##(AIRBOSS).SetLSORadio">AIRBOSS.SetLSORadio</a>,</li>
     <li>Marshal radio is set to 305 MHz FM, see <a href="##(AIRBOSS).SetMarshalRadio">AIRBOSS.SetMarshalRadio</a>,</li>
-    <li>Default recovery case is set to 1, see <a href="##(AIRBOSS).SetRecoveryCase">AIRBOSS.SetRecoveryCase</a>,</li>
+    <li>Default recovery case is automatic (0); the active case is resolved to I, II or III, see <a href="##(AIRBOSS).SetRecoveryCase">AIRBOSS.SetRecoveryCase</a>,</li>
     <li>Carrier Controlled Area (CCA) is set to 50 NM, see <a href="##(AIRBOSS).SetCarrierControlledArea">AIRBOSS.SetCarrierControlledArea</a>,</li>
     <li>Default player skill "Flight Student" (easy), see <a href="##(AIRBOSS).SetDefaultPlayerSkill">AIRBOSS.SetDefaultPlayerSkill</a>,</li>
     <li>Once the carrier reaches its final waypoint, it will restart its route, see <a href="##(AIRBOSS).SetPatrolAdInfinitum">AIRBOSS.SetPatrolAdInfinitum</a>.</li>
@@ -2102,7 +2102,7 @@ The parameters are:</p>
 <ul>
     <li><em>start</em>: The start time as a string. For example "8:00" for a window opening at 8 am. Or "13:30+1" for half past one on the next day. Default (nil) is ASAP.</li>
     <li><em>stop</em>: Time when the window closes as a string. Same format as <em>start</em>. Default is 90 minutes after start time.</li>
-    <li><em>case</em>: The recovery case during that window (1, 2 or 3). Default 1.</li>
+    <li><em>case</em>: The recovery case during that window (1, 2 or 3), or 0 for automatic selection. If omitted, the configured default case is used (initially 0, automatic).</li>
     <li><em>holdingoffset</em>: Holding offset angle in degrees. Only for Case II or III recoveries. Default 0 deg. Common +-15 deg or +-30 deg.</li>
 </ul>
 
@@ -2110,7 +2110,9 @@ The parameters are:</p>
 Players can request marshal via the F10 menu and will also be given a marshal stack. Currently, human players can request commence via the F10 radio regardless of
 whether a window is open or not and will be allowed to enter the pattern (if not already full). This will probably change in the future.</p>
 
-<p>At the moment there is no automatic recovery case set depending on weather or daytime. So it is the AIRBOSS (i.e. you as mission designer) who needs to make that decision.
+<p>With case 0, the recovery case is determined when the window is created using UTILS.GetRecoveryCase and the current carrier position and weather.
+Night is checked at one-minute intervals through the planned window, including its end; if detected, the entire window uses Case III.
+This is a planning decision, not a weather forecast. Later weather changes, carrier movement and automatic window extensions do not trigger recalculation.
 It is probably a good idea to synchronize the timing with the waypoints of the carrier. For example, setting up the waypoints such that the carrier
 already has turning into the wind, when a recovery window opens.</p>
 
@@ -5014,6 +5016,12 @@ If enabled, status and debug text messages will be displayed on the screen. Also
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._ResolveRecoveryCase">AIRBOSS:_ResolveRecoveryCase(Case)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Resolve an instantaneous recovery case without changing the default policy.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS)._ResumeRoute">AIRBOSS._ResumeRoute(group, airboss, gotocoord)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Carrier Strike Group resumes the route of the waypoints defined in the mission editor.</p>
@@ -5382,7 +5390,7 @@ If enabled, status and debug text messages will be displayed on the screen. Also
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(AIRBOSS).defaultcase">AIRBOSS.defaultcase</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
-<p>Default recovery case. This is the case used if not specified otherwise.</p>
+<p>Default recovery case policy: 0 for automatic selection, or a fixed case 1, 2 or 3.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -9872,32 +9880,10 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AIRBOSS).RQLid" ><strong>AIRBOSS.RQLid</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(AIRBOSS).RQMarshal" ><strong>AIRBOSS.RQMarshal</strong></a>
     
 <p>Radio queue of marshal.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AIRBOSS).RQMid" ><strong>AIRBOSS.RQMid</strong></a>
-    
-
 
 </div>
 
@@ -10297,7 +10283,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
     #number
 <a id="#(AIRBOSS).defaultcase" ><strong>AIRBOSS.defaultcase</strong></a>
     
-<p>Default recovery case. This is the case used if not specified otherwise.</p>
+<p>Default recovery case policy: 0 for automatic selection, or a fixed case 1, 2 or 3.</p>
 
 </div>
 
@@ -11098,7 +11084,7 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
           </div>
           <div class="w3-half">
               
-<p>(Optional) Recovery case for that time slot. Number between one and three. Defaults to 1.</p>
+<p>(Optional) Recovery case 1, 2 or 3; 0 selects automatically at creation and uses Case III if night is detected within the planned window (one-minute checks including the end). If omitted, uses the configured default case (initially 0, automatic).</p>
 
           </div>
         </div>
@@ -16867,7 +16853,7 @@ Marshal stacks for Case II/III are unlimited.</p>
           </div>
           <div class="w3-half">
               
-<p>(Optional) Case of recovery. Either 1, 2 or 3. Default 1.</p>
+<p>(Optional) Case of recovery: 0 for automatic selection, or 1, 2 or 3. Default 0.</p>
 
           </div>
         </div>
@@ -27036,6 +27022,50 @@ Also set player step to undefined if applicable or remove human flight if option
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(AIRBOSS)._ResolveRecoveryCase" ><strong>AIRBOSS:_ResolveRecoveryCase(Case)</strong></a></h2>
+</div>
+    
+<p>Resolve an instantaneous recovery case without changing the default policy.</p>
+
+<div id= "#Functions##_ResolveRecoveryCase" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>AIRBOSS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>Case</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) 0 for automatic selection, or 1, 2 or 3. Defaults to self.defaultcase.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Resolved recovery case 1, 2 or 3.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(AIRBOSS)._ResumeRoute" ><strong>AIRBOSS._ResumeRoute(group, airboss, gotocoord)</strong></a></h2>
 </div>
     
@@ -30602,32 +30632,10 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AIRBOSS).RQLid" ><strong>AIRBOSS.RQLid</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(AIRBOSS).RQMarshal" ><strong>AIRBOSS.RQMarshal</strong></a>
     
 <p>Radio queue of marshal.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AIRBOSS).RQMid" ><strong>AIRBOSS.RQMid</strong></a>
-    
-
 
 </div>
 
@@ -31027,7 +31035,7 @@ If removed flight is the section lead, we try to find a new leader.</p>
     #number
 <a id="#(AIRBOSS).defaultcase" ><strong>AIRBOSS.defaultcase</strong></a>
     
-<p>Default recovery case. This is the case used if not specified otherwise.</p>
+<p>Default recovery case policy: 0 for automatic selection, or a fixed case 1, 2 or 3.</p>
 
 </div>
 
@@ -33748,32 +33756,10 @@ If removed flight is the section lead, we try to find a new leader.</p>
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    
-<a id="#(AIRBOSS).RQLid" ><strong>AIRBOSS.RQLid</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     #table
 <a id="#(AIRBOSS).RQMarshal" ><strong>AIRBOSS.RQMarshal</strong></a>
     
 <p>Radio queue of marshal.</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    
-<a id="#(AIRBOSS).RQMid" ><strong>AIRBOSS.RQMid</strong></a>
-    
-
 
 </div>
 
@@ -34173,7 +34159,7 @@ If removed flight is the section lead, we try to find a new leader.</p>
     #number
 <a id="#(AIRBOSS).defaultcase" ><strong>AIRBOSS.defaultcase</strong></a>
     
-<p>Default recovery case. This is the case used if not specified otherwise.</p>
+<p>Default recovery case policy: 0 for automatic selection, or a fixed case 1, 2 or 3.</p>
 
 </div>
 
@@ -42129,7 +42115,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
 
     
-<p> VNAO Edit - Added </p>
+<p> VNAO Edit - Added</p>
 
 </div>
 
@@ -42157,7 +42143,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
 
     
-<p> VNAO Edit - Added </p>
+<p> VNAO Edit - Added</p>
 
 </div>
 
@@ -42171,7 +42157,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
 
     
-<p> VNAO Edit - Added </p>
+<p> VNAO Edit - Added</p>
 
 </div>
 
@@ -42282,9 +42268,6 @@ When moose is loading dynamically (for moose class development), tracing is swit
 <a id="#(AIRBOSS.PlayerData).case" ><strong>AIRBOSS.PlayerData.case</strong></a>
     
 
-
-    
-<p> Set current case.</p>
 
 </div>
 
@@ -42696,7 +42679,7 @@ When moose is loading dynamically (for moose class development), tracing is swit
 
 
     
-<p> VNAO Edit - Added </p>
+<p> VNAO Edit - Added</p>
 
 </div>
 
