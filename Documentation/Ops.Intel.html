@@ -1951,19 +1951,19 @@ end
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnits">INTEL:GetDetectedUnits(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnits">INTEL:GetDetectedUnits(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK, DetectedObjects)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Return the detected target groups of the controllable as a table.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnitsAccoustic">INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnitsAccoustic">INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone, DetectedObjects)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Return the detected target groups of the controllable as a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnitsDoppler">INTEL:GetDetectedUnitsDoppler(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnitsDoppler">INTEL:GetDetectedUnitsDoppler(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK, DetectedObjects)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Return the detected target groups of the controllable as a table.</p>
 </td>
@@ -2382,6 +2382,12 @@ from a given radar position.</p>
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._ReportIntelStatus">INTEL:_ReportIntelStatus()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Report the contacts and clusters from a completed detection sweep.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._UpdateClusterPositions">INTEL:_UpdateClusterPositions()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Update coordinates of the known clusters.</p>
@@ -2409,6 +2415,24 @@ from a given radar position.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).__Stop">INTEL:__Stop(delay)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Triggers the FSM event "Stop" after a delay.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._detectionBatchInterval">INTEL._detectionBatchInterval</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Seconds between batches when batching is enabled.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._detectionBatchSize">INTEL._detectionBatchSize</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Optional groups per batch; nil keeps synchronous detection.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._detectionSweep">INTEL._detectionSweep</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Pending sweep membership, detected units, recces, cursor and timer.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2553,6 +2577,12 @@ from a given radar position.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).onafterStatus">INTEL:onafterStatus(From, Event, To)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>On after "Status" event.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).onafterStop">INTEL:onafterStop(From, Event, To)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>On after "Stop" event.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -5182,6 +5212,39 @@ Sources: public declassified estimates, Jane's, IISS assessments.
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    #number
+<a id="#(INTEL)._detectionBatchInterval" ><strong>INTEL._detectionBatchInterval</strong></a>
+    
+<p>[Internal] Seconds between batches when batching is enabled.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(INTEL)._detectionBatchSize" ><strong>INTEL._detectionBatchSize</strong></a>
+    
+<p>[Internal] Optional groups per batch; nil keeps synchronous detection.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(INTEL)._detectionSweep" ><strong>INTEL._detectionSweep</strong></a>
+    
+<p>[Internal] Pending sweep membership, detected units, recces, cursor and timer.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_ZONE)">Core.Set#SET_ZONE</a>
 <a id="#(INTEL).acceptzoneset" ><strong>INTEL.acceptzoneset</strong></a>
     
@@ -6971,7 +7034,7 @@ Note that reject zones overrule accept zones, i.e. if a unit is inside an accept
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(INTEL).GetDetectedUnits" ><strong>INTEL:GetDetectedUnits(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</strong></a></h2>
+<h2><a id="#(INTEL).GetDetectedUnits" ><strong>INTEL:GetDetectedUnits(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK, DetectedObjects)</strong></a></h2>
 </div>
     
 <p>(Internal) Return the detected target groups of the controllable as a table.</p>
@@ -7104,6 +7167,19 @@ If no detection method is given, the detection will use all the available method
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>DetectedObjects</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Table of native object IDs for the current sweep.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -7112,7 +7188,7 @@ If no detection method is given, the detection will use all the available method
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(INTEL).GetDetectedUnitsAccoustic" ><strong>INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone)</strong></a></h2>
+<h2><a id="#(INTEL).GetDetectedUnitsAccoustic" ><strong>INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone, DetectedObjects)</strong></a></h2>
 </div>
     
 <p>(Internal) Return the detected target groups of the controllable as a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
@@ -7176,6 +7252,19 @@ If no detection method is given, the detection will use all the available method
 
           </div>
         </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>DetectedObjects</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Table of native object IDs for the current sweep.</p>
+
+          </div>
+        </div>
 </div>
 
 </div>
@@ -7184,7 +7273,7 @@ If no detection method is given, the detection will use all the available method
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(INTEL).GetDetectedUnitsDoppler" ><strong>INTEL:GetDetectedUnitsDoppler(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK)</strong></a></h2>
+<h2><a id="#(INTEL).GetDetectedUnitsDoppler" ><strong>INTEL:GetDetectedUnitsDoppler(Unit, DetectedUnits, RecceDetecting, DetectVisual, DetectOptical, DetectRadar, DetectIRST, DetectRWR, DetectDLINK, DetectedObjects)</strong></a></h2>
 </div>
     
 <p>(Internal) Return the detected target groups of the controllable as a table.</p>
@@ -7317,6 +7406,19 @@ If no detection method is given, the detection will use all the available method
           <div class="w3-half">
               
 <p>(Optional) If <em>false</em>, do not include targets detected by data link.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>DetectedObjects</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Table of native object IDs for the current sweep.</p>
 
           </div>
         </div>
@@ -9655,6 +9757,9 @@ Note that reject zones overrule accept zones, i.e. if a unit is inside an accept
     
 <p>Update detected items.</p>
 
+    
+<p>Optional batches publish contacts after the complete sweep.</p>
+
 <div id= "#Functions##UpdateIntel" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -10271,6 +10376,36 @@ the radar (nose-on) and 90° when the target crosses the beam (side-on).</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(INTEL)._ReportIntelStatus" ><strong>INTEL:_ReportIntelStatus()</strong></a></h2>
+</div>
+    
+<p>[Internal] Report the contacts and clusters from a completed detection sweep.</p>
+
+<div id= "#Functions##_ReportIntelStatus" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>INTEL</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(INTEL)">#INTEL</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(INTEL)._UpdateClusterPositions" ><strong>INTEL:_UpdateClusterPositions()</strong></a></h2>
 </div>
     
@@ -10807,6 +10942,9 @@ the radar (nose-on) and 90° when the target crosses the beam (side-on).</p>
     
 <p>On after "Status" event.</p>
 
+    
+<p>In batch mode, contacts are published when the sweep completes.</p>
+
 <div id= "#Functions##onafterStatus" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
    <h2><strong>Defined in:</strong></h2>
@@ -10853,6 +10991,79 @@ the radar (nose-on) and 90° when the target crosses the beam (side-on).</p>
 
           </div>
         </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(INTEL).onafterStop" ><strong>INTEL:onafterStop(From, Event, To)</strong></a></h2>
+</div>
+    
+<p>On after "Stop" event.</p>
+
+    
+<p>Cancel an unfinished detection sweep.</p>
+
+<div id= "#Functions##onafterStop" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>INTEL</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>From</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>From state.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>Event</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Event.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>To</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>To state.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(INTEL)">#INTEL</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
 </div>
 
 </div>
@@ -11156,6 +11367,39 @@ Sources: public declassified estimates, Jane's, IISS assessments.
 <a id="#(INTEL).RadarBlur" ><strong>INTEL.RadarBlur</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(INTEL)._detectionBatchInterval" ><strong>INTEL._detectionBatchInterval</strong></a>
+    
+<p>[Internal] Seconds between batches when batching is enabled.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(INTEL)._detectionBatchSize" ><strong>INTEL._detectionBatchSize</strong></a>
+    
+<p>[Internal] Optional groups per batch; nil keeps synchronous detection.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(INTEL)._detectionSweep" ><strong>INTEL._detectionSweep</strong></a>
+    
+<p>[Internal] Pending sweep membership, detected units, recces, cursor and timer.</p>
 
 </div>
 
@@ -13186,6 +13430,39 @@ Sources: public declassified estimates, Jane's, IISS assessments.
 <a id="#(INTEL).RadarBlur" ><strong>INTEL.RadarBlur</strong></a>
     
 
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(INTEL)._detectionBatchInterval" ><strong>INTEL._detectionBatchInterval</strong></a>
+    
+<p>[Internal] Seconds between batches when batching is enabled.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #number
+<a id="#(INTEL)._detectionBatchSize" ><strong>INTEL._detectionBatchSize</strong></a>
+    
+<p>[Internal] Optional groups per batch; nil keeps synchronous detection.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(INTEL)._detectionSweep" ><strong>INTEL._detectionSweep</strong></a>
+    
+<p>[Internal] Pending sweep membership, detected units, recces, cursor and timer.</p>
 
 </div>
 
