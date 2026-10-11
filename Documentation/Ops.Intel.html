@@ -1627,6 +1627,12 @@ end
             <th class="w3-half w3-left-align w3-container w3-padding-16">Description</th>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).AccousticPlayerSnapshotProvider">INTEL.AccousticPlayerSnapshotProvider</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).AddAcceptZone">INTEL:AddAcceptZone(AcceptZone)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Add an accept zone.</p>
@@ -1786,6 +1792,12 @@ end
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).DetectAccoustic">INTEL.DetectAccoustic</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>If true, also detect by sound (ie proximity).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).DetectAccousticPlayersOnly">INTEL.DetectAccousticPlayersOnly</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -1957,7 +1969,7 @@ end
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnitsAccoustic">INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone, DetectedObjects)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).GetDetectedUnitsAccoustic">INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone, DetectedObjects, AccousticPlayers)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>(Internal) Return the detected target groups of the controllable as a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
 </td>
@@ -2188,7 +2200,7 @@ end
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).SetAccousticDetectionOn">INTEL:SetAccousticDetectionOn(Radius, UnitCategories)</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL).SetAccousticDetectionOn">INTEL:SetAccousticDetectionOn(Radius, UnitCategories, PlayersOnly, PlayerSnapshotProvider)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Set to accept accoustic detection.</p>
 </td>
@@ -2354,6 +2366,12 @@ pulse-Doppler radar located at the given radar unit position.</p>
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._CreateContact">INTEL:_CreateContact(Positionable, RecceName)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Create an #INTEL.Contact item from a given GROUP or STATIC object.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(INTEL)._GetAccousticPlayers">INTEL:_GetAccousticPlayers()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>(Internal) Prepare eligible player facts once for the current accoustic detection batch.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -4913,6 +4931,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(INTEL).AccousticPlayerSnapshotProvider" ><strong>INTEL.AccousticPlayerSnapshotProvider</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     #string
 <a id="#(INTEL).ClassName" ><strong>INTEL.ClassName</strong></a>
     
@@ -7122,7 +7151,7 @@ If no detection method is given, the detection will use all the available method
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(INTEL).GetDetectedUnitsAccoustic" ><strong>INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone, DetectedObjects)</strong></a></h2>
+<h2><a id="#(INTEL).GetDetectedUnitsAccoustic" ><strong>INTEL:GetDetectedUnitsAccoustic(Recce, DetectedUnits, RecceDetecting, detectionzone, DetectedObjects, AccousticPlayers)</strong></a></h2>
 </div>
     
 <p>(Internal) Return the detected target groups of the controllable as a <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>.</p>
@@ -7196,6 +7225,19 @@ If no detection method is given, the detection will use all the available method
           <div class="w3-half">
               
 <p>(Optional) Table of native object IDs for the current sweep.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>AccousticPlayers</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Eligible player facts prepared for this batch; omitted direct calls collect fresh facts.</p>
 
           </div>
         </div>
@@ -8565,7 +8607,7 @@ If no detection method is given, the detection will use all the available method
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(INTEL).SetAccousticDetectionOn" ><strong>INTEL:SetAccousticDetectionOn(Radius, UnitCategories)</strong></a></h2>
+<h2><a id="#(INTEL).SetAccousticDetectionOn" ><strong>INTEL:SetAccousticDetectionOn(Radius, UnitCategories, PlayersOnly, PlayerSnapshotProvider)</strong></a></h2>
 </div>
     
 <p>Set to accept accoustic detection.</p>
@@ -8599,7 +8641,33 @@ If no detection method is given, the detection will use all the available method
           </div>
           <div class="w3-half">
               
-<p>Optional)  Set what Unit Categories we can "hear". Defaults to <code>{Unit.Category.GROUND_UNIT,Unit.Category.HELICOPTER}</code></p>
+<p>Optional)  Set what Unit Categories we can "hear". Defaults to <code>{Unit.Category.HELICOPTER}</code></p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>PlayersOnly</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Detect only players in the allowed unit categories. Defaults to false.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #function
+            <strong><strong>PlayerSnapshotProvider</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Function receiving the opposing coalition and returning <code>{rows={{unit=nativeUnit,category=unitCategory,point=vec3},...}}</code> for its players. Without a provider, use coalition.getPlayers.</p>
 
           </div>
         </div>
@@ -10061,6 +10129,39 @@ pulse-Doppler radar located at the given radar unit position.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(INTEL)._GetAccousticPlayers" ><strong>INTEL:_GetAccousticPlayers()</strong></a></h2>
+</div>
+    
+<p>(Internal) Prepare eligible player facts once for the current accoustic detection batch.</p>
+
+    
+<p>Positions must be refreshed for each batch. Do not retain these rows across timers or respawns.</p>
+
+<div id= "#Functions##_GetAccousticPlayers" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>INTEL</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>Rows containing the MOOSE unit, unit name, native object ID and Vec3 position.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(INTEL)._GetAspectRCS" ><strong>INTEL:_GetAspectRCS(TargetUnit, rpos, spd, tvel)</strong></a></h2>
 </div>
     
@@ -11006,6 +11107,17 @@ the radar (nose-on) and 90° when the target crosses the beam (side-on).</p>
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(INTEL).AccousticPlayerSnapshotProvider" ><strong>INTEL.AccousticPlayerSnapshotProvider</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
@@ -13003,6 +13115,17 @@ Sources: public declassified estimates, Jane's, IISS assessments.
 <div class="fields w3-container w3-theme-l2">
   <h2>Field(s)</h2>
 </div>
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(INTEL).AccousticPlayerSnapshotProvider" ><strong>INTEL.AccousticPlayerSnapshotProvider</strong></a>
+    
+
+
+</div>
+
+</div>   
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
