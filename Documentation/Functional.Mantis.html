@@ -1449,6 +1449,7 @@
     <li>Controls a network of SAM sites. Uses detection to switch on the AA site closest to the enemy.   </li>
     <li>Automatic mode (default since 0.8) can set-up your SAM site network automatically for you.   </li>
     <li>Leverage evasiveness from SEAD, leverage attack range setting.   </li>
+    <li>Naval air defense: ships and Ops.NavyGroup#NAVYGROUP as managed shooters or radiating pickets, with sensor-gated missile defense.   </li>
 </ul>
 
 <hr/>
@@ -1722,7 +1723,112 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
      -- your code here - SAM site is back online
    end
 </code></pre>
-<p> </p>
+
+<h1>6. Naval air defense (ships and NAVYGROUP)</h1>
+
+<p>Ships can be MANTIS shooters (SAM role) or always-radiating pickets (EWR role). Ship groups whose names match the SAM/EWR
+prefixes are picked up automatically; an Ops.NavyGroup#NAVYGROUP of any name is added explicitly:</p>
+
+<pre><code>   local cvn = NAVYGROUP:New("CVN Group")
+   mymantis:AddNavyGroup(cvn, "SAM")             -- managed shooter (or: cvn:SetMANTIS(mymantis, "SAM"))
+   mymantis:AddNavyGroup(pickets, "EWR")         -- radiating picket, a sensor for the fleet
+</code></pre>
+
+<p>Call AddNavyGroup <strong>after</strong> the NAVYGROUP is alive (late-activated groups: after activation). "BOTH" is deprecated and
+treated as SAM - a managed ship is dark while GREEN and cannot double as a sensor; use a separate EWR-role group.</p>
+
+<h2>6.1 How ships are switched</h2>
+
+<p>Every hull matching <a href="##(MANTIS).SamDataNaval">MANTIS.SamDataNaval</a> is its own SAM entry (per-unit, see <a href="##(MANTIS).SetNavalPerUnit">MANTIS.SetNavalPerUnit</a>), but DCS only
+honors the alarm state per GROUP, so a ship group goes <strong>RED</strong> when any of its managed units wants to be active and <strong>GREEN</strong>
+otherwise. Ships always use the alarm state, also with <code>UseEmOnOff</code>. A ship group is RED when:</p>
+
+<ul>
+    <li>a detected aircraft is inside one of its units' engagement envelopes,</li>
+    <li>an enemy surface combatant closes within range - <a href="##(MANTIS).SetNavalSurfaceWakeup">MANTIS.SetNavalSurfaceWakeup</a>,</li>
+    <li>an inbound enemy missile threatens it - <a href="##(MANTIS).SetNavalMissileDefense">MANTIS.SetNavalMissileDefense</a> (6.3),</li>
+    <li>it is hit or loses a unit,</li>
+    <li>it is held: own missile in flight, or the minimum RED dwell after the last trigger - <a href="##(MANTIS).SetNavalRedHold">MANTIS.SetNavalRedHold</a> (6.4),</li>
+    <li>it is outside EWR coverage and searches autonomously - <a href="##(MANTIS).SetNavalAutonomy">MANTIS.SetNavalAutonomy</a>,</li>
+    <li>its NAVYGROUP is executing EngageTarget, or MANTIS is in advanced state 2.</li>
+</ul>
+
+<p>Jamming overrides all of these and holds the ship GREEN. Ships are not SEAD-evasive by default (<a href="##(MANTIS).SetNavalSEAD">MANTIS.SetNavalSEAD</a>).</p>
+
+<h2>6.2 NAVYGROUP: what MANTIS takes over</h2>
+
+<p>Once added, MANTIS owns the NAVYGROUP's <strong>alarm state</strong>, <strong>emissions</strong> and <strong>ROE</strong>. It switches them through the NAVYGROUP
+(SwitchAlarmstate, SwitchEmission, SwitchROE), so respawns, mission end and the EngageTarget restore come back to MANTIS's values.</p>
+
+<ul>
+    <li>AUFTRAG options <code>optionAlarm</code> / <code>optionEmission</code> are overridden at the next MANTIS check (detection cycle, or within ~1 s
+    while missiles are tracked). A RED ship always radiates.</li>
+    <li>ROE: NAVYGROUP defaults to Return Fire, which would leave a RED ship radiating but not shooting. MANTIS makes <strong>Open Fire</strong>
+    the NAVYGROUP's default ROE and re-asserts it while RED. An explicit <strong>Weapon Hold</strong> is never overridden. Change or
+    disable with <a href="##(MANTIS).SetNavalROE">MANTIS.SetNavalROE</a>. For ships only OpenFire, ReturnFire and WeaponHold are valid - <code>ENUMS.ROE.WeaponFree</code>
+    is an air-only value. Open Fire also lets ships with anti-ship missiles engage enemy ships they detect.</li>
+    <li>During EngageTarget MANTIS holds the ship RED.</li>
+    <li>Groups that fall out of the SAM/EWR sets (e.g. respawn with <code>dynamic=true</code>) are re-attached automatically.</li>
+    <li>MANTIS registers its own handler for <code>EVENTS.Shot</code>. Do not call <code>mymantis:HandleEvent(EVENTS.Shot, ...)</code> in your mission -
+    it would replace MANTIS's handler. Use a separate object for your own shot handling.</li>
+</ul>
+
+<h2>6.3 Missile defense</h2>
+
+<p>Aircraft-based wake-up only fires when the launcher is inside a ship's envelope, so a stand-off missile would arrive at a
+dark ship. MANTIS therefore tracks enemy missiles from launch and wakes the ships they threaten by <strong>time to impact</strong>:</p>
+
+<pre><code>   mymantis:SetNavalMissileDefense(true, 60, 60)     -- on, wake 60 s before impact, hold 60 s after the last alert
+</code></pre>
+
+<ul>
+    <li>Missiles with target data wake the targeted ship plus every managed ship whose envelope covers it (escorts).</li>
+    <li>Missiles without target data wake each managed ship they fly at (within ~25 degrees).</li>
+    <li>Ignored: friendly missiles, missiles aimed at aircraft or other non-ship targets, anti-radiation missiles, bombs,
+    rockets and torpedoes.</li>
+</ul>
+
+<p>DCS detection reports units, not weapons, so the launch event is the only source of a missile track. By default MANTIS only
+acts on it once a plausible sensor could hold the missile (<strong>SENSOR</strong> mode, <a href="##(MANTIS).SetNavalMissileSensorMode">MANTIS.SetNavalMissileSensorMode</a>):</p>
+
+<ul>
+    <li>the threatened ship itself, out to its radar horizon against the missile's altitude (4/3 earth; 25 m antenna vs. a 10 m
+    sea-skimmer is about 34 km), or</li>
+    <li>an unmanaged emitter - land EWR, AWACS, EWR-role ship - within its range (<code>acceptrange</code> for surface sensors, <code>awacsrange</code>
+    for airborne ones), radar horizon and terrain line of sight. A network track is shared with every ship.</li>
+</ul>
+
+<p>Fast sea-skimmers with no picket or AWACS nearby will therefore arrive with little warning - deploy pickets. <strong>CUED</strong> mode
+skips the sensor check and wakes purely on time to impact:</p>
+
+<pre><code>   mymantis:SetNavalMissileSensorMode("CUED")
+   mymantis:SetNavalMissileSensorMode("SENSOR", 30, 20)   -- ship antenna 30 m, land EWR antenna 20 m above ground
+</code></pre>
+
+<h2>6.4 When ships go back GREEN</h2>
+
+<p>A ship goes GREEN at the first detection cycle in which no trigger from 6.1 holds it. After the last real trigger (contact
+in range, surface contact, hit) it stays RED for at least <code>NavalRedHold</code> seconds (default 60). A ship that fired a missile
+stays RED while the missile flies and <code>NavalRedHold</code> seconds after, so semi-active and command-guided shots keep guidance.
+Note that with INTEL/DLINK detection an air contact counts for <code>DLinkCacheTime</code> (default 120 s) after it was last seen.</p>
+
+<pre><code>   mymantis:SetNavalRedHold(90)    -- 0 disables the dwell and the own-shot hold
+</code></pre>
+
+<h2>6.5 Naval defaults</h2>
+
+<ul>
+    <li>NavalPerUnit = true - <a href="##(MANTIS).SetNavalPerUnit">MANTIS.SetNavalPerUnit</a></li>
+    <li>NavalAutonomy = true, 150 km coverage radius - <a href="##(MANTIS).SetNavalAutonomy">MANTIS.SetNavalAutonomy</a></li>
+    <li>NavalSurfaceWakeup = true, radius = each ship's envelope - <a href="##(MANTIS).SetNavalSurfaceWakeup">MANTIS.SetNavalSurfaceWakeup</a></li>
+    <li>SEADNaval = false - <a href="##(MANTIS).SetNavalSEAD">MANTIS.SetNavalSEAD</a></li>
+    <li>NavalMissileDefense = true, lead 60 s, hold 60 s - <a href="##(MANTIS).SetNavalMissileDefense">MANTIS.SetNavalMissileDefense</a></li>
+    <li>NavalMissileMode = "SENSOR", ship antenna 25 m, land EWR antenna 15 m - <a href="##(MANTIS).SetNavalMissileSensorMode">MANTIS.SetNavalMissileSensorMode</a></li>
+    <li>NavalRedHold = 60 s - <a href="##(MANTIS).SetNavalRedHold">MANTIS.SetNavalRedHold</a></li>
+    <li>NavalROE = ENUMS.ROE.OpenFire (NAVYGROUP only) - <a href="##(MANTIS).SetNavalROE">MANTIS.SetNavalROE</a></li>
+    <li>NavalMissileStep = 1 s missile tracking interval (read at Start)
+    </li>
+</ul>
 
 </div>
 
@@ -1920,6 +2026,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).EWRAntennaHeight">MANTIS.EWRAntennaHeight</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).EWR_Group">MANTIS.EWR_Group</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>The EWR #SET_GROUP</p>
@@ -1953,6 +2065,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).GetJammedSAMs">MANTIS:GetJammedSAMs()</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Get table of currently jammed SAM group names.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).Groupset">MANTIS.Groupset</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
 </td>
           </tr>
           <tr class="w3-border">
@@ -2022,6 +2140,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalAntennaHeight">MANTIS.NavalAntennaHeight</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalAutonomy">MANTIS.NavalAutonomy</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2034,7 +2158,49 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalMissileDefense">MANTIS.NavalMissileDefense</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalMissileHold">MANTIS.NavalMissileHold</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalMissileLead">MANTIS.NavalMissileLead</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalMissileMode">MANTIS.NavalMissileMode</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalMissileStep">MANTIS.NavalMissileStep</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalPerUnit">MANTIS.NavalPerUnit</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalROE">MANTIS.NavalROE</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).NavalRedHold">MANTIS.NavalRedHold</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2352,9 +2518,33 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetNavalMissileDefense">MANTIS:SetNavalMissileDefense(onoff, leadseconds, holdseconds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Configure naval MISSILE defense.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetNavalMissileSensorMode">MANTIS:SetNavalMissileSensorMode(mode, shipantenna, ewrantenna)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Choose how much the naval missile defense may "know".</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetNavalPerUnit">MANTIS:SetNavalPerUnit(onoff)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>Enable/disable PER-UNIT classification and switching for naval groups.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetNavalROE">MANTIS:SetNavalROE(roe)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the ROE MANTIS gives managed NAVYGROUPs.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS).SetNavalRedHold">MANTIS:SetNavalRedHold(seconds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>Set the minimum time a ship stays active after its last trigger.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2514,7 +2704,7 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
-            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._ApplyNavalAlarmState">MANTIS:_ApplyNavalAlarmState()</a></p></td>
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._ApplyNavalAlarmState">MANTIS:_ApplyNavalAlarmState(Force)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Group ALARM-STATE arbiter for per-unit naval control.</p>
 </td>
@@ -2670,9 +2860,72 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalAlert">MANTIS:_NavalAlert(entry, hold)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Hold a naval entry active because of an inbound missile, and switch it RED right now
+(do not wait for the next detection cycle, the missile may arrive before it).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalAlertActive">MANTIS:_NavalAlertActive(name)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Is a missile alert currently holding this entry active?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalApproach">MANTIS._NavalApproach(p, v, q)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal, static] Approach geometry of a missile relative to a point.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalEntries">MANTIS:_NavalEntries()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Live list of managed naval SAM entries with CURRENT positions
+(SAM_Table coordinates are only refreshed every third detection cycle).</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalHold">MANTIS:_NavalHold(name, seconds)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Extend a naval hold: keep this entry active until at least now + seconds.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalMissileShot">MANTIS:_NavalMissileShot(EventData)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] DCS shot event: pick out enemy missiles that can threaten managed ships.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalMissileTick">MANTIS:_NavalMissileTick()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Track inbound missiles; wake the ships they threaten when time-to-impact is short.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._NavalSensorSources">MANTIS:_NavalSensorSources()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Unmanaged emitters that can share a missile track: EWR set members that are not
+managed naval SAMs (land EWR, EWR-role ships, AWACS in the set) plus the separate AWACS.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._PreFilterHeight">MANTIS:_PreFilterHeight(height, SamCoordinate, contactSnapshot)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Function to prefilter height based and check for Helo activity.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._RadarHorizon">MANTIS._RadarHorizon(h1, h2)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal, static] Radar horizon (4/3 earth) between two heights above sea level.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._ReattachNavyGroups">MANTIS:_ReattachNavyGroups()</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Re-add registered NAVYGROUPs that dropped out of the SAM/EWR sets.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2712,6 +2965,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._SensorSees">MANTIS._SensorSees(s, ha, range, p)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal, static] Could a sensor plausibly hold a missile?</p>
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._SetSAMTable">MANTIS:_SetSAMTable(table)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Function to set the self.SAM_Table</p>
@@ -2739,6 +2998,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._SmokeUnits">MANTIS:_SmokeUnits(Group)</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 <p>[Internal] Function to smoke a group in decoy.</p>
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._SwitchSAMGroup">MANTIS:_SwitchSAMGroup(group, on, alarmonly, DCSGroup)</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+<p>[Internal] Switch a SAM group on or off.</p>
 </td>
           </tr>
           <tr class="w3-border">
@@ -2862,6 +3127,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
 </td>
           </tr>
           <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navalAlertUntil">MANTIS._navalAlertUntil</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navalAutonomous">MANTIS._navalAutonomous</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
@@ -2869,6 +3140,24 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navalGroupState">MANTIS._navalGroupState</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navalMissileSched">MANTIS._navalMissileSched</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navalMissiles">MANTIS._navalMissiles</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navalOwnShots">MANTIS._navalOwnShots</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -2887,6 +3176,12 @@ in the mission editor are absolute maximum ranges; in-game this is rather 50-75%
           </tr>
           <tr class="w3-border">
             <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navyGroups">MANTIS._navyGroups</a></p></td>
+            <td class="summary w3-half w3-container" style="word-wrap: break-word">
+
+</td>
+          </tr>
+          <tr class="w3-border">
+            <td class="name w3-half w3-container" style="word-wrap: break-word"><p><a href="##(MANTIS)._navyRoles">MANTIS._navyRoles</a></p></td>
             <td class="summary w3-half w3-container" style="word-wrap: break-word">
 
 </td>
@@ -6273,6 +6568,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(MANTIS).EWRAntennaHeight" ><strong>MANTIS.EWRAntennaHeight</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).EWR_Group" ><strong>MANTIS.EWR_Group</strong></a>
     
@@ -6299,6 +6605,17 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).FilterZones" ><strong>MANTIS.FilterZones</strong></a>
     
 <p>Table of Core.Zone#ZONE Zones Consider SAM groups in this zone(s) only for this MANTIS instance, must be handed as #table of Zone objects.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).Groupset" ><strong>MANTIS.Groupset</strong></a>
+    
+
 
 </div>
 
@@ -6405,13 +6722,43 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(MANTIS).NavalAutonomy" ><strong>MANTIS.NavalAutonomy</strong></a>
+    
+<a id="#(MANTIS).NavalAntennaHeight" ><strong>MANTIS.NavalAntennaHeight</strong></a>
     
 
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
-<p> ship groups outside EWR radar coverage go alarm RED and search autonomously (see SetNavalAutonomy)</p>
+<a id="#(MANTIS).NavalMissileHold" ><strong>MANTIS.NavalMissileHold</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).NavalMissileLead" ><strong>MANTIS.NavalMissileLead</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).NavalMissileMode" ><strong>MANTIS.NavalMissileMode</strong></a>
+    
+
 
 </div>
 
@@ -6420,12 +6767,12 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(MANTIS).NavalAutonomyRadius" ><strong>MANTIS.NavalAutonomyRadius</strong></a>
+<a id="#(MANTIS).NavalMissileStep" ><strong>MANTIS.NavalMissileStep</strong></a>
     
 
 
     
-<p> meters; a ship group within this distance of an alive EWR group counts as covered</p>
+<p> seconds; missile tracking interval</p>
 
 </div>
 
@@ -6434,12 +6781,20 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(MANTIS).NavalSurfaceWakeup" ><strong>MANTIS.NavalSurfaceWakeup</strong></a>
+<a id="#(MANTIS).NavalROE" ><strong>MANTIS.NavalROE</strong></a>
     
 
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
-<p> quiet ships go active when enemy surface combatants close (see SetNavalSurfaceWakeup)</p>
+<a id="#(MANTIS).NavalRedHold" ><strong>MANTIS.NavalRedHold</strong></a>
+    
+
 
 </div>
 
@@ -6539,20 +6894,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).SAM_Templates_Prefix" ><strong>MANTIS.SAM_Templates_Prefix</strong></a>
     
 <p>Prefix to build the #SET_GROUP for SAM sites</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(MANTIS).SEADNaval" ><strong>MANTIS.SEADNaval</strong></a>
-    
-
-
-    
-<p> ships hard-kill inbound missiles; they do not go EMCON under SEAD (see SetNavalSEAD)</p>
 
 </div>
 
@@ -6783,17 +7124,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
-<a id="#(MANTIS)._jammedSAMs" ><strong>MANTIS._jammedSAMs</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     
 <a id="#(MANTIS)._jammerClientSet" ><strong>MANTIS._jammerClientSet</strong></a>
     
@@ -6887,6 +7217,28 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 
     #table
 <a id="#(MANTIS)._jammerSortedSMA" ><strong>MANTIS._jammerSortedSMA</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS)._navalMissiles" ><strong>MANTIS._navalMissiles</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS)._navalOwnShots" ><strong>MANTIS._navalOwnShots</strong></a>
     
 
 
@@ -7185,61 +7537,6 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(MANTIS).maxclassic" ><strong>MANTIS.maxclassic</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxlongrange" ><strong>MANTIS.maxlongrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxmidrange" ><strong>MANTIS.maxmidrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxpointdefrange" ><strong>MANTIS.maxpointdefrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxshortrange" ><strong>MANTIS.maxshortrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     
 <a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
     
@@ -7302,6 +7599,9 @@ When Moose is loaded statically, (as one file), tracing is switched off by defau
 <a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
     
 
+
+    
+<p> switch alarm state RED</p>
 
 </div>
 
@@ -7604,9 +7904,8 @@ AI jammers start OFF; use SetJammerActive(unitName, true) to activate via script
 <p>Add a NAVYGROUP to this MANTIS as SAM shooter and/or EWR picket.</p>
 
     
-<p>IMPORTANT: MANTIS does not change ROE. NAVYGROUP defaults to Return Fire --
-set NavyGroup:SwitchROE(ENUMS.ROE.WeaponFree) in your mission if the ship
-should engage detected targets rather than only return fire.</p>
+<p>MANTIS takes over the NAVYGROUP's alarm state, emissions and (see #MANTIS.SetNavalROE) ROE:
+by default the ship is given Open Fire so it engages what its radars find when RED.</p>
 
 <div id= "#Functions##AddNavyGroup" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -10106,6 +10405,175 @@ Full jamming suppression overrides autonomy and forces the group GREEN.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetNavalMissileDefense" ><strong>MANTIS:SetNavalMissileDefense(onoff, leadseconds, holdseconds)</strong></a></h2>
+</div>
+    
+<p>Configure naval MISSILE defense.</p>
+
+    
+<p>Default: ENABLED, lead 60s, hold 60s.
+Aircraft-based wake-up only fires when a detected aircraft is inside a ship's radius, so a
+missile launched from OUTSIDE that radius would reach a GREEN (radars dark) ship unopposed.
+With this enabled MANTIS also tracks every inbound enemy missile (DCS shot event) and wakes
+the ships it threatens when the missile is predicted to arrive within the lead time -- the
+ships stay EMCON-quiet while the missile is still far away. If the missile has target data
+(e.g. a locked Harpoon) the threatened ship and every managed ship whose radius covers it
+wake up; without target data (coordinate-targeted/INS shots) every managed ship the missile
+is flying towards wakes up. Anti-radiation missiles are ignored (they home on emitters).
+By default the wake-up is also SENSOR-GATED (see #MANTIS.SetNavalMissileSensorMode): the
+launch event only starts the track, a ship wakes only once the missile is inside its own
+radar horizon or inside the coverage of an unmanaged emitter (EWR, AWACS, picket ship).</p>
+
+<div id= "#Functions##SetNavalMissileDefense" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>onoff</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Enable (true) or disable (false).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>leadseconds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Wake a ship when a missile is predicted to reach it within this many seconds (default 60).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>holdseconds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Keep the ship active for this many seconds after the last alert (default 60).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetNavalMissileSensorMode" ><strong>MANTIS:SetNavalMissileSensorMode(mode, shipantenna, ewrantenna)</strong></a></h2>
+</div>
+    
+<p>Choose how much the naval missile defense may "know".</p>
+
+    
+<p>Default: SENSOR.
+DCS detection reports units, not weapons, so the launch event is the only way to learn of
+a missile. In SENSOR mode that knowledge is only acted on once a plausible sensor could hold
+the missile:
+  * the threatened ship itself, limited by its radar horizon to the missile (models ESM,</p>
+<pre><code>lookouts and EMCON sweeps -- a sea-skimmer is seen late, a high diver early), or
+</code></pre>
+<p>  * any UNMANAGED emitter of this MANTIS (land EWR, AWACS, EWR-role picket ships), limited</p>
+<pre><code>by its detection range (#MANTIS.acceptrange for surface sensors, #MANTIS.awacsrange for
+airborne ones), its radar horizon, and terrain line of sight. A track held by the
+network is shared with every ship (datalink).
+</code></pre>
+<p>CUED mode skips the sensor check and wakes purely on time-to-impact.</p>
+
+<div id= "#Functions##SetNavalMissileSensorMode" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>mode</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>"SENSOR" (default) or "CUED".</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>shipantenna</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Ship search-radar height in meters for the horizon (default 25).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ewrantenna</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Land EWR antenna height above ground in meters (default 15).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS).SetNavalPerUnit" ><strong>MANTIS:SetNavalPerUnit(onoff)</strong></a></h2>
 </div>
     
@@ -10135,6 +10603,114 @@ to legacy group-level naval handling (first matched hull defines the whole group
           <div class="w3-half">
               
 <p>Enable (true) or disable (false).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetNavalROE" ><strong>MANTIS:SetNavalROE(roe)</strong></a></h2>
+</div>
+    
+<p>Set the ROE MANTIS gives managed NAVYGROUPs.</p>
+
+    
+<p>Default: ENUMS.ROE.OpenFire.
+NAVYGROUP (OPSGROUP) defaults to Return Fire, so a ship MANTIS switches RED would radiate but
+not engage -- not even an inbound missile. MANTIS therefore makes the ROE the NAVYGROUP's
+DEFAULT ROE at registration (so respawn, mission end and the EngageTarget restore all come
+back to it) and re-asserts it whenever the ship is RED and something else changed it.
+An explicit ENUMS.ROE.WeaponHold set by the mission is never overridden (cease-fire phases).
+Note: for ships only OpenFire (2), ReturnFire (3) and WeaponHold (4) are valid; OpenFire is
+the ship "engage what you detect" setting -- WeaponFree (0/1) is an AIR-only value.
+Open Fire is not air-only: ships with anti-ship missiles will also engage detected enemy ships.
+Plain (non-NAVYGROUP) ships keep their Mission Editor ROE.</p>
+
+<div id= "#Functions##SetNavalROE" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>roe</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>ENUMS.ROE.OpenFire (default), ENUMS.ROE.ReturnFire or ENUMS.ROE.WeaponHold; false = MANTIS does not touch ROE.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS).SetNavalRedHold" ><strong>MANTIS:SetNavalRedHold(seconds)</strong></a></h2>
+</div>
+    
+<p>Set the minimum time a ship stays active after its last trigger.</p>
+
+    
+<p>Default: 60 seconds.
+Applies to air contacts in range, surface wake-up, hits / unit losses and the ship's OWN
+missiles: a ship that fired is held RED while its missile is in flight and for this long after
+it is gone, so semi-active and command-guided shots keep their guidance. Without it a ship
+could go dark at the next detection cycle with its own missile still flying.
+Jamming still overrides the hold. 0 disables the dwell and the own-shot hold.</p>
+
+<div id= "#Functions##SetNavalRedHold" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>seconds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Hold time in seconds (default 60).</p>
 
           </div>
         </div>
@@ -10652,7 +11228,7 @@ suppressed. Ships only -- ground SAM behavior is unchanged.</p>
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
-<h2><a id="#(MANTIS)._ApplyNavalAlarmState" ><strong>MANTIS:_ApplyNavalAlarmState()</strong></a></h2>
+<h2><a id="#(MANTIS)._ApplyNavalAlarmState" ><strong>MANTIS:_ApplyNavalAlarmState(Force)</strong></a></h2>
 </div>
     
 <p>[Internal] Group ALARM-STATE arbiter for per-unit naval control.</p>
@@ -10668,6 +11244,10 @@ group as the final word of each cycle:
 <p>  GREEN otherwise -- including full jamming suppression, which overrides</p>
 <pre><code>    autonomy (a fully jammed group cannot search).
 </code></pre>
+<p>Re-assertion: NAVYGROUP missions (optionAlarm), mission end and respawns change the alarm state
+behind MANTIS's back. Registered NAVYGROUPs are checked for drift via GetAlarmstate() on every
+call; plain ship groups are re-asserted when Force is set (once per detection cycle).
+A NAVYGROUP that is executing EngageTarget is held RED so MANTIS does not blind its attack.</p>
 
 <div id= "#Functions##_ApplyNavalAlarmState" class="w3-show w3-white">
   <div class="w3-container w3-white" id="functiontype">
@@ -10675,6 +11255,20 @@ group as the final word of each cycle:
    <div class="w3-margin-left">
 <p>MANTIS</p>
 </div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>Force</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Re-apply the state to plain (non-NAVYGROUP) ship groups even if unchanged.</p>
+
+          </div>
+        </div>
     <h2><strong>Return value:</strong></h2>
     <div class="w3-row w3-border-bottom w3-margin-left">
       <div class="w3-half">
@@ -12212,6 +12806,398 @@ Menu setup happens for ground units too so clients see the menu before takeoff.<
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalAlert" ><strong>MANTIS:_NavalAlert(entry, hold)</strong></a></h2>
+</div>
+    
+<p>[Internal] Hold a naval entry active because of an inbound missile, and switch it RED right now
+(do not wait for the next detection cycle, the missile may arrive before it).</p>
+
+<div id= "#Functions##_NavalAlert" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>entry</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Entry from #MANTIS._NavalEntries.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>hold</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Seconds to hold the entry active.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>switched True if the state changed to RED just now.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalAlertActive" ><strong>MANTIS:_NavalAlertActive(name)</strong></a></h2>
+</div>
+    
+<p>[Internal] Is a missile alert currently holding this entry active?</p>
+
+    
+<p>Expired alerts are dropped.</p>
+
+<div id= "#Functions##_NavalAlertActive" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Unit name (per-unit naval) or group name (legacy naval).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>active</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalApproach" ><strong>MANTIS._NavalApproach(p, v, q)</strong></a></h2>
+</div>
+    
+<p>[Internal, static] Approach geometry of a missile relative to a point.</p>
+
+<div id= "#Functions##_NavalApproach" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>p</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Missile position (DCS Vec3).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>v</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Missile velocity (DCS Vec3, m/s).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>q</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Point of interest (DCS Vec3).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return values:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>distance 3D distance in meters.</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>closing Closing speed in m/s along the line of sight (positive = approaching).</p>
+
+        </div>
+        <div class="w3-half">
+          <p>#number:</p>
+        </div>
+        <div class="w3-half">
+          
+<p>cosine Cosine of the angle between the missile velocity and the line of sight (1 = flying straight at q).</p>
+
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalEntries" ><strong>MANTIS:_NavalEntries()</strong></a></h2>
+</div>
+    
+<p>[Internal] Live list of managed naval SAM entries with CURRENT positions
+(SAM_Table coordinates are only refreshed every third detection cycle).</p>
+
+<div id= "#Functions##_NavalEntries" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>entries { {name=, group=, vec=, radius=}, ... }</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalHold" ><strong>MANTIS:_NavalHold(name, seconds)</strong></a></h2>
+</div>
+    
+<p>[Internal] Extend a naval hold: keep this entry active until at least now + seconds.</p>
+
+    
+<p>Never shortens an existing hold. Seconds &lt;= 0 does nothing.</p>
+
+<div id= "#Functions##_NavalHold" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #string
+            <strong><strong>name</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Unit name (per-unit naval) or group name (legacy naval).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>seconds</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Hold duration in seconds.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalMissileShot" ><strong>MANTIS:_NavalMissileShot(EventData)</strong></a></h2>
+</div>
+    
+<p>[Internal] DCS shot event: pick out enemy missiles that can threaten managed ships.</p>
+
+<div id= "#Functions##_NavalMissileShot" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameter:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Core.Event.html##(EVENTDATA)">Core.Event#EVENTDATA</a>
+            <strong><strong>EventData</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalMissileTick" ><strong>MANTIS:_NavalMissileTick()</strong></a></h2>
+</div>
+    
+<p>[Internal] Track inbound missiles; wake the ships they threaten when time-to-impact is short.</p>
+
+    
+<p>Time-to-impact (not distance) is used so a slow cruise missile and a Mach 3 AShM both give
+the ship the same warning, and the ship stays EMCON-quiet while the missile is still far out.</p>
+
+<div id= "#Functions##_NavalMissileTick" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._NavalSensorSources" ><strong>MANTIS:_NavalSensorSources()</strong></a></h2>
+</div>
+    
+<p>[Internal] Unmanaged emitters that can share a missile track: EWR set members that are not
+managed naval SAMs (land EWR, EWR-role ships, AWACS in the set) plus the separate AWACS.</p>
+
+    
+<p>Managed ships are excluded -- their radars are dark while GREEN.</p>
+
+<div id= "#Functions##_NavalSensorSources" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#table:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>sources { {vec=, h=, range=}, ... }</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS)._PreFilterHeight" ><strong>MANTIS:_PreFilterHeight(height, SamCoordinate, contactSnapshot)</strong></a></h2>
 </div>
     
@@ -12267,6 +13253,98 @@ Menu setup happens for ground units too so clients see the menu before takeoff.<
       <div class="w3-half">
         
 <p>set</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._RadarHorizon" ><strong>MANTIS._RadarHorizon(h1, h2)</strong></a></h2>
+</div>
+    
+<p>[Internal, static] Radar horizon (4/3 earth) between two heights above sea level.</p>
+
+<div id= "#Functions##_RadarHorizon" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>h1</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Height of the sensor in meters ASL.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>h2</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Height of the target in meters ASL.</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#number:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>distance Horizon distance in meters.</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._ReattachNavyGroups" ><strong>MANTIS:_ReattachNavyGroups()</strong></a></h2>
+</div>
+    
+<p>[Internal] Re-add registered NAVYGROUPs that dropped out of the SAM/EWR sets.</p>
+
+    
+<p>A dynamic (FilterStart) SET_GROUP removes a group on RemoveUnit/Dead and only re-adds it on
+Birth if it matches the prefix filter -- a respawned NAVYGROUP added via AddNavyGroup whose
+name does not match would otherwise be lost to MANTIS for the rest of the mission.</p>
+
+<div id= "#Functions##_ReattachNavyGroups" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
 
       </div>
     </div>
@@ -12618,6 +13696,89 @@ Substring matching with digit-boundary protection prevents false matches
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
 <div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._SensorSees" ><strong>MANTIS._SensorSees(s, ha, range, p)</strong></a></h2>
+</div>
+    
+<p>[Internal, static] Could a sensor plausibly hold a missile?</p>
+
+<div id= "#Functions##_SensorSees" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>s</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Sensor position (DCS Vec3).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>ha</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Sensor antenna height in meters ASL.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #number
+            <strong><strong>range</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Maximum detection range in meters; nil = horizon-limited only.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #table
+            <strong><strong>p</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>Missile position (DCS Vec3).</p>
+
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p>#boolean:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>seen</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
 <h2><a id="#(MANTIS)._SetSAMTable" ><strong>MANTIS:_SetSAMTable(table)</strong></a></h2>
 </div>
     
@@ -12833,6 +13994,96 @@ Substring matching with digit-boundary protection prevents false matches
           </div>
           <div class="w3-half">
               <p></p>
+          </div>
+        </div>
+    <h2><strong>Return value:</strong></h2>
+    <div class="w3-row w3-border-bottom w3-margin-left">
+      <div class="w3-half">
+        <p><a href="##(MANTIS)">#MANTIS</a>:</p>
+      </div>
+      <div class="w3-half">
+        
+<p>self</p>
+
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+<div class="w3-theme-l2">
+<h2><a id="#(MANTIS)._SwitchSAMGroup" ><strong>MANTIS:_SwitchSAMGroup(group, on, alarmonly, DCSGroup)</strong></a></h2>
+</div>
+    
+<p>[Internal] Switch a SAM group on or off.</p>
+
+    
+<p>Single entry point for every switch that can hit a ship.
+Ground groups / plain ships: EnableEmission (UseEmOnOff) or alarm state RED/GREEN, as before.
+Registered NAVYGROUPs are switched THROUGH the NAVYGROUP (SwitchAlarmstate/SwitchEmission) so its
+option bookkeeping stays in sync: respawn, mission end and EngageTarget restore the value MANTIS
+set, and drift can be detected via GetAlarmstate().</p>
+
+<div id= "#Functions##_SwitchSAMGroup" class="w3-show w3-white">
+  <div class="w3-container w3-white" id="functiontype">
+   <h2><strong>Defined in:</strong></h2>
+   <div class="w3-margin-left">
+<p>MANTIS</p>
+</div>
+    <h2><strong>Parameters:</strong></h2>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="Wrapper.Group.html##(GROUP)">Wrapper.Group#GROUP</a>
+            <strong><strong>group</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>The group.</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>on</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>True = active (RED / emitting), false = quiet (GREEN / dark).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                #boolean
+            <strong><strong>alarmonly</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Always use alarm state, ignoring UseEmOnOff (per-unit naval control).</p>
+
+          </div>
+        </div>
+        <div class="w3-row w3-margin-left w3-border-bottom w3-border-l2">
+          <div class="w3-half">
+            <p>
+                <a href="DCS.html##(Group)">DCS#Group</a>
+            <strong><strong>DCSGroup</strong></strong>
+            </p>
+          </div>
+          <div class="w3-half">
+              
+<p>(Optional) Native group already resolved for this wrapper, passed to EnableEmission.</p>
+
           </div>
         </div>
     <h2><strong>Return value:</strong></h2>
@@ -14386,6 +15637,17 @@ Substring matching with digit-boundary protection prevents false matches
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
+    
+<a id="#(MANTIS).EWRAntennaHeight" ><strong>MANTIS.EWRAntennaHeight</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     <a href="Core.Set.html##(SET_GROUP)">Core.Set#SET_GROUP</a>
 <a id="#(MANTIS).EWR_Group" ><strong>MANTIS.EWR_Group</strong></a>
     
@@ -14412,6 +15674,17 @@ Substring matching with digit-boundary protection prevents false matches
 <a id="#(MANTIS).FilterZones" ><strong>MANTIS.FilterZones</strong></a>
     
 <p>Table of Core.Zone#ZONE Zones Consider SAM groups in this zone(s) only for this MANTIS instance, must be handed as #table of Zone objects.</p>
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).Groupset" ><strong>MANTIS.Groupset</strong></a>
+    
+
 
 </div>
 
@@ -14518,13 +15791,43 @@ Substring matching with digit-boundary protection prevents false matches
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #boolean
-<a id="#(MANTIS).NavalAutonomy" ><strong>MANTIS.NavalAutonomy</strong></a>
+    
+<a id="#(MANTIS).NavalAntennaHeight" ><strong>MANTIS.NavalAntennaHeight</strong></a>
     
 
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
-<p> ship groups outside EWR radar coverage go alarm RED and search autonomously (see SetNavalAutonomy)</p>
+<a id="#(MANTIS).NavalMissileHold" ><strong>MANTIS.NavalMissileHold</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).NavalMissileLead" ><strong>MANTIS.NavalMissileLead</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    
+<a id="#(MANTIS).NavalMissileMode" ><strong>MANTIS.NavalMissileMode</strong></a>
+    
+
 
 </div>
 
@@ -14533,12 +15836,12 @@ Substring matching with digit-boundary protection prevents false matches
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #number
-<a id="#(MANTIS).NavalAutonomyRadius" ><strong>MANTIS.NavalAutonomyRadius</strong></a>
+<a id="#(MANTIS).NavalMissileStep" ><strong>MANTIS.NavalMissileStep</strong></a>
     
 
 
     
-<p> meters; a ship group within this distance of an alive EWR group counts as covered</p>
+<p> seconds; missile tracking interval</p>
 
 </div>
 
@@ -14547,12 +15850,20 @@ Substring matching with digit-boundary protection prevents false matches
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
     #boolean
-<a id="#(MANTIS).NavalSurfaceWakeup" ><strong>MANTIS.NavalSurfaceWakeup</strong></a>
+<a id="#(MANTIS).NavalROE" ><strong>MANTIS.NavalROE</strong></a>
     
 
 
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
     
-<p> quiet ships go active when enemy surface combatants close (see SetNavalSurfaceWakeup)</p>
+<a id="#(MANTIS).NavalRedHold" ><strong>MANTIS.NavalRedHold</strong></a>
+    
+
 
 </div>
 
@@ -14652,20 +15963,6 @@ Substring matching with digit-boundary protection prevents false matches
 <a id="#(MANTIS).SAM_Templates_Prefix" ><strong>MANTIS.SAM_Templates_Prefix</strong></a>
     
 <p>Prefix to build the #SET_GROUP for SAM sites</p>
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #boolean
-<a id="#(MANTIS).SEADNaval" ><strong>MANTIS.SEADNaval</strong></a>
-    
-
-
-    
-<p> ships hard-kill inbound missiles; they do not go EMCON under SEAD (see SetNavalSEAD)</p>
 
 </div>
 
@@ -14896,17 +16193,6 @@ Substring matching with digit-boundary protection prevents false matches
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #table
-<a id="#(MANTIS)._jammedSAMs" ><strong>MANTIS._jammedSAMs</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     
 <a id="#(MANTIS)._jammerClientSet" ><strong>MANTIS._jammerClientSet</strong></a>
     
@@ -15000,6 +16286,28 @@ Substring matching with digit-boundary protection prevents false matches
 
     #table
 <a id="#(MANTIS)._jammerSortedSMA" ><strong>MANTIS._jammerSortedSMA</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS)._navalMissiles" ><strong>MANTIS._navalMissiles</strong></a>
+    
+
+
+</div>
+
+</div>   
+<div>   
+        <div class="w3-card-2 w3-padding-small w3-margin-top">
+
+    #table
+<a id="#(MANTIS)._navalOwnShots" ><strong>MANTIS._navalOwnShots</strong></a>
     
 
 
@@ -15298,61 +16606,6 @@ Substring matching with digit-boundary protection prevents false matches
 <div>   
         <div class="w3-card-2 w3-padding-small w3-margin-top">
 
-    #number
-<a id="#(MANTIS).maxclassic" ><strong>MANTIS.maxclassic</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxlongrange" ><strong>MANTIS.maxlongrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxmidrange" ><strong>MANTIS.maxmidrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxpointdefrange" ><strong>MANTIS.maxpointdefrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
-    #number
-<a id="#(MANTIS).maxshortrange" ><strong>MANTIS.maxshortrange</strong></a>
-    
-
-
-</div>
-
-</div>   
-<div>   
-        <div class="w3-card-2 w3-padding-small w3-margin-top">
-
     
 <a id="#(MANTIS).mysead" ><strong>MANTIS.mysead</strong></a>
     
@@ -15415,6 +16668,9 @@ Substring matching with digit-boundary protection prevents false matches
 <a id="#(MANTIS).state2flag" ><strong>MANTIS.state2flag</strong></a>
     
 
+
+    
+<p> switch alarm state RED</p>
 
 </div>
 
